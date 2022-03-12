@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
@@ -15,6 +16,26 @@
         public QuotesService(IRepository<Quote> quoteRepository)
         {
             this.quoteRepository = quoteRepository;
+        }
+
+        public async Task AddQuoteAsync(
+            string content,
+            string authorName,
+            string bookTitle,
+            string movieTitle,
+            string userId)
+        {
+            Quote quote = new Quote()
+            {
+                Content = content,
+                AuthorName = authorName,
+                BookName = bookTitle,
+                MovieName = movieTitle,
+                UserId = userId,
+            };
+
+            await this.quoteRepository.AddAsync(quote);
+            await this.quoteRepository.SaveChangesAsync();
         }
 
         public T GetRandomQuote<T>()
