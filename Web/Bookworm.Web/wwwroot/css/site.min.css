@@ -42,6 +42,20 @@
     background-color: #1abc9c;
 }
 
+
+.blockquote-card .card-header {
+    color: white;
+    background-color: #34495E;
+}
+
+.blockquote-footer {
+    text-align: right;
+}
+
+.quoteContent {
+    font-style: italic;
+}
+
 .container {
     margin-top: 8rem;
     margin-bottom: 4rem;

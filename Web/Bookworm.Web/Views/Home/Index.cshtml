@@ -1,8 +1,38 @@
-﻿@using Bookworm.Common
+﻿@model IndexViewModel
+
 @{
     this.ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome to @GlobalConstants.SystemName!</h1>
+</div>
+
+<div class="card border-dark blockquote-card">
+    <div class="card-header">
+        Quote
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote text-center">
+            <p class="quoteContent">@Model.RandomQuote.Content</p>
+            @if (Model.RandomQuote.AuthorName != null)
+            {
+                <footer class="blockquote-footer">
+                    @Model.RandomQuote.AuthorName
+                </footer>
+            }
+            @if (Model.RandomQuote.BookTitle != null)
+            {
+                <footer class="blockquote-footer">
+                    From the book: @Model.RandomQuote.BookTitle
+                </footer>
+            }
+            @if (Model.RandomQuote.MovieTitle != null)
+            {
+                <footer class="blockquote-footer">
+                    From the movie: @Model.RandomQuote.MovieTitle
+                </footer>
+            }
+        </blockquote>
+    </div>
 </div>

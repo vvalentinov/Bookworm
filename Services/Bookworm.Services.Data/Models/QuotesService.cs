@@ -29,8 +29,8 @@
             {
                 Content = content,
                 AuthorName = authorName,
-                BookName = bookTitle,
-                MovieName = movieTitle,
+                BookTitle = bookTitle,
+                MovieTitle = movieTitle,
                 UserId = userId,
             };
 

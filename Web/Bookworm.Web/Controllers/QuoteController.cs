@@ -44,7 +44,7 @@
                 model.MovieTitle,
                 user.Id);
 
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("/");
         }
     }
 }
