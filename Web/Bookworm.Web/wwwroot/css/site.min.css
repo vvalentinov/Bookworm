@@ -50,6 +50,13 @@
     background-color: #1abc9c;
 }
 
+.welcomeSection .welcomeText {
+    border: solid #34495E;
+    border-radius: 25px;
+    margin: auto;
+    margin-bottom:3rem;
+}
+
 
 .blockquote-card .card-header {
     color: white;
