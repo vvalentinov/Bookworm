@@ -1,9 +1,8 @@
 ﻿namespace Bookworm.Web.ViewModels.Settings
 {
+    using AutoMapper;
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
-
-    using AutoMapper;
 
     public class SettingViewModel : IMapFrom<Setting>, IHaveCustomMappings
     {
