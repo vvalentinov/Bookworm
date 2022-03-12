@@ -1,0 +1,34 @@
+﻿@model QuoteViewModel
+
+@{
+    ViewData["Title"] = "Add Quote";
+}
+
+<h1 class="text-center">@this.ViewData["Title"]</h1>
+
+<form method="post" class="col-lg-8 offset-lg-2">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group justify-content-center">
+        <label asp-for="Content"><strong>Content*</strong></label>
+        <textarea asp-for="Content" class="form-control" rows="12"></textarea>
+        <span asp-validation-for="Content" class="small text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AuthorName"><strong>Author's Name</strong></label>
+        <input asp-for="AuthorName" type="text" class="form-control">
+        <span asp-validation-for="AuthorName" class="small text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="BookTitle"><strong>Book Title</strong></label>
+        <input asp-for="BookTitle" type="text" class="form-control">
+        <span asp-validation-for="BookTitle" class="small text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MovieTitle"><strong>Movie Title</strong></label>
+        <input asp-for="MovieTitle" type="text" class="form-control">
+        <span asp-validation-for="MovieTitle" class="small text-danger"></span>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary text-center"><strong>Add Quote</strong></button>
+    </div>
+</form>
