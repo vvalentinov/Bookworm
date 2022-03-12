@@ -1,0 +1,25 @@
+﻿@model IEnumerable<CategoryViewModel>
+
+@{
+    this.ViewData["Title"] = "Books-Categories";
+}
+
+
+
+<div id="categoriesConteiner" class="container">
+    <div class="row">
+        @foreach (var category in Model)
+        {
+            <div class="col-md-4 mt-5 mb-5">
+                <a asp-controller="Books" asp-action="All" asp-route-id="@category.Id">
+                    <div class="card bg-dark text-light h-100">
+                        <img id="categoryImage" class="zoom" src="@category.ImageUrl" alt="Book" height="300">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-justify text-center">@category.Name</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
