@@ -23,6 +23,7 @@
             {
                 RandomQuote = this.quotesService.GetRandomQuote<QuoteViewModel>(),
             };
+
             return this.View(model);
         }
 

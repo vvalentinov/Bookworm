@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Quotes;
@@ -43,6 +44,8 @@
                 model.BookTitle,
                 model.MovieTitle,
                 user.Id);
+
+            this.TempData[MessageConstant.SuccessMessage] = "Successfully added quote!";
 
             return this.RedirectToAction("Index", "Home");
         }
