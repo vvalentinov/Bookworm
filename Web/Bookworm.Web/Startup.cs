@@ -9,6 +9,8 @@
     using Bookworm.Data.Repositories;
     using Bookworm.Data.Seeding;
     using Bookworm.Services.Data;
+    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Models;
     using Bookworm.Services.Mapping;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels;
@@ -65,6 +67,7 @@
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<IQuotesService, QuotesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
