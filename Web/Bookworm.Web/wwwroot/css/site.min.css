@@ -24,6 +24,24 @@
             color: #1abc9c;
         }
 
+.form-control {
+    font-size: x-large;
+}
+
+.form-group {
+    margin-top: 2rem;
+}
+
+.form-button {
+    margin-top: 2rem;
+    margin-bottom:4rem;
+}
+
+.btn {
+    color: white;
+    background-color: #1abc9c;
+}
+
 .container {
     margin-top: 8rem;
     margin-bottom: 4rem;
