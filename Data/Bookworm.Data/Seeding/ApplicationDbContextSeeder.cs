@@ -36,6 +36,7 @@
                               new RolesSeeder(),
                               new SettingsSeeder(),
                               new CategoriesSeeder(this.configuration),
+                              new LanguagesSeeder(),
                           };
 
             foreach (var seeder in seeders)
