@@ -13,7 +13,7 @@
         <input asp-for="Title" type="text" class="form-control">
         <span asp-validation-for="Title" class="small text-danger"></span>
     </div>
-    
+
     <div class="form-group justify-content-center">
         <label asp-for="Language"><strong>Language</strong></label>
         <input asp-for="Language" type="text" class="form-control">
@@ -43,7 +43,6 @@
         <input asp-for="Publisher" type="text" class="form-control">
         <span asp-validation-for="Publisher" class="small text-danger"></span>
     </div>
-    
     <div class="custom-file">
         <input asp-for="BookFile" type="file" class="custom-file-input" id="customFile">
         <label asp-for="BookFile" class="custom-file-label" for="customFile"><strong>Choose PDF File</strong></label>
@@ -52,10 +51,11 @@
     <div class="custom-file">
         <input asp-for="ImageFile" type="file" class="custom-file-input" id="customImage">
         <label asp-for="ImageFile" class="custom-file-label" for="customFile"><strong>Choose Image File</strong></label>
+        <span asp-validation-for="ImageFile" class="small text-danger"></span>
     </div>
     <div id="AuthorsContainer">
-        <a class="btn btn-success" onclick="AddAuthors()"><strong>Add Author</strong></a>
-        <a class="btn btn-danger" onclick="RemoveAuthors()"><strong>Remove Author</strong></a>
+        <a class="btn" onclick="AddAuthors()"><strong>Add Author</strong></a>
+        <a class="btn" onclick="RemoveAuthors()"><strong>Remove Author</strong></a>
     </div>
     <div class="form-group justify-content-center">
         <label asp-for="Description"><strong>Description</strong></label>
@@ -65,8 +65,36 @@
     <div class="text-center">
         <button type="submit" class="btn text-center"><strong>Upload Book</strong></button>
     </div>
-
 </form>
 
 <script src="~/js/addAuthor.js"></script>
 <script src="~/js/removeAuthor.js"></script>
+
+@section Scripts{
+<script>
+            $('#customFile').on('change', function () {
+        if ($(this).val().length > 55) {
+            var fileName = $(this).val()
+                .substring(0, 55)
+                .concat("...")
+                .replace('C:\\fakepath\\', " ");
+
+            $(this).next('.custom-file-label').html(fileName);
+        } else {
+            var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+            $(this).next('.custom-file-label').html(fileName);
+        }
+    })
+</script>
+<script>
+            $('#customImage').on('change', function () {
+        if ($(this).val().length > 55) {
+            var fileName = $(this).val().substring(0, 55).concat("...").replace('C:\\fakepath\\', " ");
+            $(this).next('.custom-file-label').html(fileName);
+        } else {
+            var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+            $(this).next('.custom-file-label').html(fileName);
+        }
+    })
+</script>
+}
