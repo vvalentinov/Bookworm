@@ -91,17 +91,28 @@ a {
     }
 
 .footer {
-    position: fixed;
     display: grid;
-    bottom: 0%;
     height: 4rem;
-    width: 100%;
     color: white;
-    background-color: #34495E;
     justify-content: center;
+    background-color: #34495E;
     padding-top: 1rem;
+    margin-top: auto;
 }
 
 .nav-item .nav-link {
     color: white;
 }
+
+body{
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    min-height:100%;
+}
+
+html{
+    height:100%;
+}
+
+

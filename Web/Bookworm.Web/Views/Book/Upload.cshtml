@@ -1,1 +1,69 @@
-﻿
+﻿@model UploadBookFormModel
+
+@{
+    this.ViewData["Title"] = "Upload Book";
+}
+
+<h1 class="text-center">@this.ViewData["Title"]</h1>
+
+<form method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Title"><strong>Title</strong></label>
+        <input asp-for="Title" type="text" class="form-control">
+        <span asp-validation-for="Title" class="small text-danger"></span>
+    </div>
+    
+    <div class="form-group justify-content-center">
+        <label asp-for="Language"><strong>Language</strong></label>
+        <input asp-for="Language" type="text" class="form-control">
+        <span asp-validation-for="Language" class="small text-danger"></span>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="PagesCount"><strong>Number of Pages</strong></label>
+        <input asp-for="PagesCount" type="number" min="5" class="form-control">
+        <span asp-validation-for="PagesCount" class="small text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CategoryId"><strong>Select Category</strong></label>
+        <select id="mySelect" asp-for="CategoryId" class="form-control">
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="PublishedYear"><strong>Year</strong></label>
+        <input asp-for="PublishedYear" type="number" class="form-control">
+        <span asp-validation-for="PublishedYear" class="small text-danger"></span>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="Publisher"><strong>Publisher(optional)</strong></label>
+        <input asp-for="Publisher" type="text" class="form-control">
+        <span asp-validation-for="Publisher" class="small text-danger"></span>
+    </div>
+    
+    <div class="custom-file">
+        <input asp-for="BookFile" type="file" class="custom-file-input" id="customFile">
+        <label asp-for="BookFile" class="custom-file-label" for="customFile"><strong>Choose PDF File</strong></label>
+        <span asp-validation-for="BookFile" class="small text-danger"></span>
+    </div>
+    <div class="custom-file">
+        <input asp-for="ImageFile" type="file" class="custom-file-input" id="customImage">
+        <label asp-for="ImageFile" class="custom-file-label" for="customFile"><strong>Choose Image File</strong></label>
+    </div>
+    <div id="AuthorsContainer">
+        <a class="btn btn-success" onclick="AddAuthors()"><strong>Add Author</strong></a>
+        <a class="btn btn-danger" onclick="RemoveAuthors()"><strong>Remove Author</strong></a>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="Description"><strong>Description</strong></label>
+        <textarea asp-for="Description" class="form-control" rows="12"></textarea>
+        <span asp-validation-for="Description" class="small text-danger"></span>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn text-center"><strong>Upload Book</strong></button>
+    </div>
+
+</form>
