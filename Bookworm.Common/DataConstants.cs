@@ -13,6 +13,9 @@
         public const byte AuthorNameMin = 2;
         public const byte AuthorNameMax = 50;
 
+        public const byte BookPublisherMin = 2;
+        public const byte BookPublisherMax = 100;
+
         public const byte QuoteMinLength = 20;
         public const int QuoteMaxLength = 2000;
 

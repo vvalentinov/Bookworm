@@ -11,6 +11,7 @@
         public const string BookPagesCountRequired = "Number of pages field is required.";
         public const string BookPagesCountRange = "The number of pages must be between 5 and 3000.";
         public const string BookPublishedYearRequired = "Year field is required.";
+        public const string BookPublisherLength = "Publisher must be between 2 and 100 characters!";
         public const string BookFileRequired = "Book file field is required.";
         public const string BookImageFileRequired = "Book image field is required.";
         public const string InvalidBookPublishedYear = "Invalid year value.";
