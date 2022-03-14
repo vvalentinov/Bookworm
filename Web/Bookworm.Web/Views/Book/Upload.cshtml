@@ -6,18 +6,26 @@
 
 <h1 class="text-center">@this.ViewData["Title"]</h1>
 
-<form method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
+<form asp-action="Upload" asp-controller="Book" method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Title"><strong>Title</strong></label>
         <input asp-for="Title" type="text" class="form-control">
         <span asp-validation-for="Title" class="small text-danger"></span>
     </div>
-
-    <div class="form-group justify-content-center">
+    @*<div class="form-group justify-content-center">
         <label asp-for="Language"><strong>Language</strong></label>
         <input asp-for="Language" type="text" class="form-control">
         <span asp-validation-for="Language" class="small text-danger"></span>
+        </div>*@
+    <div class="form-group">
+        <label asp-for="LanguageId"><strong>Select Language</strong></label>
+        <select id="mySelect" asp-for="LanguageId" class="form-control">
+            @foreach (var language in Model.Languages)
+            {
+                <option value="@language.Id">@language.Name</option>
+            }
+        </select>
     </div>
     <div class="form-group justify-content-center">
         <label asp-for="PagesCount"><strong>Number of Pages</strong></label>
@@ -67,10 +75,29 @@
     </div>
 </form>
 
-<script src="~/js/addAuthor.js"></script>
-<script src="~/js/removeAuthor.js"></script>
+
 
 @section Scripts{
+<script>
+        function RemoveAuthors() {
+        $("#authorName:last-child")
+            .hide('fast', function () {
+            $(this)
+            .remove();
+        });
+    }
+</script>
+<script>
+        var authorIndex = 0;
+        function AddAuthors() {
+        $("<div id='authorName' class='form-group justify-content-center'><div class='input-group'><div class='input-group-prepend'><span class='input-group-text'>Author's name</span></div><input asp-for='Name' type='text' name='AuthorsNames[" + authorIndex + "].Name' class='form-control'></div><span asp-validation-for='Name' class='small text-danger'></span></div>")
+            .hide()
+            .appendTo("#AuthorsContainer")
+            .show('fast');
+
+        authorIndex++;
+    }
+</script>
 <script>
             $('#customFile').on('change', function () {
         if ($(this).val().length > 55) {

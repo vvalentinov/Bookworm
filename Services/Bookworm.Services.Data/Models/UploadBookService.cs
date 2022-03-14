@@ -19,23 +19,26 @@
     public class UploadBookService : IUploadBookService
     {
         private readonly IConfiguration configuration;
-        private readonly IRepository<Language> languagesRepository;
         private readonly IDeletableEntityRepository<Book> booksRepository;
+        private readonly IDeletableEntityRepository<Publisher> publisherRepository;
+        private readonly IDeletableEntityRepository<Author> authorRepository;
 
         public UploadBookService(
             IConfiguration configuration,
-            IRepository<Language> languagesRepository,
-            IDeletableEntityRepository<Book> booksRepository)
+            IDeletableEntityRepository<Book> booksRepository,
+            IDeletableEntityRepository<Publisher> publisherRepository,
+            IDeletableEntityRepository<Author> authorRepository)
         {
             this.configuration = configuration;
-            this.languagesRepository = languagesRepository;
             this.booksRepository = booksRepository;
+            this.publisherRepository = publisherRepository;
+            this.authorRepository = authorRepository;
         }
 
         public async Task UploadBookAsync(
             string title,
             string description,
-            string language,
+            int languageId,
             string publisher,
             int pagesCount,
             int publishedYear,
@@ -103,8 +106,16 @@
             string bookFileBlobUrl = bookFileBlob.Uri.AbsoluteUri;
             string imageFileBlobUrl = imageFileBlob.Uri.AbsoluteUri;
 
-            int languageId = this.languagesRepository.AllAsNoTracking().First(x => x.Name == language).Id;
-            Publisher bookPublisher = new Publisher() { Name = publisher };
+            Publisher bookPublisher = this.publisherRepository
+                .AllAsNoTracking()
+                .FirstOrDefault(x => x.Name == publisher);
+
+            if (bookPublisher == null)
+            {
+                bookPublisher = new Publisher() { Name = publisher };
+                await this.publisherRepository.AddAsync(bookPublisher);
+                await this.publisherRepository.SaveChangesAsync();
+            }
 
             Book book = new Book()
             {
@@ -119,19 +130,23 @@
                 ImageUrl = imageFileBlobUrl,
             };
 
-            PublisherBook publisherBook = new PublisherBook() { BookId = book.Id, PublisherId = bookPublisher.Id };
-            book.PublishersBooks.Add(publisherBook);
+            book.PublishersBooks.Add(new PublisherBook() { BookId = book.Id, PublisherId = bookPublisher.Id });
 
             List<AuthorBook> bookAuthors = new List<AuthorBook>();
             foreach (string author in authors)
             {
-                Author bookAauthor = new Author() { Name = author };
+                Author bookAauthor = this.authorRepository.AllAsNoTracking().FirstOrDefault(x => x.Name == author);
+                if (bookAauthor == null)
+                {
+                    bookAauthor = new Author() { Name = author };
+                }
+
                 AuthorBook authorBook = new AuthorBook() { Book = book, Author = bookAauthor };
                 bookAuthors.Add(authorBook);
             }
 
             book.AuthorsBooks = bookAuthors;
-
+            this.booksRepository.Update(book);
             bookFileBlob.Properties.ContentType = bookFile.ContentType;
             imageFileBlob.Properties.ContentType = imageFile.ContentType;
 

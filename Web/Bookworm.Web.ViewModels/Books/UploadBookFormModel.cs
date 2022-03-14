@@ -3,7 +3,9 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Categories;
+    using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.DataConstants;
@@ -18,9 +20,6 @@
         [Required(ErrorMessage = BookDescriptionRequired)]
         [StringLength(BookDescriptionMaxLength, MinimumLength = BookDescriptionMinLength, ErrorMessage = BookDescriptionLength)]
         public string Description { get; set; }
-
-        [Required(ErrorMessage = BookLanguageRequired)]
-        public string Language { get; set; }
 
         [StringLength(BookPublisherMax, MinimumLength = BookPublisherMin, ErrorMessage = BookPublisherLength)]
         public string Publisher { get; set; }
@@ -38,7 +37,11 @@
 
         public int CategoryId { get; set; }
 
-        public IEnumerable<string> AuthorsNames { get; set; }
+        public int LanguageId { get; set; }
+
+        public IEnumerable<AuthorViewModel> AuthorsNames { get; set; }
+
+        public IEnumerable<LanguageViewModel> Languages { get; set; }
 
         public IEnumerable<CategoryViewModel> Categories { get; set; }
     }

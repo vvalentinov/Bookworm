@@ -71,6 +71,7 @@
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<IBooksService, BooksService>();
             services.AddTransient<IUploadBookService, UploadBookService>();
+            services.AddTransient<ILanguagesService, LanguagesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

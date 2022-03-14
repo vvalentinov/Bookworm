@@ -10,7 +10,7 @@
         Task UploadBookAsync(
             string title,
             string description,
-            string language,
+            int languageId,
             string publisher,
             int pagesCount,
             int publishedYear,
