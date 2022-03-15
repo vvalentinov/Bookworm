@@ -37,6 +37,7 @@
         public IFormFile BookFile { get; set; }
 
         [Required(ErrorMessage = BookImageFileRequired)]
+        [ImageFileAllowedExtensionsAttribute(new string[] { ".jpg", ".jpeg", ".png" })]
         public IFormFile ImageFile { get; set; }
 
         public int CategoryId { get; set; }
