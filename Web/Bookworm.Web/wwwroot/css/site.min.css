@@ -56,12 +56,16 @@
     background-color: #1abc9c;
 }
 
-.welcomeSection .welcomeText {
-    border: solid #34495E;
-    border-radius: 25px;
-    margin: auto;
-    margin-bottom:3rem;
+.welcomeSection {
+    margin-bottom:5rem;
 }
+
+    .welcomeSection .welcomeText {
+        border: solid #34495E;
+        border-radius: 25px;
+        margin: auto;
+        margin-bottom: 3rem;
+    }
 
 
 .blockquote-card .card-header {
@@ -110,15 +114,13 @@ a {
     color: white;
 }
 
-body{
-    margin:0;
-    display:flex;
-    flex-direction:column;
-    min-height:100%;
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
 }
 
-html{
-    height:100%;
+html {
+    height: 100%;
 }
-
-

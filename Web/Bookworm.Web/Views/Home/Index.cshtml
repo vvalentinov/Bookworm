@@ -39,3 +39,22 @@
     </div>
 </section>
 
+@if (this.User.Identity.IsAuthenticated)
+{
+    <section class="homeButtonsSection">
+        <div class="row text-center">
+            <div class="m-4 col-md-6">
+                <a asp-controller="Book" asp-action="Upload" class="btn btn-lg btn-outline-dark">
+                    Upload Book
+                </a>
+            </div>
+            <div class="m-4">
+                <a asp-controller="Quote" asp-action="Add" class="btn btn-lg btn-outline-dark">
+                    Add Quote
+                </a>
+            </div>
+        </div>
+    </section>
+}
+
+
