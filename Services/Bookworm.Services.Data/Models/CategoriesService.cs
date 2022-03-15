@@ -25,5 +25,13 @@
             .To<T>()
             .ToList();
         }
+
+        public int GetCategoryId(string categoryName)
+        {
+            return this.categoriesRepository
+                .AllAsNoTracking()
+                .First(x => x.Name == categoryName)
+                .Id;
+        }
     }
 }

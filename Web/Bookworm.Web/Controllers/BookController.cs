@@ -17,20 +17,31 @@
     public class BookController : Controller
     {
         private readonly IBooksService booksService;
+        private readonly ICategoriesService categoriesService;
         private readonly IUploadBookService uploadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
 
         public BookController(
             IBooksService booksService,
+            ICategoriesService categoriesService,
             IUploadBookService uploadBookService,
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService)
         {
             this.booksService = booksService;
+            this.categoriesService = categoriesService;
             this.uploadBookService = uploadBookService;
             this.userManager = userManager;
             this.languagesService = languagesService;
+        }
+
+        public IActionResult All(string categoryName, int page = 1)
+        {
+            int categoryId = this.categoriesService.GetCategoryId(categoryName);
+
+            var model = this.booksService.GetBooks(categoryId, page, 12);
+            return this.View(model);
         }
 
         [Authorize]

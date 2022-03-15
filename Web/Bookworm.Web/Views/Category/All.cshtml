@@ -11,7 +11,7 @@
         @foreach (var category in Model)
         {
             <div class="col-md-4 mt-5 mb-5">
-                <a asp-controller="Books" asp-action="All" asp-route-id="@category.Id">
+                <a asp-controller="Book" asp-action="All" asp-route-categoryName="@category.Name">
                     <div class="card bg-dark text-light h-100">
                         <img id="categoryImage" class="zoom" src="@category.ImageUrl" alt="Book" height="300">
                         <div class="card-body text-center">

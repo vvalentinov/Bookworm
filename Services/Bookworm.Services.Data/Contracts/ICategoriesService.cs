@@ -5,5 +5,7 @@
     public interface ICategoriesService
     {
         IList<T> GetAll<T>();
+
+        int GetCategoryId(string categoryName);
     }
 }

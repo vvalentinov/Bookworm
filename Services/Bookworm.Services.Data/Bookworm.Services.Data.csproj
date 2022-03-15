@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Bookworm.Data.Common\Bookworm.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\Bookworm.Data.Models\Bookworm.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Web\Bookworm.Web.ViewModels\Bookworm.Web.ViewModels.csproj" />
     <ProjectReference Include="..\Bookworm.Services.Mapping\Bookworm.Services.Mapping.csproj" />
   </ItemGroup>
 
