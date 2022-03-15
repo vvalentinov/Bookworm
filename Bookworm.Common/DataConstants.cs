@@ -21,5 +21,8 @@
 
         public const byte MovieTitleMinLenght = 3;
         public const byte MovieTitleMaxLenght = 150;
+
+        public const string BookFileAllowedExtension = ".pdf";
+        public static readonly string[] BookImageFileAllowedExtensions = { ".jpg", ".jpeg", ".png" };
     }
 }
