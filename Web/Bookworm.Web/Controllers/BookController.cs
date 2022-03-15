@@ -49,6 +49,8 @@
         {
             if (this.ModelState.IsValid == false)
             {
+                model.Categories = this.booksService.GetBookCategories<CategoryViewModel>();
+                model.Languages = this.languagesService.GetAllLanguages<LanguageViewModel>();
                 return this.View(model);
             }
 

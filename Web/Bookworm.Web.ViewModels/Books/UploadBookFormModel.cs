@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using Bookworm.Web.Infrastructure;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Categories;
     using Bookworm.Web.ViewModels.Languages;
@@ -27,6 +28,8 @@
         [Range(BookPagesCountMin, BookPagesCountMax, ErrorMessage = BookPagesCountRange)]
         public int PagesCount { get; set; }
 
+        [Display(Name = "Year")]
+        [PublishedYearValidationAttribute(BookPublishedYearMin, ErrorMessage = "Invalid year value.")]
         public int PublishedYear { get; set; }
 
         [Required(ErrorMessage = BookFileRequired)]
