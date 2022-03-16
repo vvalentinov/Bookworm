@@ -13,11 +13,16 @@
     {
         private readonly IRepository<Category> categoriesRepository;
         private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IRepository<Language> languagesRepository;
 
-        public BooksService(IRepository<Category> categoriesRepository, IDeletableEntityRepository<Book> bookRepository)
+        public BooksService(
+            IRepository<Category> categoriesRepository,
+            IDeletableEntityRepository<Book> bookRepository,
+            IRepository<Language> languagesRepository)
         {
             this.categoriesRepository = categoriesRepository;
             this.bookRepository = bookRepository;
+            this.languagesRepository = languagesRepository;
         }
 
         public IEnumerable<T> GetBookCategories<T>()
@@ -27,6 +32,27 @@
                 .OrderBy(x => x.Name)
                 .To<T>()
                 .ToList();
+        }
+
+        public BookViewModel GetBookWithId(string id)
+        {
+            Book book = this.bookRepository.AllAsNoTracking().First(x => x.Id == id);
+            string language = this.languagesRepository.AllAsNoTracking().First(l => l.Id == book.LanguageId).Name;
+            return this.bookRepository
+              .AllAsNoTracking()
+              .Where(x => x.Id == id)
+              .Select(x => new BookViewModel()
+              {
+                  Id = x.Id,
+                  Title = x.Title,
+                  Description = x.Description,
+                  DownloadsCount = x.DownloadsCount,
+                  FileUrl = x.FileUrl,
+                  ImageUrl = x.ImageUrl,
+                  Language = language,
+                  PagesCount = x.PagesCount,
+                  Year = x.Year,
+              }).FirstOrDefault();
         }
 
         public BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage)

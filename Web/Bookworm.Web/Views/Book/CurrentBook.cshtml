@@ -1,0 +1,46 @@
+﻿@model BookViewModel
+
+@{
+    this.ViewData["Title"] = Model.Title;
+}
+
+<section class="bookSection">
+    <div class="card border-dark">
+        <div class="card-body ">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-md-4">
+                        <img class="card-img-top mb-5 mb-md-0" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
+                        <div class="m-4 text-center">
+                            <a asp-controller="Files" asp-action="Download" asp-route-id="@Model.Id" class="btn btn-outline-dark flex-shrink-0 ">
+                                Download
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        @if (Model.Title.Length > 100)
+                        {
+                            string title = Model.Title.Substring(0, 100) + "...";
+                            <h1 class="display-5">@title</h1>
+                        }
+                        else
+                        {
+                            <h1 class="display-5">@Model.Title</h1>
+                        }
+                        <div class="fs-5 mb-5">
+                            <h3><i>Pages:</i> @Model.PagesCount</h3>
+                            <h3><i>Language:</i> @Model.Language</h3>
+                            <h3><i>Downloads:</i> @Model.DownloadsCount</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card border-secondary col-md-13 bookDescription">
+        <h5 class="card-header" style="color:white; background-color:#34495E;">Book Description</h5>
+        <div class="card-body">
+            <p class="card-text">@Model.Description</p>
+        </div>
+    </div>
+</section>

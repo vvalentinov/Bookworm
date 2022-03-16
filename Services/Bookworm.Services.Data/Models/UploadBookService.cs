@@ -106,17 +106,6 @@
             string bookFileBlobUrl = bookFileBlob.Uri.AbsoluteUri;
             string imageFileBlobUrl = imageFileBlob.Uri.AbsoluteUri;
 
-            Publisher bookPublisher = this.publisherRepository
-                .AllAsNoTracking()
-                .FirstOrDefault(x => x.Name == publisher);
-
-            if (bookPublisher == null)
-            {
-                bookPublisher = new Publisher() { Name = publisher };
-                await this.publisherRepository.AddAsync(bookPublisher);
-                await this.publisherRepository.SaveChangesAsync();
-            }
-
             Book book = new Book()
             {
                 Title = title,
@@ -130,7 +119,22 @@
                 ImageUrl = imageFileBlobUrl,
             };
 
-            book.PublishersBooks.Add(new PublisherBook() { BookId = book.Id, PublisherId = bookPublisher.Id });
+            if (publisher != null)
+            {
+                Publisher bookPublisher = this.publisherRepository
+               .AllAsNoTracking()
+               .FirstOrDefault(x => x.Name == publisher);
+
+                if (bookPublisher == null)
+                {
+                    bookPublisher = new Publisher() { Name = publisher };
+                    await this.publisherRepository.AddAsync(bookPublisher);
+                    await this.publisherRepository.SaveChangesAsync();
+                }
+
+                book.PublishersBooks.Add(new PublisherBook() { BookId = book.Id, PublisherId = bookPublisher.Id });
+                this.booksRepository.Update(book);
+            }
 
             List<AuthorBook> bookAuthors = new List<AuthorBook>();
             foreach (string author in authors)

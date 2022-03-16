@@ -33,7 +33,7 @@
         public int PublishedYear { get; set; }
 
         [Required(ErrorMessage = BookFileRequired)]
-        [BookFileAllowedExtensionAttribute(BookFileAllowedExtension)]
+        [BookFileAllowedExtensionAttribute(".pdf")]
         public IFormFile BookFile { get; set; }
 
         [Required(ErrorMessage = BookImageFileRequired)]

@@ -44,6 +44,13 @@
             return this.View(model);
         }
 
+        public IActionResult CurrentBook(string id)
+        {
+            BookViewModel bookViewModel = this.booksService.GetBookWithId(id);
+
+            return this.View(bookViewModel);
+        }
+
         [Authorize]
         public IActionResult Upload()
         {

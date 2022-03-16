@@ -9,5 +9,7 @@
         IEnumerable<T> GetBookCategories<T>();
 
         BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
+
+        BookViewModel GetBookWithId(string id);
     }
 }
