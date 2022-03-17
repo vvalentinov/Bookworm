@@ -1,0 +1,80 @@
+﻿@model IEnumerable<QuoteViewModel>
+
+@{
+    this.ViewData["Title"] = "All Quotes";
+    int index = 1;
+}
+
+<div class="text-center col-8 textContainer animate__animated animate__zoomIn">
+    <h1 class="text-center">@this.ViewData["Title"]</h1>
+</div>
+
+
+<table class="table table-bordered animate__animated animate__zoomIn">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Quote</th>
+            <th scope="col">Author</th>
+            <th scope="col">Book</th>
+            <th scope="col">Movie</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quote in Model)
+        {
+            <tr>
+                <th scope="row">
+                    @index
+                </th>
+                <td style="font-style: italic;">@quote.Content</td>
+                @if (quote.AuthorName != null)
+                {
+                    <td>@quote.AuthorName</td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                @if (quote.BookTitle != null)
+                {
+                    <td><strong>@quote.BookTitle</strong></td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                @if (quote.MovieTitle != null)
+                {
+                    <td>@quote.MovieTitle</td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>
+
+<button style="display:none" id="upButton" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+
+
+@section Scripts{
+<script>
+    const myBtn = document.querySelector("#upButton");
+
+    myBtn.addEventListener("click", function () {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+    });
+
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 1000) {
+            $('#upButton').fadeIn();
+        } else {
+            $('#upButton').fadeOut();
+        }
+    });
+</script>
+}

@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -36,6 +37,15 @@
 
             await this.quoteRepository.AddAsync(quote);
             await this.quoteRepository.SaveChangesAsync();
+        }
+
+        public IEnumerable<T> GetAllQuotes<T>()
+        {
+            return this.quoteRepository
+              .AllAsNoTracking()
+              .OrderBy(x => x.CreatedOn)
+              .To<T>()
+              .ToList();
         }
 
         public T GetRandomQuote<T>()

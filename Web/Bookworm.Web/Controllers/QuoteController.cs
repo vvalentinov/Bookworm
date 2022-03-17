@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Web.Controllers
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -19,6 +20,12 @@
         {
             this.userManager = userManager;
             this.quotesService = quotesService;
+        }
+
+        public IActionResult All()
+        {
+            IEnumerable<QuoteViewModel> quotes = this.quotesService.GetAllQuotes<QuoteViewModel>();
+            return this.View(quotes);
         }
 
         [Authorize]

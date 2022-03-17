@@ -61,17 +61,10 @@
 }
 
 .welcomeSection {
-    margin-bottom:5rem;
+    margin-bottom: 5rem;
 }
 
-    .welcomeSection .welcomeText {
-        border: solid #34495E;
-        border-radius: 25px;
-        margin: auto;
-        margin-bottom: 3rem;
-    }
-
-.categoryName {
+.textContainer {
     border: solid #34495E;
     border-radius: 25px;
     margin: auto;
@@ -116,6 +109,10 @@ a {
         color: #15967d;
     }
 
+.icon {
+    margin-left: 1rem;
+}
+
 .footer {
     display: grid;
     height: 4rem;
@@ -140,3 +137,34 @@ body {
 html {
     height: 100%;
 }
+
+.table {
+    background-color: #34495E;
+    color: white;
+}
+
+td:hover {
+    background: #1abc9c;
+}
+
+#upButton {
+    position: fixed;
+    right: 2rem;
+    bottom: 5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+    #upButton:hover {
+        color: #34495E;
+    }
+
+    #upButton:active {
+        background-color: #1abc9c;
+    }
