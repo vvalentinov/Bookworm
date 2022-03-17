@@ -1,5 +1,7 @@
 ﻿namespace Bookworm.Web.ViewModels.Books
 {
+    using System.Collections.Generic;
+
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
 
@@ -22,5 +24,11 @@
         public string ImageUrl { get; set; }
 
         public string FileUrl { get; set; }
+
+        public string CategoryName { get; set; }
+
+        public IEnumerable<string> Authors { get; set; }
+
+        public IEnumerable<string> Publishers { get; set; }
     }
 }

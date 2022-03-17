@@ -19,6 +19,7 @@
         private readonly IBooksService booksService;
         private readonly ICategoriesService categoriesService;
         private readonly IUploadBookService uploadBookService;
+        private readonly IDownloadBookService downloadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
 
@@ -26,12 +27,14 @@
             IBooksService booksService,
             ICategoriesService categoriesService,
             IUploadBookService uploadBookService,
+            IDownloadBookService downloadBookService,
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService)
         {
             this.booksService = booksService;
             this.categoriesService = categoriesService;
             this.uploadBookService = uploadBookService;
+            this.downloadBookService = downloadBookService;
             this.userManager = userManager;
             this.languagesService = languagesService;
         }
@@ -99,6 +102,13 @@
 
             this.TempData[MessageConstant.SuccessMessage] = "Successfully added book!";
             return this.RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Download(string id)
+        {
+            var result = await this.downloadBookService.DownloadAsync(id);
+            return this.File(result.Item1, result.Item2, result.Item3);
         }
     }
 }

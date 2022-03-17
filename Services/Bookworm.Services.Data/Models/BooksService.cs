@@ -14,15 +14,27 @@
         private readonly IRepository<Category> categoriesRepository;
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IRepository<Language> languagesRepository;
+        private readonly IRepository<AuthorBook> authorsBooksRepository;
+        private readonly IDeletableEntityRepository<Author> authorRepository;
+        private readonly IRepository<PublisherBook> publishersBooksRepository;
+        private readonly IDeletableEntityRepository<Publisher> publishersRepository;
 
         public BooksService(
             IRepository<Category> categoriesRepository,
             IDeletableEntityRepository<Book> bookRepository,
-            IRepository<Language> languagesRepository)
+            IRepository<Language> languagesRepository,
+            IRepository<AuthorBook> authorsBooksRepository,
+            IDeletableEntityRepository<Author> authorRepository,
+            IRepository<PublisherBook> publishersBooksRepository,
+            IDeletableEntityRepository<Publisher> publishersRepository)
         {
             this.categoriesRepository = categoriesRepository;
             this.bookRepository = bookRepository;
             this.languagesRepository = languagesRepository;
+            this.authorsBooksRepository = authorsBooksRepository;
+            this.authorRepository = authorRepository;
+            this.publishersBooksRepository = publishersBooksRepository;
+            this.publishersRepository = publishersRepository;
         }
 
         public IEnumerable<T> GetBookCategories<T>()
@@ -37,7 +49,40 @@
         public BookViewModel GetBookWithId(string id)
         {
             Book book = this.bookRepository.AllAsNoTracking().First(x => x.Id == id);
-            string language = this.languagesRepository.AllAsNoTracking().First(l => l.Id == book.LanguageId).Name;
+
+            string category = this.categoriesRepository
+                .AllAsNoTracking()
+                .First(c => c.Id == book.CategoryId).Name;
+
+            List<int> authorsIds = this.authorsBooksRepository
+                .AllAsNoTracking()
+                .Where(x => x.BookId == id)
+                .Select(x => x.AuthorId)
+                .ToList();
+
+            List<int> publisherIds = this.publishersBooksRepository
+                .AllAsNoTracking()
+                .Where(x => x.BookId == id)
+                .Select(x => x.PublisherId)
+                .ToList();
+
+            List<string> authors = this.authorRepository
+                .AllAsNoTracking()
+                .Where(x => authorsIds.Contains(x.Id))
+                .Select(x => x.Name)
+                .ToList();
+
+            List<string> publishers = this.publishersRepository
+                .AllAsNoTracking()
+                .Where(x => publisherIds.Contains(x.Id))
+                .Select(x => x.Name)
+                .ToList();
+
+            string language = this.languagesRepository
+                .AllAsNoTracking()
+                .First(l => l.Id == book.LanguageId)
+                .Name;
+
             return this.bookRepository
               .AllAsNoTracking()
               .Where(x => x.Id == id)
@@ -52,6 +97,9 @@
                   Language = language,
                   PagesCount = x.PagesCount,
                   Year = x.Year,
+                  Authors = authors,
+                  Publishers = publishers,
+                  CategoryName = category,
               }).FirstOrDefault();
         }
 

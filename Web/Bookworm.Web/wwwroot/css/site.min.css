@@ -71,6 +71,13 @@
         margin-bottom: 3rem;
     }
 
+.categoryName {
+    border: solid #34495E;
+    border-radius: 25px;
+    margin: auto;
+    margin-bottom: 3rem;
+}
+
 
 .blockquote-card .card-header {
     color: white;
@@ -90,8 +97,13 @@
     margin-bottom: 4rem;
 }
 
+.bookSection .card .card-header {
+    color: white;
+    background-color: #34495E;
+}
+
 @media(min-width:768px) {
-    html {
+    html: {
         font-size: 16px
     }
 }
