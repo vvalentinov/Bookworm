@@ -19,24 +19,24 @@
         private readonly IBooksService booksService;
         private readonly ICategoriesService categoriesService;
         private readonly IUploadBookService uploadBookService;
-        private readonly IDownloadBookService downloadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
+        private readonly IBlobService blobService;
 
         public BookController(
             IBooksService booksService,
             ICategoriesService categoriesService,
             IUploadBookService uploadBookService,
-            IDownloadBookService downloadBookService,
             UserManager<ApplicationUser> userManager,
-            ILanguagesService languagesService)
+            ILanguagesService languagesService,
+            IBlobService blobService)
         {
             this.booksService = booksService;
             this.categoriesService = categoriesService;
             this.uploadBookService = uploadBookService;
-            this.downloadBookService = downloadBookService;
             this.userManager = userManager;
             this.languagesService = languagesService;
+            this.blobService = blobService;
         }
 
         public IActionResult All(string categoryName, int page = 1)
@@ -107,7 +107,7 @@
         [Authorize]
         public async Task<IActionResult> Download(string id)
         {
-            var result = await this.downloadBookService.DownloadAsync(id);
+            var result = await this.blobService.DownloadBlobAsync(id);
             return this.File(result.Item1, result.Item2, result.Item3);
         }
     }

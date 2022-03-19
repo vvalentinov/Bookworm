@@ -2,6 +2,7 @@
 {
     using System.Reflection;
 
+    using Azure.Storage.Blobs;
     using Bookworm.Data;
     using Bookworm.Data.Common;
     using Bookworm.Data.Common.Repositories;
@@ -64,6 +65,8 @@
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
+            services.AddSingleton(x => new BlobServiceClient(this.configuration.GetConnectionString("StorageConnection")));
+
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
@@ -72,7 +75,7 @@
             services.AddTransient<IBooksService, BooksService>();
             services.AddTransient<IUploadBookService, UploadBookService>();
             services.AddTransient<ILanguagesService, LanguagesService>();
-            services.AddTransient<IDownloadBookService, DownloadBookService>();
+            services.AddTransient<IBlobService, BlobService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

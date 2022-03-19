@@ -11,8 +11,6 @@
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Blob;
 
     using static Bookworm.Common.DataConstants;
 
@@ -22,17 +20,20 @@
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Publisher> publisherRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
+        private readonly IBlobService blobService;
 
         public UploadBookService(
             IConfiguration configuration,
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Publisher> publisherRepository,
-            IDeletableEntityRepository<Author> authorRepository)
+            IDeletableEntityRepository<Author> authorRepository,
+            IBlobService blobService)
         {
             this.configuration = configuration;
             this.booksRepository = booksRepository;
             this.publisherRepository = publisherRepository;
             this.authorRepository = authorRepository;
+            this.blobService = blobService;
         }
 
         public async Task UploadBookAsync(
@@ -85,26 +86,20 @@
                 }
             }
 
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(this.configuration.GetConnectionString("StorageConnection"));
-            CloudBlobClient blobClient = cloudStorageAccount.CreateCloudBlobClient();
-            CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(this.configuration.GetConnectionString("ContainerName"));
-
-            CloudBlockBlob bookFileBlob = cloudBlobContainer.GetBlockBlobReference(bookFile.FileName);
-
-            if (await bookFileBlob.ExistsAsync())
+            if (await this.blobService.CheckIfBlobExistsAsync(bookFile.FileName))
             {
                 throw new Exception("Please, try changing the PDF file name!");
             }
-
-            CloudBlockBlob imageFileBlob = cloudBlobContainer.GetBlockBlobReference(imageFile.FileName);
-
-            if (await imageFileBlob.ExistsAsync())
+            else if (await this.blobService.CheckIfBlobExistsAsync(imageFile.FileName))
             {
                 throw new Exception("Please, try changing the image file name!");
             }
 
-            string bookFileBlobUrl = bookFileBlob.Uri.AbsoluteUri;
-            string imageFileBlobUrl = imageFileBlob.Uri.AbsoluteUri;
+            await this.blobService.UploadBlobAsync(bookFile);
+            await this.blobService.UploadBlobAsync(imageFile);
+
+            string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri(bookFile.FileName);
+            string imageFileBlobUrl = this.blobService.GetBlobAbsoluteUri(imageFile.FileName);
 
             Book book = new Book()
             {
@@ -151,12 +146,6 @@
 
             book.AuthorsBooks = bookAuthors;
             this.booksRepository.Update(book);
-            bookFileBlob.Properties.ContentType = bookFile.ContentType;
-            imageFileBlob.Properties.ContentType = imageFile.ContentType;
-
-            await bookFileBlob.UploadFromStreamAsync(bookFile.OpenReadStream());
-            await imageFileBlob.UploadFromStreamAsync(imageFile.OpenReadStream());
-
             await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
         }
