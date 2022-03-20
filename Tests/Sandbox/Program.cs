@@ -10,7 +10,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
-    using Bookworm.Data.Seeding;
     using Bookworm.Services.Data;
     using Bookworm.Services.Messaging;
 

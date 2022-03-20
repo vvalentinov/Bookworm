@@ -59,13 +59,12 @@
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton(this.configuration);
+            services.AddSingleton(x => new BlobServiceClient(this.configuration.GetConnectionString("StorageConnection")));
 
             // Data repositories
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-
-            services.AddSingleton(x => new BlobServiceClient(this.configuration.GetConnectionString("StorageConnection")));
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();

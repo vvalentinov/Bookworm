@@ -32,8 +32,6 @@
 
         public DbSet<Publisher> Publishers { get; set; }
 
-        public DbSet<PublisherBook> PublishersBooks { get; set; }
-
         public DbSet<Language> Languages { get; set; }
 
         public DbSet<Category> Categories { get; set; }

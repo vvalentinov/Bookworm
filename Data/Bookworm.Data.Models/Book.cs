@@ -16,7 +16,6 @@
         {
             this.Id = Guid.NewGuid().ToString();
             this.AuthorsBooks = new HashSet<AuthorBook>();
-            this.PublishersBooks = new HashSet<PublisherBook>();
         }
 
         [Required]
@@ -55,13 +54,16 @@
 
         public virtual Language Language { get; set; }
 
+        [ForeignKey(nameof(Publisher))]
+        public int PublisherId { get; set; }
+
+        public virtual Publisher Publisher { get; set; }
+
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<AuthorBook> AuthorsBooks { get; set; }
-
-        public virtual ICollection<PublisherBook> PublishersBooks { get; set; }
     }
 }

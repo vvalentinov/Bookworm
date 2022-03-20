@@ -16,7 +16,6 @@
         private readonly IRepository<Language> languagesRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
-        private readonly IRepository<PublisherBook> publishersBooksRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
 
         public BooksService(
@@ -25,7 +24,6 @@
             IRepository<Language> languagesRepository,
             IRepository<AuthorBook> authorsBooksRepository,
             IDeletableEntityRepository<Author> authorRepository,
-            IRepository<PublisherBook> publishersBooksRepository,
             IDeletableEntityRepository<Publisher> publishersRepository)
         {
             this.categoriesRepository = categoriesRepository;
@@ -33,7 +31,6 @@
             this.languagesRepository = languagesRepository;
             this.authorsBooksRepository = authorsBooksRepository;
             this.authorRepository = authorRepository;
-            this.publishersBooksRepository = publishersBooksRepository;
             this.publishersRepository = publishersRepository;
         }
 
@@ -60,12 +57,11 @@
                 .Select(x => x.AuthorId)
                 .ToList();
 
-            List<int> publisherIds = this.publishersBooksRepository
-                .AllAsNoTracking()
-                .Where(x => x.BookId == id)
-                .Select(x => x.PublisherId)
-                .ToList();
-
+            // List<int> publisherIds = this.publishersBooksRepository
+            //    .AllAsNoTracking()
+            //    .Where(x => x.BookId == id)
+            //    .Select(x => x.PublisherId)
+            //    .ToList();
             List<string> authors = this.authorRepository
                 .AllAsNoTracking()
                 .Where(x => authorsIds.Contains(x.Id))
@@ -74,7 +70,7 @@
 
             List<string> publishers = this.publishersRepository
                 .AllAsNoTracking()
-                .Where(x => publisherIds.Contains(x.Id))
+                .Where(x => x.Books.Contains(book))
                 .Select(x => x.Name)
                 .ToList();
 

@@ -123,11 +123,12 @@
                 if (bookPublisher == null)
                 {
                     bookPublisher = new Publisher() { Name = publisher };
+                    bookPublisher.Books.Add(book);
                     await this.publisherRepository.AddAsync(bookPublisher);
                     await this.publisherRepository.SaveChangesAsync();
                 }
 
-                book.PublishersBooks.Add(new PublisherBook() { BookId = book.Id, PublisherId = bookPublisher.Id });
+                book.Publisher = bookPublisher;
                 this.booksRepository.Update(book);
             }
 

@@ -9,12 +9,12 @@
     {
         public Publisher()
         {
-            this.Books = new HashSet<PublisherBook>();
+            this.Books = new HashSet<Book>();
         }
 
         [Required]
         public string Name { get; set; }
 
-        public virtual ICollection<PublisherBook> Books { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

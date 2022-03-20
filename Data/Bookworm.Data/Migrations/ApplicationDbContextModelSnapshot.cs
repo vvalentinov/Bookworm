@@ -239,6 +239,9 @@ namespace Bookworm.Data.Migrations
                     b.Property<int>("PagesCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -257,6 +260,8 @@ namespace Bookworm.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("LanguageId");
+
+                    b.HasIndex("PublisherId");
 
                     b.HasIndex("UserId");
 
@@ -342,29 +347,6 @@ namespace Bookworm.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Publishers");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.PublisherBook", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("BookId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("PublisherId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("PublisherId");
-
-                    b.ToTable("PublishersBooks");
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Quote", b =>
@@ -576,6 +558,12 @@ namespace Bookworm.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Bookworm.Data.Models.Publisher", "Publisher")
+                        .WithMany("Books")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Bookworm.Data.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -584,24 +572,9 @@ namespace Bookworm.Data.Migrations
 
                     b.Navigation("Language");
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.PublisherBook", b =>
-                {
-                    b.HasOne("Bookworm.Data.Models.Book", "Book")
-                        .WithMany("PublishersBooks")
-                        .HasForeignKey("BookId");
-
-                    b.HasOne("Bookworm.Data.Models.Publisher", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
                     b.Navigation("Publisher");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Quote", b =>
@@ -683,8 +656,6 @@ namespace Bookworm.Data.Migrations
             modelBuilder.Entity("Bookworm.Data.Models.Book", b =>
                 {
                     b.Navigation("AuthorsBooks");
-
-                    b.Navigation("PublishersBooks");
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Category", b =>
