@@ -9,7 +9,7 @@
     <div class="text-center textContainer col-8">
         <h1 class="display-4 ">Welcome to @GlobalConstants.SystemName!<i class="fas fa-hand-sparkles"></i></h1>
     </div>
-    @*<div class="card border-dark blockquote-card">
+    <div class="card border-dark blockquote-card">
         <div class="card-header">
             Quote
         </div>
@@ -36,7 +36,7 @@
                 }
             </blockquote>
         </div>
-    </div>*@
+    </div>
 </section>
 
 @if (this.User.Identity.IsAuthenticated)
@@ -44,13 +44,13 @@
     <section class="homeButtonsSection">
         <div class="row text-center">
             <div class="m-4 col-md-6">
-                <a asp-controller="Book" asp-action="Upload" class="btn btn-lg btn-outline-dark">
+                <a asp-controller="Book" asp-action="Upload" class="btn btn-lg">
                     Upload Book<i class="fas fa-upload icon"></i>
                 </a>
             </div>
             <div class="m-4">
-                <a asp-controller="Quote" asp-action="Add" class="btn btn-lg btn-outline-dark">
-                    Add Quote
+                <a asp-controller="Quote" asp-action="Add" class="btn btn-lg">
+                    Upload Quote<i class="fas fa-upload icon"></i>
                 </a>
             </div>
         </div>

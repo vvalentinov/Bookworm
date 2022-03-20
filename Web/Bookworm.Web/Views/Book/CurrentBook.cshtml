@@ -12,7 +12,7 @@
                     <div class="col-md-4">
                         <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
                         <div class="m-4 text-center">
-                            <a asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id" class="btn btn-outline-dark flex-shrink-0 ">
+                            <a asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id" class="btn flex-shrink-0 ">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
                         </div>
@@ -29,16 +29,16 @@
                         }
                         <div class="fs-5 mb-5">
                             <h3><i>Category:</i> @Model.CategoryName</h3>
+                            @if (Model.Publisher != null)
+                            {
+                                <h3><i>Publisher:</i> @Model.Publisher</h3>
+                            }
                             <h3><i>Pages:</i> @Model.PagesCount</h3>
                             <h3><i>Language:</i> @Model.Language</h3>
                             <h3><i>Downloads:</i> @Model.DownloadsCount</h3>
                             @foreach (var author in Model.Authors)
                             {
                                 <h3><i>Author:</i> @author</h3>
-                            }
-                            @foreach (var publisher in Model.Publishers)
-                            {
-                                <h3><i>Publisher:</i> @publisher</h3>
                             }
                         </div>
                     </div>

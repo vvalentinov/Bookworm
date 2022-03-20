@@ -1,11 +1,11 @@
 ﻿@model QuoteViewModel
 
 @{
-    ViewData["Title"] = "Add Quote";
+    ViewData["Title"] = "Upload Quote";
 }
-
-<h1 class="text-center">@this.ViewData["Title"]</h1>
-
+<div class="text-center textContainer col-4">
+    <h1 class="text-center">@this.ViewData["Title"]<i class="fas fa-pen icon"></i></h1>
+</div>
 <form method="post" class="col-lg-8 offset-lg-2">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group justify-content-center">
@@ -29,6 +29,6 @@
         <span asp-validation-for="MovieTitle" class="small text-danger"></span>
     </div>
     <div class="text-center">
-        <button type="submit" class="btn text-center form-button"><strong>Add Quote</strong></button>
+        <button type="submit" class="btn text-center form-button"><strong>Upload Quote<i class="fas fa-upload icon"></i></strong></button>
     </div>
 </form>

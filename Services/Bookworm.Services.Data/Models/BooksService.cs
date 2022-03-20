@@ -45,7 +45,7 @@
 
         public BookViewModel GetBookWithId(string id)
         {
-            Book book = this.bookRepository.AllAsNoTracking().First(x => x.Id == id);
+            Book book = this.bookRepository.All().First(x => x.Id == id);
 
             string category = this.categoriesRepository
                 .AllAsNoTracking()
@@ -57,22 +57,19 @@
                 .Select(x => x.AuthorId)
                 .ToList();
 
-            // List<int> publisherIds = this.publishersBooksRepository
-            //    .AllAsNoTracking()
-            //    .Where(x => x.BookId == id)
-            //    .Select(x => x.PublisherId)
-            //    .ToList();
             List<string> authors = this.authorRepository
                 .AllAsNoTracking()
                 .Where(x => authorsIds.Contains(x.Id))
                 .Select(x => x.Name)
                 .ToList();
 
-            List<string> publishers = this.publishersRepository
-                .AllAsNoTracking()
-                .Where(x => x.Books.Contains(book))
-                .Select(x => x.Name)
-                .ToList();
+            string publisher = this.publishersRepository.AllAsNoTracking().First(x => x.Id == book.PublisherId).Name;
+
+            //List<string> publishers = this.publishersRepository
+            //    .AllAsNoTracking()
+            //    .Where(x => x.Books.Contains(book))
+            //    .Select(x => x.Name)
+            //    .ToList();
 
             string language = this.languagesRepository
                 .AllAsNoTracking()
@@ -94,7 +91,7 @@
                   PagesCount = x.PagesCount,
                   Year = x.Year,
                   Authors = authors,
-                  Publishers = publishers,
+                  Publisher = publisher,
                   CategoryName = category,
               }).FirstOrDefault();
         }

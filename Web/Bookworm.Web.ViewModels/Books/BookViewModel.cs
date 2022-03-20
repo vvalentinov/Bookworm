@@ -13,6 +13,8 @@
 
         public string Description { get; set; }
 
+        public string Publisher { get; set; }
+
         public int Year { get; set; }
 
         public int DownloadsCount { get; set; }
@@ -28,7 +30,5 @@
         public string CategoryName { get; set; }
 
         public IEnumerable<string> Authors { get; set; }
-
-        public IEnumerable<string> Publishers { get; set; }
     }
 }

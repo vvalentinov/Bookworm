@@ -124,12 +124,11 @@
                 {
                     bookPublisher = new Publisher() { Name = publisher };
                     bookPublisher.Books.Add(book);
-                    await this.publisherRepository.AddAsync(bookPublisher);
-                    await this.publisherRepository.SaveChangesAsync();
+                    //await this.publisherRepository.AddAsync(bookPublisher);
+                    //await this.publisherRepository.SaveChangesAsync();
                 }
 
                 book.Publisher = bookPublisher;
-                this.booksRepository.Update(book);
             }
 
             List<AuthorBook> bookAuthors = new List<AuthorBook>();
@@ -139,6 +138,8 @@
                 if (bookAauthor == null)
                 {
                     bookAauthor = new Author() { Name = author };
+                    // await this.authorRepository.AddAsync(bookAauthor);
+                    // await this.authorRepository.SaveChangesAsync();
                 }
 
                 AuthorBook authorBook = new AuthorBook() { Book = book, Author = bookAauthor };
@@ -146,7 +147,6 @@
             }
 
             book.AuthorsBooks = bookAuthors;
-            this.booksRepository.Update(book);
             await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
         }
