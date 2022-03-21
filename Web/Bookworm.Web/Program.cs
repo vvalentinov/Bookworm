@@ -72,6 +72,13 @@ builder.Services.AddTransient<ILanguagesService, LanguagesService>();
 
 builder.Services.AddTransient<IBlobService, BlobService>();
 
+builder.Services.AddTransient<IVotesService, VotesService>();
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+});
+
 WebApplication app = builder.Build();
 
 AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);

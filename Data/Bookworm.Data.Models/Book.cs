@@ -16,6 +16,7 @@
         {
             this.Id = Guid.NewGuid().ToString();
             this.AuthorsBooks = new HashSet<AuthorBook>();
+            this.Votes = new HashSet<Vote>();
         }
 
         [Required]
@@ -65,5 +66,7 @@
         public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<AuthorBook> AuthorsBooks { get; set; }
+
+        public virtual ICollection<Vote> Votes { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-.navbar {
+﻿.navbar {
     overflow: hidden;
     position: fixed;
     width: 100%;
@@ -166,4 +166,59 @@ td:hover {
 
     #upButton:active {
         background-color: #1abc9c;
+    }
+
+* {
+    box-sizing: border-box;
+}
+
+.container-wrapper {
+    background-color: #EDF0F9;
+}
+
+.starContainer {
+    height: 20vh;
+}
+
+.rating-wrapper {
+    align-self: center;
+    box-shadow: 7px 7px 25px rgba(198, 206, 237, .7), -7px -7px 35px rgba(255, 255, 255, .7), inset 0px 0px 4px rgba(255, 255, 255, .9), inset 7px 7px 15px rgba(198, 206, 237, .8);
+    border-radius: 5rem;
+    display: inline-flex;
+    direction: rtl !important;
+    padding: 1.5rem 2.5rem;
+    margin-left: auto;
+}
+
+.star-rating {
+    color: #E1E6F6;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 3rem;
+    padding: 1rem .6rem;
+    transition: color 0.5s;
+}
+
+svg {
+    -webkit-text-fill-color: transparent;
+    -webkit-filter: drop-shadow (4px 1px 6px rgba(198, 206, 237, 1));
+    filter: drop-shadow(5px 1px 3px rgba(198, 206, 237, 1));
+}
+
+.starInput {
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+    .star-rating:hover,
+    .star-rating:hover ~ label,
+    .starInput:checked ~ label {
+        color: #34AC9E;
+    }
+
+    .star-rating:hover,
+    .star-rating:hover ~ label,
+    .starInput:checked ~ label {
+        color: #34AC9E;
     }

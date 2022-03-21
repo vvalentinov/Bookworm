@@ -40,6 +40,18 @@
                             {
                                 <h3><i>Author:</i> @author</h3>
                             }
+                            <h3><span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span></span></h3>
+                            <h3>Votes Count: @Model.VotesCount</h3>
+                        </div>
+
+                        <div class="rating-wrapper">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <input class="starInput" type="radio" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                <label for="@i-star-rating" class="star-rating">
+                                    <i class="fas fa-star d-inline-block"></i>
+                                </label>
+                            }
                         </div>
                     </div>
                 </div>
@@ -53,3 +65,28 @@
         </div>
     </div>
 </section>
+<form method="post" id="antiForgeryForm"></form>
+@section Scripts{
+<script>
+        $("[data-vote]").each(function(el) {
+            $(this).click(function () {
+                var value = $(this).attr("data-vote");
+                var bookId = '@Model.Id';
+                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
+                var data = { bookId: bookId, value: value };
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Vote",
+                    data: JSON.stringify(data),
+                    headers: {
+                        'X-CSRF-TOKEN': antiForgeryToken
+                    },
+                    success: function (data) {
+                        $('#averageVoteValue').html(data.averageVote.toFixed(1));
+                    },
+                    contentType: 'application/json',
+                });
+            })
+    });
+</script>
+}
