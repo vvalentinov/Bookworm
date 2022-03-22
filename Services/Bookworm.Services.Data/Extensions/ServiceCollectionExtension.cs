@@ -3,16 +3,12 @@
     using Bookworm.Data;
     using Bookworm.Data.Common;
     using Bookworm.Data.Common.Repositories;
-    using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Models;
     using Bookworm.Services.Messaging;
     using global::Azure.Storage.Blobs;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
