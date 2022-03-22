@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Bookworm.Data\Bookworm.Data.csproj" />
-    <ProjectReference Include="..\..\Services\Bookworm.Services.Data\Bookworm.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Services\Bookworm.Services.Data\Bookworm.Services.csproj" />
   </ItemGroup>
 
 </Project>
