@@ -21,6 +21,8 @@
 
         public int VotesCount { get; set; }
 
+        public int? UserVote { get; set; }
+
         public int DownloadsCount { get; set; }
 
         public int PagesCount { get; set; }

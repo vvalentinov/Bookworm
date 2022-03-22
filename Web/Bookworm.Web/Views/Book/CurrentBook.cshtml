@@ -2,6 +2,7 @@
 
 @{
     this.ViewData["Title"] = Model.Title;
+    int? value = Model.UserVote;
 }
 
 <section class="bookSection">
@@ -45,12 +46,99 @@
                         </div>
 
                         <div class="rating-wrapper">
-                            @for (int i = 5; i >= 1; i--)
+                            @if (value == 1)
                             {
-                                <input class="starInput" type="radio" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                <label for="@i-star-rating" class="star-rating">
-                                    <i class="fas fa-star d-inline-block"></i>
-                                </label>
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    @if (i == 1)
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+                                }
+                            }
+                            else if (value == 2)
+                            {
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    @if (i == 1 || i == 2)
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+
+                                }
+                            }
+                            else if (value == 3)
+                            {
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    @if (i == 1 || i == 2 || i == 3)
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+
+                                }
+                            }
+                            else if (value == 4)
+                            {
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    @if (i == 1 || i == 2 || i == 3 || i == 4)
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                        <label for="@i-star-rating" class="star-rating">
+                                            <i class="fas fa-star d-inline-block"></i>
+                                        </label>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = 5; i >= 1; i--)
+                                {
+
+                                    <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                    <label for="@i-star-rating" class="star-rating">
+                                        <i class="fas fa-star d-inline-block"></i>
+                                    </label>
+                                }
                             }
                         </div>
                     </div>
@@ -68,25 +156,57 @@
 <form method="post" id="antiForgeryForm"></form>
 @section Scripts{
 <script>
-        $("[data-vote]").each(function(el) {
-            $(this).click(function () {
-                var value = $(this).attr("data-vote");
-                var bookId = '@Model.Id';
-                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
-                var data = { bookId: bookId, value: value };
-                $.ajax({
-                    type: "POST",
-                    url: "/api/Vote",
-                    data: JSON.stringify(data),
-                    headers: {
-                        'X-CSRF-TOKEN': antiForgeryToken
-                    },
-                    success: function (data) {
-                        $('#averageVoteValue').html(data.averageVote.toFixed(1));
-                    },
-                    contentType: 'application/json',
-                });
-            })
-    });
+            $("[data-vote]").each(function(el) {
+                $(this).click(function () {
+                    var value = $(this).attr("data-vote");
+                    var bookId = '@Model.Id';
+                    var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
+                    var data = { bookId: bookId, value: value };
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/Vote",
+                        data: JSON.stringify(data),
+                        headers: {
+                            'X-CSRF-TOKEN': antiForgeryToken
+                        },
+                        success: function (data) {
+                            $('#averageVoteValue').html(data.averageVote.toFixed(1));
+                            var userVote = data.userVote;
+                            if(userVote == 1){
+                                $('#1-star-rating').prop('checked', true);
+                                $('#2-star-rating').prop('checked', false);
+                                $('#3-star-rating').prop('checked', false);
+                                $('#4-star-rating').prop('checked', false);
+                                $('#5-star-rating').prop('checked', false);
+                            }else if(userVote == 2){
+                                $('#1-star-rating').prop('checked', true);
+                                $('#2-star-rating').prop('checked', true);
+                                $('#3-star-rating').prop('checked', false);
+                                $('#4-star-rating').prop('checked', false);
+                                $('#5-star-rating').prop('checked', false);
+                            }else if(userVote == 3){
+                                $('#1-star-rating').prop('checked', true);
+                                $('#2-star-rating').prop('checked', true);
+                                $('#3-star-rating').prop('checked', true);
+                                $('#4-star-rating').prop('checked', false);
+                                $('#5-star-rating').prop('checked', false);
+                            }else if(userVote == 4){
+                                $('#1-star-rating').prop('checked', true);
+                                $('#2-star-rating').prop('checked', true);
+                                $('#3-star-rating').prop('checked', true);
+                                $('#4-star-rating').prop('checked', true);
+                                $('#5-star-rating').prop('checked', false);
+                            }else{
+                                $('#1-star-rating').prop('checked', true);
+                                $('#2-star-rating').prop('checked', true);
+                                $('#3-star-rating').prop('checked', true);
+                                $('#4-star-rating').prop('checked', true);
+                                $('#5-star-rating').prop('checked', true);
+                            }
+                        },
+                        contentType: 'application/json',
+                    });
+                })
+        });
 </script>
 }

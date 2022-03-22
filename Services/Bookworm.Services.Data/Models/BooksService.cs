@@ -46,7 +46,7 @@
                 .ToList();
         }
 
-        public BookViewModel GetBookWithId(string bookId)
+        public BookViewModel GetBookWithId(string bookId, string userId)
         {
             Book book = this.bookRepository.All().First(x => x.Id == bookId);
 
@@ -75,6 +75,7 @@
 
             double votesAvg = 0;
             int votesCount = this.votesRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
+
             if (votesCount > 0)
             {
                 votesAvg = this.votesRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
@@ -99,6 +100,7 @@
                   CategoryName = category,
                   VotesAvg = votesAvg,
                   VotesCount = votesCount,
+                  UserVote = this.votesRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
               }).FirstOrDefault();
         }
 

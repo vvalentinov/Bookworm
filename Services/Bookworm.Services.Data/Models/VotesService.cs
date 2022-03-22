@@ -25,6 +25,11 @@
                 .AverageAsync(x => x.Value);
         }
 
+        public int? GetUserVote(string bookId, string userId)
+        {
+            return this.votesRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value;
+        }
+
         public async Task SetVoteAsync(
             string bookId,
             string userId,

@@ -216,9 +216,3 @@ svg {
     .starInput:checked ~ label {
         color: #34AC9E;
     }
-
-    .star-rating:hover,
-    .star-rating:hover ~ label,
-    .starInput:checked ~ label {
-        color: #34AC9E;
-    }

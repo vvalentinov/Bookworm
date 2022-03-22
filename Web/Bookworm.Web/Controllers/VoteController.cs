@@ -27,8 +27,9 @@
             await this.votesService.SetVoteAsync(model.BookId, userId, model.Value);
 
             double avgVotes = await this.votesService.GetAverageVotesAsync(model.BookId);
+            int? userVote = this.votesService.GetUserVote(model.BookId, userId);
 
-            return new PostVoteResponseModel() { AverageVote = avgVotes };
+            return new PostVoteResponseModel() { AverageVote = avgVotes, UserVote = userVote };
         }
     }
 }

@@ -47,9 +47,10 @@
             return this.View(model);
         }
 
-        public IActionResult CurrentBook(string id)
+        public async Task<IActionResult> CurrentBook(string id)
         {
-            BookViewModel bookViewModel = this.booksService.GetBookWithId(id);
+            var user = await this.userManager.GetUserAsync(this.User);
+            BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user.Id);
 
             return this.View(bookViewModel);
         }
