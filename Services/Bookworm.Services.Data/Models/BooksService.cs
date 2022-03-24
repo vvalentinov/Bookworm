@@ -8,6 +8,7 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Comments;
 
     public class BooksService : IBooksService
     {
@@ -17,6 +18,7 @@
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
+        private readonly IDeletableEntityRepository<Comment> commentRepository;
         private readonly IRepository<Vote> votesRepository;
 
         public BooksService(
@@ -26,6 +28,7 @@
             IRepository<AuthorBook> authorsBooksRepository,
             IDeletableEntityRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
+            IDeletableEntityRepository<Comment> commentRepository,
             IRepository<Vote> votesRepository)
         {
             this.categoriesRepository = categoriesRepository;
@@ -34,6 +37,7 @@
             this.authorsBooksRepository = authorsBooksRepository;
             this.authorRepository = authorRepository;
             this.publishersRepository = publishersRepository;
+            this.commentRepository = commentRepository;
             this.votesRepository = votesRepository;
         }
 
@@ -46,7 +50,7 @@
                 .ToList();
         }
 
-        public BookViewModel GetBookWithId(string bookId, string userId)
+        public BookViewModel GetBookWithId(string bookId, string userId = null)
         {
             Book book = this.bookRepository.All().First(x => x.Id == bookId);
 
@@ -81,6 +85,12 @@
                 votesAvg = this.votesRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
             }
 
+            var comments = this.commentRepository
+                .All()
+                .Where(x => x.BookId == bookId)
+                .To<CommentViewModel>()
+                .ToList();
+
             return this.bookRepository
               .AllAsNoTracking()
               .Where(x => x.Id == bookId)
@@ -101,6 +111,7 @@
                   VotesAvg = votesAvg,
                   VotesCount = votesCount,
                   UserVote = this.votesRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
+                  Comments = comments,
               }).FirstOrDefault();
         }
 

@@ -17,6 +17,8 @@ namespace Bookworm.Data.Models
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.Votes = new HashSet<Vote>();
+            this.Books = new HashSet<Book>();
+            this.Comments = new HashSet<Comment>();
         }
 
         // Audit info
@@ -36,5 +38,9 @@ namespace Bookworm.Data.Models
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
         public virtual ICollection<Vote> Votes { get; set; }
+
+        public virtual ICollection<Book> Books { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

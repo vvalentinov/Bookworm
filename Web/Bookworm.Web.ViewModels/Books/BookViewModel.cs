@@ -4,6 +4,7 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Comments;
 
     public class BookViewModel : IMapFrom<Book>
     {
@@ -36,5 +37,7 @@
         public string CategoryName { get; set; }
 
         public IEnumerable<string> Authors { get; set; }
+
+        public IEnumerable<CommentViewModel> Comments { get; set; }
     }
 }

@@ -30,16 +30,16 @@
                 return this.RedirectToPage("/Index");
             }
 
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await this.userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return this.NotFound($"Unable to load user with ID '{userId}'.");
             }
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
-            return Page();
+            var result = await this.userManager.ConfirmEmailAsync(user, code);
+            this.StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            return this.Page();
         }
     }
 }

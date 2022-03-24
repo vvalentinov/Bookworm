@@ -38,6 +38,8 @@
 
             services.AddTransient<ILanguagesService, LanguagesService>();
 
+            services.AddTransient<ICommentsService, CommentsService>();
+
             services.AddTransient<IBlobService, BlobService>();
 
             services.AddTransient<IVotesService, VotesService>();

@@ -10,6 +10,6 @@
 
         BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
 
-        BookViewModel GetBookWithId(string bookId, string userId);
+        BookViewModel GetBookWithId(string bookId, string userId = null);
     }
 }

@@ -216,3 +216,36 @@ svg {
     .starInput:checked ~ label {
         color: #34AC9E;
     }
+
+.comment {
+    border: 1px solid rgba(16, 46, 46, 1);
+    background-color: #34495E;
+    float: left;
+    border-radius: 5px;
+    padding-left: 40px;
+    padding-right: 30px;
+    padding-top: 10px
+}
+
+    .comment h4,
+    .comment span,
+    .darker h4,
+    .darker span {
+        display: inline
+    }
+
+    .comment p,
+    .comment span,
+    .darker p,
+    .darker span {
+        color: white;
+    }
+
+.commentIcon {
+    color: #1abc9c;
+    margin-left:1rem;
+}
+
+.commentIconPerson {
+    color: #1abc9c;
+}

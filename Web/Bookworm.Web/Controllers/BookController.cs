@@ -50,7 +50,9 @@
         public async Task<IActionResult> CurrentBook(string id)
         {
             var user = await this.userManager.GetUserAsync(this.User);
-            BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user.Id);
+            BookViewModel bookViewModel = null;
+
+            bookViewModel = this.booksService.GetBookWithId(id, user == null ? null : user.Id);
 
             return this.View(bookViewModel);
         }

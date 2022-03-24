@@ -41,8 +41,7 @@
                             {
                                 <h3><i>Author:</i> @author</h3>
                             }
-                            <h3><span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span></span></h3>
-                            <h3>Votes Count: @Model.VotesCount</h3>
+                            <h3><span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: @Model.VotesCount)</span></span></h3>
                         </div>
 
                         <div class="rating-wrapper">
@@ -129,7 +128,7 @@
 
                                 }
                             }
-                            else
+                            else if (value == 5)
                             {
                                 @for (int i = 5; i >= 1; i--)
                                 {
@@ -140,7 +139,18 @@
                                     </label>
                                 }
                             }
+                            else
+                            {
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    <input class="starInput" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" readonly>
+                                    <label for="@i-star-rating" class="star-rating">
+                                        <i class="fas fa-star d-inline-block"></i>
+                                    </label>
+                                }
+                            }
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -153,60 +163,87 @@
         </div>
     </div>
 </section>
+<hr />
+
+
+
+<section>
+    <div class="text-center textContainer col-4">
+        <h1 class="text-center">Comments<i class="fas fa-comment"></i></h1>
+    </div>
+    <a asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle="@Model.Title" class="btn flex-shrink-0 ">Add Comment</a>
+    <div class="container">
+        @foreach (var comment in @Model.Comments)
+        {
+            <div class="row">
+                <div class="col-sm-5 col-md-12 col-12 pb-4">
+                    <div class="comment mt-4 text-justify float-left">
+                        <i class="commentIconPerson fas fa-user fa-lg"></i>
+                        <h4 class="text-light">@comment.UserUserName</h4>
+                        <span>- @comment.CreatedOn.Date.ToString("d")</span><i class="far fa-thumbs-up commentIcon fa-lg"></i> <br>
+                        <p>@Html.Raw(comment.SanitizedContent)</p>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
 <form method="post" id="antiForgeryForm"></form>
 @section Scripts{
 <script>
-            $("[data-vote]").each(function(el) {
-                $(this).click(function () {
-                    var value = $(this).attr("data-vote");
-                    var bookId = '@Model.Id';
-                    var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
-                    var data = { bookId: bookId, value: value };
-                    $.ajax({
-                        type: "POST",
-                        url: "/api/Vote",
-                        data: JSON.stringify(data),
-                        headers: {
-                            'X-CSRF-TOKEN': antiForgeryToken
-                        },
-                        success: function (data) {
-                            $('#averageVoteValue').html(data.averageVote.toFixed(1));
-                            var userVote = data.userVote;
-                            if(userVote == 1){
-                                $('#1-star-rating').prop('checked', true);
-                                $('#2-star-rating').prop('checked', false);
-                                $('#3-star-rating').prop('checked', false);
-                                $('#4-star-rating').prop('checked', false);
-                                $('#5-star-rating').prop('checked', false);
-                            }else if(userVote == 2){
-                                $('#1-star-rating').prop('checked', true);
-                                $('#2-star-rating').prop('checked', true);
-                                $('#3-star-rating').prop('checked', false);
-                                $('#4-star-rating').prop('checked', false);
-                                $('#5-star-rating').prop('checked', false);
-                            }else if(userVote == 3){
-                                $('#1-star-rating').prop('checked', true);
-                                $('#2-star-rating').prop('checked', true);
-                                $('#3-star-rating').prop('checked', true);
-                                $('#4-star-rating').prop('checked', false);
-                                $('#5-star-rating').prop('checked', false);
-                            }else if(userVote == 4){
-                                $('#1-star-rating').prop('checked', true);
-                                $('#2-star-rating').prop('checked', true);
-                                $('#3-star-rating').prop('checked', true);
-                                $('#4-star-rating').prop('checked', true);
-                                $('#5-star-rating').prop('checked', false);
-                            }else{
-                                $('#1-star-rating').prop('checked', true);
-                                $('#2-star-rating').prop('checked', true);
-                                $('#3-star-rating').prop('checked', true);
-                                $('#4-star-rating').prop('checked', true);
-                                $('#5-star-rating').prop('checked', true);
-                            }
-                        },
-                        contentType: 'application/json',
-                    });
-                })
-        });
+        $("[data-vote]").each(function(el) {
+            $(this).click(function () {
+                var value = $(this).attr("data-vote");
+                var bookId = '@Model.Id';
+                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
+                var data = { bookId: bookId, value: value };
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Vote",
+                    data: JSON.stringify(data),
+                    headers: {
+                        'X-CSRF-TOKEN': antiForgeryToken
+                    },
+                    success: function (data) {
+                        $('#averageVoteValue').html(data.averageVote.toFixed(1));
+                        var userVote = data.userVote;
+                        if(userVote == 1){
+                            $('#1-star-rating').prop('checked', true);
+                            $('#2-star-rating').prop('checked', false);
+                            $('#3-star-rating').prop('checked', false);
+                            $('#4-star-rating').prop('checked', false);
+                            $('#5-star-rating').prop('checked', false);
+                        }else if(userVote == 2){
+                            $('#1-star-rating').prop('checked', true);
+                            $('#2-star-rating').prop('checked', true);
+                            $('#3-star-rating').prop('checked', false);
+                            $('#4-star-rating').prop('checked', false);
+                            $('#5-star-rating').prop('checked', false);
+                        }else if(userVote == 3){
+                            $('#1-star-rating').prop('checked', true);
+                            $('#2-star-rating').prop('checked', true);
+                            $('#3-star-rating').prop('checked', true);
+                            $('#4-star-rating').prop('checked', false);
+                            $('#5-star-rating').prop('checked', false);
+                        }else if(userVote == 4){
+                            $('#1-star-rating').prop('checked', true);
+                            $('#2-star-rating').prop('checked', true);
+                            $('#3-star-rating').prop('checked', true);
+                            $('#4-star-rating').prop('checked', true);
+                            $('#5-star-rating').prop('checked', false);
+                        }else if(userVote == 5){
+                            $('#1-star-rating').prop('checked', true);
+                            $('#2-star-rating').prop('checked', true);
+                            $('#3-star-rating').prop('checked', true);
+                            $('#4-star-rating').prop('checked', true);
+                            $('#5-star-rating').prop('checked', true);
+                        }
+                    },
+                    contentType: 'application/json',
+                });
+            })
+    });
 </script>
 }
