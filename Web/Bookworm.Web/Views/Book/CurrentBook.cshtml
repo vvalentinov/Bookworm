@@ -19,31 +19,50 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        @if (Model.Title.Length > 100)
-                        {
-                            string title = Model.Title.Substring(0, 100) + "...";
-                            <h1 class="display-5">@title</h1>
-                        }
-                        else
-                        {
-                            <h1 class="display-5">@Model.Title</h1>
-                        }
-                        <div class="fs-5 mb-5">
-                            <h3><i>Category:</i> @Model.CategoryName</h3>
-                            @if (Model.Publisher != null)
+                        <ul class="list-group">
+                            <li class="list-group-item bookTitle">
+                                @if (Model.Title.Length > 100)
+                                {
+                                    string title = Model.Title.Substring(0, 100) + "...";
+                                    @title
+                                }
+                                else
+                                {
+                                    @Model.Title
+                                }
+                            </li>
+                            @if (@Model.Publisher != null)
                             {
-                                <h3><i>Publisher:</i> @Model.Publisher</h3>
+                                <li class="list-group-item list-group-item-action">
+                                    Publisher: @Model.Publisher
+                                </li>
                             }
-                            <h3><i>Pages:</i> @Model.PagesCount</h3>
-                            <h3><i>Language:</i> @Model.Language</h3>
-                            <h3><i>Downloads:</i> @Model.DownloadsCount</h3>
-                            @foreach (var author in Model.Authors)
-                            {
-                                <h3><i>Author:</i> @author</h3>
-                            }
-                            <h3><span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: @Model.VotesCount)</span></span></h3>
-                        </div>
+                            <li class="list-group-item list-group-item-action">
+                                Category: @Model.CategoryName
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                Pages: @Model.PagesCount
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                Language: @Model.Language
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                Downloads: @Model.DownloadsCount
+                            </li>
 
+                            <li class="list-group-item list-group-item-action">
+                                <dl>
+                                    <dt>Authors:</dt>
+                                    @foreach (var author in Model.Authors)
+                                    {
+                                        <dd>- @author</dd>
+                                    }
+                                </dl>
+                            </li>
+                            <li class="list-group-item list-group-item-action">
+                                <span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: @Model.VotesCount)</span></span> 
+                            </li>
+                        </ul>
                         <div class="rating-wrapper">
                             @if (value == 1)
                             {
@@ -150,7 +169,6 @@
                                 }
                             }
                         </div>
-
                     </div>
                 </div>
             </div>
