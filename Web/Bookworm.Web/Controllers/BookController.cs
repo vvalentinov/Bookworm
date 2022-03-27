@@ -49,11 +49,8 @@
 
         public async Task<IActionResult> CurrentBook(string id)
         {
-            var user = await this.userManager.GetUserAsync(this.User);
-            BookViewModel bookViewModel = null;
-
-            bookViewModel = this.booksService.GetBookWithId(id, user == null ? null : user.Id);
-
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user == null ? null : user.Id);
             return this.View(bookViewModel);
         }
 
@@ -69,6 +66,7 @@
 
         [Authorize]
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookFormModel model)
         {
             if (this.ModelState.IsValid == false)

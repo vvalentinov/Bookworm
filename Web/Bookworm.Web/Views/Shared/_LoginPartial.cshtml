@@ -7,19 +7,26 @@
 <ul class="navbar-nav">
     @if (this.SignInManager.IsSignedIn(this.User))
     {
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @this.User.Identity.Name!</a>
-        </li>
-        if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+        var user = this.UserManager.GetUserAsync(this.User);
+        string url = null;
+        if (user != null)
         {
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
-            </li>
+            url = user.Result.ProfilePictureUrl;
         }
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
-                <button type="submit" class="nav-link btn btn-link text-light">Logout</button>
-            </form>
+        <li class="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src=@url width="40" height="40" class="rounded-circle">
+            </a>
+            <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Profile</a>
+                @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                {
+                    <a class="dropdown-item" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
+                }
+                <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
+                    <button type="submit" class="nav-link btn btn-link text-light justify-content-center">Logout</button>
+                </form>
+            </div>
         </li>
     }
     else

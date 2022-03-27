@@ -30,6 +30,11 @@
             return this.votesRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value;
         }
 
+        public int GetVotesCount(string bookId)
+        {
+            return this.votesRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
+        }
+
         public async Task SetVoteAsync(
             string bookId,
             string userId,

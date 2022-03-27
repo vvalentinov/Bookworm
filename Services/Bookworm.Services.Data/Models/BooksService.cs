@@ -56,7 +56,8 @@
 
             string category = this.categoriesRepository
                 .AllAsNoTracking()
-                .First(c => c.Id == book.CategoryId).Name;
+                .First(c => c.Id == book.CategoryId)
+                .Name;
 
             List<int> authorsIds = this.authorsBooksRepository
                 .AllAsNoTracking()
@@ -85,7 +86,7 @@
                 votesAvg = this.votesRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
             }
 
-            var comments = this.commentRepository
+            List<CommentViewModel> comments = this.commentRepository
                 .All()
                 .Where(x => x.BookId == bookId)
                 .To<CommentViewModel>()

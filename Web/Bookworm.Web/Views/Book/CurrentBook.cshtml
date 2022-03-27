@@ -60,10 +60,10 @@
                                 </dl>
                             </li>
                             <li class="list-group-item list-group-item-action">
-                                <span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: @Model.VotesCount)</span></span> 
+                                <span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: <span id="votesCount">@Model.VotesCount</span>)</span></span>
                             </li>
                         </ul>
-                        <div class="rating-wrapper">
+                        <div class="rating-wrapper" id="customRating">
                             @if (value == 1)
                             {
                                 @for (int i = 5; i >= 1; i--)
@@ -151,7 +151,6 @@
                             {
                                 @for (int i = 5; i >= 1; i--)
                                 {
-
                                     <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
                                     <label for="@i-star-rating" class="star-rating">
                                         <i class="fas fa-star d-inline-block"></i>
@@ -162,7 +161,7 @@
                             {
                                 @for (int i = 5; i >= 1; i--)
                                 {
-                                    <input class="starInput" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" readonly>
+                                    <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
                                     <label for="@i-star-rating" class="star-rating">
                                         <i class="fas fa-star d-inline-block"></i>
                                     </label>
@@ -189,19 +188,31 @@
     <div class="text-center textContainer col-4">
         <h1 class="text-center">Comments<i class="fas fa-comment"></i></h1>
     </div>
-    <a asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle="@Model.Title" class="btn flex-shrink-0 ">Add Comment</a>
-    <div class="container">
-        @foreach (var comment in @Model.Comments)
+    <div class="container-fluid mt-100">
+        <a asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle="@Model.Title" class="btn flex-shrink-0 addCommentBtn">Add Comment</a>
+        @foreach (var comment in Model.Comments)
         {
             <div class="row">
-                <div class="col-sm-5 col-md-12 col-12 pb-4">
-                    <div class="comment mt-4 text-justify float-left">
-                        <i class="commentIconPerson fas fa-user fa-lg"></i>
-                        <h4 class="text-light">@comment.UserUserName</h4>
-                        <span>- @comment.CreatedOn.Date.ToString("d")</span><i class="far fa-thumbs-up commentIcon fa-lg"></i> <br>
-                        <p>@Html.Raw(comment.SanitizedContent)</p>
+                <div class="col-md-12">
+                    <div class="card mb-4 commentCard">
+                        <div class="card-header commentHeader">
+                            <div class="media flex-wrap w-100 align-items-center">
+                                <img src=@comment.UserProfilePictureUrl class="d-block ui-w-40 rounded-circle" alt="" style="height:5rem;">
+                                <div class="media-body ml-3">
+                                    @comment.UserUserName
+                                    <span>- @comment.CreatedOn.Date.ToString("d")</span>
+                                    <div class="text-muted small">
+                                        <time datetime="@comment.CreatedOn.ToString("O")"></time>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <article>
+                                @Html.Raw(comment.SanitizedContent)
+                            </article>
+                        </div>
                     </div>
-
                 </div>
             </div>
         }
@@ -212,7 +223,7 @@
 @section Scripts{
 <script>
         $("[data-vote]").each(function(el) {
-            $(this).click(function () {
+            $(this).on("click", function () {
                 var value = $(this).attr("data-vote");
                 var bookId = '@Model.Id';
                 var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
@@ -224,8 +235,10 @@
                     headers: {
                         'X-CSRF-TOKEN': antiForgeryToken
                     },
+                    contentType: 'application/json',
                     success: function (data) {
                         $('#averageVoteValue').html(data.averageVote.toFixed(1));
+                        $('#votesCount').html(data.votesCount);
                         var userVote = data.userVote;
                         if(userVote == 1){
                             $('#1-star-rating').prop('checked', true);
@@ -257,9 +270,10 @@
                             $('#3-star-rating').prop('checked', true);
                             $('#4-star-rating').prop('checked', true);
                             $('#5-star-rating').prop('checked', true);
+                        }else{
+
                         }
-                    },
-                    contentType: 'application/json',
+                    }
                 });
             })
     });

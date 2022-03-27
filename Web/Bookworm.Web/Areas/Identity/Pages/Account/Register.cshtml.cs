@@ -8,13 +8,16 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
+    using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     [AllowAnonymous]
@@ -23,18 +26,24 @@
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<RegisterModel> logger;
+        private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
+        private readonly IBlobService blobService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IConfiguration configuration,
+            IEmailSender emailSender,
+            IBlobService blobService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
+            this.configuration = configuration;
             this.emailSender = emailSender;
+            this.blobService = blobService;
         }
 
         [BindProperty]
@@ -56,7 +65,18 @@
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = this.Input.UserName, Email = this.Input.Email };
+                string pictureUrl = null;
+                if (this.Input.ProfilePictureFile != null)
+                {
+                    await this.blobService.UploadBlobAsync(this.Input.ProfilePictureFile);
+                    pictureUrl = this.blobService.GetBlobAbsoluteUri(this.Input.ProfilePictureFile.FileName);
+                }
+                else
+                {
+                    pictureUrl = this.configuration.GetValue<string>("AnonymousProfilePictureUrl");
+                }
+
+                var user = new ApplicationUser { UserName = this.Input.UserName, Email = this.Input.Email, ProfilePictureUrl = pictureUrl };
                 var result = await this.userManager.CreateAsync(user, this.Input.Password);
                 if (result.Succeeded)
                 {
@@ -98,6 +118,8 @@
             [Required]
             [Display(Name = "Username")]
             public string UserName { get; set; }
+
+            public IFormFile ProfilePictureFile { get; set; }
 
             [Required]
             [EmailAddress]

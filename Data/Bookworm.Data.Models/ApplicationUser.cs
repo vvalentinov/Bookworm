@@ -21,6 +21,8 @@ namespace Bookworm.Data.Models
             this.Comments = new HashSet<Comment>();
         }
 
+        public string ProfilePictureUrl { get; set; }
+
         // Audit info
         public DateTime CreatedOn { get; set; }
 

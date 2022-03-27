@@ -9,5 +9,7 @@
         Task<double> GetAverageVotesAsync(string bookId);
 
         int? GetUserVote(string bookId, string userId);
+
+        int GetVotesCount(string bookId);
     }
 }

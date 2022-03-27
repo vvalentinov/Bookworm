@@ -13,6 +13,7 @@
     background-color: #34495E;
     transition: 0.4s;
     z-index: 100;
+    overflow: visible;
 }
 
     .navbar .navbar-brand {
@@ -23,6 +24,13 @@
         .navbar .navbar-brand:hover {
             color: #1abc9c;
         }
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #1abc9c;
+}
+.navbar-collapse {
+    margin-left: 48rem;
+}
 
 .form-control {
     font-size: x-large;
@@ -94,6 +102,17 @@
     background-color: #34495E;
 }
 
+.commentHeader {
+    color: white;
+    background-color: #34495E;
+   
+}
+
+.commentCard {
+    border-style: solid;
+    border-color: black;
+}
+
 @media(min-width:768px) {
     html: {
         font-size: 16px
@@ -131,6 +150,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    z-index:1;
 }
 
 html {
@@ -222,6 +242,10 @@ svg {
 .bookTitle {
     background-color: #34495E;
     color:white;
+}
+
+.addCommentBtn{
+    margin-bottom:2rem;
 }
 
 .comment {

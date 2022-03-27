@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
 
+    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Books;
 
     public interface IBooksService

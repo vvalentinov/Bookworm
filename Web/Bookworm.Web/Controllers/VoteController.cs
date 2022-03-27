@@ -23,13 +23,19 @@
         [Authorize]
         public async Task<ActionResult<PostVoteResponseModel>> Post(PostVoteInputModel model)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             await this.votesService.SetVoteAsync(model.BookId, userId, model.Value);
 
             double avgVotes = await this.votesService.GetAverageVotesAsync(model.BookId);
             int? userVote = this.votesService.GetUserVote(model.BookId, userId);
+            int votesCount = this.votesService.GetVotesCount(model.BookId);
 
-            return new PostVoteResponseModel() { AverageVote = avgVotes, UserVote = userVote };
+            return new PostVoteResponseModel()
+            {
+                AverageVote = avgVotes,
+                UserVote = userVote,
+                VotesCount = votesCount,
+            };
         }
     }
 }

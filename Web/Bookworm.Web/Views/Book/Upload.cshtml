@@ -7,7 +7,8 @@
 <div class="text-center textContainer col-4">
     <h1 class="text-center">@this.ViewData["Title"]<i class="fas fa-book icon"></i></h1>
 </div>
-<form asp-action="Upload" asp-controller="Book" method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
+
+<form method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Title"><strong>Title</strong></label>
@@ -67,57 +68,15 @@
         <span asp-validation-for="Description" class="small text-danger"></span>
     </div>
     <div class="text-center">
-        <button type="submit" class="btn text-center"><strong>Upload Book<i class="fas fa-upload icon"></i></strong></button>
+        <button type="submit" class="btn"><strong>Upload Book<i class="fas fa-upload icon"></i></strong></button>
     </div>
 </form>
 
 
 
 @section Scripts{
-<script>
-        function RemoveAuthors() {
-        $("#authorName:last-child")
-            .hide('fast', function () {
-            $(this)
-            .remove();
-        });
-    }
-</script>
-<script>
-        var authorIndex = 0;
-        function AddAuthors() {
-        $("<div id='authorName' class='form-group justify-content-center'><div class='input-group'><div class='input-group-prepend'><span class='input-group-text'>Author's name</span></div><input asp-for='Name' type='text' name='AuthorsNames[" + authorIndex + "].Name' class='form-control'></div><span asp-validation-for='Name' class='small text-danger'></span></div>")
-            .hide()
-            .appendTo("#AuthorsContainer")
-            .show('fast');
-
-        authorIndex++;
-    }
-</script>
-<script>
-            $('#customFile').on('change', function () {
-        if ($(this).val().length > 55) {
-            var fileName = $(this).val()
-                .substring(0, 55)
-                .concat("...")
-                .replace('C:\\fakepath\\', " ");
-
-            $(this).next('.custom-file-label').html(fileName);
-        } else {
-            var fileName = $(this).val().replace('C:\\fakepath\\', " ");
-            $(this).next('.custom-file-label').html(fileName);
-        }
-    })
-</script>
-<script>
-            $('#customImage').on('change', function () {
-        if ($(this).val().length > 55) {
-            var fileName = $(this).val().substring(0, 55).concat("...").replace('C:\\fakepath\\', " ");
-            $(this).next('.custom-file-label').html(fileName);
-        } else {
-            var fileName = $(this).val().replace('C:\\fakepath\\', " ");
-            $(this).next('.custom-file-label').html(fileName);
-        }
-    })
-</script>
+<script src="~/js/removeAuthors.js"></script>
+<script src="~/js/addAuthors.js"></script>
+<script src="~/js/customFile.js"></script>
+<script src="~/js/customImage.js"></script>
 }

@@ -10,26 +10,22 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.DataConstants;
 
     public class UploadBookService : IUploadBookService
     {
-        private readonly IConfiguration configuration;
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Publisher> publisherRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IBlobService blobService;
 
         public UploadBookService(
-            IConfiguration configuration,
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Publisher> publisherRepository,
             IDeletableEntityRepository<Author> authorRepository,
             IBlobService blobService)
         {
-            this.configuration = configuration;
             this.booksRepository = booksRepository;
             this.publisherRepository = publisherRepository;
             this.authorRepository = authorRepository;
@@ -52,6 +48,11 @@
             if (bookFile == null)
             {
                 throw new Exception("PDF file field is empty!");
+            }
+
+            if (bookFile.Length > 50_000_000)
+            {
+                throw new Exception("Book PDF file must not exceed 50 MB!");
             }
 
             if (imageFile == null)
@@ -124,8 +125,6 @@
                 {
                     bookPublisher = new Publisher() { Name = publisher };
                     bookPublisher.Books.Add(book);
-                    //await this.publisherRepository.AddAsync(bookPublisher);
-                    //await this.publisherRepository.SaveChangesAsync();
                 }
 
                 book.Publisher = bookPublisher;
@@ -138,8 +137,6 @@
                 if (bookAauthor == null)
                 {
                     bookAauthor = new Author() { Name = author };
-                    // await this.authorRepository.AddAsync(bookAauthor);
-                    // await this.authorRepository.SaveChangesAsync();
                 }
 
                 AuthorBook authorBook = new AuthorBook() { Book = book, Author = bookAauthor };

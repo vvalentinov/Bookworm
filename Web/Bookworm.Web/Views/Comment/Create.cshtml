@@ -4,20 +4,26 @@
     ViewData["Title"] = "Post Comment";
 }
 
+<div class="text-center textContainer col-3 animate__bounceIn">
+    <h2>@ViewData["Title"]</h2>
+</div>
 
 <form method="post" asp-action="Create">
-    <div>
+    <div class="form-group">
         <label asp-for="BookTitle">Book</label>
         <input asp-for="BookTitle" type="text" class="form-control" value="@Model.BookTitle" readonly>
     </div>
-    <div>
-        <label asp-for="Content"></label>
+    <div class="form-group">
+        <label asp-for="Content">Content*</label>
         <textarea asp-for="Content" class="form-control" rows="15"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
     <input type="hidden" name="bookId" value="@Model.BookId">
     <hr />
-    <input type="submit" class="btn" />
+    <div class="text-center">
+        <input type="submit" class="btn" value="Post Comment" />
+    </div>
+
 </form>
 
 

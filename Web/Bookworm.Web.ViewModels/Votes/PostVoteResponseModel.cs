@@ -5,5 +5,7 @@
         public double AverageVote { get; set; }
 
         public int? UserVote { get; set; }
+
+        public int VotesCount { get; set; }
     }
 }

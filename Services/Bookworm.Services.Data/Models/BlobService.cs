@@ -42,6 +42,12 @@
             return false;
         }
 
+        public BlobClient GetBlobClient(string blobUri)
+        {
+            Uri uri = new Uri(blobUri);
+            return new BlobClient(uri);
+        }
+
         public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId)
         {
             Book book = this.bookRepository
@@ -89,6 +95,14 @@
 
             await using MemoryStream memoryStream = new MemoryStream(fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
+        }
+
+        public async Task DeleteBlobAsync(string blobName)
+        {
+            string containerName = this.configuration.GetConnectionString("ContainerName");
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            await blobClient.DeleteIfExistsAsync();
         }
     }
 }
