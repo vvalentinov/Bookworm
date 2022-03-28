@@ -25,11 +25,17 @@
             color: #1abc9c;
         }
 
+.customCard-body {
+    background-color: #34495E;
+    color: white;
+}
+
 .navbar-nav .nav-item .nav-link:hover {
     color: #1abc9c;
 }
+
 .navbar-collapse {
-    margin-left: 48rem;
+    margin-left: 30rem;
 }
 
 .form-control {
@@ -105,7 +111,6 @@
 .commentHeader {
     color: white;
     background-color: #34495E;
-   
 }
 
 .commentCard {
@@ -150,7 +155,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    z-index:1;
+    z-index: 1;
 }
 
 html {
@@ -227,6 +232,8 @@ svg {
     filter: drop-shadow(5px 1px 3px rgba(198, 206, 237, 1));
 }
 
+
+
 .starInput {
     height: 100%;
     width: 100%;
@@ -241,11 +248,16 @@ svg {
 
 .bookTitle {
     background-color: #34495E;
-    color:white;
+    color: white;
 }
 
-.addCommentBtn{
-    margin-bottom:2rem;
+.addCommentBtn {
+    margin-bottom: 2rem;
+}
+
+#favoriteBookCardBody {
+    background-color: #34495E;
+    color: white;
 }
 
 .comment {

@@ -18,7 +18,7 @@
                 <img src=@url width="40" height="40" class="rounded-circle">
             </a>
             <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Profile</a>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
                 @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                 {
                     <a class="dropdown-item" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>

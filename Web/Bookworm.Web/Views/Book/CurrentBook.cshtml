@@ -7,7 +7,7 @@
 
 <section class="bookSection">
     <div class="card border-dark">
-        <div class="card-body ">
+        <div class="card-body">
             <div class="px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5">
                     <div class="col-md-4">
@@ -15,6 +15,11 @@
                         <div class="m-4 text-center">
                             <a asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id" class="btn flex-shrink-0 ">
                                 Download<i class="fas fa-download icon"></i>
+                            </a>
+                        </div>
+                        <div class="m-4 text-center">
+                            <a asp-controller="Book" asp-action="AddToFavorites" asp-route-bookId="@Model.Id" class="btn flex-shrink-0">
+                                Add To Favorites<i class="fas fa-plus icon"></i>
                             </a>
                         </div>
                     </div>
@@ -63,110 +68,112 @@
                                 <span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: <span id="votesCount">@Model.VotesCount</span>)</span></span>
                             </li>
                         </ul>
-                        <div class="rating-wrapper" id="customRating">
-                            @if (value == 1)
-                            {
-                                @for (int i = 5; i >= 1; i--)
+                        <div class="text-center">
+                            <div class="rating-wrapper" id="customRating">
+                                @if (value == 1)
                                 {
-                                    @if (i == 1)
+                                    @for (int i = 5; i >= 1; i--)
                                     {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
-                                    else
-                                    {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
+                                        @if (i == 1)
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
                                     }
                                 }
-                            }
-                            else if (value == 2)
-                            {
-                                @for (int i = 5; i >= 1; i--)
+                                else if (value == 2)
                                 {
-                                    @if (i == 1 || i == 2)
+                                    @for (int i = 5; i >= 1; i--)
                                     {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
-                                    else
-                                    {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
+                                        @if (i == 1 || i == 2)
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
 
+                                    }
                                 }
-                            }
-                            else if (value == 3)
-                            {
-                                @for (int i = 5; i >= 1; i--)
+                                else if (value == 3)
                                 {
-                                    @if (i == 1 || i == 2 || i == 3)
+                                    @for (int i = 5; i >= 1; i--)
+                                    {
+                                        @if (i == 1 || i == 2 || i == 3)
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
+
+                                    }
+                                }
+                                else if (value == 4)
+                                {
+                                    @for (int i = 5; i >= 1; i--)
+                                    {
+                                        @if (i == 1 || i == 2 || i == 3 || i == 4)
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
+                                            <label for="@i-star-rating" class="star-rating">
+                                                <i class="fas fa-star d-inline-block"></i>
+                                            </label>
+                                        }
+
+                                    }
+                                }
+                                else if (value == 5)
+                                {
+                                    @for (int i = 5; i >= 1; i--)
                                     {
                                         <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
                                         <label for="@i-star-rating" class="star-rating">
                                             <i class="fas fa-star d-inline-block"></i>
                                         </label>
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    @for (int i = 5; i >= 1; i--)
                                     {
                                         <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
                                         <label for="@i-star-rating" class="star-rating">
                                             <i class="fas fa-star d-inline-block"></i>
                                         </label>
                                     }
-
                                 }
-                            }
-                            else if (value == 4)
-                            {
-                                @for (int i = 5; i >= 1; i--)
-                                {
-                                    @if (i == 1 || i == 2 || i == 3 || i == 4)
-                                    {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
-                                    else
-                                    {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
-
-                                }
-                            }
-                            else if (value == 5)
-                            {
-                                @for (int i = 5; i >= 1; i--)
-                                {
-                                    <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                    <label for="@i-star-rating" class="star-rating">
-                                        <i class="fas fa-star d-inline-block"></i>
-                                    </label>
-                                }
-                            }
-                            else
-                            {
-                                @for (int i = 5; i >= 1; i--)
-                                {
-                                    <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                    <label for="@i-star-rating" class="star-rating">
-                                        <i class="fas fa-star d-inline-block"></i>
-                                    </label>
-                                }
-                            }
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -30,6 +30,8 @@
 
         public DbSet<AuthorBook> AuthorsBooks { get; set; }
 
+        public DbSet<FavoriteBook> FavoriteBooks { get; set; }
+
         public DbSet<Publisher> Publishers { get; set; }
 
         public DbSet<Language> Languages { get; set; }

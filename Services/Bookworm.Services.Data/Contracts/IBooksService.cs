@@ -1,13 +1,14 @@
 ﻿namespace Bookworm.Services.Data.Contracts
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
-    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Books;
+    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public interface IBooksService
     {
-        IEnumerable<T> GetBookCategories<T>();
+        IEnumerable<SelectListItem> GetBookCategories();
 
         BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
 

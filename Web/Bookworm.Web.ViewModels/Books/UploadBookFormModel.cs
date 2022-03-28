@@ -5,9 +5,8 @@
 
     using Bookworm.Web.Infrastructure;
     using Bookworm.Web.ViewModels.Authors;
-    using Bookworm.Web.ViewModels.Categories;
-    using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc.Rendering;
 
     using static Bookworm.Common.DataConstants;
     using static Bookworm.Common.ErrorMessages;
@@ -46,8 +45,8 @@
 
         public IEnumerable<AuthorViewModel> AuthorsNames { get; set; }
 
-        public IEnumerable<LanguageViewModel> Languages { get; set; }
+        public IEnumerable<SelectListItem> Languages { get; set; }
 
-        public IEnumerable<CategoryViewModel> Categories { get; set; }
+        public IEnumerable<SelectListItem> Categories { get; set; }
     }
 }

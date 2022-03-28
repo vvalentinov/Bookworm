@@ -6,7 +6,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
+    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class LanguagesService : ILanguagesService
     {
@@ -17,12 +17,15 @@
             this.langugesRepository = langugesRepository;
         }
 
-        public IEnumerable<T> GetAllLanguages<T>()
+        public IEnumerable<SelectListItem> GetAllLanguages()
         {
             return this.langugesRepository
                 .AllAsNoTracking()
-                .To<T>()
-                .ToList();
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString(),
+                }).ToList();
         }
     }
 }

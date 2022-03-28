@@ -2,8 +2,10 @@
 {
     using System.Collections.Generic;
 
+    using Microsoft.AspNetCore.Mvc.Rendering;
+
     public interface ILanguagesService
     {
-        IEnumerable<T> GetAllLanguages<T>();
+        IEnumerable<SelectListItem> GetAllLanguages();
     }
 }

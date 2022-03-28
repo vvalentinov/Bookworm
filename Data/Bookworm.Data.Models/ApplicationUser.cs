@@ -18,6 +18,7 @@ namespace Bookworm.Data.Models
             this.Logins = new HashSet<IdentityUserLogin<string>>();
             this.Votes = new HashSet<Vote>();
             this.Books = new HashSet<Book>();
+            this.FavoriteBooks = new HashSet<FavoriteBook>();
             this.Comments = new HashSet<Comment>();
         }
 
@@ -42,6 +43,8 @@ namespace Bookworm.Data.Models
         public virtual ICollection<Vote> Votes { get; set; }
 
         public virtual ICollection<Book> Books { get; set; }
+
+        public virtual ICollection<FavoriteBook> FavoriteBooks { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
     }

@@ -9,6 +9,7 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
+    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class BooksService : IBooksService
     {
@@ -41,12 +42,16 @@
             this.votesRepository = votesRepository;
         }
 
-        public IEnumerable<T> GetBookCategories<T>()
+        public IEnumerable<SelectListItem> GetBookCategories()
         {
             return this.categoriesRepository
                 .AllAsNoTracking()
                 .OrderBy(x => x.Name)
-                .To<T>()
+                .Select(x => new SelectListItem()
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString(),
+                })
                 .ToList();
         }
 

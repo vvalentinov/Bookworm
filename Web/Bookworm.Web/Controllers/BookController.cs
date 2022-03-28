@@ -8,8 +8,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Categories;
-    using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -21,6 +19,7 @@
         private readonly IUploadBookService uploadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
+        private readonly IFavoriteBooksService favoriteBooksService;
         private readonly IBlobService blobService;
 
         public BookController(
@@ -29,6 +28,7 @@
             IUploadBookService uploadBookService,
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService,
+            IFavoriteBooksService favoriteBooksService,
             IBlobService blobService)
         {
             this.booksService = booksService;
@@ -36,6 +36,7 @@
             this.uploadBookService = uploadBookService;
             this.userManager = userManager;
             this.languagesService = languagesService;
+            this.favoriteBooksService = favoriteBooksService;
             this.blobService = blobService;
         }
 
@@ -55,12 +56,48 @@
         }
 
         [Authorize]
+        public async Task<IActionResult> AddToFavorites(string bookId)
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+
+            try
+            {
+                await this.favoriteBooksService.AddBookToFavoritesAsync(bookId, user.Id);
+                this.TempData[MessageConstant.SuccessMessage] = "Successfully added book to favorites!";
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.WarningMessage] = ex.Message;
+                return this.RedirectToAction("CurrentBook", new { id = bookId });
+            }
+
+            return this.RedirectToAction("CurrentBook", new { id = bookId });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> DeleteFromFavorites(string bookId)
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            await this.favoriteBooksService.DeleteFromFavoritesAsync(bookId, user.Id);
+            this.TempData[MessageConstant.SuccessMessage] = "Successfully removed book!";
+            return this.RedirectToAction("Favorites");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Favorites()
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            var books = this.favoriteBooksService.GetUserFavoriteBooks(user.Id);
+            return this.View(books);
+        }
+
+        [Authorize]
         public IActionResult Upload()
         {
             return this.View(new UploadBookFormModel()
             {
-                Categories = this.booksService.GetBookCategories<CategoryViewModel>(),
-                Languages = this.languagesService.GetAllLanguages<LanguageViewModel>(),
+                Categories = this.booksService.GetBookCategories(),
+                Languages = this.languagesService.GetAllLanguages(),
             });
         }
 
@@ -71,8 +108,8 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                model.Categories = this.booksService.GetBookCategories<CategoryViewModel>();
-                model.Languages = this.languagesService.GetAllLanguages<LanguageViewModel>();
+                model.Categories = this.booksService.GetBookCategories();
+                model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
 
@@ -96,8 +133,8 @@
             catch (Exception ex)
             {
                 this.ModelState.AddModelError(string.Empty, ex.Message);
-                model.Categories = this.booksService.GetBookCategories<CategoryViewModel>();
-                model.Languages = this.languagesService.GetAllLanguages<LanguageViewModel>();
+                model.Categories = this.booksService.GetBookCategories();
+                model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
 

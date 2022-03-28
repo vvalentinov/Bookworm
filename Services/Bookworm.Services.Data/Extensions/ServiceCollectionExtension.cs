@@ -38,6 +38,8 @@
 
             services.AddTransient<ILanguagesService, LanguagesService>();
 
+            services.AddTransient<IFavoriteBooksService, FavoriteBookService>();
+
             services.AddTransient<ICommentsService, CommentsService>();
 
             services.AddTransient<IBlobService, BlobService>();
