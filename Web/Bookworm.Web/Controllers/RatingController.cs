@@ -10,11 +10,11 @@
 
     [ApiController]
     [Route("api/[controller]")]
-    public class VoteController : BaseController
+    public class RatingController : BaseController
     {
         private readonly IVotesService votesService;
 
-        public VoteController(IVotesService votesService)
+        public RatingController(IVotesService votesService)
         {
             this.votesService = votesService;
         }

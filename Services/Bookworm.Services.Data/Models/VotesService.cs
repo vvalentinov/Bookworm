@@ -10,9 +10,9 @@
 
     public class VotesService : IVotesService
     {
-        private readonly IRepository<Vote> votesRepository;
+        private readonly IRepository<Rating> votesRepository;
 
-        public VotesService(IRepository<Vote> votesRepository)
+        public VotesService(IRepository<Rating> votesRepository)
         {
             this.votesRepository = votesRepository;
         }
@@ -40,13 +40,13 @@
             string userId,
             byte value)
         {
-            Vote vote = this.votesRepository
+            Rating vote = this.votesRepository
                 .All()
                 .FirstOrDefault(x => x.BookId == bookId && x.UserId == userId);
 
             if (vote == null)
             {
-                vote = new Vote()
+                vote = new Rating()
                 {
                     BookId = bookId,
                     UserId = userId,

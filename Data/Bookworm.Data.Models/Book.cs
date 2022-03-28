@@ -17,7 +17,7 @@
             this.Id = Guid.NewGuid().ToString();
             this.AuthorsBooks = new HashSet<AuthorBook>();
             this.FavoriteBooks = new HashSet<FavoriteBook>();
-            this.Votes = new HashSet<Vote>();
+            this.Ratings = new HashSet<Rating>();
             this.Comments = new HashSet<Comment>();
         }
 
@@ -71,7 +71,7 @@
 
         public virtual ICollection<FavoriteBook> FavoriteBooks { get; set; }
 
-        public virtual ICollection<Vote> Votes { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
     }

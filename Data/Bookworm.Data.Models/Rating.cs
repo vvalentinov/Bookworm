@@ -2,7 +2,7 @@
 {
     using Bookworm.Data.Common.Models;
 
-    public class Vote : BaseModel<int>
+    public class Rating : BaseModel<int>
     {
         public string BookId { get; set; }
 

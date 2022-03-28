@@ -40,7 +40,7 @@
 
         public DbSet<Quote> Quotes { get; set; }
 
-        public DbSet<Vote> Votes { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
 

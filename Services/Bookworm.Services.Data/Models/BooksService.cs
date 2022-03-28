@@ -20,7 +20,7 @@
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
         private readonly IDeletableEntityRepository<Comment> commentRepository;
-        private readonly IRepository<Vote> votesRepository;
+        private readonly IRepository<Rating> votesRepository;
 
         public BooksService(
             IRepository<Category> categoriesRepository,
@@ -30,7 +30,7 @@
             IDeletableEntityRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
             IDeletableEntityRepository<Comment> commentRepository,
-            IRepository<Vote> votesRepository)
+            IRepository<Rating> votesRepository)
         {
             this.categoriesRepository = categoriesRepository;
             this.bookRepository = bookRepository;
