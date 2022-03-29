@@ -37,6 +37,7 @@
                               new SettingsSeeder(),
                               new CategoriesSeeder(this.configuration),
                               new LanguagesSeeder(),
+                              new QuizCategoriesSeeder(),
                           };
 
             foreach (var seeder in seeders)
