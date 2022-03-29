@@ -18,11 +18,11 @@
 
         public int Year { get; set; }
 
-        public double VotesAvg { get; set; }
+        public double RatingsAvg { get; set; }
 
-        public int VotesCount { get; set; }
+        public int RatingsCount { get; set; }
 
-        public int? UserVote { get; set; }
+        public int? UserRating { get; set; }
 
         public int DownloadsCount { get; set; }
 

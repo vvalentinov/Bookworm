@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    public interface IVotesService
+    public interface IRatingsService
     {
         Task SetVoteAsync(string bookId, string userId, byte value);
 

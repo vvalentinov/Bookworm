@@ -2,7 +2,7 @@
 
 @{
     this.ViewData["Title"] = Model.Title;
-    int? value = Model.UserVote;
+    int? userRating = Model.UserRating;
 }
 
 <section class="bookSection">
@@ -19,7 +19,7 @@
                         </div>
                         <div class="m-4 text-center">
                             <a asp-controller="Book" asp-action="AddToFavorites" asp-route-bookId="@Model.Id" class="btn flex-shrink-0">
-                                Add To Favorites<i class="fas fa-plus icon"></i>
+                                Add To Favorites<i class="fas fa-heart"></i>
                             </a>
                         </div>
                     </div>
@@ -65,12 +65,12 @@
                                 </dl>
                             </li>
                             <li class="list-group-item list-group-item-action">
-                                <span>Average Score: <span id="averageVoteValue">@Model.VotesAvg.ToString("f1")</span><span>/5</span><span>(Votes: <span id="votesCount">@Model.VotesCount</span>)</span></span>
+                                <span>Average Score: <span id="averageVoteValue">@Model.RatingsAvg.ToString("f1")</span><span>/5</span><span>(Ratings count: <span id="votesCount">@Model.RatingsCount</span>)</span></span>
                             </li>
                         </ul>
                         <div class="text-center">
                             <div class="rating-wrapper" id="customRating">
-                                @if (value == 1)
+                                @if (userRating == 1)
                                 {
                                     @for (int i = 5; i >= 1; i--)
                                     {
@@ -90,7 +90,7 @@
                                         }
                                     }
                                 }
-                                else if (value == 2)
+                                else if (userRating == 2)
                                 {
                                     @for (int i = 5; i >= 1; i--)
                                     {
@@ -111,7 +111,7 @@
 
                                     }
                                 }
-                                else if (value == 3)
+                                else if (userRating == 3)
                                 {
                                     @for (int i = 5; i >= 1; i--)
                                     {
@@ -132,7 +132,7 @@
 
                                     }
                                 }
-                                else if (value == 4)
+                                else if (userRating == 4)
                                 {
                                     @for (int i = 5; i >= 1; i--)
                                     {
@@ -153,7 +153,7 @@
 
                                     }
                                 }
-                                else if (value == 5)
+                                else if (userRating == 5)
                                 {
                                     @for (int i = 5; i >= 1; i--)
                                     {
@@ -190,7 +190,6 @@
 <hr />
 
 
-
 <section>
     <div class="text-center textContainer col-4">
         <h1 class="text-center">Comments<i class="fas fa-comment"></i></h1>
@@ -208,8 +207,53 @@
                                 <div class="media-body ml-3">
                                     @comment.UserUserName
                                     <span>- @comment.CreatedOn.Date.ToString("d")</span>
-                                    <div class="text-muted small">
-                                        <time datetime="@comment.CreatedOn.ToString("O")"></time>
+                                    <div class="rating">
+                                        <!-- Thumbs up -->
+                                        @if (comment.UserVote == 1)
+                                        {
+                                            <div class="like grow">
+                                                <a onclick="sendVote(@comment.Id, true)">
+                                                    <i class="fas fa-thumbs-up fa-2x liked" aria-hidden="true"></i>
+                                                </a>
+                                                <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
+                                            </div>
+                                            <div class="dislike grow">
+                                                <a onclick="sendVote(@comment.Id, false)">
+                                                    <i class="far fa-thumbs-down fa-2x like" aria-hidden="true"></i>
+                                                </a>
+                                                <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
+                                            </div>
+                                        }
+                                        else if (comment.UserVote == -1)
+                                        {
+                                            <div class="like grow">
+                                                <a onclick="sendVote(@comment.Id, true)">
+                                                    <i class="far fa-thumbs-up fa-2x like" aria-hidden="true"></i>
+                                                </a>
+                                                <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
+                                            </div>
+                                            <div class="dislike grow">
+                                                <a onclick="sendVote(@comment.Id, false)">
+                                                    <i class="fas fa-thumbs-down fa-2x liked" aria-hidden="true"></i>
+                                                </a>
+                                                <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="like grow">
+                                                <a onclick="sendVote(@comment.Id, true)">
+                                                    <i class="far fa-thumbs-up fa-2x like" aria-hidden="true"></i>
+                                                </a>
+                                                <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
+                                            </div>
+                                            <div class="dislike grow">
+                                                <a onclick="sendVote(@comment.Id, false)">
+                                                    <i class="far fa-thumbs-down fa-2x like" aria-hidden="true"></i>
+                                                </a>
+                                                <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -227,8 +271,29 @@
 </section>
 
 <form method="post" id="antiForgeryForm"></form>
+<form id="votesForm" method="post"></form>
 @section Scripts{
 <script>
+        function sendVote(commentId, isUpVote) {
+            var token = $("#votesForm input[name=__RequestVerificationToken]").val();
+            var json = { commentId: commentId, isUpVote: isUpVote };
+            $.ajax({
+                url: "/api/vote",
+                type: "POST",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: { 'X-CSRF-TOKEN': token },
+                success: function (data) {
+                    var upVotes = data.upVotesCount;
+                    var downVotes = data.downVotesCount;
+                    var commentId = data.commentId;
+                    $('#' + commentId + '-up').html('(' + upVotes + ')');
+                    $('#' + commentId + '-down').html('(' + downVotes + ')');
+                }
+            });
+        }
+
         $("[data-vote]").each(function(el) {
             $(this).on("click", function () {
                 var value = $(this).attr("data-vote");

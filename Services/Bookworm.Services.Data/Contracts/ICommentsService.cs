@@ -5,5 +5,7 @@
     public interface ICommentsService
     {
         Task Create(string userId, string content, string bookId);
+
+        string GetCommentUserId(int commentId);
     }
 }

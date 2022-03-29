@@ -20,7 +20,8 @@
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
         private readonly IDeletableEntityRepository<Comment> commentRepository;
-        private readonly IRepository<Rating> votesRepository;
+        private readonly IRepository<Rating> ratingRepository;
+        private readonly IRepository<Vote> voteRepository;
 
         public BooksService(
             IRepository<Category> categoriesRepository,
@@ -30,7 +31,8 @@
             IDeletableEntityRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
             IDeletableEntityRepository<Comment> commentRepository,
-            IRepository<Rating> votesRepository)
+            IRepository<Rating> ratingRepository,
+            IRepository<Vote> voteRepository)
         {
             this.categoriesRepository = categoriesRepository;
             this.bookRepository = bookRepository;
@@ -39,7 +41,8 @@
             this.authorRepository = authorRepository;
             this.publishersRepository = publishersRepository;
             this.commentRepository = commentRepository;
-            this.votesRepository = votesRepository;
+            this.ratingRepository = ratingRepository;
+            this.voteRepository = voteRepository;
         }
 
         public IEnumerable<SelectListItem> GetBookCategories()
@@ -84,17 +87,36 @@
                 .Name;
 
             double votesAvg = 0;
-            int votesCount = this.votesRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
+            int votesCount = this.ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
 
             if (votesCount > 0)
             {
-                votesAvg = this.votesRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
+                votesAvg = this.ratingRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
             }
 
             List<CommentViewModel> comments = this.commentRepository
                 .All()
                 .Where(x => x.BookId == bookId)
-                .To<CommentViewModel>()
+                .Select(x => new CommentViewModel()
+                {
+                    Content = x.Content,
+                    CreatedOn = x.CreatedOn,
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    UserProfilePictureUrl = x.User.ProfilePictureUrl,
+                    UserUserName = x.User.UserName,
+                    DownVotesCount = this.voteRepository
+                                         .AllAsNoTracking()
+                                         .Where(v => v.CommentId == x.Id && v.Value == VoteValue.DownVote)
+                                         .Count(),
+                    UpVotesCount = this.voteRepository
+                                         .AllAsNoTracking()
+                                         .Where(v => v.CommentId == x.Id && v.Value == VoteValue.UpVote)
+                                         .Count(),
+                    UserVote = (int)this.voteRepository
+                                        .AllAsNoTracking()
+                                        .FirstOrDefault(v => v.UserId == userId && v.CommentId == x.Id).Value,
+                })
                 .ToList();
 
             return this.bookRepository
@@ -114,9 +136,9 @@
                   Authors = authors,
                   Publisher = publisher,
                   CategoryName = category,
-                  VotesAvg = votesAvg,
-                  VotesCount = votesCount,
-                  UserVote = this.votesRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
+                  RatingsAvg = votesAvg,
+                  RatingsCount = votesCount,
+                  UserRating = this.ratingRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
                   Comments = comments,
               }).FirstOrDefault();
         }

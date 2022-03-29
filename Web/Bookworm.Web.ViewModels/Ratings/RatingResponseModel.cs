@@ -1,6 +1,6 @@
 ﻿namespace Bookworm.Web.ViewModels.Votes
 {
-    public class PostVoteResponseModel
+    public class RatingResponseModel
     {
         public double AverageVote { get; set; }
 

@@ -44,7 +44,9 @@
 
             services.AddTransient<IBlobService, BlobService>();
 
-            services.AddTransient<IVotesService, VotesService>();
+            services.AddTransient<IRatingsService, RatingsService>();
+
+            services.AddTransient<IVoteService, VotesService>();
 
             services.AddAntiforgery(options =>
             {

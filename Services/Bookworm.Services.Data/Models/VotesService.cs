@@ -6,57 +6,55 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Microsoft.EntityFrameworkCore;
 
-    public class VotesService : IVotesService
+    public class VotesService : IVoteService
     {
-        private readonly IRepository<Rating> votesRepository;
+        private readonly IRepository<Vote> voteRepository;
 
-        public VotesService(IRepository<Rating> votesRepository)
+        public VotesService(IRepository<Vote> voteRepository)
         {
-            this.votesRepository = votesRepository;
+            this.voteRepository = voteRepository;
         }
 
-        public async Task<double> GetAverageVotesAsync(string bookId)
+        public int GetDownVotesCount(int commentId)
         {
-            return await this.votesRepository
+            return this.voteRepository
+                .AllAsNoTracking()
+                .Where(x => x.Value == VoteValue.DownVote && x.CommentId == commentId)
+                .Count();
+        }
+
+        public int GetUpVotesCount(int commentId)
+        {
+            return this.voteRepository
+                .AllAsNoTracking()
+                .Where(x => x.Value == VoteValue.UpVote && x.CommentId == commentId)
+                .Count();
+        }
+
+        public async Task VoteAsync(int commentId, string userId, bool isUpVote)
+        {
+            Vote vote = this.voteRepository
                 .All()
-                .Where(x => x.BookId == bookId)
-                .AverageAsync(x => x.Value);
-        }
-
-        public int? GetUserVote(string bookId, string userId)
-        {
-            return this.votesRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value;
-        }
-
-        public int GetVotesCount(string bookId)
-        {
-            return this.votesRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
-        }
-
-        public async Task SetVoteAsync(
-            string bookId,
-            string userId,
-            byte value)
-        {
-            Rating vote = this.votesRepository
-                .All()
-                .FirstOrDefault(x => x.BookId == bookId && x.UserId == userId);
+                .FirstOrDefault(x => x.UserId == userId && x.CommentId == commentId);
 
             if (vote == null)
             {
-                vote = new Rating()
+                vote = new Vote()
                 {
-                    BookId = bookId,
                     UserId = userId,
+                    CommentId = commentId,
+                    Value = isUpVote ? VoteValue.UpVote : VoteValue.DownVote,
                 };
 
-                await this.votesRepository.AddAsync(vote);
+                await this.voteRepository.AddAsync(vote);
+            }
+            else
+            {
+                vote.Value = isUpVote ? VoteValue.UpVote : VoteValue.DownVote;
             }
 
-            vote.Value = value;
-            await this.votesRepository.SaveChangesAsync();
+            await this.voteRepository.SaveChangesAsync();
         }
     }
 }

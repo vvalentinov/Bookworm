@@ -292,3 +292,34 @@ svg {
 .commentIconPerson {
     color: #1abc9c;
 }
+
+.rating {
+    display: inline-block;
+    /*width: 100%;*/
+    /*margin-top: 40px;
+    padding-top: 40px;*/
+    text-align: right;
+}
+
+.like,
+.dislike {
+    display: inline-block;
+    cursor: pointer;
+    margin: 1rem;
+}
+
+
+    .dislike:hover,
+    .like:hover{
+        color: #1abc9c;
+        transition: all .2s ease-in-out;
+        transform: scale(1.1);
+    }
+
+/*.active {
+    color: #1abc9c;
+}*/
+
+.liked {
+    color: #1abc9c;
+}

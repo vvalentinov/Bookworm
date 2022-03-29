@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
@@ -26,6 +27,11 @@
 
             await this.commentRepository.AddAsync(comment);
             await this.commentRepository.SaveChangesAsync();
+        }
+
+        public string GetCommentUserId(int commentId)
+        {
+            return this.commentRepository.AllAsNoTracking().FirstOrDefault(x => x.Id == commentId).UserId;
         }
     }
 }

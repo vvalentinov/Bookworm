@@ -12,16 +12,16 @@
     [Route("api/[controller]")]
     public class RatingController : BaseController
     {
-        private readonly IVotesService votesService;
+        private readonly IRatingsService votesService;
 
-        public RatingController(IVotesService votesService)
+        public RatingController(IRatingsService votesService)
         {
             this.votesService = votesService;
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<PostVoteResponseModel>> Post(PostVoteInputModel model)
+        public async Task<ActionResult<RatingResponseModel>> Post(RatingInputModel model)
         {
             string userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             await this.votesService.SetVoteAsync(model.BookId, userId, model.Value);
@@ -30,7 +30,7 @@
             int? userVote = this.votesService.GetUserVote(model.BookId, userId);
             int votesCount = this.votesService.GetVotesCount(model.BookId);
 
-            return new PostVoteResponseModel()
+            return new RatingResponseModel()
             {
                 AverageVote = avgVotes,
                 UserVote = userVote,

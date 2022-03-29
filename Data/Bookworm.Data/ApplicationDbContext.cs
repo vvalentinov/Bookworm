@@ -42,6 +42,8 @@
 
         public DbSet<Rating> Ratings { get; set; }
 
+        public DbSet<Vote> Votes { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Setting> Settings { get; set; }
