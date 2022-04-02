@@ -48,6 +48,8 @@
 
             services.AddTransient<IVoteService, VotesService>();
 
+            services.AddTransient<IRandomBookService, RandomBookService>();
+
             services.AddAntiforgery(options =>
             {
                 options.HeaderName = "X-CSRF-TOKEN";

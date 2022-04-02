@@ -19,7 +19,7 @@
         private readonly IUploadBookService uploadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
-        private readonly IFavoriteBooksService favoriteBooksService;
+        private readonly IRandomBookService randomBookService;
         private readonly IBlobService blobService;
 
         public BookController(
@@ -28,7 +28,7 @@
             IUploadBookService uploadBookService,
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService,
-            IFavoriteBooksService favoriteBooksService,
+            IRandomBookService randomBookService,
             IBlobService blobService)
         {
             this.booksService = booksService;
@@ -36,15 +36,32 @@
             this.uploadBookService = uploadBookService;
             this.userManager = userManager;
             this.languagesService = languagesService;
-            this.favoriteBooksService = favoriteBooksService;
+            this.randomBookService = randomBookService;
             this.blobService = blobService;
+        }
+
+        public IActionResult Random()
+        {
+            RandomBookFormViewModel model = new RandomBookFormViewModel()
+            {
+                Categories = this.randomBookService.GetCategories(),
+            };
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Random(RandomBookFormViewModel model)
+        {
+            var books = this.randomBookService.GenerateBooks(model.CategoryName, model.CountBooks);
+            return this.View("GeneratedBooks", books);
         }
 
         public IActionResult All(string categoryName, int page = 1)
         {
             int categoryId = this.categoriesService.GetCategoryId(categoryName);
 
-            var model = this.booksService.GetBooks(categoryId, page, 12);
+            BookListingViewModel model = this.booksService.GetBooks(categoryId, page, 12);
             return this.View(model);
         }
 
@@ -54,8 +71,6 @@
             BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user?.Id);
             return this.View(bookViewModel);
         }
-
-       
 
         [Authorize]
         public IActionResult Upload()
