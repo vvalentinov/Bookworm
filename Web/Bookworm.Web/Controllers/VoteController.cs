@@ -11,7 +11,7 @@
 
     [ApiController]
     [Route("api/[controller]")]
-    public class VoteController : ControllerBase
+    public class VoteController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IVoteService voteService;

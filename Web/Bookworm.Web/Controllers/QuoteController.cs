@@ -11,7 +11,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class QuoteController : Controller
+    public class QuoteController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IQuotesService quotesService;

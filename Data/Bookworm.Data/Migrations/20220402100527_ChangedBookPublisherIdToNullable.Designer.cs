@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookworm.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220329145048_AddQuizWithRelatedModels")]
-    partial class AddQuizWithRelatedModels
+    [Migration("20220402100527_ChangedBookPublisherIdToNullable")]
+    partial class ChangedBookPublisherIdToNullable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,42 +23,6 @@ namespace Bookworm.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Bookworm.Data.Models.Answer", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("QuestionId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("Answers");
-                });
 
             modelBuilder.Entity("Bookworm.Data.Models.ApplicationRole", b =>
                 {
@@ -118,6 +82,9 @@ namespace Bookworm.Data.Migrations
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DownloadsCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -280,7 +247,7 @@ namespace Bookworm.Data.Migrations
                     b.Property<int>("PagesCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("PublisherId")
+                    b.Property<int?>("PublisherId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -457,101 +424,6 @@ namespace Bookworm.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Publishers");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.Question", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("QuizId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.Quiz", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuizCategoryId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("QuizCategoryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Quizzes");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.QuizCategory", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("QuizCategories");
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Quote", b =>
@@ -797,15 +669,6 @@ namespace Bookworm.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Bookworm.Data.Models.Answer", b =>
-                {
-                    b.HasOne("Bookworm.Data.Models.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId");
-
-                    b.Navigation("Question");
-                });
-
             modelBuilder.Entity("Bookworm.Data.Models.AuthorBook", b =>
                 {
                     b.HasOne("Bookworm.Data.Models.Author", "Author")
@@ -839,9 +702,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasOne("Bookworm.Data.Models.Publisher", "Publisher")
                         .WithMany("Books")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("PublisherId");
 
                     b.HasOne("Bookworm.Data.Models.ApplicationUser", "User")
                         .WithMany("Books")
@@ -882,30 +743,6 @@ namespace Bookworm.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Book");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.Question", b =>
-                {
-                    b.HasOne("Bookworm.Data.Models.Quiz", "Quiz")
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId");
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.Quiz", b =>
-                {
-                    b.HasOne("Bookworm.Data.Models.QuizCategory", "QuizCategory")
-                        .WithMany("Quizzes")
-                        .HasForeignKey("QuizCategoryId");
-
-                    b.HasOne("Bookworm.Data.Models.ApplicationUser", "User")
-                        .WithMany("Quizzes")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("QuizCategory");
 
                     b.Navigation("User");
                 });
@@ -1018,8 +855,6 @@ namespace Bookworm.Data.Migrations
 
                     b.Navigation("Logins");
 
-                    b.Navigation("Quizzes");
-
                     b.Navigation("Ratings");
 
                     b.Navigation("Roles");
@@ -1061,21 +896,6 @@ namespace Bookworm.Data.Migrations
             modelBuilder.Entity("Bookworm.Data.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.Question", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.Quiz", b =>
-                {
-                    b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.QuizCategory", b =>
-                {
-                    b.Navigation("Quizzes");
                 });
 #pragma warning restore 612, 618
         }

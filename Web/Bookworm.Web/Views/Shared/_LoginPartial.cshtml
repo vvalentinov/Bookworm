@@ -8,11 +8,15 @@
     @if (this.SignInManager.IsSignedIn(this.User))
     {
         var user = this.UserManager.GetUserAsync(this.User);
+        var downloads = user.Result.DownloadsCount;
+        var favoriteBooksCount = user.Result.FavoriteBooks.Count();
         string url = null;
         if (user != null)
         {
             url = user.Result.ProfilePictureUrl;
         }
+        <li class="navbar-brand"><a asp-action="Favorites" asp-controller="FavoriteBook"><i class="fas fa-heart" title="Favorite Books"></i></a></li>
+        <li class="navbar-brand"><i class="fas fa-download" title="Daily Downloads: @downloads / 10"></i></li>
         <li class="dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img src=@url width="40" height="40" class="rounded-circle">
@@ -21,7 +25,7 @@
                 <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
                 @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                 {
-                    <a class="dropdown-item" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
+                    <a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">Admin</a>
                 }
                 <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
                     <button type="submit" class="nav-link btn btn-link text-light justify-content-center">Logout</button>

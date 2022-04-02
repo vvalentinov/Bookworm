@@ -1,14 +1,12 @@
-﻿namespace Bookworm.Web.Areas.Administration.Controllers
+﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
     using Bookworm.Common;
-    using Bookworm.Web.Controllers;
-
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
-    [Area("Administration")]
-    public class AdministrationController : BaseController
+    [Area("Admin")]
+    public class BaseController : Controller
     {
     }
 }

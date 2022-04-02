@@ -14,7 +14,7 @@
 
         public string Description { get; set; }
 
-        public string Publisher { get; set; }
+        public string PublisherName { get; set; }
 
         public int Year { get; set; }
 

@@ -11,15 +11,15 @@
             <div class="px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5">
                     <div class="col-md-4">
-                        <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
+                        <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn img-fluid img-thumbnail" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
                         <div class="m-4 text-center">
                             <a asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id" class="btn flex-shrink-0 ">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
                         </div>
                         <div class="m-4 text-center">
-                            <a asp-controller="Book" asp-action="AddToFavorites" asp-route-bookId="@Model.Id" class="btn flex-shrink-0">
-                                Add To Favorites<i class="fas fa-heart"></i>
+                            <a asp-controller="FavoriteBook" asp-action="AddToFavorites" asp-route-bookId="@Model.Id" title="Add to Favorites">
+                                <i class="fas fa-heart fa-2x"></i>
                             </a>
                         </div>
                     </div>
@@ -36,10 +36,10 @@
                                     @Model.Title
                                 }
                             </li>
-                            @if (@Model.Publisher != null)
+                            @if (@Model.PublisherName != null)
                             {
                                 <li class="list-group-item list-group-item-action">
-                                    Publisher: @Model.Publisher
+                                    Publisher: @Model.PublisherName
                                 </li>
                             }
                             <li class="list-group-item list-group-item-action">
@@ -208,52 +208,19 @@
                                     @comment.UserUserName
                                     <span>- @comment.CreatedOn.Date.ToString("d")</span>
                                     <div class="rating">
-                                        <!-- Thumbs up -->
-                                        @if (comment.UserVote == 1)
-                                        {
-                                            <div class="like grow">
-                                                <a onclick="sendVote(@comment.Id, true)">
-                                                    <i class="fas fa-thumbs-up fa-2x liked" aria-hidden="true"></i>
-                                                </a>
-                                                <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
-                                            </div>
-                                            <div class="dislike grow">
-                                                <a onclick="sendVote(@comment.Id, false)">
-                                                    <i class="far fa-thumbs-down fa-2x like" aria-hidden="true"></i>
-                                                </a>
-                                                <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
-                                            </div>
-                                        }
-                                        else if (comment.UserVote == -1)
-                                        {
-                                            <div class="like grow">
-                                                <a onclick="sendVote(@comment.Id, true)">
-                                                    <i class="far fa-thumbs-up fa-2x like" aria-hidden="true"></i>
-                                                </a>
-                                                <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
-                                            </div>
-                                            <div class="dislike grow">
-                                                <a onclick="sendVote(@comment.Id, false)">
-                                                    <i class="fas fa-thumbs-down fa-2x liked" aria-hidden="true"></i>
-                                                </a>
-                                                <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="like grow">
-                                                <a onclick="sendVote(@comment.Id, true)">
-                                                    <i class="far fa-thumbs-up fa-2x like" aria-hidden="true"></i>
-                                                </a>
-                                                <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
-                                            </div>
-                                            <div class="dislike grow">
-                                                <a onclick="sendVote(@comment.Id, false)">
-                                                    <i class="far fa-thumbs-down fa-2x like" aria-hidden="true"></i>
-                                                </a>
-                                                <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
-                                            </div>
-                                        }
+                                        <!-- Comment Voting -->
+                                    <div class="like grow">
+                                            <a onclick="sendVote(@comment.Id, true)">
+                                                <i id="@comment.Id-like" class="fas fa-thumbs-up fa-2x @(comment.UserVote == 1 ? "liked" : "like")" aria-hidden="true"></i>
+                                            </a>
+                                            <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
+                                        </div>
+                                        <div class="dislike grow">
+                                            <a onclick="sendVote(@comment.Id, false)">
+                                                <i id="@comment.Id-dislike" class="fas fa-thumbs-down fa-2x @(comment.UserVote == -1 ? "liked" : "like")" aria-hidden="true"></i>
+                                            </a>
+                                            <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -271,7 +238,7 @@
 </section>
 
 <form method="post" id="antiForgeryForm"></form>
-<form id="votesForm" method="post"></form>
+<form method="post" id="votesForm"></form>
 @section Scripts{
 <script>
         function sendVote(commentId, isUpVote) {
@@ -290,6 +257,13 @@
                     var commentId = data.commentId;
                     $('#' + commentId + '-up').html('(' + upVotes + ')');
                     $('#' + commentId + '-down').html('(' + downVotes + ')');
+                    if(isUpVote){
+                        $('#' + commentId + '-like').addClass("liked");
+                        $('#' + commentId + '-dislike').removeClass("liked");
+                    }else{
+                         $('#' + commentId + '-like').removeClass("liked");
+                        $('#' + commentId + '-dislike').addClass("liked");
+                    }
                 }
             });
         }
@@ -342,8 +316,6 @@
                             $('#3-star-rating').prop('checked', true);
                             $('#4-star-rating').prop('checked', true);
                             $('#5-star-rating').prop('checked', true);
-                        }else{
-
                         }
                     }
                 });

@@ -79,7 +79,16 @@
                 .Select(x => x.Name)
                 .ToList();
 
-            string publisher = this.publishersRepository.AllAsNoTracking().First(x => x.Id == book.PublisherId).Name;
+            Publisher publisher = this.publishersRepository
+                .AllAsNoTracking()
+                .FirstOrDefault(x => x.Id == book.PublisherId);
+
+            string publisherName = null;
+
+            if (publisher != null)
+            {
+                publisherName = publisher.Name;
+            }
 
             string language = this.languagesRepository
                 .AllAsNoTracking()
@@ -134,7 +143,7 @@
                   PagesCount = x.PagesCount,
                   Year = x.Year,
                   Authors = authors,
-                  Publisher = publisher,
+                  PublisherName = publisherName,
                   CategoryName = category,
                   RatingsAvg = votesAvg,
                   RatingsCount = votesCount,
@@ -147,7 +156,10 @@
         {
             return new BookListingViewModel()
             {
-                CategoryName = this.categoriesRepository.AllAsNoTracking().First(x => x.Id == categoryId).Name,
+                CategoryName = this.categoriesRepository
+                                   .AllAsNoTracking()
+                                   .First(x => x.Id == categoryId)
+                                   .Name,
                 Books = this.bookRepository
                             .AllAsNoTracking()
                             .Where(x => x.CategoryId == categoryId)
@@ -157,7 +169,10 @@
                             .OrderByDescending(x => x.Id)
                             .ToList(),
                 PageNumber = page,
-                BookCount = this.bookRepository.AllAsNoTracking().Where(x => x.CategoryId == categoryId).Count(),
+                BookCount = this.bookRepository
+                                .AllAsNoTracking()
+                                .Where(x => x.CategoryId == categoryId)
+                                .Count(),
                 BooksPerPage = booksPerPage,
             };
         }

@@ -74,6 +74,11 @@
     background-color: #1abc9c;
 }
 
+.btnDanger {
+    color: white;
+    background-color: red;
+}
+
 .welcomeSection {
     margin-bottom: 5rem;
 }

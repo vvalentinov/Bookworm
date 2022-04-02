@@ -58,7 +58,7 @@
         public virtual Language Language { get; set; }
 
         [ForeignKey(nameof(Publisher))]
-        public int PublisherId { get; set; }
+        public int? PublisherId { get; set; }
 
         public virtual Publisher Publisher { get; set; }
 

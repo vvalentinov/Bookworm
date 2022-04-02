@@ -12,7 +12,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class BookController : Controller
+    public class BookController : BaseController
     {
         private readonly IBooksService booksService;
         private readonly ICategoriesService categoriesService;
@@ -51,45 +51,11 @@
         public async Task<IActionResult> CurrentBook(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user == null ? null : user.Id);
+            BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user?.Id);
             return this.View(bookViewModel);
         }
 
-        [Authorize]
-        public async Task<IActionResult> AddToFavorites(string bookId)
-        {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            try
-            {
-                await this.favoriteBooksService.AddBookToFavoritesAsync(bookId, user.Id);
-                this.TempData[MessageConstant.SuccessMessage] = "Successfully added book to favorites!";
-            }
-            catch (Exception ex)
-            {
-                this.TempData[MessageConstant.WarningMessage] = ex.Message;
-                return this.RedirectToAction("CurrentBook", new { id = bookId });
-            }
-
-            return this.RedirectToAction("CurrentBook", new { id = bookId });
-        }
-
-        [Authorize]
-        public async Task<IActionResult> DeleteFromFavorites(string bookId)
-        {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            await this.favoriteBooksService.DeleteFromFavoritesAsync(bookId, user.Id);
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully removed book!";
-            return this.RedirectToAction("Favorites");
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Favorites()
-        {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            var books = this.favoriteBooksService.GetUserFavoriteBooks(user.Id);
-            return this.View(books);
-        }
+       
 
         [Authorize]
         public IActionResult Upload()
@@ -145,6 +111,14 @@
         [Authorize]
         public async Task<IActionResult> Download(string id)
         {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            if (user.DownloadsCount == 10)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Your daily downloads are 10/10!";
+                return this.RedirectToAction("CurrentBook", new { id });
+            }
+
+            user.DownloadsCount++;
             var result = await this.blobService.DownloadBlobAsync(id);
             return this.File(result.Item1, result.Item2, result.Item3);
         }

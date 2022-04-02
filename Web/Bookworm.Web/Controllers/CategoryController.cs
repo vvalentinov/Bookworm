@@ -4,7 +4,7 @@
     using Bookworm.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Mvc;
 
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoriesService categoriesService;
 
