@@ -1,60 +1,58 @@
 ﻿<section class="pt-5 pb-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <h3 id="recentBook" class="mb-3">Recently Uploaded Books</h3>
-            </div>
-            <div class="col-6 text-right">
-                <i style="color: #1abc9c;" href="#carouselExampleIndicators2" role="button" data-slide="prev" class="fas fa-arrow-circle-left fa-3x"></i>
-                <i style="color: #1abc9c;" href="#carouselExampleIndicators2" role="button" data-slide="next" class="fas fa-arrow-circle-right fa-3x"></i>
-            </div>
-            <div class="col-12">
-                <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="row">
-                                @for (var i = 0; i <= 3; i++)
-                                {
-                                    <div class="col-md-3 mt-5 mb-4">
-                                        <div class="card text-center">
-                                            <img class="card-img-top" height="300" alt="100%x280" src="@this.Model.RecentBooks[i].ImageUrl">
-                                            <div class="card-body" style="background-color: #1abc9c">
-                                                <a style="background-color: #34495E;" asp-controller="Book" asp-action="CurrentBook" asp-route-id="@this.Model.RecentBooks[i].Id" class="btn btn-primary text-center">Go to Book</a>
-                                            </div>
+    <div class="row">
+        <div class="col-6">
+            <h3 id="recentBook" class="mb-3">Recently Uploaded Books</h3>
+        </div>
+        <div class="col-6 text-right">
+            <i style="color: #1abc9c;" href="#carouselExampleIndicators2" role="button" data-slide="prev" class="fas fa-arrow-circle-left fa-3x"></i>
+            <i style="color: #1abc9c;" href="#carouselExampleIndicators2" role="button" data-slide="next" class="fas fa-arrow-circle-right fa-3x"></i>
+        </div>
+        <div class="col-12">
+            <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row">
+                            @for (var i = 0; i <= 3; i++)
+                            {
+                                <div class="col-md-3 mt-5 mb-4">
+                                    <div class="card text-center">
+                                        <img class="card-img-top" height="300" alt="100%x280" src="@this.Model.RecentBooks[i].ImageUrl">
+                                        <div class="card-body" style="background-color: #1abc9c">
+                                            <a style="background-color: #34495E;" asp-controller="Book" asp-action="CurrentBook" asp-route-id="@this.Model.RecentBooks[i].Id" class="btn btn-primary text-center">Go to Book</a>
                                         </div>
                                     </div>
-                                }
-                            </div>
+                                </div>
+                            }
                         </div>
-                        <div class="carousel-item">
-                            <div class="row">
-                                @for (var i = 4; i <= 7; i++)
-                                {
-                                    <div class="col-md-3 mt-5 mb-4">
-                                        <div class="card text-center">
-                                            <img class="card-img-top" height="300" alt="100%x280" src="@this.Model.RecentBooks[i].ImageUrl">
-                                            <div class="card-body" style="background-color: #1abc9c">
-                                                <a style="background-color: #34495E;" asp-controller="Book" asp-action="CurrentBook" asp-route-id="@this.Model.RecentBooks[i].Id" class="btn btn-primary">Go to Book</a>
-                                            </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            @for (var i = 4; i <= 7; i++)
+                            {
+                                <div class="col-md-3 mt-5 mb-4">
+                                    <div class="card text-center">
+                                        <img class="card-img-top" height="300" alt="100%x280" src="@this.Model.RecentBooks[i].ImageUrl">
+                                        <div class="card-body" style="background-color: #1abc9c">
+                                            <a style="background-color: #34495E;" asp-controller="Book" asp-action="CurrentBook" asp-route-id="@this.Model.RecentBooks[i].Id" class="btn btn-primary">Go to Book</a>
                                         </div>
                                     </div>
-                                }
-                            </div>
+                                </div>
+                            }
                         </div>
-                        <div class="carousel-item">
-                            <div class="row">
-                                @for (var i = 8; i <= 11; i++)
-                                {
-                                    <div class="col-md-3 mt-5 mb-4">
-                                        <div class="card text-center">
-                                            <img class="card-img-top" height="300" alt="100%x280" src="@this.Model.RecentBooks[i].ImageUrl">
-                                            <div class="card-body" style="background-color: #1abc9c">
-                                                <a style="background-color: #34495E;" asp-controller="Book" asp-action="CurrentBook" asp-route-id="@this.Model.RecentBooks[i].Id" class="btn btn-primary">Go to Book</a>
-                                            </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            @for (var i = 8; i <= 11; i++)
+                            {
+                                <div class="col-md-3 mt-5 mb-4">
+                                    <div class="card text-center">
+                                        <img class="card-img-top" height="300" alt="100%x280" src="@this.Model.RecentBooks[i].ImageUrl">
+                                        <div class="card-body" style="background-color: #1abc9c">
+                                            <a style="background-color: #34495E;" asp-controller="Book" asp-action="CurrentBook" asp-route-id="@this.Model.RecentBooks[i].Id" class="btn btn-primary">Go to Book</a>
                                         </div>
                                     </div>
-                                }
-                            </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

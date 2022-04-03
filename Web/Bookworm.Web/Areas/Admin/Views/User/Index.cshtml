@@ -1,1 +1,34 @@
-﻿<h1>Welcome to Admin Area - user controller!</h1>
+﻿@model IEnumerable<UsersListViewModel>
+
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h1 class="text-center">Users</h1>
+
+<div class="card-body table-responsive p-0">
+    <table class="table table-hover text-nowrap">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <a asp-area="admin" asp-action="Edit" asp-controller="User" asp-route-id="@user.Id" class="btn btn-outline-info">Edit User</a>
+                        <a asp-area="admin" asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" class="btn btn-outline-danger">Delete User</a>
+                        <a asp-area="admin" asp-action="Roles" asp-controller="User" asp-route-userId="@user.Id" class="btn btn-outline-info">User Role</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

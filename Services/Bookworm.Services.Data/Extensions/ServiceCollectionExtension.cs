@@ -52,6 +52,8 @@
 
             services.AddTransient<IQuizService, QuizService>();
 
+            services.AddTransient<IUsersService, UsersService>();
+
             services.AddAntiforgery(options =>
             {
                 options.HeaderName = "X-CSRF-TOKEN";

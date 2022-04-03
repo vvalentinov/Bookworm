@@ -3,6 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
 
+    using Azure.Storage.Blobs;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
@@ -72,7 +73,7 @@
             {
                 if (user.ProfilePictureUrl != null && user.ProfilePictureUrl != anonymousPicture)
                 {
-                    var blob = this.blobService.GetBlobClient(user.ProfilePictureUrl);
+                    BlobClient blob = this.blobService.GetBlobClient(user.ProfilePictureUrl);
                     await this.blobService.DeleteBlobAsync(blob.Name);
                 }
 

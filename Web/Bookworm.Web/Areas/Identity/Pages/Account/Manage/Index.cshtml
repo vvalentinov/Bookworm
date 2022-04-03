@@ -6,11 +6,15 @@
 }
 <h4 class="text-center">@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
-<div class="row">
-    @if (@Model.ProfilePictureUrl != null)
-    {
+@if (@Model.ProfilePictureUrl != null)
+{
+    <div class="text-center">
         <img src=@Model.ProfilePictureUrl style="border-radius:50%;width:15rem;">
-    }
+    </div>
+
+}
+<div class="row justify-content-center">
+
 
     <div class="col-md-6">
         <form id="profile-form" method="post" enctype="multipart/form-data">

@@ -39,13 +39,12 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            @*<li class="nav-item active">
-                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
+            <li class="nav-item active">
+                <a asp-area="admin" asp-controller="User" asp-action="Index" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Manage Users</span>
                 </a>
-                </li>*@
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -269,7 +268,7 @@
                                     Activity Log
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a  class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -304,8 +303,6 @@
         </div>
     </footer>
     <!-- End of Footer -->
-   
-
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">

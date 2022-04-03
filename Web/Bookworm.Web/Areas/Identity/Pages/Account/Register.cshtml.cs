@@ -7,6 +7,7 @@
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Authentication;
@@ -65,7 +66,7 @@
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                string pictureUrl = null;
+                string pictureUrl;
                 if (this.Input.ProfilePictureFile != null)
                 {
                     await this.blobService.UploadBlobAsync(this.Input.ProfilePictureFile);
@@ -76,8 +77,15 @@
                     pictureUrl = this.configuration.GetValue<string>("AnonymousProfilePictureUrl");
                 }
 
-                var user = new ApplicationUser { UserName = this.Input.UserName, Email = this.Input.Email, ProfilePictureUrl = pictureUrl };
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = this.Input.UserName,
+                    Email = this.Input.Email,
+                    ProfilePictureUrl = pictureUrl,
+                };
+
                 var result = await this.userManager.CreateAsync(user, this.Input.Password);
+                await this.userManager.AddToRoleAsync(user, GlobalConstants.UserRoleName);
                 if (result.Succeeded)
                 {
                     this.logger.LogInformation("User created a new account with password.");
