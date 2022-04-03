@@ -315,16 +315,14 @@ svg {
 
 
     .dislike:hover,
-    .like:hover{
+    .like:hover {
         color: #1abc9c;
         transition: all .2s ease-in-out;
         transform: scale(1.1);
     }
 
-/*.active {
-    color: #1abc9c;
-}*/
-
 .liked {
     color: #1abc9c;
 }
+
+

@@ -32,9 +32,12 @@
                     .Name;
             }
 
-            int categoryId = this.categoriesRepository.AllAsNoTracking().First(x => x.Name == category).Id;
+            int categoryId = this.categoriesRepository
+                                 .AllAsNoTracking()
+                                 .First(x => x.Name == category)
+                                 .Id;
 
-            var books = this.bookRepository
+            List<BookViewModel> books = this.bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.CategoryId == categoryId)
                 .OrderBy(x => Guid.NewGuid())
@@ -43,20 +46,8 @@
                 {
                     ImageUrl = x.ImageUrl,
                     Title = x.Title,
+                    Id = x.Id,
                 }).ToList();
-
-            //List<BookViewModel> books = this.categoriesRepository
-            //    .AllAsNoTracking()
-            //    .First(x => x.Name == category)
-            //    .Books
-            //    .OrderBy(x => Guid.NewGuid())
-            //    .Take(countBooks)
-            //    .Select(x => new BookViewModel()
-            //    {
-            //        ImageUrl = x.ImageUrl,
-            //        Title = x.Title,
-            //    })
-            //    .ToList();
 
             return books;
         }

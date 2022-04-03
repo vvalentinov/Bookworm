@@ -50,6 +50,8 @@
 
             services.AddTransient<IRandomBookService, RandomBookService>();
 
+            services.AddTransient<IQuizService, QuizService>();
+
             services.AddAntiforgery(options =>
             {
                 options.HeaderName = "X-CSRF-TOKEN";

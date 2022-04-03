@@ -11,7 +11,7 @@
         @foreach (var book in Model)
         {
             <div class="col-md-3 mt-5 mb-4">
-                <a asp-controller="Book" asp-action="CurrentBook" asp-route-id="@book.Id">
+                <a asp-controller="Book" asp-action="CurrentBook" asp-route-id="@book.Id" target="_blank">
                     <div class="card bg-dark text-light h-100">
                         <img title="@book.Title" class="zoom" src="@book.ImageUrl" alt="Book" height="300">
                     </div>

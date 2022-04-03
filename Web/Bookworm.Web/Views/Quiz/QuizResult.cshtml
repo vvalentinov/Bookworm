@@ -1,0 +1,16 @@
+﻿@model ResultViewModel
+
+@{
+    ViewData["Title"] = "Quiz Results";
+}
+
+<h2>Result: @Model.Result / @Model.NumberOfQuestions</h2>
+
+
+@foreach (var question in Model.IncorrectAnswers)
+{
+    <h2>@question.QuestionName</h2>
+    <h3>Your answer: @question.SelectedAnswer</h3>
+    <h4>Correct answer: @question.CorrectAnswer</h4>
+    <hr />
+}

@@ -1,7 +1,6 @@
 ﻿namespace Bookworm.Services.Data.Contracts
 {
     using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     using Bookworm.Web.ViewModels.Books;
     using Microsoft.AspNetCore.Mvc.Rendering;
