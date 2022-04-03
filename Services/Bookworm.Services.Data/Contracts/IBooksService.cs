@@ -12,5 +12,9 @@
         BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
 
         BookViewModel GetBookWithId(string bookId, string userId = null);
+
+        IList<T> GetPopularBooks<T>(int count);
+
+        IList<T> GetRecentBooks<T>(int count);
     }
 }

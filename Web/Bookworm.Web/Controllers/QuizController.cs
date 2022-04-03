@@ -19,7 +19,7 @@
 
         public IActionResult TakeQuiz()
         {
-            TakeQuizFormModel model = new TakeQuizFormModel()
+            TakeQuizFormModel model = new()
             {
                 Categories = this.quizService.GetQuizCategories(),
             };

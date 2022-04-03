@@ -42,7 +42,7 @@
 
         public IActionResult Random()
         {
-            RandomBookFormViewModel model = new RandomBookFormViewModel()
+            RandomBookFormViewModel model = new()
             {
                 Categories = this.randomBookService.GetCategories(),
             };

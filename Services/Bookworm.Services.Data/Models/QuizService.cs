@@ -24,7 +24,7 @@
         public ResultViewModel CalculateResult(IList<QuizQuestionViewModel> questions)
         {
             int countPoints = 0;
-            List<QuizQuestionViewModel> incorrectAnswers = new List<QuizQuestionViewModel>();
+            List<QuizQuestionViewModel> incorrectAnswers = new();
 
             foreach (var question in questions)
             {
@@ -56,7 +56,7 @@
 
         public IEnumerable<SelectListItem> GetQuizCategories()
         {
-            List<string> categories = new List<string>()
+            List<string> categories = new()
             {
                 "Film & TV",
                 "Food & Drink",
@@ -68,10 +68,10 @@
                 "Society & Culture",
                 "Sport & Leisure",
             };
-            List<SelectListItem> categoriesResult = new List<SelectListItem>();
+            List<SelectListItem> categoriesResult = new();
             foreach (var category in categories)
             {
-                SelectListItem selectListItem = new SelectListItem()
+                SelectListItem selectListItem = new()
                 {
                     Text = category,
                     Value = category,
@@ -85,12 +85,12 @@
 
         public QuizViewModel GetQuizModel(List<QuizQuestion> questions, string categoryName)
         {
-            List<QuizQuestionViewModel> modelQuestions = new List<QuizQuestionViewModel>();
-            Random r = new Random();
+            List<QuizQuestionViewModel> modelQuestions = new();
+            Random r = new();
             foreach (QuizQuestion question in questions)
             {
                 var num = r.Next(1, 5);
-                QuizQuestionViewModel quizQuestionViewModel = new QuizQuestionViewModel()
+                QuizQuestionViewModel quizQuestionViewModel = new()
                 {
                     QuestionName = question.Question,
                     CorrectAnswer = question.CorrectAnswer,
@@ -127,7 +127,7 @@
                 modelQuestions.Add(quizQuestionViewModel);
             }
 
-            QuizViewModel quizViewModel = new QuizViewModel()
+            QuizViewModel quizViewModel = new()
             {
                 Category = categoryName,
                 Questions = modelQuestions,
@@ -138,15 +138,13 @@
 
         public async Task<List<QuizQuestion>> GetQuizQuestionsAsync(string categoryName, int countQuestions)
         {
-            List<QuizQuestion> questionList = new List<QuizQuestion>();
+            List<QuizQuestion> questionList = new();
             string category = this.configuration.GetValue<string>($"QuizCategories:{categoryName}");
-            using (HttpClient httpClient = new HttpClient())
+            using (HttpClient httpClient = new())
             {
-                using (HttpResponseMessage response = await httpClient.GetAsync($"https://the-trivia-api.com/questions?categories={category}&limit={countQuestions}"))
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    questionList = JsonConvert.DeserializeObject<List<QuizQuestion>>(apiResponse);
-                }
+                using HttpResponseMessage response = await httpClient.GetAsync($"https://the-trivia-api.com/questions?categories={category}&limit={countQuestions}");
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                questionList = JsonConvert.DeserializeObject<List<QuizQuestion>>(apiResponse);
             }
 
             return questionList;

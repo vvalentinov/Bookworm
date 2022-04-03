@@ -176,5 +176,25 @@
                 BooksPerPage = booksPerPage,
             };
         }
+
+        public IList<T> GetPopularBooks<T>(int count)
+        {
+            return this.bookRepository
+                .AllAsNoTracking()
+                .OrderByDescending(x => x.DownloadsCount)
+                .Take(count)
+                .To<T>()
+                .ToList();
+        }
+
+        public IList<T> GetRecentBooks<T>(int count)
+        {
+            return this.bookRepository
+                .AllAsNoTracking()
+                .OrderByDescending(x => x.CreatedOn)
+                .Take(count)
+                .To<T>()
+                .ToList();
+        }
     }
 }
