@@ -1,15 +1,18 @@
 ﻿@model RandomBookFormViewModel
 
 @{
-    this.ViewData["Title"] = "Generate Random Book";
+    this.ViewData["Title"] = "Random Book Generator";
 }
 
-<h2 class="text-center">Random Book Generator</h2>
+<div class="text-center textContainer col-5">
+    <h2 class="text-center">@this.ViewData["Title"]</h2>
+</div>
 
-<form method="post" asp-controller="Book" asp-action="Random">
+<form method="post" asp-controller="Book" asp-action="Random" class="col-lg-8 offset-lg-2">
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="CategoryName"><strong>Select Category</strong></label>
-        <select asp-for="CategoryName" asp-items="@Model.Categories" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+        <select asp-for="CategoryName" asp-items="@Model.Categories" size="8" aria-label="size 5 select example" class="form-select form-control"></select>
     </div>
     <div class="form-group">
         <label asp-for="@Model.CountBooks">Select Numbet of books:</label><br>
@@ -22,7 +25,6 @@
         <input asp-for="@Model.CountBooks" id="twenty" type="radio" name="CountBooks" value=20>
         <label for="twenty">20</label>
     </div>
-
     <div class="text-center">
         <button type="submit" class="btn">Generate</button>
     </div>

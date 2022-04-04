@@ -44,7 +44,7 @@
 
         public BlobClient GetBlobClient(string blobUri)
         {
-            Uri uri = new Uri(blobUri);
+            Uri uri = new(blobUri);
             return new BlobClient(uri);
         }
 
@@ -58,16 +58,16 @@
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            Uri uri = new Uri(book.FileUrl);
+            Uri uri = new(book.FileUrl);
 
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = new BlobClient(uri);
+            BlobClient blobClient = new(uri);
 
             BlobProperties blobProperties = blobClient.GetProperties();
             string contentType = blobProperties.ContentType;
 
-            MemoryStream ms = new MemoryStream();
+            MemoryStream ms = new();
             await blobClient.DownloadToAsync(ms);
             Stream blobStream = blobClient.OpenReadAsync().Result;
             return Tuple.Create(blobStream, contentType, blobClient.Name);
@@ -87,13 +87,14 @@
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(file.FileName);
             byte[] fileBytes = null;
-            using (MemoryStream ms = new MemoryStream())
+
+            using (MemoryStream ms = new())
             {
                 file.CopyTo(ms);
                 fileBytes = ms.ToArray();
             }
 
-            await using MemoryStream memoryStream = new MemoryStream(fileBytes);
+            await using MemoryStream memoryStream = new(fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
 

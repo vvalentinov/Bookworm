@@ -11,21 +11,22 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IConfiguration configuration;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ILogger<LoginModel> logger;
 
         public LoginModel(
             SignInManager<ApplicationUser> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+            IConfiguration configuration)
         {
-            this.userManager = userManager;
+            this.configuration = configuration;
             this.signInManager = signInManager;
             this.logger = logger;
         }
@@ -36,6 +37,8 @@
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        public string LoginPictureUrl => this.configuration.GetValue<string>("LoginImageUrl");
 
         [TempData]
         public string ErrorMessage { get; set; }

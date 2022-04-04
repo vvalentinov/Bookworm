@@ -34,6 +34,10 @@
     color: #1abc9c;
 }
 
+#dailyDownloadsHyperlink:disabled {
+    pointer-events: none;
+}
+
 .navbar-collapse {
     margin-left: 30rem;
 }
@@ -105,7 +109,7 @@
 
 .container {
     margin-top: 8rem;
-    margin-bottom:3rem;
+    margin-bottom: 3rem;
 }
 
 .bookSection .card .card-header {
@@ -354,3 +358,91 @@ input[type="radio"] {
     input[type="radio"]:focus {
         outline: 0;
     }
+
+
+
+
+
+.btn-google {
+    color: #fff;
+    background-color: #ea4335;
+    border-color: #fff;
+}
+
+    .btn-google:hover {
+        color: #fff;
+        background-color: #e12717;
+        border-color: #e6e6e6;
+    }
+
+    .btn-google:focus, .btn-google.focus {
+        color: #fff;
+        background-color: #e12717;
+        border-color: #e6e6e6;
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-google.disabled, .btn-google:disabled {
+        color: #fff;
+        background-color: #ea4335;
+        border-color: #fff;
+    }
+
+    .btn-google:not(:disabled):not(.disabled):active, .btn-google:not(:disabled):not(.disabled).active,
+    .show > .btn-google.dropdown-toggle {
+        color: #fff;
+        background-color: #d62516;
+        border-color: #dfdfdf;
+    }
+
+        .btn-google:not(:disabled):not(.disabled):active:focus, .btn-google:not(:disabled):not(.disabled).active:focus,
+        .show > .btn-google.dropdown-toggle:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
+        }
+
+
+
+
+.btn-facebook {
+    color: #fff;
+    background-color: #3b5998;
+    border-color: #fff;
+}
+
+    .btn-facebook:hover {
+        color: #fff;
+        background-color: #30497c;
+        border-color: #e6e6e6;
+    }
+
+    .btn-facebook:focus, .btn-facebook.focus {
+        color: #fff;
+        background-color: #30497c;
+        border-color: #e6e6e6;
+        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-facebook.disabled, .btn-facebook:disabled {
+        color: #fff;
+        background-color: #3b5998;
+        border-color: #fff;
+    }
+
+    .btn-facebook:not(:disabled):not(.disabled):active, .btn-facebook:not(:disabled):not(.disabled).active,
+    .show > .btn-facebook.dropdown-toggle {
+        color: #fff;
+        background-color: #2d4373;
+        border-color: #dfdfdf;
+    }
+
+        .btn-facebook:not(:disabled):not(.disabled):active:focus, .btn-facebook:not(:disabled):not(.disabled).active:focus,
+        .show > .btn-facebook.dropdown-toggle:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
+        }
+
+
+
+.responsive {
+    width: 100%;
+    height: auto;
+}

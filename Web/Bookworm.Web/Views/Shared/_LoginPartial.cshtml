@@ -15,20 +15,37 @@
         {
             url = user.Result.ProfilePictureUrl;
         }
-        <li class="navbar-brand"><a asp-action="Favorites" asp-controller="FavoriteBook"><i class="fas fa-heart" title="Favorite Books"></i></a></li>
-        <li class="navbar-brand"><i class="fas fa-download" title="Daily Downloads: @downloads / 10"></i></li>
-        <li class="dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src=@url width="40" height="40" class="rounded-circle">
+
+        <li class="nav-item dropdown no-arrow animate__fadeIn">
+            <a class="nav-link dropdown-toggle" id="userDropdown" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img class="img-profile rounded-circle" width="40" height="40" src=@url>
             </a>
-            <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
+            <div class="dropdown-menu dropdown-menu-right shadow "
+             aria-labelledby="userDropdown">
                 @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                 {
-                    <a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">Admin</a>
+                    <a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">
+                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>Admin
+                    </a>
                 }
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-user-cog fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profile
+                </a>
+                <a class="dropdown-item" asp-action="Favorites" asp-controller="FavoriteBook">
+                    <i class="fas fa-heart fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Favorite Books
+                </a>
+
+                <a class="dropdown-item" id="dailyDownloadsHyperlink">
+
+                    <i class="fas fa-download fa-sm fa-fw mr-2 text-gray-400"></i> Daily Downloads: @downloads / 10
+                </a>
+
+                <div class="dropdown-divider"></div>
                 <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
-                    <button type="submit" class="nav-link btn btn-link text-light justify-content-center">Logout</button>
+                    <button type="submit" class="nav-link btn btn-link text-light justify-content-center">Logout<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i></button>
                 </form>
             </div>
         </li>

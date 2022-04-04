@@ -9,7 +9,10 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using CloudinaryDotNet;
+    using CloudinaryDotNet.Actions;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.DataConstants;
 
@@ -18,21 +21,21 @@
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Publisher> publisherRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
-        private readonly IRepository<AuthorBook> authorBookRepository;
         private readonly IBlobService blobService;
+        private readonly IConfiguration configuration;
 
         public UploadBookService(
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Publisher> publisherRepository,
             IDeletableEntityRepository<Author> authorRepository,
-            IRepository<AuthorBook> authorBookRepository,
-            IBlobService blobService)
+            IBlobService blobService,
+            IConfiguration configuration)
         {
             this.booksRepository = booksRepository;
             this.publisherRepository = publisherRepository;
             this.authorRepository = authorRepository;
-            this.authorBookRepository = authorBookRepository;
             this.blobService = blobService;
+            this.configuration = configuration;
         }
 
         public async Task UploadBookAsync(
@@ -100,10 +103,9 @@
             }
 
             await this.blobService.UploadBlobAsync(bookFile);
-            await this.blobService.UploadBlobAsync(imageFile);
 
             string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri(bookFile.FileName);
-            string imageFileBlobUrl = this.blobService.GetBlobAbsoluteUri(imageFile.FileName);
+            string imageUrl = await this.UploadImageAsync(imageFile);
 
             Publisher bookPublisher = null;
             if (publisher != null)
@@ -121,7 +123,7 @@
                 }
             }
 
-            Book book = new Book()
+            Book book = new()
             {
                 Title = title,
                 LanguageId = languageId,
@@ -131,11 +133,11 @@
                 CategoryId = categoryId,
                 UserId = userId,
                 FileUrl = bookFileBlobUrl,
-                ImageUrl = imageFileBlobUrl,
+                ImageUrl = imageUrl,
                 PublisherId = bookPublisher?.Id,
             };
 
-            List<AuthorBook> bookAuthors = new List<AuthorBook>();
+            List<AuthorBook> bookAuthors = new();
             foreach (string author in authors)
             {
                 Author bookAauthor = this.authorRepository
@@ -150,13 +152,30 @@
                     await this.authorRepository.SaveChangesAsync();
                 }
 
-                AuthorBook authorBook = new AuthorBook() { BookId = book.Id, AuthorId = bookAauthor.Id };
+                AuthorBook authorBook = new() { BookId = book.Id, AuthorId = bookAauthor.Id };
                 bookAuthors.Add(authorBook);
             }
 
             book.AuthorsBooks = bookAuthors;
             await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
+        }
+
+        private async Task<string> UploadImageAsync(IFormFile imageFile)
+        {
+            Cloudinary cloudinary = new(this.configuration.GetValue<string>("Cloudinary:CloudinaryUrl"));
+            using Stream stream = imageFile.OpenReadStream();
+            ImageUploadParams uploadParams = new()
+            {
+                File = new FileDescription(imageFile.FileName, stream),
+                PublicId = imageFile.FileName,
+            };
+
+            ImageUploadResult uploadResult = await cloudinary.UploadAsync(uploadParams);
+
+            string imageUrl = uploadResult.SecureUrl.AbsoluteUri;
+
+            return imageUrl;
         }
     }
 }

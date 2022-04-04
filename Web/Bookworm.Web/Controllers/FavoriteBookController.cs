@@ -22,22 +22,22 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> AddToFavorites(string bookId)
+        public async Task<IActionResult> AddToFavorites(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
             try
             {
-                await this.favoriteBooksService.AddBookToFavoritesAsync(bookId, user.Id);
+                await this.favoriteBooksService.AddBookToFavoritesAsync(id, user.Id);
                 this.TempData[MessageConstant.SuccessMessage] = "Successfully added book to favorites!";
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.WarningMessage] = ex.Message;
-                return this.RedirectToAction("CurrentBook", new { id = bookId });
+                return this.RedirectToAction("CurrentBook", "Book", new { id });
             }
 
-            return this.RedirectToAction("CurrentBook", new { id = bookId });
+            return this.RedirectToAction("CurrentBook", "Book", new { id });
         }
 
         [Authorize]

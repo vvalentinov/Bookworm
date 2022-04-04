@@ -8,6 +8,7 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Models;
     using Bookworm.Services.Messaging;
+    using CloudinaryDotNet;
     using global::Azure.Storage.Blobs;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -16,6 +17,10 @@
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            Cloudinary cloudinary = new(config.GetValue<string>("Cloudinary:CloudinaryUrl"));
+
+            services.AddSingleton(cloudinary);
+
             services.AddSingleton(x => new BlobServiceClient(config.GetConnectionString("StorageConnection")));
 
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
