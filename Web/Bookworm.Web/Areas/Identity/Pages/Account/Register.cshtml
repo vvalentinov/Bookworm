@@ -4,74 +4,64 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="text-center textContainer col-2">
-    <h1 class="text-center">@ViewData["Title"]</h1>
-</div>
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.UserName"></label>
-                <input asp-for="Input.UserName" class="form-control" />
-                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+<div class="card o-hidden border-0 shadow-lg">
+    <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+            <div class="col-lg-5 d-block d-lg-block">
+                <div>
+                    <img src="@Model.LoginPictureUrl" class="img-fluid" style="height:55rem">
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Input.ProfilePictureFile" class="form-label"></label>
-                <input asp-for="Input.ProfilePictureFile" class="form-control" type="file">
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                    </div>
+                    <form asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Input.UserName"></label>
+                            <input asp-for="Input.UserName" class="form-control" />
+                            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.ProfilePictureFile" class="form-label"></label>
+                            <input asp-for="Input.ProfilePictureFile" class="form-control" type="file">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Email"></label>
+                            <input asp-for="Input.Email" class="form-control" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.Password"></label>
+                            <input asp-for="Input.Password" class="form-control" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Input.ConfirmPassword"></label>
+                            <input asp-for="Input.ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <hr>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn">Register</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                        <a class="small" href="forgot-password.html">Forgot Password?</a>
+                    </div>
+                    <div class="text-center">
+                        <a class="small" href="login.html">Already have an account? Login!</a>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group text-center">
-                <button type="submit" class="btn">Register</button>
-            </div>
-        </form>
+        </div>
     </div>
-    @*<div class="col-md-6 col-md-offset-2">
-        <section>
-        <h4>Use another service to register.</h4>
-        <hr />
-        @{
-        if ((Model.ExternalLogins?.Count ?? 0) == 0)
-        {
-        <div>
-        <p>
-        There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-        for details on setting up this ASP.NET application to support logging in via external services.
-        </p>
-        </div>
-        }
-        else
-        {
-        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-        <div>
-        <p>
-        @foreach (var provider in Model.ExternalLogins)
-        {
-        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-        }
-        </p>
-        </div>
-        </form>
-        }
-        }
-        </section>
-        </div>*@
 </div>
 
 @section Scripts {

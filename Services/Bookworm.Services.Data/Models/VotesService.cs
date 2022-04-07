@@ -26,10 +26,11 @@
 
         public int GetUpVotesCount(int commentId)
         {
-            return this.voteRepository
+            int count = this.voteRepository
                 .AllAsNoTracking()
                 .Where(x => x.Value == VoteValue.UpVote && x.CommentId == commentId)
                 .Count();
+            return count;
         }
 
         public async Task VoteAsync(int commentId, string userId, bool isUpVote)

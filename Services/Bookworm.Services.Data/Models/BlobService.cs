@@ -45,7 +45,8 @@
         public BlobClient GetBlobClient(string blobUri)
         {
             Uri uri = new(blobUri);
-            return new BlobClient(uri);
+            BlobClient client = new BlobClient(uri);
+            return client;
         }
 
         public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId)

@@ -16,34 +16,23 @@
     public class UsersService : IUsersService
     {
         private readonly IDeletableEntityRepository<ApplicationUser> usersRepository;
+        private readonly IDeletableEntityRepository<Comment> commentRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IConfiguration configuration;
         private readonly IBlobService blobService;
 
         public UsersService(
             IDeletableEntityRepository<ApplicationUser> usersRepository,
+            IDeletableEntityRepository<Comment> commentRepository,
             UserManager<ApplicationUser> userManager,
             IConfiguration configuration,
             IBlobService blobService)
         {
             this.usersRepository = usersRepository;
+            this.commentRepository = commentRepository;
             this.userManager = userManager;
             this.configuration = configuration;
             this.blobService = blobService;
-        }
-
-        public async Task DeleteUser(string userId)
-        {
-            ApplicationUser user = this.usersRepository
-                                       .All()
-                                       .First(x => x.Id == userId);
-
-            IList<string> userRoles = await this.userManager.GetRolesAsync(user);
-            await this.userManager.RemoveFromRolesAsync(user, userRoles);
-
-            this.usersRepository.HardDelete(user);
-            await this.userManager.DeleteAsync(user);
-            await this.usersRepository.SaveChangesAsync();
         }
 
         public async Task EditUser(string userId, string username, IFormFile pictureFile)

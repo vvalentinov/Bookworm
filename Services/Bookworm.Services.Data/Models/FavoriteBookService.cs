@@ -24,7 +24,7 @@
         public async Task AddBookToFavoritesAsync(string bookId, string userId)
         {
             var book = this.favoriteBooksRepository
-                .All()
+                .AllAsNoTracking()
                 .FirstOrDefault(x => x.UserId == userId && x.BookId == bookId);
 
             if (book != null)

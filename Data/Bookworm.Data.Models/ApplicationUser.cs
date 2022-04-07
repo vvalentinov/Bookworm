@@ -25,8 +25,6 @@ namespace Bookworm.Data.Models
 
         public string ProfilePictureUrl { get; set; }
 
-        public int DownloadsCount { get; set; }
-
         // Audit info
         public DateTime CreatedOn { get; set; }
 

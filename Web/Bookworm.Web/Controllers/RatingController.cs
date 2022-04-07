@@ -26,7 +26,7 @@
             string userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             await this.votesService.SetVoteAsync(model.BookId, userId, model.Value);
 
-            double avgVotes = await this.votesService.GetAverageVotesAsync(model.BookId);
+            double avgVotes = this.votesService.GetAverageVotes(model.BookId);
             int? userVote = this.votesService.GetUserVote(model.BookId, userId);
             int votesCount = this.votesService.GetVotesCount(model.BookId);
 

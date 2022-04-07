@@ -52,6 +52,8 @@
 
         public string ReturnUrl { get; set; }
 
+        public string LoginPictureUrl => this.configuration.GetValue<string>("LoginImageUrl");
+
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -77,7 +79,7 @@
                     pictureUrl = this.configuration.GetValue<string>("AnonymousProfilePictureUrl");
                 }
 
-                ApplicationUser user = new ApplicationUser
+                ApplicationUser user = new()
                 {
                     UserName = this.Input.UserName,
                     Email = this.Input.Email,
@@ -95,14 +97,14 @@
                     var callbackUrl = this.Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId = user.Id, code, returnUrl },
                         protocol: this.Request.Scheme);
 
                     await this.emailSender.SendEmailAsync(this.Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (this.userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return this.RedirectToPage("RegisterConfirmation", new { email = this.Input.Email, returnUrl = returnUrl });
+                        return this.RedirectToPage("RegisterConfirmation", new { email = this.Input.Email, returnUrl });
                     }
                     else
                     {

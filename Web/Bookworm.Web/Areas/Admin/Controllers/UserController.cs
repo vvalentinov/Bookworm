@@ -86,12 +86,6 @@
             return this.RedirectToAction(nameof(this.Index));
         }
 
-        public async Task<IActionResult> Delete(string id)
-        {
-            await this.usersService.DeleteUser(id);
-            return this.RedirectToAction(nameof(this.Index));
-        }
-
         public async Task<IActionResult> Edit(string id)
         {
             UserViewModel model = await this.usersService.GetUserModelWithId(id);
