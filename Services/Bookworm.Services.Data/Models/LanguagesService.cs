@@ -10,22 +10,23 @@
 
     public class LanguagesService : ILanguagesService
     {
-        private readonly IRepository<Language> langugesRepository;
+        private readonly IRepository<Language> languagesRepository;
 
         public LanguagesService(IRepository<Language> langugesRepository)
         {
-            this.langugesRepository = langugesRepository;
+            this.languagesRepository = langugesRepository;
         }
 
         public IEnumerable<SelectListItem> GetAllLanguages()
         {
-            return this.langugesRepository
+            return this.languagesRepository
                 .AllAsNoTracking()
                 .Select(x => new SelectListItem()
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
-                }).ToList();
+                })
+                .ToList();
         }
     }
 }

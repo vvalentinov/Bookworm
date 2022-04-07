@@ -13,7 +13,7 @@
                     <div class="col-md-4">
                         <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn img-fluid img-thumbnail" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
                         <div class="m-4 text-center">
-                            <a asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id" class="btn flex-shrink-0 ">
+                            <a class="btn flex-shrink-0" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
                         </div>
@@ -52,7 +52,7 @@
                                 Language: @Model.Language
                             </li>
                             <li class="list-group-item list-group-item-action">
-                                Downloads: @Model.DownloadsCount
+                                Downloads: <span id="downloadsBookCount">@Model.DownloadsCount</span>
                             </li>
 
                             <li class="list-group-item list-group-item-action">
@@ -240,6 +240,7 @@
 <form method="post" id="antiForgeryForm"></form>
 <form method="post" id="votesForm"></form>
 @section Scripts{
+   
 <script>
         function sendVote(commentId, isUpVote) {
             var token = $("#votesForm input[name=__RequestVerificationToken]").val();

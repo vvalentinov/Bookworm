@@ -24,7 +24,6 @@
                     <td>@user.Email</td>
                     <td>
                         <a asp-area="admin" asp-action="Edit" asp-controller="User" asp-route-id="@user.Id" class="btn btn-outline-info">Edit User</a>
-                        <a asp-area="admin" asp-action="Delete" asp-controller="User" asp-route-id="@user.Id" class="btn btn-outline-danger">Delete User</a>
                         <a asp-area="admin" asp-action="Roles" asp-controller="User" asp-route-userId="@user.Id" class="btn btn-outline-info">User Role</a>
                     </td>
                 </tr>

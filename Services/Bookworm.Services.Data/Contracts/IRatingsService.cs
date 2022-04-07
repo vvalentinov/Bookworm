@@ -6,7 +6,7 @@
     {
         Task SetVoteAsync(string bookId, string userId, byte value);
 
-        Task<double> GetAverageVotesAsync(string bookId);
+        double GetAverageVotes(string bookId);
 
         int? GetUserVote(string bookId, string userId);
 

@@ -15,8 +15,6 @@
 
         ApplicationUser GetUserWithId(string id);
 
-        Task DeleteUser(string userId);
-
         Task EditUser(string userId, string username, IFormFile pictureFile);
     }
 }

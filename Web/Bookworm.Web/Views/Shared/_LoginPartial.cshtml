@@ -8,7 +8,6 @@
     @if (this.SignInManager.IsSignedIn(this.User))
     {
         var user = this.UserManager.GetUserAsync(this.User);
-        var downloads = user.Result.DownloadsCount;
         var favoriteBooksCount = user.Result.FavoriteBooks.Count();
         string url = null;
         if (user != null)
@@ -33,14 +32,9 @@
                     <i class="fas fa-user-cog fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
-                <a class="dropdown-item" asp-action="Favorites" asp-controller="FavoriteBook">
+                <a class="dropdown-item" asp-area="" asp-action="Favorites" asp-controller="FavoriteBook">
                     <i class="fas fa-heart fa-sm fa-fw mr-2 text-gray-400"></i>
                     Favorite Books
-                </a>
-
-                <a class="dropdown-item" id="dailyDownloadsHyperlink">
-
-                    <i class="fas fa-download fa-sm fa-fw mr-2 text-gray-400"></i> Daily Downloads: @downloads / 10
                 </a>
 
                 <div class="dropdown-divider"></div>

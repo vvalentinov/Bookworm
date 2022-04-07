@@ -31,7 +31,12 @@
 
         public string GetCommentUserId(int commentId)
         {
-            return this.commentRepository.AllAsNoTracking().FirstOrDefault(x => x.Id == commentId).UserId;
+            var comment = this.commentRepository
+                .AllAsNoTracking()
+                .FirstOrDefault(x => x.Id == commentId);
+
+            return comment.UserId;
         }
+
     }
 }

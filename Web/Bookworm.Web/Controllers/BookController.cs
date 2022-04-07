@@ -126,14 +126,6 @@
         [Authorize]
         public async Task<IActionResult> Download(string id)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            if (user.DownloadsCount == 10)
-            {
-                this.TempData[MessageConstant.ErrorMessage] = "Your daily downloads are 10/10!";
-                return this.RedirectToAction("CurrentBook", new { id });
-            }
-
-            user.DownloadsCount++;
             var result = await this.blobService.DownloadBlobAsync(id);
             return this.File(result.Item1, result.Item2, result.Item3);
         }

@@ -6,33 +6,38 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Microsoft.EntityFrameworkCore;
 
     public class RatingsService : IRatingsService
     {
         private readonly IRepository<Rating> ratingRepository;
 
-        public RatingsService(IRepository<Rating> votesRepository)
+        public RatingsService(IRepository<Rating> ratingRepository)
         {
-            this.ratingRepository = votesRepository;
+            this.ratingRepository = ratingRepository;
         }
 
-        public async Task<double> GetAverageVotesAsync(string bookId)
+        public double GetAverageVotes(string bookId)
         {
-            return await this.ratingRepository
-                .All()
+            return this.ratingRepository
+                .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
-                .AverageAsync(x => x.Value);
+                .Average(x => x.Value);
         }
 
         public int? GetUserVote(string bookId, string userId)
         {
-            return this.ratingRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value;
+            return this.ratingRepository
+                 .AllAsNoTracking()
+                 .FirstOrDefault(x => x.BookId == bookId && x.UserId == userId)
+                 .Value;
         }
 
         public int GetVotesCount(string bookId)
         {
-            return this.ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
+            return this.ratingRepository
+                .AllAsNoTracking()
+                .Where(x => x.BookId == bookId)
+                .Count();
         }
 
         public async Task SetVoteAsync(
@@ -40,22 +45,22 @@
             string userId,
             byte value)
         {
-            Rating vote = this.ratingRepository
+            Rating rating = this.ratingRepository
                 .All()
                 .FirstOrDefault(x => x.BookId == bookId && x.UserId == userId);
 
-            if (vote == null)
+            if (rating == null)
             {
-                vote = new Rating()
+                rating = new Rating()
                 {
                     BookId = bookId,
                     UserId = userId,
                 };
 
-                await this.ratingRepository.AddAsync(vote);
+                await this.ratingRepository.AddAsync(rating);
             }
 
-            vote.Value = value;
+            rating.Value = value;
             await this.ratingRepository.SaveChangesAsync();
         }
     }
