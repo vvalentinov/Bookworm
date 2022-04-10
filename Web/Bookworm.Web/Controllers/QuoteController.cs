@@ -23,6 +23,29 @@
         }
 
         [Authorize]
+        public IActionResult Edit(int id)
+        {
+            QuoteViewModel quote = this.quotesService.GetQuoteById(id);
+            return this.View(quote);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Edit(QuoteViewModel quote)
+        {
+            await this.quotesService.EditQuoteAsync(
+                quote.Id,
+                quote.Content,
+                quote.AuthorName,
+                quote.BookTitle,
+                quote.MovieTitle);
+
+            this.TempData[MessageConstant.SuccessMessage] = "Successfully edited quote";
+
+            return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
+        }
+
+        [Authorize]
         public async Task<IActionResult> UserQuotes()
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);

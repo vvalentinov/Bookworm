@@ -74,6 +74,23 @@
             await this.quoteRepository.SaveChangesAsync();
         }
 
+        public async Task EditQuoteAsync(
+            int quoteId,
+            string content,
+            string authorName,
+            string bookTitle,
+            string movieTitle)
+        {
+            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            quote.Content = content;
+            quote.AuthorName = authorName;
+            quote.BookTitle = bookTitle;
+            quote.MovieTitle = movieTitle;
+
+            this.quoteRepository.Update(quote);
+            await this.quoteRepository.SaveChangesAsync();
+        }
+
         public IEnumerable<T> GetAllQuotes<T>()
         {
             return this.quoteRepository
@@ -92,6 +109,20 @@
               .OrderBy(x => x.CreatedOn)
               .To<T>()
               .ToList();
+        }
+
+        public QuoteViewModel GetQuoteById(int quoteId)
+        {
+            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+
+            return new QuoteViewModel()
+            {
+                Content = quote.Content,
+                AuthorName = quote.AuthorName,
+                BookTitle = quote.BookTitle,
+                Id = quoteId,
+                MovieTitle = quote.MovieTitle,
+            };
         }
 
         public T GetRandomQuote<T>()

@@ -21,14 +21,17 @@
             {
                 new Language()
                 {
+                    Id = 1,
                     Name = "Bulgarian",
                 },
                 new Language()
                 {
+                    Id = 2,
                     Name = "French",
                 },
                 new Language()
                 {
+                    Id = 3,
                     Name = "Spanish",
                 },
             };
@@ -48,6 +51,14 @@
 
             Assert.Equal(3, languages.Count());
             Assert.IsType<List<SelectListItem>>(languages);
+        }
+
+        [Fact]
+        public void GetLanguageNameShouldWorkCorrectly()
+        {
+            string languageName = this.languagesService.GetLanguageName(1);
+
+            Assert.Equal("Bulgarian", languageName);
         }
     }
 }

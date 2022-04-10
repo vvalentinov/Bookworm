@@ -25,8 +25,8 @@
             IndexViewModel model = new()
             {
                 RandomQuote = this.quotesService.GetRandomQuote<QuoteViewModel>(),
-                RecentBooks = this.booksService.GetRecentBooks<BookViewModel>(12),
-                PopularBooks = this.booksService.GetPopularBooks<BookViewModel>(12),
+                RecentBooks = this.booksService.GetRecentBooks(12),
+                PopularBooks = this.booksService.GetPopularBooks(12),
             };
 
             return this.View(model);

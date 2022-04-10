@@ -14,9 +14,9 @@
 
         BookViewModel GetUnapprovedBookWithId(string bookId);
 
-        IList<T> GetPopularBooks<T>(int count);
+        IList<BookViewModel> GetPopularBooks(int count);
 
-        IList<T> GetRecentBooks<T>(int count);
+        IList<BookViewModel> GetRecentBooks(int count);
 
         IEnumerable<BookViewModel> GetUnapprovedBooks();
     }

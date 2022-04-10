@@ -12,64 +12,98 @@
 
     public class CommentsServiceTests
     {
-        [Fact]
-        public async Task CommentShouldHaveTheCorrectUserId()
+        private readonly IList<Comment> comments;
+        private readonly IList<Vote> votes;
+        private readonly CommentsService commentsService;
+
+        public CommentsServiceTests()
         {
-            List<Comment> commentsList = new List<Comment>();
-            Mock<IDeletableEntityRepository<Comment>> mockRepo = new Mock<IDeletableEntityRepository<Comment>>();
-            mockRepo.Setup(x => x.AllAsNoTracking()).Returns(commentsList.AsQueryable());
-            mockRepo.Setup(x => x.AddAsync(It.IsAny<Comment>()))
-                .Callback((Comment comment) => commentsList.Add(comment));
+            this.votes = new List<Vote>()
+            {
+                new Vote()
+                {
+                    CommentId = 1,
+                    Value = VoteValue.UpVote,
+                    UserId = "93535361-50c4-4c49-9684-6b826deae12c",
+                },
+                new Vote()
+                {
+                    CommentId = 2,
+                    Value = VoteValue.DownVote,
+                    UserId = "ea0dde88-34ce-4d24-b4bd-89ac819c6d31",
+                },
+            };
 
-            List<Vote> voteList = new List<Vote>();
-            Mock<IRepository<Vote>> voteRepo = new Mock<IRepository<Vote>>();
-            voteRepo.Setup(x => x.AllAsNoTracking()).Returns(voteList.AsQueryable());
-            voteRepo.Setup(x => x.AddAsync(It.IsAny<Vote>()))
-                .Callback((Vote vote) => voteList.Add(vote));
+            this.comments = new List<Comment>()
+            {
+                new Comment()
+                {
+                    Id = 1,
+                    BookId = "648e17a5-fbc6-4ebe-97f4-4d64ed7074ba",
+                    Content = "First comment content",
+                    UserId = "2ce0609c-7492-47cf-a09b-14e6b329e5d7",
+                    Votes = this.votes.Where(v => v.CommentId == 1).ToList(),
+                },
+                new Comment()
+                {
+                    Id = 2,
+                    BookId = "dba20219-cc5a-4bc3-b5d9-b082ecb6d1f0",
+                    Content = "Second comment content",
+                    UserId = "57437970-e5f8-4832-85a7-f621f70b769e",
+                    Votes = this.votes.Where(v => v.CommentId == 2).ToList(),
+                },
+            };
 
-            CommentsService service = new CommentsService(mockRepo.Object, voteRepo.Object);
+            Mock<IRepository<Vote>> mockVoteRepo = new Mock<IRepository<Vote>>();
+            mockVoteRepo.Setup(x => x.All()).Returns(this.votes.AsQueryable());
+            mockVoteRepo.Setup(x => x.AllAsNoTracking()).Returns(this.votes.AsQueryable());
+            mockVoteRepo.Setup(x => x.AddAsync(It.IsAny<Vote>()))
+                .Callback((Vote vote) => this.votes.Add(vote));
+            mockVoteRepo.Setup(x => x.Delete(It.IsAny<Vote>()))
+                .Callback((Vote vote) => this.votes.Remove(vote));
 
-            await service.Create("1", "Some content", "someBookId");
+            Mock<IDeletableEntityRepository<Comment>> mockCommentsRepo = new Mock<IDeletableEntityRepository<Comment>>();
+            mockCommentsRepo.Setup(x => x.All()).Returns(this.comments.AsQueryable());
+            mockCommentsRepo.Setup(x => x.AllAsNoTracking()).Returns(this.comments.AsQueryable());
+            mockCommentsRepo.Setup(x => x.AddAsync(It.IsAny<Comment>()))
+                .Callback((Comment comment) => this.comments.Add(comment));
+            mockCommentsRepo.Setup(x => x.Delete(It.IsAny<Comment>()))
+                .Callback((Comment comment) => this.comments.Remove(comment));
 
-            var result = service.GetCommentUserId(0);
+            this.commentsService = new CommentsService(mockCommentsRepo.Object, mockVoteRepo.Object);
+        }
 
-            Assert.Equal("1", result);
+        [Fact]
+        public void CommentShouldHaveTheCorrectUserId()
+        {
+            string userId = this.commentsService.GetCommentUserId(1);
+
+            Assert.Equal("2ce0609c-7492-47cf-a09b-14e6b329e5d7", userId);
         }
 
         [Fact]
         public async Task DeleteCommentShouldWorkCorrectly()
         {
-            List<Comment> commentsList = new List<Comment>()
-            {
-                new Comment()
-                {
-                    Id = 2,
-                    Content = "Some comment content here",
-                    BookId = "4",
-                },
-            };
-            Mock<IDeletableEntityRepository<Comment>> mockRepo = new Mock<IDeletableEntityRepository<Comment>>();
-            mockRepo.Setup(x => x.AllAsNoTracking()).Returns(commentsList.AsQueryable());
-            mockRepo.Setup(x => x.All()).Returns(commentsList.AsQueryable());
-            mockRepo.Setup(x => x.AddAsync(It.IsAny<Comment>()))
-                .Callback((Comment comment) => commentsList.Add(comment));
-            mockRepo.Setup(x => x.Delete(It.IsAny<Comment>()))
-                .Callback((Comment comment) => commentsList.Remove(comment));
+            await this.commentsService.DeleteAsync(1);
 
-            List<Vote> voteList = new List<Vote>();
-            Mock<IRepository<Vote>> voteRepo = new Mock<IRepository<Vote>>();
-            voteRepo.Setup(x => x.AllAsNoTracking()).Returns(voteList.AsQueryable());
-            voteRepo.Setup(x => x.All()).Returns(voteList.AsQueryable());
-            voteRepo.Setup(x => x.AddAsync(It.IsAny<Vote>()))
-                .Callback((Vote vote) => voteList.Add(vote));
+            Comment comment = this.comments.FirstOrDefault(x => x.Id == 1);
+            Assert.Null(comment);
+        }
 
-            CommentsService service = new CommentsService(mockRepo.Object, voteRepo.Object);
+        [Fact]
+        public async Task CommentCreateShouldWorkCorrectly()
+        {
+            await this.commentsService.Create("cf092d2f-e9c5-4416-a3d1-b6769cd7f364", "Some comment content", "a28c1cf8-8877-402c-adb7-855dbf5905da");
 
-            var commentId = commentsList[0].Id;
-
-            await service.DeleteAsync(commentId);
-
-            Assert.Empty(commentsList);
+            Comment comment = this.comments.FirstOrDefault(x =>
+                                                       x.UserId == "cf092d2f-e9c5-4416-a3d1-b6769cd7f364" &&
+                                                       x.BookId == "a28c1cf8-8877-402c-adb7-855dbf5905da" &&
+                                                       x.Content == "Some comment content");
+            Assert.Equal(3, this.comments.Count);
+            Assert.NotNull(comment);
+            Assert.Equal("cf092d2f-e9c5-4416-a3d1-b6769cd7f364", comment.UserId);
+            Assert.Equal("a28c1cf8-8877-402c-adb7-855dbf5905da", comment.BookId);
+            Assert.Equal("Some comment content", comment.Content);
         }
     }
 }

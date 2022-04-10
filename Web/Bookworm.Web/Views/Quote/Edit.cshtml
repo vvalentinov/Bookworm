@@ -1,20 +1,8 @@
 ﻿@model QuoteViewModel
 
-@{
-    ViewData["Title"] = "Upload Quote";
-}
-
-<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
-    <div id="textCard" class="card col-4 text-center">
-        <div class="card-body">
-            <h1 class="display-7">@this.ViewData["Title"]<i class="fas fa-pen icon"></i></h1>
-        </div>
-    </div>
-</div>
-
-
 <form method="post" class="col-lg-8 offset-lg-2">
     <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" asp-for="Id">
     <div class="form-group justify-content-center">
         <label asp-for="Content"><strong>Content*</strong></label>
         <textarea asp-for="Content" class="form-control" rows="12"></textarea>
@@ -22,20 +10,20 @@
     </div>
     <div class="form-group">
         <label asp-for="AuthorName"><strong>Author's Name</strong></label>
-        <input asp-for="AuthorName" type="text" class="form-control">
+        <input value=@(Model.AuthorName != null ? Model.AuthorName : "") asp-for="AuthorName" type="text" class="form-control">
         <span asp-validation-for="AuthorName" class="small text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="BookTitle"><strong>Book Title</strong></label>
-        <input asp-for="BookTitle" type="text" class="form-control">
+        <input asp-for="BookTitle" value="@(Model.BookTitle != null ? Model.BookTitle : "")" type="text" class="form-control">
         <span asp-validation-for="BookTitle" class="small text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="MovieTitle"><strong>Movie Title</strong></label>
-        <input asp-for="MovieTitle" type="text" class="form-control">
+        <input asp-for="MovieTitle" value=@(Model.MovieTitle != null ? Model.MovieTitle : "") type="text" class="form-control">
         <span asp-validation-for="MovieTitle" class="small text-danger"></span>
     </div>
     <div class="text-center">
-        <button type="submit" class="btn text-center form-button"><strong>Upload Quote<i class="fas fa-upload icon"></i></strong></button>
+        <button type="submit" class="btn text-center form-button"><strong>Edit Quote</strong></button>
     </div>
 </form>

@@ -146,7 +146,12 @@
                 Books = this.bookRepository
                             .AllAsNoTracking()
                             .Where(x => x.CategoryId == categoryId && x.IsApproved == true)
-                            .To<BookViewModel>()
+                            .Select(x => new BookViewModel()
+                            {
+                                Id = x.Id,
+                                Title = x.Title,
+                                ImageUrl = x.ImageUrl,
+                            })
                             .Skip((page - 1) * booksPerPage)
                             .Take(booksPerPage)
                             .OrderByDescending(x => x.Id)
@@ -160,25 +165,33 @@
             };
         }
 
-        public IList<T> GetPopularBooks<T>(int count)
+        public IList<BookViewModel> GetPopularBooks(int count)
         {
             return this.bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved == true)
                 .OrderByDescending(x => x.DownloadsCount)
                 .Take(count)
-                .To<T>()
+                .Select(x => new BookViewModel()
+                {
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                })
                 .ToList();
         }
 
-        public IList<T> GetRecentBooks<T>(int count)
+        public IList<BookViewModel> GetRecentBooks(int count)
         {
             return this.bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved == true)
                 .OrderByDescending(x => x.CreatedOn)
                 .Take(count)
-                .To<T>()
+                .Select(x => new BookViewModel()
+                {
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                })
                 .ToList();
         }
 

@@ -25,5 +25,14 @@
         IEnumerable<QuoteViewModel> GetUserQuotes(string userId);
 
         Task DeleteQuoteAsync(int quoteId);
+
+        Task EditQuoteAsync(
+            int quoteId,
+            string content,
+            string authorName,
+            string bookTitle,
+            string movieTitle);
+
+        QuoteViewModel GetQuoteById(int quoteId);
     }
 }

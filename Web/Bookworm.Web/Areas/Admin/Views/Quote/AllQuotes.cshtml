@@ -30,7 +30,7 @@
                 }
                 else
                 {
-                    <td class="text-center">―</td>
+                    <td>―</td>
                 }
                 @if (quote.BookTitle != null)
                 {
@@ -38,7 +38,7 @@
                 }
                 else
                 {
-                    <td class="text-center">―</td>
+                    <td>―</td>
                 }
                 @if (quote.MovieTitle != null)
                 {
@@ -46,7 +46,7 @@
                 }
                 else
                 {
-                    <td class="text-center">―</td>
+                    <td>―</td>
                 }
                 <td class="btn btn-outline-success text-center"><a asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId">Approve</a></td>
                 <td class="btn btn-outline-danger text-center"><a asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin">Delete</a></td>

@@ -3,9 +3,12 @@
 @{
     this.ViewData["Title"] = "Random Book Generator";
 }
-
-<div class="text-center textContainer col-5">
-    <h2 class="text-center">@this.ViewData["Title"]</h2>
+<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
+    <div id="textCard" class="card col-9 text-center">
+        <div class="card-body">
+            <h1 class="display-4">@this.ViewData["Title"]<i class="fas fa-cog icon"></i></h1>
+        </div>
+    </div>
 </div>
 
 <form method="post" asp-controller="Book" asp-action="Random" class="col-lg-8 offset-lg-2">

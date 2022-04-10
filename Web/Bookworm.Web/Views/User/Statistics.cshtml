@@ -1,0 +1,42 @@
+﻿@model IEnumerable<UserStatisticsViewModel>
+
+@{
+    ViewData["Title"] = "Top Users";
+    int index = 1;
+}
+
+<div class="col d-flex justify-content-center">
+    <div id="textCard" class="card col-5 text-center">
+        <div class="card-body">
+            <h1 class="display-4">Users Statistics</h1>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-bordered animate__animated animate__zoomIn">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Username</th>
+            <th scope="col">Uploaded Books</th>
+            <th scope="col">Uploaded Quotes</th>
+            <th scope="col">Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <th scope="row">
+                    @index
+                </th>
+                <td style="font-style: italic;">@user.UserName</td>
+                <td style="font-style: italic;">@user.UploadedBooks</td>
+                <td style="font-style: italic;">@user.UploadedQuotes</td>
+                <td style="font-style: italic;">@user.Points</td>
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>

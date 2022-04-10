@@ -16,5 +16,7 @@
         ApplicationUser GetUserWithId(string id);
 
         Task EditUser(string userId, string username, IFormFile pictureFile);
+
+        IEnumerable<UserStatisticsViewModel> GetUsersStatistics();
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace Bookworm.Web.ViewModels.Users
 {
-    using Microsoft.AspNetCore.Http;
-
     using System.Collections.Generic;
+
+    using Microsoft.AspNetCore.Http;
 
     public class UserViewModel
     {
@@ -15,6 +15,8 @@
         public IFormFile ProfilePictureFile { get; set; }
 
         public string Email { get; set; }
+
+        public int Points { get; set; }
 
         public IList<string> Roles { get; set; }
     }

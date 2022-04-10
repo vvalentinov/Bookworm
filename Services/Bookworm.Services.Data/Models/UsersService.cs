@@ -16,17 +16,23 @@
     public class UsersService : IUsersService
     {
         private readonly IDeletableEntityRepository<ApplicationUser> usersRepository;
+        private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IRepository<Quote> quoteRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IConfiguration configuration;
         private readonly IBlobService blobService;
 
         public UsersService(
             IDeletableEntityRepository<ApplicationUser> usersRepository,
+            IDeletableEntityRepository<Book> bookRepository,
+            IRepository<Quote> quoteRepository,
             UserManager<ApplicationUser> userManager,
             IConfiguration configuration,
             IBlobService blobService)
         {
             this.usersRepository = usersRepository;
+            this.bookRepository = bookRepository;
+            this.quoteRepository = quoteRepository;
             this.userManager = userManager;
             this.configuration = configuration;
             this.blobService = blobService;
@@ -93,8 +99,23 @@
         public ApplicationUser GetUserWithId(string id)
         {
             return this.usersRepository
-                .All()
+                .AllAsNoTracking()
                 .FirstOrDefault(x => x.Id == id);
+        }
+
+        public IEnumerable<UserStatisticsViewModel> GetUsersStatistics()
+        {
+            return this.usersRepository
+                .AllAsNoTracking()
+                .OrderByDescending(x => x.Points)
+                .Select(x => new UserStatisticsViewModel()
+                {
+                    Id = x.Id,
+                    UserName = x.UserName,
+                    Points = x.Points,
+                    UploadedBooks = this.bookRepository.AllAsNoTracking().Where(b => b.UserId == x.Id).Count(),
+                    UploadedQuotes = this.quoteRepository.AllAsNoTracking().Where(q => q.UserId == x.Id).Count(),
+                }).ToList();
         }
     }
 }

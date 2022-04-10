@@ -4,8 +4,12 @@
     this.ViewData["Title"] = "Upload Book";
 }
 
-<div class="text-center textContainer col-4">
-    <h1 class="text-center">@this.ViewData["Title"]<i class="fas fa-book icon"></i></h1>
+<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
+    <div id="textCard" class="card col-5 text-center">
+        <div class="card-body">
+            <h1 class="display-4">@this.ViewData["Title"]<i class="fas fa-book icon"></i></h1>
+        </div>
+    </div>
 </div>
 
 <form method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
