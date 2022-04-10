@@ -6,6 +6,7 @@
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@
         }
 
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> AddToFavorites(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
@@ -29,15 +31,12 @@
             try
             {
                 await this.favoriteBooksService.AddBookToFavoritesAsync(id, user.Id);
-                this.TempData[MessageConstant.SuccessMessage] = "Successfully added book to favorites!";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                this.TempData[MessageConstant.WarningMessage] = ex.Message;
-                return this.RedirectToAction("CurrentBook", "Book", new { id });
             }
 
-            return this.RedirectToAction("CurrentBook", "Book", new { id });
+            return this.Ok();
         }
 
         [Authorize]

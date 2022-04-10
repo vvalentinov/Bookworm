@@ -1,0 +1,25 @@
+﻿@model IEnumerable<BookViewModel>
+
+@{
+    ViewData["Title"] = "My Books";
+}
+<h2 class="text-center">@ViewData["Title"]</h2>
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <div class="col-md-3 mt-5 mb-4">
+            <div class="card bg-dark text-light h-100">
+                <img title="@book.Title" class="zoom" src="@book.ImageUrl" alt="Book" height="300">
+                <div class="card-body">
+                    <h5 class="card-title text-center">@book.Title</h5>
+                    <div class="text-center">
+                        <a asp-action="CurrentBook" asp-controller="Book" asp-route-id="@book.Id" class="btn mb-2">View Book</a>
+                    </div>
+                    <div class="text-center">
+                        <a asp-action="Edit" asp-controller="Book" asp-route-bookId="@book.Id" class="btn mb-2">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

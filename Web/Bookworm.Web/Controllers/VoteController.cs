@@ -15,16 +15,13 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IVoteService voteService;
-        private readonly ICommentsService commentsService;
 
         public VoteController(
             UserManager<ApplicationUser> userManager,
-            IVoteService voteService,
-            ICommentsService commentsService)
+            IVoteService voteService)
         {
             this.userManager = userManager;
             this.voteService = voteService;
-            this.commentsService = commentsService;
         }
 
         [Authorize]
@@ -33,7 +30,6 @@
         {
             string user = this.userManager.GetUserId(this.User);
 
-            // string userId = this.commentsService.GetCommentUserId(input.CommentId);
             await this.voteService.VoteAsync(input.CommentId, user, input.IsUpVote);
             var upVotes = this.voteService.GetUpVotesCount(input.CommentId);
             var downVotes = this.voteService.GetDownVotesCount(input.CommentId);

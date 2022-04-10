@@ -7,5 +7,7 @@
     public interface ILanguagesService
     {
         IEnumerable<SelectListItem> GetAllLanguages();
+
+        string GetLanguageName(int languageId);
     }
 }

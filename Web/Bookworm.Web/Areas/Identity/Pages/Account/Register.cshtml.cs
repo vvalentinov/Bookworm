@@ -29,7 +29,7 @@
         private readonly ILogger<RegisterModel> logger;
         private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
-        private readonly IBlobService blobService;
+        private readonly ICloudinaryService cloudinaryService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -37,14 +37,14 @@
             ILogger<RegisterModel> logger,
             IConfiguration configuration,
             IEmailSender emailSender,
-            IBlobService blobService)
+            ICloudinaryService cloudinaryService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
             this.configuration = configuration;
             this.emailSender = emailSender;
-            this.blobService = blobService;
+            this.cloudinaryService = cloudinaryService;
         }
 
         [BindProperty]
@@ -71,8 +71,7 @@
                 string pictureUrl;
                 if (this.Input.ProfilePictureFile != null)
                 {
-                    await this.blobService.UploadBlobAsync(this.Input.ProfilePictureFile);
-                    pictureUrl = this.blobService.GetBlobAbsoluteUri(this.Input.ProfilePictureFile.FileName);
+                    pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile, this.Input.UserName);
                 }
                 else
                 {

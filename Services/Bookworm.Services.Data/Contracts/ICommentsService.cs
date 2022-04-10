@@ -7,5 +7,7 @@
         Task Create(string userId, string content, string bookId);
 
         string GetCommentUserId(int commentId);
+
+        Task DeleteAsync(int commentId);
     }
 }

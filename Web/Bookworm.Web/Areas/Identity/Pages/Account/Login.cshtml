@@ -51,13 +51,31 @@
                                 </div>
 
                                 <hr>
-                                <a href="index.html" class="btn btn-google btn-user btn-block">
+                                @*<a href="index.html" class="btn btn-google btn-user btn-block">
                                     <i class="fab fa-google fa-fw"></i> Login with Google
-                                </a>
-                                <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                    <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
-                                </a>
+                                    </a>*@
                             </form>
+                            <div class="col-md-12 col-md-offset-2">
+                                <section>
+                                    <p>or use another service to log in</p>
+                                    <hr />
+                                    @{
+                                        if ((Model.ExternalLogins?.Count ?? 0) != 0)
+                                        {
+                                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                                <div>
+                                                    <p>
+                                                        @foreach (var provider in Model.ExternalLogins)
+                                                        {
+                                                            <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </form>
+                                        }
+                                    }
+                                </section>
+                            </div>
                             <hr>
                             <div class="text-center">
                                 <a id="forgot-password" asp-page="./ForgotPassword">Forgot Password?</a>

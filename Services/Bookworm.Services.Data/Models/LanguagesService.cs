@@ -28,5 +28,13 @@
                 })
                 .ToList();
         }
+
+        public string GetLanguageName(int languageId)
+        {
+            return this.languagesRepository
+                .AllAsNoTracking()
+                .First(l => l.Id == languageId)
+                .Name;
+        }
     }
 }

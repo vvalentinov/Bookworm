@@ -1,0 +1,79 @@
+﻿@model EditBookFormModel
+
+@{
+    ViewData["Title"] = "Edit Book";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<form id="editBookForm" method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" value="@Model.Id">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Title"><strong>Title</strong></label>
+        <input asp-for="Title" value="@Model.Title" type="text" class="form-control">
+        <span asp-validation-for="Title" class="small text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LanguageId"><strong>Select Language</strong></label>
+        <select asp-for="LanguageId" asp-items="@Model.Languages" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="PagesCount"><strong>Number of Pages</strong></label>
+        <input asp-for="PagesCount" value="@Model.PagesCount" type="number" min="5" class="form-control">
+        <span asp-validation-for="PagesCount" class="small text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CategoryId"><strong>Select Category</strong></label>
+        <select asp-for="CategoryId" asp-items="@Model.Categories" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="PublishedYear"><strong>Year</strong></label>
+        <input asp-for="PublishedYear" value="@Model.PublishedYear" type="number" class="form-control">
+        <span asp-validation-for="PublishedYear" class="small text-danger"></span>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="Publisher"><strong>Publisher(optional)</strong></label>
+        <input asp-for="Publisher" value="@Model.Publisher" type="text" class="form-control">
+        <span asp-validation-for="Publisher" class="small text-danger"></span>
+    </div>
+    <div id="AuthorsContainer">
+        <a class="btn" onclick="AddAuthors()"><strong>Add Author</strong></a>
+        <a class="btn" onclick="RemoveAuthors()"><strong>Remove Author</strong></a>
+    </div>
+    <div class="form-group justify-content-center">
+        <label asp-for="Description"><strong>Description</strong></label>
+        <textarea asp-for="Description" class="form-control" rows="12"></textarea>
+        <span asp-validation-for="Description" class="small text-danger"></span>
+    </div>
+</form>
+<div class="text-center">
+    <button type="submit" class="btn" data-toggle="modal" data-target="#editModal"><strong>Edit Book</strong></button>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit book</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to edit book?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="editBookForm.submit()">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script src="~/js/removeAuthors.js"></script>
+<script src="~/js/addAuthors.js"></script>
+<script src="~/js/customFile.js"></script>
+<script src="~/js/customImage.js"></script>
+}

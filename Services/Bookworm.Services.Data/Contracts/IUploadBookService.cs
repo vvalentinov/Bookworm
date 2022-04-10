@@ -18,6 +18,7 @@
             IFormFile imageFile,
             int categoryId,
             IEnumerable<string> authors,
-            string userId);
+            string userId,
+            string userName);
     }
 }

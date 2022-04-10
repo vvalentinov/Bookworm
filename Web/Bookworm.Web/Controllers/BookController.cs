@@ -21,6 +21,7 @@
         private readonly ILanguagesService languagesService;
         private readonly IRandomBookService randomBookService;
         private readonly IBlobService blobService;
+        private readonly IEditBookService editBookService;
 
         public BookController(
             IBooksService booksService,
@@ -29,7 +30,8 @@
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService,
             IRandomBookService randomBookService,
-            IBlobService blobService)
+            IBlobService blobService,
+            IEditBookService editBookService)
         {
             this.booksService = booksService;
             this.categoriesService = categoriesService;
@@ -38,6 +40,60 @@
             this.languagesService = languagesService;
             this.randomBookService = randomBookService;
             this.blobService = blobService;
+            this.editBookService = editBookService;
+        }
+
+        [Authorize]
+        public IActionResult Edit(string bookId)
+        {
+            var book = this.booksService.GetBookWithId(bookId);
+            var model = new EditBookFormModel()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Description = book.Description,
+                PagesCount = book.PagesCount,
+                PublishedYear = book.Year,
+                Publisher = book.PublisherName,
+                Categories = this.categoriesService.GetCategoriesAsSelectListItems(),
+                Languages = this.languagesService.GetAllLanguages(),
+            };
+            return this.View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditBookFormModel model)
+        {
+            if (this.ModelState.IsValid == false)
+            {
+                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
+                model.Languages = this.languagesService.GetAllLanguages();
+                return this.View(model);
+            }
+
+            try
+            {
+                await this.editBookService.EditBookAsync(
+                         model.Id,
+                         model.Title,
+                         model.Description,
+                         model.CategoryId,
+                         model.LanguageId,
+                         model.PagesCount,
+                         model.PublishedYear,
+                         model.Publisher,
+                         model.AuthorsNames.Select(x => x.Name));
+            }
+            catch (Exception ex)
+            {
+                this.ModelState.AddModelError(string.Empty, ex.Message);
+                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
+                model.Languages = this.languagesService.GetAllLanguages();
+                return this.View(model);
+            }
+
+            return this.RedirectToAction("CurrentBook", "Book", new { id = model.Id });
         }
 
         public IActionResult Random()
@@ -65,6 +121,14 @@
             return this.View(model);
         }
 
+        [Authorize]
+        public async Task<IActionResult> UserBooks()
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            var books = this.booksService.GetUserBooks(user.Id);
+            return this.View(books);
+        }
+
         public async Task<IActionResult> CurrentBook(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
@@ -77,7 +141,7 @@
         {
             return this.View(new UploadBookFormModel()
             {
-                Categories = this.booksService.GetBookCategories(),
+                Categories = this.categoriesService.GetCategoriesAsSelectListItems(),
                 Languages = this.languagesService.GetAllLanguages(),
             });
         }
@@ -89,7 +153,7 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                model.Categories = this.booksService.GetBookCategories();
+                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
@@ -109,18 +173,19 @@
                     model.ImageFile,
                     model.CategoryId,
                     model.AuthorsNames.Select(x => x.Name),
-                    user.Id);
+                    user.Id,
+                    user.UserName);
             }
             catch (Exception ex)
             {
                 this.ModelState.AddModelError(string.Empty, ex.Message);
-                model.Categories = this.booksService.GetBookCategories();
+                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
 
             this.TempData[MessageConstant.SuccessMessage] = "Successfully added book!";
-            return this.RedirectToAction("Index", "Home");
+            return this.View("Views/Book/ThankYouBook.cshtml");
         }
 
         [Authorize]

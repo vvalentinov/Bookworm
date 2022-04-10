@@ -1,0 +1,57 @@
+﻿@model IEnumerable<QuoteViewModel>
+
+@{
+    ViewData["Title"] = "Unapproved quotes";
+    var index = 1;
+}
+
+<table id="quotesTable" class="table table-bordered animate__animated animate__zoomIn">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Quote</th>
+            <th scope="col">Author</th>
+            <th scope="col">Book</th>
+            <th scope="col">Movie</th>
+            <th scope="col">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quote in Model)
+        {
+            <tr>
+                <th scope="row">
+                    @index
+                </th>
+                <td style="font-style: italic;">@quote.Content</td>
+                @if (quote.AuthorName != null)
+                {
+                    <td>@quote.AuthorName</td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                @if (quote.BookTitle != null)
+                {
+                    <td><strong>@quote.BookTitle</strong></td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                @if (quote.MovieTitle != null)
+                {
+                    <td>@quote.MovieTitle</td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                <td class="btn btn-outline-success text-center"><a asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId">Approve</a></td>
+                <td class="btn btn-outline-danger text-center"><a asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin">Delete</a></td>
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>

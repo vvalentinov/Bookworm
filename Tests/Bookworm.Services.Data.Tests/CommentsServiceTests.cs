@@ -21,13 +21,55 @@
             mockRepo.Setup(x => x.AddAsync(It.IsAny<Comment>()))
                 .Callback((Comment comment) => commentsList.Add(comment));
 
-            CommentsService service = new CommentsService(mockRepo.Object);
+            List<Vote> voteList = new List<Vote>();
+            Mock<IRepository<Vote>> voteRepo = new Mock<IRepository<Vote>>();
+            voteRepo.Setup(x => x.AllAsNoTracking()).Returns(voteList.AsQueryable());
+            voteRepo.Setup(x => x.AddAsync(It.IsAny<Vote>()))
+                .Callback((Vote vote) => voteList.Add(vote));
+
+            CommentsService service = new CommentsService(mockRepo.Object, voteRepo.Object);
 
             await service.Create("1", "Some content", "someBookId");
 
             var result = service.GetCommentUserId(0);
 
             Assert.Equal("1", result);
+        }
+
+        [Fact]
+        public async Task DeleteCommentShouldWorkCorrectly()
+        {
+            List<Comment> commentsList = new List<Comment>()
+            {
+                new Comment()
+                {
+                    Id = 2,
+                    Content = "Some comment content here",
+                    BookId = "4",
+                },
+            };
+            Mock<IDeletableEntityRepository<Comment>> mockRepo = new Mock<IDeletableEntityRepository<Comment>>();
+            mockRepo.Setup(x => x.AllAsNoTracking()).Returns(commentsList.AsQueryable());
+            mockRepo.Setup(x => x.All()).Returns(commentsList.AsQueryable());
+            mockRepo.Setup(x => x.AddAsync(It.IsAny<Comment>()))
+                .Callback((Comment comment) => commentsList.Add(comment));
+            mockRepo.Setup(x => x.Delete(It.IsAny<Comment>()))
+                .Callback((Comment comment) => commentsList.Remove(comment));
+
+            List<Vote> voteList = new List<Vote>();
+            Mock<IRepository<Vote>> voteRepo = new Mock<IRepository<Vote>>();
+            voteRepo.Setup(x => x.AllAsNoTracking()).Returns(voteList.AsQueryable());
+            voteRepo.Setup(x => x.All()).Returns(voteList.AsQueryable());
+            voteRepo.Setup(x => x.AddAsync(It.IsAny<Vote>()))
+                .Callback((Vote vote) => voteList.Add(vote));
+
+            CommentsService service = new CommentsService(mockRepo.Object, voteRepo.Object);
+
+            var commentId = commentsList[0].Id;
+
+            await service.DeleteAsync(commentId);
+
+            Assert.Empty(commentsList);
         }
     }
 }

@@ -22,6 +22,25 @@
             this.quotesService = quotesService;
         }
 
+        [Authorize]
+        public async Task<IActionResult> UserQuotes()
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+
+            var quotes = this.quotesService.GetUserQuotes(user.Id);
+
+            return this.View(quotes);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await this.quotesService.DeleteQuoteAsync(id);
+            this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted quote!";
+            return this.RedirectToAction("Index", "Home");
+        }
+
         public IActionResult All()
         {
             IEnumerable<QuoteViewModel> quotes = this.quotesService.GetAllQuotes<QuoteViewModel>();

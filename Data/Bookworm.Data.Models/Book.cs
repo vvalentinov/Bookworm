@@ -35,6 +35,8 @@
 
         public int DownloadsCount { get; set; }
 
+        public bool IsApproved { get; set; }
+
         [NotMapped]
         public IFormFile ImageFile { get; set; }
 

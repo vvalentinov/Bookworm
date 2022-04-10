@@ -3,6 +3,7 @@
 @{
     this.ViewData["Title"] = Model.Title;
     int? userRating = Model.UserRating;
+    var isFavorite = Model.IsFavorite;
 }
 
 <section class="bookSection">
@@ -16,12 +17,30 @@
                             <a class="btn flex-shrink-0" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
+                            <div class="m-4 text-center">
+                                @if (isFavorite)
+                                {
+                                    <a>
+                                        <i id="addToFavoritesButton" class="fas fa-heart fa-2x favoriteBookHeart" aria-hidden="true" title="This book is added to favorites"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a onclick="addToFavorites()">
+                                        <i id="addToFavoritesButton" class="far fa-heart fa-2x" aria-hidden="true" title="Add Book to Favorites"></i>
+                                    </a>
+                                }
+                            </div>
                         </div>
-                        <div class="m-4 text-center">
-                            <a asp-controller="FavoriteBook" asp-action="AddToFavorites" asp-route-id="@Model.Id" title="Add to Favorites">
-                                <i class="fas fa-heart fa-2x"></i>
-                            </a>
-                        </div>
+                        @if (this.User.IsInRole("Administrator"))
+                        {
+                            <div class="m-4 text-center">
+                                <form id="deleteForm" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id"></form>
+                                <button type="button" class="btn btn-danger" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id" data-toggle="modal" data-target="#deleteModal">
+                                    Delete
+                                </button>
+                            </div>
+                        }
                     </div>
                     <div class="col-md-8">
                         <ul class="list-group">
@@ -191,56 +210,120 @@
 
 
 <section>
-    <div class="text-center textContainer col-4">
-        <h1 class="text-center">Comments<i class="fas fa-comment"></i></h1>
-    </div>
-    <div class="container-fluid mt-100">
-        <a asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle="@Model.Title" class="btn flex-shrink-0 addCommentBtn">Add Comment</a>
-        @foreach (var comment in Model.Comments)
-        {
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card mb-4 commentCard">
-                        <div class="card-header commentHeader">
-                            <div class="media flex-wrap w-100 align-items-center">
-                                <img src=@comment.UserProfilePictureUrl class="d-block ui-w-40 rounded-circle" alt="" style="height:5rem;">
-                                <div class="media-body ml-3">
-                                    @comment.UserUserName
-                                    <span>- @comment.CreatedOn.Date.ToString("d")</span>
-                                    <div class="rating">
-                                        <!-- Comment Voting -->
-                                    <div class="like grow">
-                                            <a onclick="sendVote(@comment.Id, true)">
-                                                <i id="@comment.Id-like" class="fas fa-thumbs-up fa-2x @(comment.UserVote == 1 ? "liked" : "like")" aria-hidden="true"></i>
-                                            </a>
-                                            <span id="@comment.Id-up">(@comment.UpVotesCount)</span>
-                                        </div>
-                                        <div class="dislike grow">
-                                            <a onclick="sendVote(@comment.Id, false)">
-                                                <i id="@comment.Id-dislike" class="fas fa-thumbs-down fa-2x @(comment.UserVote == -1 ? "liked" : "like")" aria-hidden="true"></i>
-                                            </a>
-                                            <span id="@comment.Id-down">(@comment.DownVotesCount)</span>
-                                        </div>
-                                    </div>
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="commentContainer mt-5">
+            <div class="d-flex justify-content-center row">
+                <div class="col-12">
+                    <div class="d-flex flex-column comment-section">
+                        <div class="p-2">
+                            <div class="d-flex flex-row user-info">
+                                <img class="rounded-circle" src="@comment.UserProfilePictureUrl" width="40">
+                                <div class="d-flex flex-column justify-content-start ml-2">
+                                    <span class="d-block font-weight-bold name">
+                                        @comment.UserUserName
+                                    </span>
+                                    <span class="date text-black-50">
+                                        Shared publicly - <span>@comment.CreatedOn.Date.ToString("d")</span>
+                                    </span>
                                 </div>
                             </div>
+                            <div class="mt-2">
+                                <p class="comment-text">@Html.Raw(comment.SanitizedContent)</p>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <article>
-                                @Html.Raw(comment.SanitizedContent)
-                            </article>
+                        <div class="bg-white">
+                            <div class="d-flex flex-row fs-12">
+                                <div class="p-2 like">
+                                    <a onclick="sendVote(@comment.Id, true)">
+                                        <i id="@comment.Id-like" class="fas fa-thumbs-up @(comment.UserVote == 1 ? "liked" : "like")" aria-hidden="true"></i>
+                                    </a>
+                                    <span class="ml-1">Like(<span id="@comment.Id-up">@comment.UpVotesCount</span>)</span>
+                                </div>
+                                <div class="p-2 dislike">
+                                    <a onclick="sendVote(@comment.Id, false)">
+                                        <i id="@comment.Id-dislike" class="fas fa-thumbs-down @(comment.UserVote == -1 ? "liked" : "like")" aria-hidden="true"></i>
+                                    </a>
+                                    <span class="ml-1">Dislike(<span id="@comment.Id-down">@comment.DownVotesCount</span>)</span>
+                                </div>
+                                @if (this.User.IsInRole("Administrator"))
+                                {
+                                    <div class="mt-2">
+                                        <form asp-action="Delete" asp-controller="Comment" asp-area="admin" asp-route-commentId="@comment.Id" id="deleteCommentForm"></form>
+                                        <button class="btn btn-sm shadow-none" type="button" data-toggle="modal" data-target="#deleteCommentModal">
+                                            Delete comment
+                                        </button>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
+
 </section>
+
+<div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this comment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="deleteCommentForm.submit()">Delete</button>
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete book</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this book?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="deleteForm.submit()">Delete</button>
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <form method="post" id="antiForgeryForm"></form>
 <form method="post" id="votesForm"></form>
+<form method="post" id="favoriteBookForm"></form>
 @section Scripts{
-   
+<script>
+    function addToFavorites() {
+            var token = $("#favoriteBookForm input[name=__RequestVerificationToken]").val();
+        $.ajax({
+            url: "/favoriteBook/addToFavorites",
+            type: "POST",
+            data: { id: '@Model.Id' },
+            headers: { 'X-CSRF-TOKEN': token },
+            success: function () {
+                $('#addToFavoritesButton').removeClass("far fa-heart");
+                $('#addToFavoritesButton').addClass("fas fa-heart favoriteBookHeart");
+            }
+        });
+    }
+</script>
 <script>
         function sendVote(commentId, isUpVote) {
             var token = $("#votesForm input[name=__RequestVerificationToken]").val();
@@ -256,8 +339,8 @@
                     var upVotes = data.upVotesCount;
                     var downVotes = data.downVotesCount;
                     var commentId = data.commentId;
-                    $('#' + commentId + '-up').html('(' + upVotes + ')');
-                    $('#' + commentId + '-down').html('(' + downVotes + ')');
+                    $('#' + commentId + '-up').html(upVotes);
+                    $('#' + commentId + '-down').html(downVotes);
                     if(isUpVote){
                         $('#' + commentId + '-like').addClass("liked");
                         $('#' + commentId + '-dislike').removeClass("liked");

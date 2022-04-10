@@ -13,6 +13,8 @@
         [MaxLength(QuoteMaxLength)]
         public string Content { get; set; }
 
+        public bool IsApproved { get; set; }
+
         public string AuthorName { get; set; }
 
         public string BookTitle { get; set; }

@@ -10,6 +10,10 @@
 
     public class QuoteViewModel : IMapFrom<Quote>
     {
+        public int Id { get; set; }
+
+        public string UserId { get; set; }
+
         [Required(ErrorMessage = QuoteContentRequired)]
         [StringLength(QuoteMaxLength, MinimumLength = QuoteMinLength, ErrorMessage = QuoteLength)]
         public string Content { get; set; }

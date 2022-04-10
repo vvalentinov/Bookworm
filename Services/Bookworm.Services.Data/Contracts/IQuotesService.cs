@@ -3,6 +3,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Web.ViewModels.Quotes;
+
     public interface IQuotesService
     {
         Task AddQuoteAsync(
@@ -14,6 +16,14 @@
 
         IEnumerable<T> GetAllQuotes<T>();
 
+        IEnumerable<T> GetAllUnapprovedQuotes<T>();
+
         T GetRandomQuote<T>();
+
+        Task ApproveQuote(int id, string userId);
+
+        IEnumerable<QuoteViewModel> GetUserQuotes(string userId);
+
+        Task DeleteQuoteAsync(int quoteId);
     }
 }

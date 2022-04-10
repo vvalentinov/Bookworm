@@ -30,6 +30,20 @@
     color: white;
 }
 
+.favoriteBookHeart{
+    color:red;
+}
+
+#textCard{
+    border-radius:20px;
+    border:solid;
+    margin-bottom:2rem;
+}
+
+$addToFavoritesButton{
+    cursor:pointer;
+}
+
 .navbar-nav .nav-item .nav-link:hover {
     color: #1abc9c;
 }
@@ -171,14 +185,14 @@ html {
     height: 100%;
 }
 
-.table {
+#quotesTable{
     background-color: #34495E;
     color: white;
 }
 
-td:hover {
-    background: #1abc9c;
-}
+    #quotesTable td:hover {
+        background: #1abc9c;
+    }
 
 #upButton {
     position: fixed;
@@ -269,6 +283,10 @@ svg {
     color: white;
 }
 
+.commentContainer {
+    border: 1px solid rgba(16, 46, 46, 1);
+}
+
 .comment {
     border: 1px solid rgba(16, 46, 46, 1);
     background-color: #34495E;
@@ -312,9 +330,9 @@ svg {
 
 .like,
 .dislike {
-    display: inline-block;
+    /*display: inline-block;*/
     cursor: pointer;
-    margin: 1rem;
+    /*margin: 1rem;*/
 }
 
 

@@ -9,10 +9,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using CloudinaryDotNet;
-    using CloudinaryDotNet.Actions;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.DataConstants;
 
@@ -22,20 +19,20 @@
         private readonly IDeletableEntityRepository<Publisher> publisherRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IBlobService blobService;
-        private readonly IConfiguration configuration;
+        private readonly ICloudinaryService cloudinaryService;
 
         public UploadBookService(
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Publisher> publisherRepository,
             IDeletableEntityRepository<Author> authorRepository,
             IBlobService blobService,
-            IConfiguration configuration)
+            ICloudinaryService cloudinaryService)
         {
             this.booksRepository = booksRepository;
             this.publisherRepository = publisherRepository;
             this.authorRepository = authorRepository;
             this.blobService = blobService;
-            this.configuration = configuration;
+            this.cloudinaryService = cloudinaryService;
         }
 
         public async Task UploadBookAsync(
@@ -49,9 +46,10 @@
             IFormFile imageFile,
             int categoryId,
             IEnumerable<string> authors,
-            string userId)
+            string userId,
+            string userName)
         {
-            if (bookFile == null)
+            if (bookFile == null || bookFile.Length == 0)
             {
                 throw new Exception("PDF file field is empty!");
             }
@@ -61,7 +59,7 @@
                 throw new Exception("Book PDF file must not exceed 50 MB!");
             }
 
-            if (imageFile == null)
+            if (imageFile == null || imageFile.Length == 0)
             {
                 throw new Exception("Image file field is empty!");
             }
@@ -105,7 +103,7 @@
             await this.blobService.UploadBlobAsync(bookFile);
 
             string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri(bookFile.FileName);
-            string imageUrl = await this.UploadImageAsync(imageFile);
+            string imageUrl = await this.cloudinaryService.UploadImageAsync(imageFile, userName);
 
             Publisher bookPublisher = null;
             if (publisher != null)
@@ -159,23 +157,6 @@
             book.AuthorsBooks = bookAuthors;
             await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
-        }
-
-        private async Task<string> UploadImageAsync(IFormFile imageFile)
-        {
-            Cloudinary cloudinary = new(this.configuration.GetValue<string>("Cloudinary:CloudinaryUrl"));
-            using Stream stream = imageFile.OpenReadStream();
-            ImageUploadParams uploadParams = new()
-            {
-                File = new FileDescription(imageFile.FileName, stream),
-                PublicId = imageFile.FileName,
-            };
-
-            ImageUploadResult uploadResult = await cloudinary.UploadAsync(uploadParams);
-
-            string imageUrl = uploadResult.SecureUrl.AbsoluteUri;
-
-            return imageUrl;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Data.Seeding
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -8,6 +9,56 @@
 
     public class LanguagesSeeder : ISeeder
     {
+        private readonly List<Language> languages;
+
+        public LanguagesSeeder()
+        {
+            this.languages = new List<Language>()
+            {
+                new Language() { Name = "Albanian" },
+                new Language() { Name = "Arabic" },
+                new Language() { Name = "Armenian" },
+                new Language() { Name = "Belarusian" },
+                new Language() { Name = "Bengali" },
+                new Language() { Name = "Bulgarian" },
+                new Language() { Name = "Catalan" },
+                new Language() { Name = "Chinese" },
+                new Language() { Name = "Croatian" },
+                new Language() { Name = "Czech" },
+                new Language() { Name = "Danish" },
+                new Language() { Name = "Dutch" },
+                new Language() { Name = "English" },
+                new Language() { Name = "Estonian" },
+                new Language() { Name = "Finnish" },
+                new Language() { Name = "French" },
+                new Language() { Name = "German" },
+                new Language() { Name = "Greek" },
+                new Language() { Name = "Hebrew" },
+                new Language() { Name = "Hindi" },
+                new Language() { Name = "Hungarian" },
+                new Language() { Name = "Indonesian" },
+                new Language() { Name = "Italian" },
+                new Language() { Name = "Japanese" },
+                new Language() { Name = "Korean" },
+                new Language() { Name = "Latin" },
+                new Language() { Name = "Mongolian" },
+                new Language() { Name = "Persian" },
+                new Language() { Name = "Polish" },
+                new Language() { Name = "Portuguese" },
+                new Language() { Name = "Romanian" },
+                new Language() { Name = "Russian" },
+                new Language() { Name = "Sanskrit" },
+                new Language() { Name = "Serbian" },
+                new Language() { Name = "Slovak" },
+                new Language() { Name = "Slovenian" },
+                new Language() { Name = "Spanish" },
+                new Language() { Name = "Swedish" },
+                new Language() { Name = "Turkish" },
+                new Language() { Name = "Ukrainian" },
+                new Language() { Name = "Vietnamese" },
+            };
+        }
+
         public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
             if (dbContext.Languages.Any())
@@ -15,47 +66,8 @@
                 return;
             }
 
-            await dbContext.Languages.AddAsync(new Language { Name = "Albanian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Arabic" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Armenian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Belarusian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Bengali" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Bulgarian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Catalan" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Chinese" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Croatian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Czech" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Danish" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Dutch" });
-            await dbContext.Languages.AddAsync(new Language { Name = "English" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Estonian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Finnish" });
-            await dbContext.Languages.AddAsync(new Language { Name = "French" });
-            await dbContext.Languages.AddAsync(new Language { Name = "German" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Greek" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Hebrew" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Hindi" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Hungarian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Indonesian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Italian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Japanese" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Korean" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Latin" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Mongolian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Persian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Polish" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Portuguese" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Romanian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Russian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Sanskrit" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Serbian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Slovak" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Slovenian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Spanish" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Swedish" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Turkish" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Ukrainian" });
-            await dbContext.Languages.AddAsync(new Language { Name = "Vietnamese" });
+            await dbContext.Languages.AddRangeAsync(this.languages);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

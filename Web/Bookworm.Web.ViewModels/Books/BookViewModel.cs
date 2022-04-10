@@ -22,6 +22,8 @@
 
         public int RatingsCount { get; set; }
 
+        public string UserId { get; set; }
+
         public int? UserRating { get; set; }
 
         public int DownloadsCount { get; set; }
@@ -31,6 +33,8 @@
         public string Language { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public bool IsFavorite { get; set; }
 
         public string FileUrl { get; set; }
 

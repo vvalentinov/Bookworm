@@ -29,7 +29,7 @@
 
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
-            services.AddTransient<IEmailSender, NullMessageSender>();
+            services.AddTransient<IEmailSender>(x => new SendGridEmailSender(config["SendGrid:ApiKey"]));
 
             services.AddTransient<ISettingsService, SettingsService>();
 
@@ -58,6 +58,14 @@
             services.AddTransient<IQuizService, QuizService>();
 
             services.AddTransient<IUsersService, UsersService>();
+
+            services.AddTransient<ICloudinaryService, CloudinaryService>();
+
+            services.AddTransient<IDeleteBookService, DeleteBookService>();
+
+            services.AddTransient<IEditBookService, EditBookService>();
+
+            services.AddTransient<IApproveBookService, ApproveBookService>();
 
             services.AddAntiforgery(options =>
             {
