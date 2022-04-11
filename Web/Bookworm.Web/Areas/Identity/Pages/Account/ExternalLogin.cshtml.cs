@@ -65,7 +65,7 @@
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? this.Url.Content("~/");
+            returnUrl ??= this.Url.Content("~/");
             if (remoteError != null)
             {
                 this.ErrorMessage = $"Error from external provider: {remoteError}";
@@ -110,7 +110,7 @@
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? this.Url.Content("~/");
+            returnUrl ??= this.Url.Content("~/");
 
             // Get the information about the user from the external login provider
             var info = await this.signInManager.GetExternalLoginInfoAsync();
@@ -146,7 +146,7 @@
                         var callbackUrl = this.Url.Page(
                             "/Account/ConfirmEmail",
                             pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
+                            values: new { area = "Identity", userId, code },
                             protocol: this.Request.Scheme);
 
                         await this.emailSender.SendEmailAsync(this.Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
@@ -154,7 +154,7 @@
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (this.userManager.Options.SignIn.RequireConfirmedAccount)
                         {
-                            return this.RedirectToPage("./RegisterConfirmation", new { Email = this.Input.Email });
+                            return this.RedirectToPage("./RegisterConfirmation", new { this.Input.Email });
                         }
 
                         await this.signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);

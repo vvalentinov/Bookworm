@@ -72,7 +72,7 @@
                 var callbackUrl = this.Url.Page(
                     "/Account/ConfirmEmailChange",
                     pageHandler: null,
-                    values: new { userId = userId, email = this.Input.NewEmail, code = code },
+                    values: new { userId, email = this.Input.NewEmail, code },
                     protocol: this.Request.Scheme);
                 await this.emailSender.SendEmailAsync(
                     "bookworm@bookworm.com",
@@ -109,7 +109,7 @@
             var callbackUrl = this.Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code },
+                values: new { area = "Identity", userId, code },
                 protocol: this.Request.Scheme);
             await this.emailSender.SendEmailAsync("bookwormproject@abv.bg", "Bookworm", $"{email}", "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 

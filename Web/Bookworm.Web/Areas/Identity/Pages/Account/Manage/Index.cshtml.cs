@@ -3,7 +3,6 @@
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
 
-    using Azure.Storage.Blobs;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
@@ -17,20 +16,17 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
-        private readonly IBlobService blobService;
         private readonly ICloudinaryService cloudinaryService;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration,
-            IBlobService blobService,
             ICloudinaryService cloudinaryService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
-            this.blobService = blobService;
             this.cloudinaryService = cloudinaryService;
         }
 
