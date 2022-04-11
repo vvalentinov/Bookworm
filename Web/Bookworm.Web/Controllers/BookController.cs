@@ -122,10 +122,10 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> UserBooks()
+        public async Task<IActionResult> UserBooks(int page = 1)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            var books = this.booksService.GetUserBooks(user.Id);
+            BookListingViewModel books = this.booksService.GetUserBooks(user.Id, page, 12);
             return this.View(books);
         }
 

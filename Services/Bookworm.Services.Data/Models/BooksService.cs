@@ -6,7 +6,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
 
@@ -165,6 +164,32 @@
             };
         }
 
+        public BookListingViewModel GetUserBooks(string userId, int page, int booksPerPage)
+        {
+            return new BookListingViewModel()
+            {
+                Books = this.bookRepository
+                            .AllAsNoTracking()
+                            .Where(x => x.UserId == userId)
+                            .Select(x => new BookViewModel()
+                            {
+                                Id = x.Id,
+                                Title = x.Title,
+                                ImageUrl = x.ImageUrl,
+                            })
+                            .Skip((page - 1) * booksPerPage)
+                            .Take(booksPerPage)
+                            .OrderByDescending(x => x.Id)
+                            .ToList(),
+                PageNumber = page,
+                BookCount = this.bookRepository
+                                .AllAsNoTracking()
+                                .Where(x => x.UserId == userId)
+                                .Count(),
+                BooksPerPage = booksPerPage,
+            };
+        }
+
         public IList<BookViewModel> GetPopularBooks(int count)
         {
             return this.bookRepository
@@ -193,19 +218,6 @@
                     Id = x.Id,
                 })
                 .ToList();
-        }
-
-        public IEnumerable<BookViewModel> GetUserBooks(string userId)
-        {
-            return this.bookRepository
-                .AllAsNoTracking()
-                .Where(x => x.UserId == userId)
-                .Select(x => new BookViewModel()
-                {
-                    Id = x.Id,
-                    ImageUrl = x.ImageUrl,
-                    Title = x.Title,
-                }).ToList();
         }
 
         public IEnumerable<BookViewModel> GetUnapprovedBooks()

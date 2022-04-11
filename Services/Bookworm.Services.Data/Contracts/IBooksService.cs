@@ -8,7 +8,7 @@
     {
         BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
 
-        IEnumerable<BookViewModel> GetUserBooks(string userId);
+        BookListingViewModel GetUserBooks(string userId, int page, int booksPerPage);
 
         BookViewModel GetBookWithId(string bookId, string userId = null);
 

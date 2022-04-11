@@ -75,7 +75,7 @@
                     values: new { userId, email = this.Input.NewEmail, code },
                     protocol: this.Request.Scheme);
                 await this.emailSender.SendEmailAsync(
-                    "bookworm@bookworm.com",
+                    "bookwormerwebsite@gmail.com",
                     "Bookworm",
                     $"{email}",
                     "Confirm your email",
@@ -111,7 +111,7 @@
                 pageHandler: null,
                 values: new { area = "Identity", userId, code },
                 protocol: this.Request.Scheme);
-            await this.emailSender.SendEmailAsync("bookwormproject@abv.bg", "Bookworm", $"{email}", "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            await this.emailSender.SendEmailAsync("bookwormerwebsite@gmail.com", "Bookworm", $"{email}", "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             this.StatusMessage = "Verification email sent. Please check your email.";
             return this.RedirectToPage();

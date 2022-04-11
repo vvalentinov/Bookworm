@@ -23,7 +23,11 @@
         [Authorize]
         public IActionResult Create(string bookId, string bookTitle)
         {
-            CreateCommentInputModel model = new CreateCommentInputModel() { BookId = bookId, BookTitle = bookTitle };
+            CreateCommentInputModel model = new CreateCommentInputModel()
+            {
+                BookId = bookId,
+                BookTitle = bookTitle,
+            };
             return this.View(model);
         }
 

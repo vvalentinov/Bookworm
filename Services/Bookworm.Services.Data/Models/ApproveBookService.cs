@@ -41,7 +41,7 @@
             await this.bookRepository.SaveChangesAsync();
 
             await this.emailSender.SendEmailAsync(
-                    "bookwormproject@abv.bg",
+                    "bookwormerwebsite@gmail.com",
                     "Bookworm",
                     $"{email}",
                     "Approved Book",

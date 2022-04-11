@@ -8,7 +8,6 @@ using Bookworm.Web.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -53,7 +52,8 @@ AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly)
 using (IServiceScope serviceScope = app.Services.CreateScope())
 {
     ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
+
+    // dbContext.Database.Migrate();
     new ApplicationDbContextSeeder(builder.Configuration)
         .SeedAsync(dbContext, serviceScope.ServiceProvider)
         .GetAwaiter()
