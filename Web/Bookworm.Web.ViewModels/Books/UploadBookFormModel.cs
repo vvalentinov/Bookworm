@@ -14,7 +14,7 @@
     public class UploadBookFormModel
     {
         [Required(ErrorMessage = BookTitleRequired)]
-        [StringLength(BookTitleMaxLength, MinimumLength = BookTitleMinLength, ErrorMessage = BookTitleLenght)]
+        [StringLength(BookTitleMaxLength, MinimumLength = BookTitleMinLength, ErrorMessage = BookTitleLength)]
         public string Title { get; set; }
 
         [Required(ErrorMessage = BookDescriptionRequired)]

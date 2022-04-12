@@ -36,6 +36,8 @@
 
         public bool IsFavorite { get; set; }
 
+        public bool IsUserBook { get; set; }
+
         public string FileUrl { get; set; }
 
         public string CategoryName { get; set; }

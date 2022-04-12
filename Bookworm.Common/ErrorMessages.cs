@@ -3,7 +3,7 @@
     public static class ErrorMessages
     {
         public const string BookTitleRequired = "Title field is required.";
-        public const string BookTitleLenght = "Title must be between 5 and 250 characters long.";
+        public const string BookTitleLength = "Title must be between 5 and 250 characters long.";
         public const string BookDescriptionRequired = "Description field is required.";
         public const string BookDescriptionLength = "Description must be between 30 and 2500 characters long.";
         public const string BookLanguageRequired = "Language field is required.";
@@ -21,6 +21,14 @@
 
         public const string AuthorNameLength = "Author name must be between 2 and 50 characters!";
 
-        public const string MovieTitleLenght = "Movie name must be between 3 and 150 characters!";
+        public const string MovieTitleLength = "Movie name must be between 3 and 150 characters!";
+
+        public const string EmptyPdfField = "PDF file field is empty!";
+        public const string InvalidPdfSize = "Book PDF file must not exceed 50 MB!";
+        public const string EmptyImageField = "Image file field is empty!";
+        public const string InvalidBookFileExtension = "Must be in PDF format!";
+        public const string InvalidImageFileExtension = "Valid formats are: JPG, JPEG and PNG!";
+        public const string EmptyAuthorsField = "You must add at least one author!";
+        public const string InvalidAuthorNameLength = "You must add at least one author!";
     }
 }

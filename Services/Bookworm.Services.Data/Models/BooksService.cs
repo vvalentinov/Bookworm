@@ -48,7 +48,7 @@
 
         public BookViewModel GetBookWithId(string bookId, string userId = null)
         {
-            Book book = this.bookRepository.All().First(x => x.Id == bookId);
+            Book book = this.bookRepository.AllAsNoTracking().First(x => x.Id == bookId);
 
             bool isFavorite = this.favoriteBookRepository.AllAsNoTracking().Any(x => x.BookId == bookId && x.UserId == userId);
 
@@ -88,7 +88,7 @@
             }
 
             List<CommentViewModel> comments = this.commentRepository
-                .All()
+                .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
                 .Select(x => new CommentViewModel()
                 {
@@ -131,9 +131,10 @@
                   CategoryName = category,
                   RatingsAvg = votesAvg,
                   RatingsCount = votesCount,
-                  UserRating = this.ratingRepository.All().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
+                  UserRating = this.ratingRepository.AllAsNoTracking().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
                   Comments = comments,
                   IsFavorite = isFavorite,
+                  IsUserBook = userId != null && book.UserId == userId,
               }).FirstOrDefault();
         }
 

@@ -17,6 +17,14 @@
                             <a class="btn flex-shrink-0" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
+                            @if (Model.IsUserBook)
+                            {
+                                <div class="m-4 text-center">
+                                    <a class="btn" asp-controller="Book" asp-action="Edit" asp-route-bookId="@Model.Id">
+                                        Edit
+                                    </a>
+                                </div>
+                            }
                             <div class="m-4 text-center">
                                 @if (isFavorite)
                                 {
@@ -41,6 +49,7 @@
                                 </button>
                             </div>
                         }
+
                     </div>
                     <div class="col-md-8">
                         <ul class="list-group">

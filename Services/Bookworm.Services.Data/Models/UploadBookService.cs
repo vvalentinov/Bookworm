@@ -12,6 +12,7 @@
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.DataConstants;
+    using static Bookworm.Common.ErrorMessages;
 
     public class UploadBookService : IUploadBookService
     {
@@ -51,43 +52,43 @@
         {
             if (bookFile == null || bookFile.Length == 0)
             {
-                throw new Exception("PDF file field is empty!");
+                throw new Exception(EmptyPdfField);
             }
 
             if (bookFile.Length > 50_000_000)
             {
-                throw new Exception("Book PDF file must not exceed 50 MB!");
+                throw new Exception(InvalidPdfSize);
             }
 
             if (imageFile == null || imageFile.Length == 0)
             {
-                throw new Exception("Image file field is empty!");
+                throw new Exception(EmptyImageField);
             }
 
             string[] permittedImageExtensions = { ".png", ".jpg", ".jpeg" };
             string bookFileExtension = Path.GetExtension(bookFile.FileName);
             string bookImageExtension = Path.GetExtension(imageFile.FileName);
 
-            if (bookFileExtension != ".pdf")
+            if (bookFileExtension != BookFileAllowedExtension)
             {
-                throw new Exception("Must be in PDF format!");
+                throw new Exception(InvalidBookFileExtension);
             }
 
             if (permittedImageExtensions.Contains(bookImageExtension) == false)
             {
-                throw new Exception("Valid formats are: JPG, JPEG and PNG!");
+                throw new Exception(InvalidImageFileExtension);
             }
 
             if (authors.Any() == false)
             {
-                throw new Exception("You must add at least one author!");
+                throw new Exception(EmptyAuthorsField);
             }
 
             foreach (string authorName in authors)
             {
                 if (authorName.Length < AuthorNameMin || authorName.Length > AuthorNameMax)
                 {
-                    throw new Exception("Author's name must be between 2 and 50 characters long!");
+                    throw new Exception(InvalidAuthorNameLength);
                 }
             }
 
