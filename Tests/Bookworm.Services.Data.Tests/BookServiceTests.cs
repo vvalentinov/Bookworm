@@ -184,11 +184,11 @@
         [Fact]
         public void GetUserBooksShouldWorkCorrectly()
         {
-            List<BookViewModel> books = this.booksService.GetUserBooks("cc741abb-7aba-42eb-bc02-d64d931af949").ToList();
-
+            BookListingViewModel model = this.booksService.GetUserBooks("cc741abb-7aba-42eb-bc02-d64d931af949", 1, 12);
+            var books = model.Books.ToList();
             Assert.Equal(2, books.Count);
-            Assert.Equal("First book title", books[0].Title);
-            Assert.Equal("Second book title", books[1].Title);
+            Assert.Equal("Second book title", books[0].Title);
+            Assert.Equal("First book title", books[1].Title);
         }
 
         [Fact]
