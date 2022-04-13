@@ -251,7 +251,7 @@ html {
 
 svg {
     -webkit-text-fill-color: transparent;
-    -webkit-filter: drop-shadow (4px 1px 6px rgba(198, 206, 237, 1));
+    /*-webkit-filter: drop-shadow (4px 1px 6px rgba(198, 206, 237, 1));*/
     filter: drop-shadow(5px 1px 3px rgba(198, 206, 237, 1));
 }
 

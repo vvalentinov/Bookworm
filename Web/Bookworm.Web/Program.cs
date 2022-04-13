@@ -45,6 +45,13 @@ builder.Services.AddSingleton(builder.Configuration);
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
+builder.Services.AddDistributedSqlServerCache(options =>
+{
+    options.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+    options.SchemaName = "dbo";
+    options.TableName = "Cache";
+});
+
 WebApplication app = builder.Build();
 
 AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
