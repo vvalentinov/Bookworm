@@ -11,21 +11,25 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Quotes;
+    using Microsoft.AspNetCore.Identity;
 
     public class QuotesService : IQuotesService
     {
         private readonly IRepository<Quote> quoteRepository;
         private readonly IEmailSender emailSender;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public QuotesService(
             IRepository<Quote> quoteRepository,
             IEmailSender emailSender,
-            IDeletableEntityRepository<ApplicationUser> userRepository)
+            IDeletableEntityRepository<ApplicationUser> userRepository,
+            UserManager<ApplicationUser> userManager)
         {
             this.quoteRepository = quoteRepository;
             this.emailSender = emailSender;
             this.userRepository = userRepository;
+            this.userManager = userManager;
         }
 
         public async Task AddQuoteAsync(
@@ -58,6 +62,7 @@
             this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();
             user.Points += 3;
+            await this.userManager.UpdateAsync(user);
 
             await this.emailSender.SendEmailAsync(
                     "bookwormproject@abv.bg",

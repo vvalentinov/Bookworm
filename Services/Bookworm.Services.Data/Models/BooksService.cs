@@ -172,6 +172,7 @@
                 Books = this.bookRepository
                             .AllAsNoTracking()
                             .Where(x => x.UserId == userId)
+                            .OrderByDescending(x => x.CreatedOn)
                             .Select(x => new BookViewModel()
                             {
                                 Id = x.Id,

@@ -113,8 +113,8 @@
                     Id = x.Id,
                     UserName = x.UserName,
                     Points = x.Points,
-                    UploadedBooks = this.bookRepository.AllAsNoTracking().Where(b => b.UserId == x.Id).Count(),
-                    UploadedQuotes = this.quoteRepository.AllAsNoTracking().Where(q => q.UserId == x.Id).Count(),
+                    UploadedBooks = this.bookRepository.AllAsNoTracking().Where(b => b.UserId == x.Id && b.IsApproved == true).Count(),
+                    UploadedQuotes = this.quoteRepository.AllAsNoTracking().Where(q => q.UserId == x.Id && q.IsApproved == true).Count(),
                 }).ToList();
         }
     }

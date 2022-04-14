@@ -21,6 +21,7 @@ namespace Bookworm.Data.Models
             this.Books = new HashSet<Book>();
             this.FavoriteBooks = new HashSet<FavoriteBook>();
             this.Comments = new HashSet<Comment>();
+            this.Quotes = new HashSet<Quote>();
         }
 
         public string ProfilePictureUrl { get; set; }
@@ -52,5 +53,7 @@ namespace Bookworm.Data.Models
         public virtual ICollection<FavoriteBook> FavoriteBooks { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<Quote> Quotes { get; set; }
     }
 }

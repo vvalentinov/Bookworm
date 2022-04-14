@@ -14,13 +14,13 @@
                     <div class="col-md-4">
                         <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn img-fluid img-thumbnail" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
                         <div class="m-4 text-center">
-                            <a class="btn flex-shrink-0" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
+                            <a class="btn button flex-shrink-0" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
                             @if (Model.IsUserBook)
                             {
                                 <div class="m-4 text-center">
-                                    <a class="btn" asp-controller="Book" asp-action="Edit" asp-route-bookId="@Model.Id">
+                                    <a class="btn btn-outline-warning" asp-controller="Book" asp-action="Edit" asp-route-bookId="@Model.Id">
                                         Edit
                                     </a>
                                 </div>
@@ -219,7 +219,7 @@
 
 
 <section>
-    <a class="btn" asp-action="Create" asp-controller="Comment" asp-route-bookId=@Model.Id asp-route-bookTitle=@Model.Title>Post Comment</a>
+    <a class="btn button" asp-action="Create" asp-controller="Comment" asp-route-bookId=@Model.Id asp-route-bookTitle=@Model.Title>Post Comment</a>
     @foreach (var comment in Model.Comments)
     {
         <div class="commentContainer mt-5">

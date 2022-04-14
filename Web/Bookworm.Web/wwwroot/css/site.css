@@ -87,7 +87,7 @@ addToFavoritesButton {
         transform: scale(1.1);
     }
 
-.btn {
+.button {
     color: white;
     background-color: #1abc9c;
 }
