@@ -22,7 +22,7 @@
 
         Task ApproveQuote(int id, string userId);
 
-        IEnumerable<QuoteViewModel> GetUserQuotes(string userId);
+        UserQuotesViewModel GetUserQuotes(string userId);
 
         Task DeleteQuoteAsync(int quoteId);
 

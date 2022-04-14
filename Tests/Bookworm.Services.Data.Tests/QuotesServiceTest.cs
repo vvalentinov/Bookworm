@@ -11,6 +11,7 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Quotes;
+    using Microsoft.AspNetCore.Identity;
     using Moq;
     using Xunit;
 
@@ -96,7 +97,9 @@
             mockQuotesRepo.Setup(x => x.Delete(It.IsAny<Quote>()))
                 .Callback((Quote quote) => this.quotesList.Remove(quote));
 
-            this.quotesService = new QuotesService(mockQuotesRepo.Object, mockEmailSender.Object, mockUserRepo.Object);
+            Mock<UserManager<ApplicationUser>> mockUserManager = new Mock<UserManager<ApplicationUser>>(new Mock<IUserStore<ApplicationUser>>().Object, null, null, null, null, null, null, null, null);
+
+            this.quotesService = new QuotesService(mockQuotesRepo.Object, mockEmailSender.Object, mockUserRepo.Object, mockUserManager.Object);
         }
 
         [Fact]
@@ -148,8 +151,8 @@
         [Fact]
         public void GetUserQuotesShouldWorkCorrectly()
         {
-            List<QuoteViewModel> quotes = this.quotesService.GetUserQuotes("567b180c-85d6-4f22-953e-4790431e957f").ToList();
-
+            var model = this.quotesService.GetUserQuotes("567b180c-85d6-4f22-953e-4790431e957f");
+            var quotes = model.Quotes.ToList();
             Assert.Equal(2, quotes.Count());
 
             Assert.Equal("First quote Content", quotes[0].Content);

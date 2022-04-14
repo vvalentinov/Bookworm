@@ -14,6 +14,8 @@
 
         public string UserId { get; set; }
 
+        public bool IsApproved { get; set; }
+
         [Required(ErrorMessage = QuoteContentRequired)]
         [StringLength(QuoteMaxLength, MinimumLength = QuoteMinLength, ErrorMessage = QuoteLength)]
         public string Content { get; set; }

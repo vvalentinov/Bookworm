@@ -140,10 +140,11 @@
                         .FirstOrDefault();
         }
 
-        public IEnumerable<QuoteViewModel> GetUserQuotes(string userId)
+        public UserQuotesViewModel GetUserQuotes(string userId)
         {
-            return this.quoteRepository.AllAsNoTracking()
+            var quotes = this.quoteRepository.AllAsNoTracking()
                                        .Where(x => x.UserId == userId)
+                                       .OrderByDescending(x => x.CreatedOn)
                                        .Select(x => new QuoteViewModel()
                                        {
                                            Id = x.Id,
@@ -151,7 +152,13 @@
                                            BookTitle = x.BookTitle,
                                            MovieTitle = x.MovieTitle,
                                            Content = x.Content,
+                                           IsApproved = x.IsApproved,
                                        }).ToList();
+
+            int approvedQuotesCount = quotes.Where(x => x.IsApproved).Count();
+            int unapprovedQuotesCount = quotes.Where(x => x.IsApproved == false).Count();
+
+            return new UserQuotesViewModel() { Quotes = quotes, ApprovedQuotesCount = approvedQuotesCount, UnapprovedQuotesCount = unapprovedQuotesCount };
         }
     }
 }

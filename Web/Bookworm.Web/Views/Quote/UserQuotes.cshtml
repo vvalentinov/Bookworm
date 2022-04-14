@@ -1,4 +1,4 @@
-﻿@model IEnumerable<QuoteViewModel>
+﻿@model UserQuotesViewModel
 
 @{
     ViewData["Title"] = "My Quotes";
@@ -12,51 +12,76 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="card col-6 border-dark">
+        <div class="card-body">
+            @Model.ApprovedQuotesCount approved quotes.
+        </div>
+    </div>
+    <div class="card col-6 border-dark">
+        <div class="card-body">
+            @Model.UnapprovedQuotesCount unapproved quotes.
+        </div>
+    </div>
+</div>
+
+
+<input class="btn btn-outline-info unapprovedQuotesBtn" type='button' value='Show Unapproved Quotes' />
 <div class="card-body table-responsive p-0">
-    <table class="table table-hover text-nowrap">
+    <table id="myTable" class="table table-hover text-nowrap">
         <thead>
             <tr>
                 <th>Content</th>
                 <th class="text-center">Author</th>
                 <th class="text-center">Movie</th>
                 <th class="text-center">Book</th>
+                <th class="text-center">Is Approved</th>
                 <th class="text-center">Edit</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var quote in Model)
+            @foreach (var quote in Model.Quotes)
             {
                 <tr>
-                    <td>@quote.Content</td>
+                    <td style="white-space:pre-wrap; word-wrap:break-word">@quote.Content</td>
                     @if (@quote.AuthorName != null)
                     {
-                        <td class="text-center">@quote.AuthorName</td>
+                        <td style="vertical-align:middle" class="text-center">@quote.AuthorName</td>
                     }
                     else
                     {
-                        <td class="text-center">―</td>
+                        <td class="text-center" style="vertical-align:middle">―</td>
                     }
                     @if (@quote.MovieTitle != null)
                     {
-                        <td class="text-center">@quote.MovieTitle</td>
+                        <td class="text-center" style="vertical-align:middle">@quote.MovieTitle</td>
                     }
                     else
                     {
-                        <td class="text-center">―</td>
+                        <td class="text-center" style="vertical-align:middle">―</td>
                     }
                     @if (@quote.BookTitle != null)
                     {
-                        <td class="text-center">@quote.BookTitle</td>
+                        <td class="text-center" style="vertical-align:middle">@quote.BookTitle</td>
                     }
                     else
                     {
-                        <td class="text-center">―</td>
+                        <td class="text-center" style="vertical-align:middle">―</td>
                     }
-                    <td>
-                        <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@quote.Id" class="btn">Edit Quote</a>
+                    <td class="text-center" style="vertical-align:middle">@(quote.IsApproved ? "Yes" : "No")</td>
+                    <td class="text-center" style="vertical-align:middle">
+                        <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@quote.Id" class="btn btn-warning">Edit Quote</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+@section Scripts{
+<script>
+      $('.unapprovedQuotesBtn').click(function(){
+        $('td:contains("Yes")').parent().toggle();
+    });
+</script>
+}
