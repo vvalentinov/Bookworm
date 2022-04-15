@@ -6,14 +6,15 @@
 }
 
 <div class="col d-flex justify-content-center animate__animated animate__zoomIn">
-    <div id="textCard" class="card col-4 text-center">
+    <div id="textCard" class="card col-6 text-center">
         <div class="card-body">
-            <h1 class="display-4">@this.ViewData["Title"]</h1>
+            <h1 class="display-4">@this.ViewData["Title"] (@Model.Count())</h1>
         </div>
     </div>
 </div>
 
-<table id="quotesTable" class="table table-bordered animate__animated animate__zoomIn">
+
+<table id="quotesTable" class="table table-bordered animate__animated animate__zoomIn table-responsive">
     <thead>
         <tr>
             <th scope="col">#</th>

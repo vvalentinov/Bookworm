@@ -4,8 +4,12 @@
     ViewData["Title"] = "Post Comment";
 }
 
-<div class="text-center textContainer col-3 animate__bounceIn">
-    <h2>@ViewData["Title"]</h2>
+<div class="col d-flex justify-content-center">
+    <div id="textCard" class="card col-6 text-center">
+        <div class="card-body">
+            <h1 class="display-4">@ViewData["Title"] <i class="far fa-comment"></i></h1>
+        </div>
+    </div>
 </div>
 
 <form method="post" asp-action="Create">
@@ -21,7 +25,7 @@
     <input type="hidden" name="bookId" value="@Model.BookId">
     <hr />
     <div class="text-center">
-        <input type="submit" class="button" value="Post Comment" />
+        <input type="submit" class="button btn" value="Post Comment" />
     </div>
 
 </form>

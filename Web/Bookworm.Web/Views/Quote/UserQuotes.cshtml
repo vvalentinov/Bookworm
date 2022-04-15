@@ -28,7 +28,7 @@
 
 <input class="btn btn-outline-info unapprovedQuotesBtn" type='button' value='Show Unapproved Quotes' />
 <div class="card-body table-responsive p-0">
-    <table id="myTable" class="table table-hover text-nowrap">
+    <table id="myQuotesTable" class="table table-hover text-nowrap">
         <thead>
             <tr>
                 <th>Content</th>
@@ -46,30 +46,30 @@
                     <td style="white-space:pre-wrap; word-wrap:break-word">@quote.Content</td>
                     @if (@quote.AuthorName != null)
                     {
-                        <td style="vertical-align:middle" class="text-center">@quote.AuthorName</td>
+                        <td  class="text-center">@quote.AuthorName</td>
                     }
                     else
                     {
-                        <td class="text-center" style="vertical-align:middle">―</td>
+                        <td class="text-center" >―</td>
                     }
                     @if (@quote.MovieTitle != null)
                     {
-                        <td class="text-center" style="vertical-align:middle">@quote.MovieTitle</td>
+                        <td class="text-center">@quote.MovieTitle</td>
                     }
                     else
                     {
-                        <td class="text-center" style="vertical-align:middle">―</td>
+                        <td class="text-center" >―</td>
                     }
                     @if (@quote.BookTitle != null)
                     {
-                        <td class="text-center" style="vertical-align:middle">@quote.BookTitle</td>
+                        <td class="text-center">@quote.BookTitle</td>
                     }
                     else
                     {
-                        <td class="text-center" style="vertical-align:middle">―</td>
+                        <td class="text-center">―</td>
                     }
-                    <td class="text-center" style="vertical-align:middle">@(quote.IsApproved ? "Yes" : "No")</td>
-                    <td class="text-center" style="vertical-align:middle">
+                    <td class="text-center" >@(quote.IsApproved ? "Yes" : "No")</td>
+                    <td class="text-center">
                         <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@quote.Id" class="btn btn-warning">Edit Quote</a>
                     </td>
                 </tr>

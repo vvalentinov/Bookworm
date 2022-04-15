@@ -37,7 +37,7 @@
         {
             string userId = this.userManager.GetUserId(this.User);
             await this.commentsService.Create(userId, model.Content, model.BookId);
-            return this.Redirect("/");
+            return this.RedirectToAction("CurrentBook", "Book", new { id = model.BookId });
         }
     }
 }

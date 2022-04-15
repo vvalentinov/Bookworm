@@ -30,9 +30,21 @@
     color: white;
 }
 
+.table td {
+    vertical-align: middle;
+}
+
 .favoriteBookHeart {
     color: red;
 }
+
+.card {
+    max-width: 100%;
+}
+
+    .card .card-body {
+        text-overflow:inherit
+    }
 
 #textCard {
     border-radius: 20px;
@@ -465,7 +477,7 @@ input[type="radio"] {
     height: auto;
 }
 
-.unapprovedQuotesBtn{
-    margin-bottom:2rem;
-    margin-top:2rem;
+.unapprovedQuotesBtn {
+    margin-bottom: 2rem;
+    margin-top: 2rem;
 }

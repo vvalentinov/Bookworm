@@ -12,10 +12,10 @@
 <div class="row">
     @foreach (var book in Model)
     {
-        <div class="col-md-3 mt-5 mb-4">
+        <div class="col-md-3 mt-5 mb-4 overflow-hidden">
             <div class="card bg-dark text-light h-100">
-                <img title="@book.Title" class="zoom" src="@book.ImageUrl" alt="Book" height="300">
-                <div class="card-body">
+                <img title="@book.Title" src="@book.ImageUrl" alt="Book" height="300">
+                <div class="card-body ">
                     <h5 class="card-title text-center">@book.Title</h5>
                     <div class="text-center">
                         <a asp-action="CurrentBook" asp-controller="Book" asp-route-id="@book.Id" class="btn button mb-2">View Book</a>
@@ -26,6 +26,5 @@
         </div>
     }
 </div>
-
 
 
