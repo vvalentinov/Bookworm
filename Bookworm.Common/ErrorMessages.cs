@@ -30,5 +30,7 @@
         public const string InvalidImageFileExtension = "Valid formats are: JPG, JPEG and PNG!";
         public const string EmptyAuthorsField = "You must add at least one author!";
         public const string InvalidAuthorNameLength = "You must add at least one author!";
+        public const string ChangeBookFileName = "Please, try changing the PDF file name!";
+        public const string ChangeImageFileName = "Please, try changing the image file name!";
     }
 }

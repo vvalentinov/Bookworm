@@ -94,11 +94,11 @@
 
             if (await this.blobService.CheckIfBlobExistsAsync(bookFile.FileName))
             {
-                throw new Exception("Please, try changing the PDF file name!");
+                throw new Exception(ChangeBookFileName);
             }
             else if (await this.blobService.CheckIfBlobExistsAsync(imageFile.FileName))
             {
-                throw new Exception("Please, try changing the image file name!");
+                throw new Exception(ChangeImageFileName);
             }
 
             await this.blobService.UploadBlobAsync(bookFile);
