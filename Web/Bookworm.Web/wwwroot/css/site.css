@@ -153,6 +153,7 @@ addToFavoritesButton {
     border-color: black;
 }
 
+
 @media(min-width:768px) {
     /*html: {
         font-size: 16px

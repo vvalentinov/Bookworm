@@ -34,6 +34,13 @@
             </a>
 
             <li class="nav-item active">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span>Bookworm</span>
+                </a>
+            </li>
+
+            <li class="nav-item active">
                 <a asp-area="admin" asp-controller="User" asp-action="Index" class="nav-link">
                     <i class="fas fa-user"></i>
                     <span>Manage Users</span>
@@ -46,7 +53,7 @@
                 </a>
             </li>
 
-             <li class="nav-item active">
+            <li class="nav-item active">
                 <a asp-area="admin" asp-controller="Quote" asp-action="AllQuotes" class="nav-link">
                     <i class="fas fa-pen icon"></i><span>Manage Quotes</span>
                 </a>

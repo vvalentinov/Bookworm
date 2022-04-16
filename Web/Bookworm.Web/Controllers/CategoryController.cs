@@ -23,7 +23,7 @@
 
         public async Task<IActionResult> All()
         {
-            var cachedTypes = await this.cache.GetStringAsync("categories");
+            string cachedTypes = await this.cache.GetStringAsync("categories");
             if (cachedTypes == null)
             {
                 var result = this.categoriesService.GetAll<CategoryViewModel>();
@@ -38,9 +38,8 @@
                 await this.cache.SetStringAsync("categories", cachedTypes);
             }
 
-            var cahcheResult = JsonSerializer.Deserialize<List<CategoryViewModel>>(cachedTypes);
+            List<CategoryViewModel> cahcheResult = JsonSerializer.Deserialize<List<CategoryViewModel>>(cachedTypes);
 
-            // var categories = this.categoriesService.GetAll<CategoryViewModel>();
             return this.View(cahcheResult);
         }
     }

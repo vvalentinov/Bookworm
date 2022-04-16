@@ -1,1 +1,46 @@
-﻿<h1 class="text-center">Welcome to Admin Area!</h1>
+﻿@{
+    var unapprovedBooksCount = ViewData["BooksCount"];
+    var unapprovedQuotesCount = ViewData["QuotesCount"];
+}
+
+<h1 class="text-center">Welcome to Admin Area!</h1>
+
+
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4" style="margin-top:3rem">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending Book Requests
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@unapprovedBooksCount</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4" style="margin-top:3rem">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending Quotes Requests
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@unapprovedQuotesCount</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-pen fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
