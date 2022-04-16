@@ -1,24 +1,19 @@
 ﻿namespace Bookworm.Services.Data.Tests
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data;
-    using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
 
     using Microsoft.EntityFrameworkCore;
 
-    using Moq;
-
     using Xunit;
 
     public class SettingsServiceTests
     {
-        //public void GetCountShouldReturnCorrectNumber()
-        //{
+        // public void GetCountShouldReturnCorrectNumber()
+        // {
         //    var repository = new Mock<IDeletableEntityRepository<Setting>>();
         //    repository.Setup(r => r.All()).Returns(new List<Setting>
         //                                                {
@@ -29,8 +24,7 @@
         //    var service = new SettingsService(repository.Object);
         //    Assert.Equal(3, service.GetCount());
         //    repository.Verify(x => x.All(), Times.Once);
-        //}
-
+        // }
         [Fact]
         public async Task GetCountShouldReturnCorrectNumberUsingDbContext()
         {

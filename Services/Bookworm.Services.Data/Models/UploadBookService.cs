@@ -79,7 +79,7 @@
                 throw new Exception(InvalidImageFileExtension);
             }
 
-            if (authors.Any() == false)
+            if (authors == null)
             {
                 throw new Exception(EmptyAuthorsField);
             }
@@ -104,7 +104,7 @@
             await this.blobService.UploadBlobAsync(bookFile);
 
             string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri(bookFile.FileName);
-            string imageUrl = await this.cloudinaryService.UploadImageAsync(imageFile, userName);
+            string imageUrl = await this.cloudinaryService.UploadImageAsync(imageFile);
 
             Publisher bookPublisher = null;
             if (publisher != null)

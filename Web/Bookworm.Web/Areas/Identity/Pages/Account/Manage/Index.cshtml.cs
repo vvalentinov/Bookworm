@@ -74,7 +74,7 @@
                     await this.cloudinaryService.DeleteImage(user.UserName);
                 }
 
-                string pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile, user.UserName);
+                string pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile);
                 user.ProfilePictureUrl = pictureUrl;
                 await this.userManager.UpdateAsync(user);
             }

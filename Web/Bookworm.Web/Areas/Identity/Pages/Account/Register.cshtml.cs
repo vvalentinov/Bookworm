@@ -71,7 +71,7 @@
                 string pictureUrl;
                 if (this.Input.ProfilePictureFile != null)
                 {
-                    pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile, this.Input.UserName);
+                    pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile);
                 }
                 else
                 {

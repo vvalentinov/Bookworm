@@ -87,14 +87,7 @@
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(file.FileName);
-            byte[] fileBytes = null;
-
-            using (MemoryStream ms = new())
-            {
-                file.CopyTo(ms);
-                fileBytes = ms.ToArray();
-            }
-
+            byte[] fileBytes = this.GetFileBytes(file);
             await using MemoryStream memoryStream = new(fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
@@ -105,6 +98,19 @@
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             await blobClient.DeleteIfExistsAsync();
+        }
+
+        private byte[] GetFileBytes(IFormFile file)
+        {
+            byte[] fileBytes = null;
+
+            using (MemoryStream ms = new())
+            {
+                file.CopyTo(ms);
+                fileBytes = ms.ToArray();
+            }
+
+            return fileBytes;
         }
     }
 }

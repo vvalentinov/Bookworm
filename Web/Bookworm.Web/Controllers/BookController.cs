@@ -148,7 +148,6 @@
 
         [Authorize]
         [HttpPost]
-        [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookFormModel model)
         {
             if (this.ModelState.IsValid == false)
@@ -172,7 +171,7 @@
                     model.BookFile,
                     model.ImageFile,
                     model.CategoryId,
-                    model.AuthorsNames.Select(x => x.Name),
+                    model.AuthorsNames?.Select(x => x.Name),
                     user.Id,
                     user.UserName);
             }

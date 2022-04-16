@@ -4,7 +4,7 @@
     ViewData["Title"] = $"{Model.Title}";
 }
 
-<section class="bookSection">
+<section class="bookSection" style="margin-bottom:2rem">
     <div class="card border-dark">
         <div class="card-body">
             <div class="px-4 px-lg-5">
@@ -12,17 +12,17 @@
                     <div class="col-md-4">
                         <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn img-fluid img-thumbnail" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
                         <div class="m-4 text-center">
-                            <a class="btn flex-shrink-0" asp-area="" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
+                            <a class="btn btn-primary flex-shrink-0" asp-area="" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
                                 Download<i class="fas fa-download icon"></i>
                             </a>
                         </div>
                         <div class="m-4 text-center">
-                            <a class="btn flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="ApproveBook" asp-route-bookId="@Model.Id" asp-route-userId="@Model.UserId">
+                            <a class="btn btn-success flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="ApproveBook" asp-route-bookId="@Model.Id" asp-route-userId="@Model.UserId">
                                 Approve
                             </a>
                         </div>
                         <div class="m-4 text-center">
-                            <a class="btn flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id" >
+                            <a class="btn btn-danger flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id" >
                                 Delete
                             </a>
                         </div>

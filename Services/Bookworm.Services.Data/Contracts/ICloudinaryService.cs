@@ -6,7 +6,7 @@
 
     public interface ICloudinaryService
     {
-        Task<string> UploadImageAsync(IFormFile imageFile, string publicId);
+        Task<string> UploadImageAsync(IFormFile imageFile);
 
         Task DeleteImage(string publicId);
     }
