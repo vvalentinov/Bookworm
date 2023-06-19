@@ -55,8 +55,6 @@
 
             services.AddTransient<IRandomBookService, RandomBookService>();
 
-            services.AddTransient<IQuizService, QuizService>();
-
             services.AddTransient<IUsersService, UsersService>();
 
             services.AddTransient<ICloudinaryService, CloudinaryService>();
