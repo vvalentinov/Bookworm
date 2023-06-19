@@ -3,6 +3,8 @@
 *.userosscache
 *.sln.docstates
 
+appsettings.Development.json
+
 *.userprefs
 
 [Dd]ebug/
