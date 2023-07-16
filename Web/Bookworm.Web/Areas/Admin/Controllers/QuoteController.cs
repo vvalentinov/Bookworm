@@ -26,5 +26,11 @@
             await this.quotesService.ApproveQuote(id, userId);
             return this.RedirectToAction(nameof(this.AllQuotes), "Quote");
         }
+
+        public async Task<IActionResult> DeleteQuote(int id)
+        {
+            await this.quotesService.DeleteQuoteAsync(id);
+            return this.RedirectToAction(nameof(this.AllQuotes), "Quote");
+        }
     }
 }

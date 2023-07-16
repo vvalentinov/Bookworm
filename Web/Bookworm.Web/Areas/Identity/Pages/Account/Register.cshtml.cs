@@ -52,7 +52,7 @@
 
         public string ReturnUrl { get; set; }
 
-        public string LoginPictureUrl => this.configuration.GetValue<string>("LoginImageUrl");
+        public string RegisterPictureUrl => this.configuration.GetValue<string>("LoginRegisterImageUrl");
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
@@ -68,21 +68,10 @@
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                string pictureUrl;
-                if (this.Input.ProfilePictureFile != null)
-                {
-                    pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile);
-                }
-                else
-                {
-                    pictureUrl = this.configuration.GetValue<string>("AnonymousProfilePictureUrl");
-                }
-
                 ApplicationUser user = new()
                 {
                     UserName = this.Input.UserName,
                     Email = this.Input.Email,
-                    ProfilePictureUrl = pictureUrl,
                 };
 
                 var result = await this.userManager.CreateAsync(user, this.Input.Password);
@@ -127,8 +116,6 @@
             [Required]
             [Display(Name = "Username")]
             public string UserName { get; set; }
-
-            public IFormFile ProfilePictureFile { get; set; }
 
             [Required]
             [EmailAddress]

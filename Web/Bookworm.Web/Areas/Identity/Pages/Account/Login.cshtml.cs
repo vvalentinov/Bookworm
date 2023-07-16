@@ -38,7 +38,7 @@
 
         public string ReturnUrl { get; set; }
 
-        public string LoginPictureUrl => this.configuration.GetValue<string>("LoginImageUrl");
+        public string LoginPictureUrl => this.configuration.GetValue<string>("LoginRegisterImageUrl");
 
         [TempData]
         public string ErrorMessage { get; set; }

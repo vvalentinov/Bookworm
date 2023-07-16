@@ -5,65 +5,75 @@
 @inject UserManager<ApplicationUser> UserManager
 
 
-<ul class="navbar-nav">
-    @if (this.SignInManager.IsSignedIn(this.User))
-    {
-        var user = this.UserManager.GetUserAsync(this.User);
-        var favoriteBooksCount = user.Result.FavoriteBooks.Count();
-        string url = user.Result.ProfilePictureUrl;
-        var points = user.Result.Points;
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" id="userDropdown" role="button"
-           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img class="img-profile rounded-circle" width="40" height="40" src=@url>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow "
-             aria-labelledby="userDropdown">
+@if (this.SignInManager.IsSignedIn(this.User))
+{
+    var user = this.UserManager.GetUserAsync(this.User);
+    
+    var favoriteBooksCount = user.Result.FavoriteBooks.Count();
+    string url = user.Result.ProfilePictureUrl;
+    var points = user.Result.Points;
+
+    <li class="nav-item dropdown fs-4 mx-2">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @user.Result.UserName
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li>
                 <a class="dropdown-item">
-                    <i class="fas fa-graduation-cap fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Your Points: @points
+                    <i class="fas fa-graduation-cap "></i>
+                    Points: @points
                 </a>
-                @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
-                {
-                    <a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">
-                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>Admin
-                    </a>
-                }
+            </li>
+
+            @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+            {
+                <a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>Admin
+                </a>
+            }
+            <li>
                 <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
                     <i class="fas fa-user-cog fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
+                    Settings
                 </a>
+            </li>
+            <li>
                 <a class="dropdown-item" asp-area="" asp-action="Favorites" asp-controller="FavoriteBook">
                     <i class="fas fa-heart fa-sm fa-fw mr-2 text-gray-400"></i>
                     Favorite Books
                 </a>
+            </li>
+            <li>
                 <a class="dropdown-item" asp-area="" asp-action="UserBooks" asp-controller="Book">
                     <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
                     My Books
                 </a>
+            </li>
+            <li>
                 <a class="dropdown-item" asp-area="" asp-action="UserQuotes" asp-controller="Quote">
                     <i class="fas fa-pen fa-sm fa-fw mr-2 text-gray-400"></i>
                     My Quotes
                 </a>
+            </li>
+            <li>
                 <a class="dropdown-item" asp-area="" asp-action="Statistics" asp-controller="User">
                     <i class="fas fa-user-graduate fa-sm fa-fw mr-2 text-gray-400"></i>
                     Users Statistics
                 </a>
-                <div class="dropdown-divider"></div>
-                <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
-                    <button type="submit" class="nav-link btn button btn-link text-light justify-content-center">Logout<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i></button>
-                </form>
-            </div>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    }
-</ul>
+            </li>  
+        </ul>
+    </li>
+    <form class="form-inline d-flex" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">
+        <button type="submit" class="nav-link logout-btn px-3">Logout<i class="fas fa-sign-out-alt ms-2"></i></button>
+    </form>
+}
+else
+{
+    <li class="nav-item mx-2">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+    <li class="nav-item mx-2">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+}
 

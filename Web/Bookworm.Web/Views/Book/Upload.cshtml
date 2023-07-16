@@ -4,73 +4,74 @@
     this.ViewData["Title"] = "Upload Book";
 }
 
-<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
-    <div id="textCard" class="card col-5 text-center">
+<div class="d-flex justify-content-center mt-5 animate__animated animate__jackInTheBox">
+    <div class="card text-center title-card">
         <div class="card-body">
-            <h1 class="display-4">@this.ViewData["Title"]<i class="fas fa-book icon"></i></h1>
+            <h3>@this.ViewData["Title"]<i class="fas fa-book icon ms-3"></i></h3>
         </div>
     </div>
 </div>
 
-<form method="post" class="col-lg-8 offset-lg-2" enctype="multipart/form-data">
+<form method="post" class="col-8 mx-auto d-flex justify-content-center flex-column" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Title"><strong>Title</strong></label>
-        <input asp-for="Title" type="text" class="form-control">
+    <div class="form-group fs-4">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" type="text" class="form-control border border-2">
         <span asp-validation-for="Title" class="small text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="LanguageId"><strong>Select Language</strong></label>
-        <select asp-for="LanguageId" asp-items="@Model.Languages" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="LanguageId">Select Language</label>
+        <select asp-for="LanguageId" asp-items="@Model.Languages" size="8" aria-label="size 5 select example" class="fs-5 form-select form-control border border-2"></select>
     </div>
-    <div class="form-group justify-content-center">
-        <label asp-for="PagesCount"><strong>Number of Pages</strong></label>
-        <input asp-for="PagesCount" type="number" min="5" class="form-control">
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="PagesCount">Number of Pages</label>
+        <input asp-for="PagesCount" type="number" min="5" class="form-control border border-2">
         <span asp-validation-for="PagesCount" class="small text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="CategoryId"><strong>Select Category</strong></label>
-        <select asp-for="CategoryId" asp-items="@Model.Categories" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="CategoryId">Select Category</label>
+        <select asp-for="CategoryId" asp-items="@Model.Categories" size="8" aria-label="size 5 select example" class="fs-5 form-select form-control border border-2"></select>
     </div>
-    <div class="form-group justify-content-center">
-        <label asp-for="PublishedYear"><strong>Year</strong></label>
-        <input asp-for="PublishedYear" type="number" class="form-control">
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="PublishedYear">Year</label>
+        <input asp-for="PublishedYear" type="number" class="form-control border border-2">
         <span asp-validation-for="PublishedYear" class="small text-danger"></span>
     </div>
-    <div class="form-group justify-content-center">
-        <label asp-for="Publisher"><strong>Publisher(optional)</strong></label>
-        <input asp-for="Publisher" type="text" class="form-control">
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="Publisher">Publisher(optional)</label>
+        <input asp-for="Publisher" type="text" class="form-control border border-2">
         <span asp-validation-for="Publisher" class="small text-danger"></span>
     </div>
-    <div class="custom-file">
-        <input asp-for="BookFile" type="file" class="custom-file-input" id="customFile">
-        <label asp-for="BookFile" class="custom-file-label" for="customFile"><strong>Choose PDF File(Up to 50 MB)</strong></label>
-        <span asp-validation-for="BookFile" class="small text-danger"></span>
+    <div class="form-group mt-4">
+        <label asp-for="BookFile" class="form-label fs-4">Book File - Max 50 MB</label>
+        <input asp-for="BookFile" type="file" class="form-control border border-2">
     </div>
-    <div class="custom-file">
-        <input asp-for="ImageFile" type="file" class="custom-file-input" id="customImage">
-        <label asp-for="ImageFile" class="custom-file-label" for="customFile"><strong>Choose Image File</strong></label>
-        <span asp-validation-for="ImageFile" class="small text-danger"></span>
+    <div class="form-group mt-4">
+        <label asp-for="ImageFile" class="form-label fs-4">Image File</label>
+        <input asp-for="ImageFile" type="file" class="form-control border border-2">
     </div>
-    <div id="AuthorsContainer">
-        <a class="btn button" onclick="AddAuthors()"><strong>Add Author</strong></a>
-        <a class="btn button" onclick="RemoveAuthors()"><strong>Remove Author</strong></a>
+   
+    <div class="form-group mt-4" id="authorsContainer">
+        <div id="alert-message"></div>
+        <button type="button" id="addAuthorBtn" class="btn button" onclick="AddAuthor();">Add Author<i class="fas fa-user ms-1"></i></button>
+        <div class="input-group mt-4">
+            <input type="text" class="form-control border border-2" placeholder="Author's Name">
+            <button class="btn btn-outline-danger" type="button" id="deleteAuthorBtn" onclick="RemoveAuthor();">Delete</button>
+        </div>
     </div>
-    <div class="form-group justify-content-center">
-        <label asp-for="Description"><strong>Description</strong></label>
-        <textarea asp-for="Description" class="form-control" rows="12"></textarea>
+    
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control border border-2" rows="12"></textarea>
         <span asp-validation-for="Description" class="small text-danger"></span>
     </div>
-    <div class="text-center">
-        <button type="submit" class="btn button"><strong>Upload Book<i class="fas fa-upload icon"></i></strong></button>
+    <div class="text-center mt-4 mb-5">
+        <button type="submit" class="btn button fs-5"><strong>Upload Book<i class="fas fa-upload icon ms-2"></i></strong></button>
     </div>
 </form>
 
 
 
 @section Scripts{
-<script src="~/js/removeAuthors.js"></script>
-<script src="~/js/addAuthors.js"></script>
-<script src="~/js/customFile.js"></script>
-<script src="~/js/customImage.js"></script>
+<script src="~/js/authors.js"></script>
 }

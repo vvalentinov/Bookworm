@@ -5,29 +5,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
     <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" />
     <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/animate.css/animate.min.css" />
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar  navbar-expand-sm border-bottom box-shadow mb-3" id="mainNav">
+        <nav class="navbar navbar-expand-lg fs-5 fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-book"></i>@GlobalConstants.SystemName</a>
-                <a class="navbar-brand" asp-area="" asp-controller="Category" asp-action="All">Categories</a>
-                <a class="navbar-brand" asp-area="" asp-controller="Quote" asp-action="All">Quotes</a>
-                <a class="navbar-brand" asp-area="" asp-controller="Book" asp-action="Random">Random Book</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex">
-                    <ul class="navbar-nav">
-                        <li>
-                            <partial name="_LoginPartial" />
+                <div class="collapse navbar-collapse" id="navbarToggler">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index"><i class="me-2 fas fa-book"></i>@GlobalConstants.SystemName</a>
                         </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Category" asp-action="All">Categories</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" asp-area="" asp-controller="Quote" asp-action="All">Quotes</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" asp-area="" asp-controller="Book" asp-action="Random">Random Book</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <partial class="login-partial" name="_LoginPartial" />
                     </ul>
                 </div>
             </div>
@@ -41,16 +48,18 @@
         </main>
     </div>
 
-    <footer class="footer">
-        <div>
-            &copy; @DateTime.Now.Year - @GlobalConstants.SystemName - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+
+    <footer class="bookworm-footer py-4 text-center text-white d-flex align-items-center justify-content-center">
+            <span>
+                &copy; @DateTime.Now.Year - @GlobalConstants.SystemName - <a class="privacy-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </span>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/lib/toastr/toastr.min.js"></script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
     <partial name="_UserMessages" />

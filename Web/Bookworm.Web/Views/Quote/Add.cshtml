@@ -4,38 +4,38 @@
     ViewData["Title"] = "Upload Quote";
 }
 
-<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
-    <div id="textCard" class="card col-5 text-center">
+<div class="d-flex justify-content-center mt-5">
+    <div class="card text-center title-card">
         <div class="card-body">
-            <h1 class="display-7">@this.ViewData["Title"]<i class="fas fa-pen icon"></i></h1>
+            <h3>@this.ViewData["Title"]<i class="fas fa-pen icon ms-3"></i></h3>
         </div>
     </div>
 </div>
 
 
-<form method="post" class="col-lg-8 offset-lg-2">
+<form method="post" class="col-8 mx-auto d-flex justify-content-center flex-column">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group justify-content-center">
-        <label asp-for="Content"><strong>Content*</strong></label>
-        <textarea asp-for="Content" class="form-control" rows="12"></textarea>
+    <div class="form-group fs-4">
+        <label asp-for="Content">Content*</label>
+        <textarea asp-for="Content" class="form-control border border-2 fs-5" rows="12"></textarea>
         <span asp-validation-for="Content" class="small text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="AuthorName"><strong>Author's Name</strong></label>
-        <input asp-for="AuthorName" type="text" class="form-control">
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="AuthorName">Author's Name</label>
+        <input asp-for="AuthorName" type="text" class="form-control border border-2 fs-5">
         <span asp-validation-for="AuthorName" class="small text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="BookTitle"><strong>Book Title</strong></label>
-        <input asp-for="BookTitle" type="text" class="form-control">
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="BookTitle">Book Title</label>
+        <input asp-for="BookTitle" type="text" class="form-control border border-2 fs-5">
         <span asp-validation-for="BookTitle" class="small text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="MovieTitle"><strong>Movie Title</strong></label>
-        <input asp-for="MovieTitle" type="text" class="form-control">
+    <div class="form-group mt-4 fs-4">
+        <label asp-for="MovieTitle">Movie Title</label>
+        <input asp-for="MovieTitle" type="text" class="form-control border border-2 fs-5">
         <span asp-validation-for="MovieTitle" class="small text-danger"></span>
     </div>
-    <div class="text-center">
-        <button type="submit" class="btn button text-center form-button"><strong>Upload Quote<i class="fas fa-upload icon"></i></strong></button>
+    <div class="text-center mt-4 mb-5">
+        <button type="submit" class="fs-5 btn button text-center form-button"><strong>Upload Quote<i class="ms-2 fas fa-upload icon"></i></strong></button>
     </div>
 </form>

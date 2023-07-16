@@ -4,36 +4,30 @@
     this.ViewData["Title"] = "Home Page";
 }
 
-<section class="animate__animated animate__zoomIn welcomeSection">
-    <div class="col d-flex justify-content-center">
-        <div id="textCard" class="card col-8 text-center">
-            <div class="card-body">
-                <h1 class="display-4">Welcome to @GlobalConstants.SystemName!<i class="fas fa-book"></i></h1>
-            </div>
-        </div>
-    </div>
-    <div class="card border-dark blockquote-card">
-        <div class="card-header">
+<section class="welcomeSection mt-5">
+    <h1 class="text-center mb-5">Welcome to @GlobalConstants.SystemName!</h1>
+    <div class="card mb-5 col-8 d-flex justify-content-center mx-auto border-2">
+        <div class="card-header fs-4">
             Quote
         </div>
         <div class="card-body">
-            <blockquote class="blockquote text-center">
-                <p class="quoteContent">@Model.RandomQuote.Content</p>
+            <blockquote class="blockquote ">
+                <p class="text-center">@Model.RandomQuote.Content</p>
                 @if (Model.RandomQuote.AuthorName != null)
                 {
-                    <footer class="blockquote-footer">
+                    <footer class="blockquote-footer text-end">
                         @Model.RandomQuote.AuthorName
                     </footer>
                 }
                 @if (Model.RandomQuote.BookTitle != null)
                 {
-                    <footer class="blockquote-footer">
+                    <footer class="blockquote-footer text-end">
                         From the book: @Model.RandomQuote.BookTitle
                     </footer>
                 }
                 @if (Model.RandomQuote.MovieTitle != null)
                 {
-                    <footer class="blockquote-footer">
+                    <footer class="blockquote-footer text-end">
                         From the movie: @Model.RandomQuote.MovieTitle
                     </footer>
                 }
@@ -48,20 +42,20 @@
         <div class="row text-center">
             <div class="col-6">
                 <a asp-controller="Book" asp-action="Upload" class="btn button btn-lg">
-                    Upload Book<i class="fas fa-upload icon"></i>
+                    Upload Book
                 </a>
             </div>
             <div class="col-6">
                 <a asp-controller="Quote" asp-action="Add" class="btn button btn-lg">
-                    Upload Quote<i class="fas fa-upload icon"></i>
+                    Upload Quote
                 </a>
             </div>
         </div>
     </section>
 }
 
-<partial name="_RecentlyUploadedBooksPartial" style="margin-top:20px" />
-<partial name="_MostDownloadedBooksPartial" />
+@*<partial name="_RecentlyUploadedBooksPartial" />
+<partial name="_MostDownloadedBooksPartial" />*@
 
 
 

@@ -74,7 +74,7 @@
 
         public async Task DeleteQuoteAsync(int quoteId)
         {
-            var quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            var quote = this.quoteRepository.All().First(x => x.Id == quoteId && x.IsApproved == false);
             this.quoteRepository.Delete(quote);
             await this.quoteRepository.SaveChangesAsync();
         }

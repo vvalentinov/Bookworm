@@ -1,23 +1,46 @@
-﻿@model IEnumerable<CategoryViewModel>
+﻿@model List<CategoryViewModel>
 
 @{
     this.ViewData["Title"] = "Categories";
 }
 
-<div id="categoriesConteiner">
-    <div class="row">
-        @foreach (var category in Model)
-        {
-            <div class="col-md-4 mt-5 mb-5">
-                <a asp-controller="Book" asp-action="All" asp-route-categoryName="@category.Name">
+<div class="mt-5">
+    <h2 class="text-center text-uppercase">
+        Categories
+    </h2>
+    <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+        <div class="divider-custom-line"></div>
+    </div>
+</div>
+
+
+<div class="container mb-5">
+    @for (int i = 0; i <= Model.Count - 1; i += 3)
+    {
+        <div class="row">
+            <div class="col-md-4 my-3">
+                <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i].Name">
                     <div class="card bg-dark text-light h-100">
-                        <img id="categoryImage" class="zoom" src="@category.ImageUrl" alt="Book" height="300">
-                        <div class="card-body text-center">
-                            <h5 class="card-title text-justify text-center">@category.Name</h5>
-                        </div>
+                        <img src="@Model[i].ImageUrl" alt="Book" height="300">
                     </div>
                 </a>
             </div>
-        }
-    </div>
+            <div class="col-md-4 my-3">
+                <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i + 1].Name">
+                    <div class="card bg-dark text-light h-100">
+                        <img src="@Model[i + 1].ImageUrl" alt="Book" height="300">
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 my-3">
+                <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i + 2].Name">
+                    <div class="card bg-dark text-light h-100">
+                        <img src="@Model[i + 2].ImageUrl" alt="Book" height="300">
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
 </div>

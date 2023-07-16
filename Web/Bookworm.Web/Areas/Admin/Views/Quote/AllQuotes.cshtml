@@ -50,7 +50,7 @@
                     <td>―</td>
                 }
                 <td class="text-center"><a class="btn btn-outline-success" asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId">Approve</a></td>
-                <td class="text-center"><a class="btn btn-outline-danger" asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin">Delete</a></td>
+                <td class="text-center"><a class="btn btn-outline-danger" asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id">Delete</a></td>
             </tr>
             index++;
         }

@@ -3,32 +3,34 @@
 @{
     this.ViewData["Title"] = "Random Book Generator";
 }
-<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
-    <div id="textCard" class="card col-9 text-center">
+<div class="d-flex justify-content-center mt-5">
+    <div class="card text-center title-card">
         <div class="card-body">
-            <h1 class="display-4">@this.ViewData["Title"]<i class="fas fa-cog icon"></i></h1>
+            <h3>@this.ViewData["Title"]<i class="fas fa-cog icon ms-3"></i></h3>
         </div>
     </div>
 </div>
 
-<form method="post" asp-controller="Book" asp-action="Random" class="col-lg-8 offset-lg-2">
+<form method="post" asp-controller="Book" asp-action="Random" class="col-8 mx-auto d-flex justify-content-center flex-column">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="CategoryName"><strong>Select Category</strong></label>
-        <select asp-for="CategoryName" asp-items="@Model.Categories" size="8" aria-label="size 5 select example" class="form-select form-control"></select>
+    <div class="form-group fs-4 mt-4">
+        <label asp-for="CategoryName">Select Category</label>
+        <select asp-for="CategoryName" asp-items="@Model.Categories" size="8" aria-label="size 5 select example" class="form-select form-control fs-5"></select>
     </div>
-    <div class="form-group">
-        <label asp-for="@Model.CountBooks">Select Numbet of books:</label><br>
-        <input asp-for="@Model.CountBooks" id="five" type="radio" name="CountBooks" value=5>
-        <label for="five">5</label><br>
+    <div class="form-group mt-4">
+        <label class="fs-4" asp-for="@Model.CountBooks">Select Numbet of books:</label>
+        <br>
+
+        <input  asp-for="@Model.CountBooks" id="five" type="radio" name="CountBooks" value=5>
+        <label class="fs-5" for="five">5</label><br>
         <input asp-for="@Model.CountBooks" id="ten" type="radio" name="CountBooks" value=10>
-        <label for="ten">10</label><br>
+        <label class="fs-5" for="ten">10</label><br>
         <input asp-for="@Model.CountBooks" id="fifteen" type="radio" name="CountBooks" value=15>
-        <label for="fifteen">15</label><br>
+        <label class="fs-5" for="fifteen">15</label><br>
         <input asp-for="@Model.CountBooks" id="twenty" type="radio" name="CountBooks" value=20>
-        <label for="twenty">20</label>
+        <label class="fs-5" for="twenty">20</label>
     </div>
-    <div class="text-center">
-        <button type="submit" class="btn button">Generate</button>
+    <div class="text-center mt-4 mb-4">
+        <button type="submit" class="btn button fs-5"><strong>Generate</strong></button>
     </div>
 </form>
