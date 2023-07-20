@@ -1,23 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+	<PropertyGroup>
+		<CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="HtmlSanitizer" Version="7.1.542" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="..\..\stylecop.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Data\Bookworm.Data.Models\Bookworm.Data.Models.csproj" />
-    <ProjectReference Include="..\..\Services\Bookworm.Services.Mapping\Bookworm.Services.Mapping.csproj" />
-    <ProjectReference Include="..\Bookworm.Web.Infrastructure\Bookworm.Web.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="HtmlSanitizer" Version="8.0.645" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Data\Bookworm.Data.Models\Bookworm.Data.Models.csproj" />
+		<ProjectReference Include="..\..\Services\Bookworm.Services.Mapping\Bookworm.Services.Mapping.csproj" />
+		<ProjectReference Include="..\Bookworm.Web.Infrastructure\Bookworm.Web.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -44,8 +44,8 @@
 
         public BlobClient GetBlobClient(string blobUri)
         {
-            Uri uri = new(blobUri);
-            BlobClient client = new BlobClient(uri);
+            Uri uri = new (blobUri);
+            BlobClient client = new (uri);
             return client;
         }
 
@@ -59,16 +59,16 @@
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            Uri uri = new(book.FileUrl);
+            Uri uri = new (book.FileUrl);
 
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = new(uri);
+            BlobClient blobClient = new (uri);
 
             BlobProperties blobProperties = blobClient.GetProperties();
             string contentType = blobProperties.ContentType;
 
-            MemoryStream ms = new();
+            MemoryStream ms = new ();
             await blobClient.DownloadToAsync(ms);
             Stream blobStream = blobClient.OpenReadAsync().Result;
             return Tuple.Create(blobStream, contentType, blobClient.Name);
@@ -87,8 +87,8 @@
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(file.FileName);
-            byte[] fileBytes = this.GetFileBytes(file);
-            await using MemoryStream memoryStream = new(fileBytes);
+            byte[] fileBytes = GetFileBytes(file);
+            await using MemoryStream memoryStream = new (fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
 
@@ -100,11 +100,11 @@
             await blobClient.DeleteIfExistsAsync();
         }
 
-        private byte[] GetFileBytes(IFormFile file)
+        private static byte[] GetFileBytes(IFormFile file)
         {
             byte[] fileBytes = null;
 
-            using (MemoryStream ms = new())
+            using (MemoryStream ms = new ())
             {
                 file.CopyTo(ms);
                 fileBytes = ms.ToArray();

@@ -4,7 +4,7 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
-    using Ganss.XSS;
+    using Ganss.Xss;
 
     public class CommentViewModel : IMapFrom<Comment>
     {

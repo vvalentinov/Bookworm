@@ -21,9 +21,9 @@
 
         public async Task<string> UploadImageAsync(IFormFile imageFile)
         {
-            Cloudinary cloudinary = new(this.configuration.GetValue<string>("Cloudinary:CloudinaryUrl"));
+            Cloudinary cloudinary = new (this.configuration.GetValue<string>("Cloudinary:CloudinaryUrl"));
             using Stream stream = imageFile.OpenReadStream();
-            ImageUploadParams uploadParams = new()
+            ImageUploadParams uploadParams = new ()
             {
                 File = new FileDescription(imageFile.FileName, stream),
                 PublicId = imageFile.FileName,
@@ -38,7 +38,7 @@
 
         public async Task DeleteImage(string publicId)
         {
-            Cloudinary cloudinary = new(this.configuration.GetValue<string>("Cloudinary:CloudinaryUrl"));
+            Cloudinary cloudinary = new (this.configuration.GetValue<string>("Cloudinary:CloudinaryUrl"));
             var delParams = new DelResParams()
             {
                 PublicIds = new List<string>() { publicId },

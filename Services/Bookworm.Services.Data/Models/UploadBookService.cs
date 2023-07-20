@@ -122,7 +122,7 @@
                 }
             }
 
-            Book book = new()
+            Book book = new ()
             {
                 Title = title,
                 LanguageId = languageId,
@@ -136,7 +136,7 @@
                 PublisherId = bookPublisher?.Id,
             };
 
-            List<AuthorBook> bookAuthors = new();
+            List<AuthorBook> bookAuthors = new ();
             foreach (string author in authors)
             {
                 Author bookAauthor = this.authorRepository
@@ -151,7 +151,7 @@
                     await this.authorRepository.SaveChangesAsync();
                 }
 
-                AuthorBook authorBook = new() { BookId = book.Id, AuthorId = bookAauthor.Id };
+                AuthorBook authorBook = new () { BookId = book.Id, AuthorId = bookAauthor.Id };
                 bookAuthors.Add(authorBook);
             }
 

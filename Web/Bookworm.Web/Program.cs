@@ -104,12 +104,14 @@ app.UseAuthorization();
 
 app.UseCors("My Policy");
 
-app.UseEndpoints(
-                endpoints =>
-                {
-                    endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-                    endpoints.MapRazorPages();
-                });
+app.MapControllerRoute(
+    name: "areaRoute",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

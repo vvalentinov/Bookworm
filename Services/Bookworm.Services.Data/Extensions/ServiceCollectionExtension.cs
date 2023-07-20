@@ -17,7 +17,7 @@
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            Cloudinary cloudinary = new(config.GetValue<string>("Cloudinary:CloudinaryUrl"));
+            Cloudinary cloudinary = new (config.GetValue<string>("Cloudinary:CloudinaryUrl"));
 
             services.AddSingleton(cloudinary);
 
