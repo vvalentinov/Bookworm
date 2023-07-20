@@ -5,14 +5,14 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="card login-form border-3 border-black">
-    <div class="row g-0">
-        <div class="col-md-4">
-            <img src="@Model.LoginPictureUrl" class="img-fluid rounded-start img-login" alt="Books Image...">
+<div class="card loginRegisterFormContainer border-1 border-black">
+    <div class="d-flex justify-content-center">
+        <div class="col-md-5 imageContainer">
+            <img src="@Model.LoginPictureUrl" class="img-fluid rounded-start img-login h-100" alt="Books Image...">
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7 loginRegisterForm">
             <div class="card-body">
-                <h5 class="card-title text-center fs-1">Log in to your Account</h5>
+                <h5 class="card-title text-center fs-3">Log in to your Account</h5>
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>
                     <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
@@ -26,12 +26,12 @@
                         <span asp-validation-for="Input.UserName" class="text-danger"></span>
                     </div>
                     <div class="form-floating">
-                        <input type="email" asp-for="Input.Email" class="form-control" placeholder="name@example.com" />
+                        <input type="email" asp-for="Input.Email" class="form-control my-3" placeholder="name@example.com" />
                         <label asp-for="Input.Email"></label>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
                     <div class="form-floating">
-                        <input type="password" asp-for="Input.Password" class="form-control" placeholder="Password" />
+                        <input type="password" asp-for="Input.Password" class="form-control my-3" placeholder="Password" />
                         <label asp-for="Input.Password"></label>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
@@ -43,21 +43,21 @@
                             </label>
                         </div>
                     </div>
-                    <div class="text-center">
+                    <div class="text-center mt-4">
                         <button type="submit" class="btn button">Login</button>
                     </div>
                 </form>
                 @{
                     if ((Model.ExternalLogins?.Count ?? 0) != 0)
                     {
-                        <div class="text-center">
+                        <div class="text-center my-3">
                             <span>Or use another service to log in:</span>
                         </div>
                         <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                             @foreach (var provider in Model.ExternalLogins)
                             {
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName<i class="fab fa-facebook"></i></button>
+                                    <button type="submit" class="btn button mb-3" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName<i class="fab fa-facebook ms-1"></i></button>
                                 </div>
                             }
                         </form>

@@ -1,30 +1,11 @@
-﻿let authorsCount = 1;
-function AddAuthor() {
-    if (authorsCount == 10) {
-        let addAuthorBtn = document.getElementById('addAuthorBtn');
-        addAuthorBtn.disabled = true;
-
-        let alertMessageContainer = document.getElementById('alert-message');
-
-        let alertMessage = document.createElement('div');
-        alertMessage.className = 'alert alert-info alert-dismissible fade show animate_animated animate__bounceIn';
-        alertMessage.role = 'alert';
-        alertMessage.textContent = 'Sorry! You can only add 10 authors!';
-
-        let alertMessageButton = document.createElement('button');
-        alertMessageButton.type = 'button';
-        alertMessageButton.className = 'btn-close';
-        alertMessageButton.setAttribute('data-bs-dismiss', 'alert');
-        alertMessageButton.setAttribute('aria-label', 'Close');
-
-        alertMessage.appendChild(alertMessageButton);
-        alertMessageContainer.appendChild(alertMessage);
-        return;
-    }
+﻿function AddAuthor() {
     let authorsContainer = document.getElementById('authorsContainer');
+    let addAuthorBtn = document.getElementById('addAuthorBtn');
+    let authorsCount = [...authorsContainer.children].slice(2).length;
 
-    let child = document.createElement('div');
-    child.className = "input-group mt-4 animate__animated animate__zoomIn";
+    //Create and append author
+    let authorContainer = document.createElement('div');
+    authorContainer.className = "input-group mt-4 animate__animated animate__zoomIn";
 
     let inputElement = document.createElement('input');
     inputElement.type = "text";
@@ -38,16 +19,38 @@ function AddAuthor() {
     buttonElement.textContent = "Delete";
     buttonElement.addEventListener('click', function handleClick(event) {
         event.target.parentElement.remove();
+        if (authorsCount < 5) {
+            addAuthorBtn.disabled = false;
+        }
     });
 
-    child.appendChild(inputElement);
-    child.appendChild(buttonElement);
+    authorContainer.appendChild(inputElement);
+    authorContainer.appendChild(buttonElement);
 
-    authorsContainer.appendChild(child);
-    authorsCount++;
-}
+    authorsContainer.appendChild(authorContainer);
+    if (authorsCount == 4) {
+        addAuthorBtn.disabled = true;
 
-function RemoveAuthor() {
-    let buttonElement = document.getElementById('deleteAuthorBtn');
-    buttonElement.parentElement.remove();
+        // Create and append alert message
+        let alertMessageContainer = document.getElementById('alert-message');
+        let alertMessage = document.createElement('div');
+
+        alertMessage.className = 'alert alert-info alert-dismissible fade show animate__animated animate__pulse';
+        alertMessage.role = 'alert';
+        alertMessage.textContent = 'You can only add 5 authors!';
+
+        let alertMessageButton = document.createElement('button');
+        alertMessageButton.type = 'button';
+        alertMessageButton.className = 'btn-close';
+        alertMessageButton.setAttribute('data-bs-dismiss', 'alert');
+        alertMessageButton.setAttribute('aria-label', 'Close');
+
+        alertMessage.appendChild(alertMessageButton);
+        alertMessageContainer.appendChild(alertMessage);
+
+        setTimeout(() => {
+            alertMessage.style.display = 'none';
+        }, 5000);
+        return;
+    }
 }

@@ -29,22 +29,19 @@
         private readonly ILogger<RegisterModel> logger;
         private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
-        private readonly ICloudinaryService cloudinaryService;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IConfiguration configuration,
-            IEmailSender emailSender,
-            ICloudinaryService cloudinaryService)
+            IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
             this.configuration = configuration;
             this.emailSender = emailSender;
-            this.cloudinaryService = cloudinaryService;
         }
 
         [BindProperty]
@@ -68,7 +65,7 @@
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                ApplicationUser user = new()
+                ApplicationUser user = new ()
                 {
                     UserName = this.Input.UserName,
                     Email = this.Input.Email,

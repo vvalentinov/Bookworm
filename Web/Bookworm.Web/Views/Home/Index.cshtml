@@ -5,7 +5,7 @@
 }
 
 <section class="welcomeSection mt-5">
-    <h1 class="text-center mb-5">Welcome to @GlobalConstants.SystemName!</h1>
+    <h1 class="text-center mb-5 animate__animated animate__jackInTheBox">Welcome to @GlobalConstants.SystemName!</h1>
     <div class="card mb-5 col-8 d-flex justify-content-center mx-auto border-2">
         <div class="card-header fs-4">
             Quote
@@ -38,15 +38,15 @@
 
 @if (this.User.Identity.IsAuthenticated)
 {
-    <section class="homeButtonsSection">
-        <div class="row text-center">
-            <div class="col-6">
-                <a asp-controller="Book" asp-action="Upload" class="btn button btn-lg">
+    <section>
+        <div class="d-flex justify-content-evenly ">
+            <div>
+                <a asp-controller="Book" asp-action="Upload" class="btn button btn-lg animate__animated animate__heartBeat">
                     Upload Book
                 </a>
             </div>
-            <div class="col-6">
-                <a asp-controller="Quote" asp-action="Add" class="btn button btn-lg">
+            <div>
+                <a asp-controller="Quote" asp-action="Add" class="btn button btn-lg animate__animated animate__heartBeat">
                     Upload Quote
                 </a>
             </div>

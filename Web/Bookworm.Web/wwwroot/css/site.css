@@ -3,6 +3,7 @@
 :root {
     --clr-primary: #34495E;
     --clr-secondary: #1abc9c;
+    --clr-white: #fff;
 }
 
 html, body {
@@ -14,7 +15,6 @@ body {
     font-family: 'Diphylleia', serif;
     display: flex;
     flex-direction: column;
-    padding-top: 4rem;
 }
 
 .navbar {
@@ -22,7 +22,7 @@ body {
 }
 
     .navbar .nav-item .nav-link {
-        color: white;
+        color: var(--clr-white);
     }
 
         .navbar .nav-item .nav-link:hover {
@@ -30,53 +30,39 @@ body {
         }
 
 .fa-bars {
-    color: white;
+    color: var(--clr-white);
 }
 
 .button {
     background-color: var(--clr-primary);
-    color: white;
+    color: var(--clr-white);
 }
 
     .button:hover {
-        background-color: #34495E;
+        background-color: var(--clr-primary);
         color: var(--clr-secondary);
     }
 
 .logout-btn {
     background-color: var(--clr-secondary);
-    color: white;
+    color: var(--clr-white);
     border-radius: 10px
 }
 
-.img-login {
-    height: 100%;
+.loginRegisterFormContainer {
+    margin: 1.5rem 10rem;
 }
 
-.login-form {
-    margin: 100px;
-}
-
-    .login-form .btn {
-        margin: 15px 0px;
-    }
-
-    .login-form .form-control {
-        margin: 15px 0px;
-    }
-
-    .login-form .fa-facebook {
-        color: #658fd7;
-        margin-left: 5px;
+    .loginRegisterFormContainer .loginRegisterForm .fa-facebook {
+        color: var(--clr-white);
     }
 
 a {
-    color: #1abc9c;
+    color: var(--clr-secondary);
 }
 
 .bookworm-footer {
     background-color: var(--clr-primary);
-    height: 50px;
     margin-top: auto;
     flex-shrink: 0;
 }
@@ -120,38 +106,37 @@ a {
     }
 
     .divider-custom.divider-light .divider-custom-line {
-        background-color: #fff;
+        background-color: var(--clr-white);
     }
 
     .divider-custom.divider-light .divider-custom-icon {
-        color: #fff;
+        color: var(--clr-white);
     }
 
 
 a[class="form-link"] {
-    color: #34495E;
+    color: var(--clr-primary);
 }
 
     a[class="form-link"]:hover {
-        color: #1abc9c;
+        color: var(--clr-secondary);
     }
 
 a[class="privacy-link"] {
-    color: white;
+    color: var(--clr-white);
 }
 
     a[class="privacy-link"]:hover {
-        color: #1abc9c;
+        color: var(--clr-secondary);
     }
 
 .form-control:focus {
-    /*border-color: var(--clr-secondary);*/
     box-shadow: 0 0 0 0.2rem var(--clr-secondary);
 }
 
 .title-card {
     background-color: var(--clr-primary);
-    color: white;
+    color: var(--clr-white);
 }
 
     .title-card :hover {
@@ -160,20 +145,21 @@ a[class="privacy-link"] {
 
 .card .card-header {
     background-color: var(--clr-primary);
-    color: white;
+    color: var(--clr-white);
 }
 
-.card .card-header:hover {
-    color: var(--clr-secondary);
-}
+    .card .card-header:hover {
+        color: var(--clr-secondary);
+    }
 
+/*Radio Buttons Styles*/
 input[type="radio"] {
     appearance: none;
     margin: 0.5rem;
     width: 1.5rem;
     height: 1.5rem;
     background: var(--clr-primary);
-    box-shadow: inset 0 0 0 .4em white, 0 0 0 .3em;
+    box-shadow: inset 0 0 0 .4em var(--clr-white), 0 0 0 .3em;
     border-radius: 50%;
     transition: .2s;
     cursor: pointer;
@@ -182,14 +168,30 @@ input[type="radio"] {
 
     input[type="radio"]:hover, input[type="radio"]:checked {
         background: var(--clr-primary);
-        box-shadow: inset 0 0 0 .6em white, 0 0 0 .3em;
+        box-shadow: inset 0 0 0 .6em var(--clr-white), 0 0 0 .3em;
     }
 
     input[type="radio"]:checked {
         background: var(--clr-secondary);
-        box-shadow: inset 0 0 0 .4em white, 0 0 0 .3em #56be8e;
+        box-shadow: inset 0 0 0 .4em var(--clr-white), 0 0 0 .3em #56be8e;
     }
 
     input[type="radio"]:focus {
         outline: 0;
     }
+
+
+/*Responsive Design*/
+@media only screen and (max-width: 1000px) {
+    .loginRegisterFormContainer .imageContainer {
+        display: none;
+    }
+
+    .loginRegisterFormContainer {
+        margin: 1rem;
+    }
+
+    .loginRegisterForm {
+        width: 100%;
+    }
+}

@@ -4,8 +4,8 @@
     this.ViewData["Title"] = "Upload Book";
 }
 
-<div class="d-flex justify-content-center mt-5 animate__animated animate__jackInTheBox">
-    <div class="card text-center title-card">
+<div class="d-flex justify-content-center mt-5">
+    <div class="card text-center title-card animate__animated animate__jackInTheBox">
         <div class="card-body">
             <h3>@this.ViewData["Title"]<i class="fas fa-book icon ms-3"></i></h3>
         </div>
@@ -50,16 +50,12 @@
         <label asp-for="ImageFile" class="form-label fs-4">Image File</label>
         <input asp-for="ImageFile" type="file" class="form-control border border-2">
     </div>
-   
+
     <div class="form-group mt-4" id="authorsContainer">
         <div id="alert-message"></div>
-        <button type="button" id="addAuthorBtn" class="btn button" onclick="AddAuthor();">Add Author<i class="fas fa-user ms-1"></i></button>
-        <div class="input-group mt-4">
-            <input type="text" class="form-control border border-2" placeholder="Author's Name">
-            <button class="btn btn-outline-danger" type="button" id="deleteAuthorBtn" onclick="RemoveAuthor();">Delete</button>
-        </div>
+        <button type="button" id="addAuthorBtn" class="btn button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="You can add 5 authors" onclick="AddAuthor();">Add Author<i class="fas fa-user ms-1"></i></button>
     </div>
-    
+
     <div class="form-group mt-4 fs-4">
         <label asp-for="Description">Description</label>
         <textarea asp-for="Description" class="form-control border border-2" rows="12"></textarea>
@@ -73,5 +69,5 @@
 
 
 @section Scripts{
-<script src="~/js/authors.js"></script>
+    <script src="~/js/authors.js"></script>
 }
