@@ -4,6 +4,7 @@
     --clr-primary: #34495E;
     --clr-secondary: #1abc9c;
     --clr-white: #fff;
+    --clr-custom-divider: #2c3e50;
 }
 
 html, body {
@@ -67,14 +68,11 @@ a {
     flex-shrink: 0;
 }
 
-#cookieConsent {
-    margin: 20px 0px;
-}
-
 .category-link {
     text-decoration: none;
 }
 
+/*Custom divider style*/
 .divider-custom {
     margin: 1.25rem 0 1.5rem;
     width: 100%;
@@ -87,9 +85,9 @@ a {
         width: 100%;
         max-width: 7rem;
         height: 0.25rem;
-        background-color: #2c3e50;
+        background-color: var(--clr-custom-divider);
         border-radius: 1rem;
-        border-color: #2c3e50;
+        border-color: var(--clr-custom-divider);
     }
 
         .divider-custom .divider-custom-line:first-child {
@@ -101,7 +99,7 @@ a {
         }
 
     .divider-custom .divider-custom-icon {
-        color: #2c3e50;
+        color: var(--clr-custom-divider);
         font-size: 2rem;
     }
 
@@ -180,6 +178,18 @@ input[type="radio"] {
         outline: 0;
     }
 
+.quotesContainer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+    .quotesContainer .quoteCard {
+        width: 50%;
+    }
+
 
 /*Responsive Design*/
 @media only screen and (max-width: 1000px) {
@@ -192,6 +202,16 @@ input[type="radio"] {
     }
 
     .loginRegisterForm {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .quotesContainer {
+        flex-direction: column;
+    }
+
+    .quotesContainer .quoteCard {
         width: 100%;
     }
 }

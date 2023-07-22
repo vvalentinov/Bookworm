@@ -10,6 +10,7 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Mapping;
     using Bookworm.Services.Messaging;
+    using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Identity;
 
@@ -96,14 +97,32 @@
             await this.quoteRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<T> GetAllQuotes<T>()
+        public QuoteListingViewModel GetAllQuotes(int page, int quotesPerPage)
         {
-            return this.quoteRepository
-              .AllAsNoTracking()
-              .Where(x => x.IsApproved == true)
-              .OrderBy(x => x.CreatedOn)
-              .To<T>()
-              .ToList();
+            return new QuoteListingViewModel()
+            {
+                Quotes = this.quoteRepository
+                .AllAsNoTracking()
+                .Where(x => x.IsApproved == true)
+                .Select(x => new QuoteViewModel()
+                {
+                    Id = x.Id,
+                    BookTitle = x.BookTitle,
+                    MovieTitle = x.MovieTitle,
+                    Content = x.Content,
+                    AuthorName = x.AuthorName,
+                })
+                .Skip((page - 1) * quotesPerPage)
+                .Take(quotesPerPage)
+                .OrderByDescending(x => x.Id)
+                .ToList(),
+                PageNumber = page,
+                QuotesCount = this.quoteRepository
+                                .AllAsNoTracking()
+                                .Where(x => x.IsApproved == true)
+                                .Count(),
+                QuotesPerPage = quotesPerPage,
+            };
         }
 
         public IEnumerable<T> GetAllUnapprovedQuotes<T>()

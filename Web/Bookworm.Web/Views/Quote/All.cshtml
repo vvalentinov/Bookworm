@@ -1,84 +1,114 @@
-﻿@model IEnumerable<QuoteViewModel>
+﻿@model QuoteListingViewModel
 
 @{
     this.ViewData["Title"] = "All Quotes";
-    int index = 1;
+    var quotes = this.Model.Quotes.ToList();
 }
 
 <div class="col d-flex justify-content-center my-4">
     <div class="card title-card animate__animated animate__jackInTheBox">
         <div class="card-body">
-            <h3>@this.ViewData["Title"] (@Model.Count())</h3>
+            <h3>@this.ViewData["Title"] (@Model.QuotesCount)</h3>
         </div>
     </div>
 </div>
 
 
-<table id="quotesTable" class="table table-bordered table-responsive">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Quote</th>
-            <th scope="col">Author</th>
-            <th scope="col">Book</th>
-            <th scope="col">Movie</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var quote in Model)
+@for (int i = 0; i < quotes.Count; i += 2)
+{
+    <div class="quotesContainer">
+        <div class="card border-2 quoteCard">
+            <div class="card-header fs-4">
+                Quote
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote">
+                    <p class="text-center quoteContent">@quotes[i].Content</p>
+                    @if (quotes[i].AuthorName != null)
+                    {
+                        <footer class="blockquote-footer text-end">
+                            @quotes[i].AuthorName
+                        </footer>
+                    }
+                    @if (quotes[i].BookTitle != null)
+                    {
+                        <footer class="blockquote-footer text-end">
+                            From the book: @quotes[i].BookTitle
+                        </footer>
+                    }
+                    @if (quotes[i].MovieTitle != null)
+                    {
+                        <footer class="blockquote-footer text-end">
+                            From the movie: @quotes[i].MovieTitle
+                        </footer>
+                    }
+                </blockquote>
+            </div>
+        </div>
+        @if (i + 1 < quotes.Count)
         {
-            <tr>
-                <th scope="row">
-                    @index
-                </th>
-                <td style="font-style: italic;">@quote.Content</td>
-                @if (quote.AuthorName != null)
-                {
-                    <td>@quote.AuthorName</td>
-                }
-                else
-                {
-                    <td class="text-center">―</td>
-                }
-                @if (quote.BookTitle != null)
-                {
-                    <td><strong>@quote.BookTitle</strong></td>
-                }
-                else
-                {
-                    <td class="text-center">―</td>
-                }
-                @if (quote.MovieTitle != null)
-                {
-                    <td>@quote.MovieTitle</td>
-                }
-                else
-                {
-                    <td class="text-center">―</td>
-                }
-            </tr>
-            index++;
+            <div class="card border-2 quoteCard">
+                <div class="card-header fs-4">
+                    Quote
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <p class="text-center quoteContent">@quotes[i + 1].Content</p>
+                        @if (quotes[i + 1].AuthorName != null)
+                        {
+                            <footer class="blockquote-footer text-end">
+                                @quotes[i + 1].AuthorName
+                            </footer>
+                        }
+                        @if (quotes[i + 1].BookTitle != null)
+                        {
+                            <footer class="blockquote-footer text-end">
+                                From the book: @quotes[i + 1].BookTitle
+                            </footer>
+                        }
+                        @if (quotes[i + 1].MovieTitle != null)
+                        {
+                            <footer class="blockquote-footer text-end">
+                                From the movie: @quotes[i + 1].MovieTitle
+                            </footer>
+                        }
+                    </blockquote>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+}
 
-<button style="display:none" id="upButton" title="Go to top"><i class="fas fa-arrow-up"></i></button>
-
-
-@section Scripts{
-<script>
-    const myBtn = document.querySelector("#upButton");
-
-    myBtn.addEventListener("click", function () {
-        $("html, body").animate({ scrollTop: 0 }, "slow");
-    });
-
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 1000) {
-            $('#upButton').fadeIn();
-        } else {
-            $('#upButton').fadeOut();
-        }
-    });
-</script>
+@if (Model.QuotesCount > 0)
+{
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @if (Model.HasPreviousPage == false){<text>disabled</text>}">
+                <a id="previous" class="page-link" asp-action="All" asp-route-page="@Model.PreviousPageNumber">Previous</a>
+            </li>
+            @for (int i = Model.PageNumber - 3; i < Model.PageNumber; i++)
+            {
+                if (i > 0)
+                {
+                    <li class="page-item"><a class="page-link" asp-action="All" asp-route-page="@i">@i</a></li>
+                }
+            }
+            <li class="page-item active">
+                <span class="page-link">
+                    @Model.PageNumber
+                    <span class="sr-only">(current)</span>
+                </span>
+            </li>
+            @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 3; i++)
+            {
+                if (i <= Model.PagesCount)
+                {
+                    <li class="page-item"><a class="page-link" asp-action="All" asp-route-page="@i">@i</a></li>
+                }
+            }
+            <li class="page-item @if (Model.HasNextPage == false){<text>disabled</text>}">
+                <a class="page-link" asp-action="All" asp-route-page="@Model.NextPageNumber">Next</a>
+             </li>
+        </ul>
+    </nav>
 }

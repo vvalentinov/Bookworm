@@ -5,7 +5,59 @@
     var index = 1;
 }
 
-<table id="quotesTable" class="table table-bordered animate__animated animate__zoomIn">
+<table id="quotesTable" class="table table-bordered table-responsive mt-5">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Quote</th>
+            <th scope="col">Author</th>
+            <th scope="col">Book</th>
+            <th scope="col">Movie</th>
+            <th scope="col">Approve</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quote in Model)
+        {
+            <tr>
+                <th scope="row">
+                    @index
+                </th>
+                <td>@quote.Content</td>
+                @if (quote.AuthorName != null)
+                {
+                    <td>@quote.AuthorName</td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                @if (quote.BookTitle != null)
+                {
+                    <td><strong>@quote.BookTitle</strong></td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                @if (quote.MovieTitle != null)
+                {
+                    <td>@quote.MovieTitle</td>
+                }
+                else
+                {
+                    <td class="text-center">―</td>
+                }
+                <td class="text-center"><a class="btn btn-outline-success" asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId">Approve</a></td>
+                <td class="text-center"><a class="btn btn-outline-danger" asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id">Delete</a></td>
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>
+
+@*<table id="quotesTable" class="table table-bordered animate__animated animate__zoomIn w-50">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -55,4 +107,4 @@
             index++;
         }
     </tbody>
-</table>
+</table>*@

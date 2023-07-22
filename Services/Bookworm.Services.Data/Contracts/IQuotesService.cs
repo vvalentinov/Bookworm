@@ -14,7 +14,7 @@
             string movieTitle,
             string userId);
 
-        IEnumerable<T> GetAllQuotes<T>();
+        QuoteListingViewModel GetAllQuotes(int page, int quotesPerPage);
 
         IEnumerable<T> GetAllUnapprovedQuotes<T>();
 

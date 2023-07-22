@@ -20,15 +20,22 @@
     <div class="form-group mt-4">
         <label class="fs-4" asp-for="@Model.CountBooks">Select Numbet of books:</label>
         <br>
-
-        <input  asp-for="@Model.CountBooks" id="five" type="radio" name="CountBooks" value=5>
-        <label class="fs-5" for="five">5</label><br>
-        <input asp-for="@Model.CountBooks" id="ten" type="radio" name="CountBooks" value=10>
-        <label class="fs-5" for="ten">10</label><br>
-        <input asp-for="@Model.CountBooks" id="fifteen" type="radio" name="CountBooks" value=15>
-        <label class="fs-5" for="fifteen">15</label><br>
-        <input asp-for="@Model.CountBooks" id="twenty" type="radio" name="CountBooks" value=20>
-        <label class="fs-5" for="twenty">20</label>
+        <div class="d-flex align-items-center">
+            <input asp-for="@Model.CountBooks" id="five" type="radio" name="CountBooks" value=5>
+            <label class="fs-5 ms-1" for="five"><strong>5</strong></label>
+        </div>
+        <div class="d-flex align-items-center mt-2">
+            <input asp-for="@Model.CountBooks" id="ten" type="radio" name="CountBooks" value=10>
+            <label class="fs-5 ms-1" for="ten"><strong>10</strong></label>
+        </div>
+        <div class="d-flex align-items-center mt-2">
+            <input asp-for="@Model.CountBooks" id="fifteen" type="radio" name="CountBooks" value=15>
+            <label class="fs-5 ms-1" for="fifteen"><strong>15</strong></label>
+        </div>
+        <div class="d-flex align-items-center mt-2">
+            <input asp-for="@Model.CountBooks" id="twenty" type="radio" name="CountBooks" value=20>
+            <label class="fs-5 ms-1" for="twenty"><strong>20</strong></label>
+        </div>
     </div>
     <div class="text-center mt-4 mb-4">
         <button type="submit" class="btn button fs-5"><strong>Generate</strong></button>
