@@ -1,6 +1,5 @@
 ﻿namespace Bookworm.Web.Controllers
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -66,7 +65,6 @@
 
         public IActionResult All(int page = 1)
         {
-            // IEnumerable<QuoteViewModel> quotes = this.quotesService.GetAllQuotes<QuoteViewModel>();
             QuoteListingViewModel quotes = this.quotesService.GetAllQuotes(page, 6);
             return this.View(quotes);
         }

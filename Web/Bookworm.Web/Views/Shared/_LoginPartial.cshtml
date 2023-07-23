@@ -8,59 +8,56 @@
 @if (this.SignInManager.IsSignedIn(this.User))
 {
     var user = this.UserManager.GetUserAsync(this.User);
-    
     var favoriteBooksCount = user.Result.FavoriteBooks.Count();
     string url = user.Result.ProfilePictureUrl;
     var points = user.Result.Points;
 
-    <li class="nav-item dropdown fs-4 mx-2">
+    <li class="nav-item dropdown mx-2">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             @user.Result.UserName
         </a>
-        <ul class="dropdown-menu dropdown-menu-end">
+        <ul class="dropdown-menu animate__animated animate__fadeIn animate__faster fs-5">
             <li>
-                <a class="dropdown-item">
-                    <i class="fas fa-graduation-cap "></i>
+                <a class="dropdown-item py-3">
+                    <i class="fas fa-graduation-cap"></i>
                     Points: @points
                 </a>
             </li>
 
             @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
             {
-                <a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>Admin
-                </a>
+                <li>
+                    <a class="dropdown-item py-3 " asp-area="Admin" asp-controller="Home" asp-action="Index" title="Admin">
+                        <i class="fas fa-user me-2"></i>Admin
+                    </a>
+                </li>
+
             }
             <li>
-                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
-                    <i class="fas fa-user-cog fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
+                <a class="dropdown-item py-3" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-user-cog me-2"></i>Profile
                 </a>
             </li>
             <li>
-                <a class="dropdown-item" asp-area="" asp-action="Favorites" asp-controller="FavoriteBook">
-                    <i class="fas fa-heart fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Favorite Books
+                <a class="dropdown-item py-3" asp-area="" asp-action="Favorites" asp-controller="FavoriteBook">
+                    <i class="fas fa-heart me-2"></i>Favorite Books
                 </a>
             </li>
             <li>
-                <a class="dropdown-item" asp-area="" asp-action="UserBooks" asp-controller="Book">
-                    <i class="fas fa-book fa-sm fa-fw mr-2 text-gray-400"></i>
-                    My Books
+                <a class="dropdown-item py-3" asp-area="" asp-action="UserBooks" asp-controller="Book">
+                    <i class="fas fa-book me-2"></i>My Books
                 </a>
             </li>
             <li>
-                <a class="dropdown-item" asp-area="" asp-action="UserQuotes" asp-controller="Quote">
-                    <i class="fas fa-pen fa-sm fa-fw mr-2 text-gray-400"></i>
-                    My Quotes
+                <a class="dropdown-item py-3" asp-area="" asp-action="UserQuotes" asp-controller="Quote">
+                    <i class="fas fa-pen me-2"></i>My Quotes
                 </a>
             </li>
             <li>
-                <a class="dropdown-item" asp-area="" asp-action="Statistics" asp-controller="User">
-                    <i class="fas fa-user-graduate fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Users Statistics
+                <a class="dropdown-item py-3" asp-area="" asp-action="Statistics" asp-controller="User">
+                    <i class="fas fa-user-graduate me-2"></i>Users Statistics
                 </a>
-            </li>  
+            </li>
         </ul>
     </li>
     <form class="form-inline d-flex" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@this.Url.Action("Index", "Home", new { area = string.Empty })">

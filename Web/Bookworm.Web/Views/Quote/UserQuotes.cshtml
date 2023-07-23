@@ -2,75 +2,70 @@
 
 @{
     ViewData["Title"] = "My Quotes";
+    var quotes = Model.Quotes.ToList();
 }
 
-<div class="col d-flex justify-content-center animate__animated animate__zoomIn">
-    <div id="textCard" class="card col-4 text-center">
+<div class="d-flex justify-content-center mt-5">
+    <div class="card text-center title-card animate__animated animate__jackInTheBox">
         <div class="card-body">
-            <h1 class="display-8">@ViewData["Title"]</h1>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="card col-6 border-dark">
-        <div class="card-body">
-            @Model.ApprovedQuotesCount approved quotes.
-        </div>
-    </div>
-    <div class="card col-6 border-dark">
-        <div class="card-body">
-            @Model.UnapprovedQuotesCount unapproved quotes.
+            <blockquote class="blockquote">
+                <h2 class="mb-4">@ViewData["Title"]</h2>
+                <footer class="blockquote-footer">Approved Quotes: @Model.ApprovedQuotesCount</footer>
+                <footer class="blockquote-footer">Unapproved Quotes: @Model.UnapprovedQuotesCount</footer>
+            </blockquote>
         </div>
     </div>
 </div>
 
 
-<input class="btn btn-outline-info unapprovedQuotesBtn" type='button' value='Show Unapproved Quotes' />
-<div class="card-body table-responsive p-0">
-    <table id="myQuotesTable" class="table table-hover text-nowrap">
+@*<input class="btn btn-outline-info unapprovedQuotesBtn" type='button' value='Show Unapproved Quotes' />*@
+
+<div class="table-responsive my-5">
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Content</th>
-                <th class="text-center">Author</th>
-                <th class="text-center">Movie</th>
-                <th class="text-center">Book</th>
-                <th class="text-center">Is Approved</th>
-                <th class="text-center">Edit</th>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Content</th>
+                <th class="text-center" scope="col">Author</th>
+                <th class="text-center" scope="col">Movie</th>
+                <th class="text-center" scope="col">Book</th>
+                <th class="text-center" scope="col">IsApproved</th>
+                <th class="text-center" scope="col">Edit</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var quote in Model.Quotes)
+            @for (int i = 1; i <= quotes.Count - 1; i++)
             {
                 <tr>
-                    <td style="white-space:pre-wrap; word-wrap:break-word">@quote.Content</td>
-                    @if (@quote.AuthorName != null)
+                    <th class="align-middle" scope="row">@i</th>
+                    <td class="align-middle">@quotes[i].Content</td>
+                    @if (@quotes[i].AuthorName != null)
                     {
-                        <td  class="text-center">@quote.AuthorName</td>
+                        <td class="text-center align-middle">@quotes[i].AuthorName</td>
                     }
                     else
                     {
-                        <td class="text-center" >―</td>
+                        <td class="text-center align-middle">—</td>
                     }
-                    @if (@quote.MovieTitle != null)
+                    @if (@quotes[i].MovieTitle != null)
                     {
-                        <td class="text-center">@quote.MovieTitle</td>
+                        <td class="text-center align-middle">@quotes[i].MovieTitle</td>
                     }
                     else
                     {
-                        <td class="text-center" >―</td>
+                        <td class="text-center align-middle">—</td>
                     }
-                    @if (@quote.BookTitle != null)
+                    @if (@quotes[i].BookTitle != null)
                     {
-                        <td class="text-center">@quote.BookTitle</td>
+                        <td class="text-center align-middle">@quotes[i].BookTitle</td>
                     }
                     else
                     {
-                        <td class="text-center">―</td>
+                        <td class="text-center align-middle">—</td>
                     }
-                    <td class="text-center" >@(quote.IsApproved ? "Yes" : "No")</td>
-                    <td class="text-center">
-                        <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@quote.Id" class="btn btn-warning">Edit Quote</a>
+                    <td class="text-center align-middle">@(quotes[i].IsApproved ? "Yes" : "No")</td>
+                    <td class="text-center align-middle">
+                        <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@quotes[i].Id" class="btn btn-warning">Edit</a>
                     </td>
                 </tr>
             }
@@ -79,9 +74,9 @@
 </div>
 
 @section Scripts{
-<script>
-      $('.unapprovedQuotesBtn').click(function(){
-        $('td:contains("Yes")').parent().toggle();
-    });
-</script>
+    <script>
+        $('.unapprovedQuotesBtn').click(function () {
+            $('td:contains("Yes")').parent().toggle();
+        });
+    </script>
 }

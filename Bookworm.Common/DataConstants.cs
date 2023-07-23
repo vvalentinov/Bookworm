@@ -17,7 +17,7 @@
         public const byte BookPublisherMax = 100;
 
         public const byte QuoteMinLength = 20;
-        public const int QuoteMaxLength = 500;
+        public const int QuoteMaxLength = 350;
 
         public const byte MovieTitleMinLenght = 3;
         public const byte MovieTitleMaxLenght = 150;
