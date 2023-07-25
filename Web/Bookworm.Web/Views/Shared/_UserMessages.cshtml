@@ -1,7 +1,7 @@
 ﻿@if (TempData[MessageConstant.ErrorMessage] != null)
 {
     <script>
-        $(function(){
+        $(function () {
             toastr.error('@TempData[MessageConstant.ErrorMessage].ToString()');
         })
     </script>
@@ -9,7 +9,7 @@
 @if (TempData[MessageConstant.WarningMessage] != null)
 {
     <script>
-        $(function(){
+        $(function () {
             toastr.warning('@TempData[MessageConstant.WarningMessage].ToString()');
         })
     </script>
@@ -17,8 +17,10 @@
 @if (TempData[MessageConstant.SuccessMessage] != null)
 {
     <script>
-        $(function(){
-            toastr.success('@TempData[MessageConstant.SuccessMessage].ToString()');
+        $(function () {
+            toastr.options.closeButton = true;
+            toastr.options.timeOut = 10000;
+            toastr.success('When admin approves your quote others may see it', '@TempData[MessageConstant.SuccessMessage].ToString()');
         })
     </script>
 }

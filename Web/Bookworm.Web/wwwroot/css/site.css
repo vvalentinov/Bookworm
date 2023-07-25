@@ -90,8 +90,14 @@ a {
     text-decoration: none;
 }
 
+.x-icon,
+.fa-thumbs-down {
+    color: red;
+}
 
-
+.fa-thumbs-up {
+    color: var(--clr-secondary);
+}
 /*Pagination Styles*/
 .pagination > li > a {
     background-color: var(--clr-primary);

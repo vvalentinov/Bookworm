@@ -95,7 +95,7 @@
 
             this.TempData[MessageConstant.SuccessMessage] = "Successfully added quote!";
 
-            return this.View("Views/Quote/ThankYouQuote.cshtml");
+            return this.RedirectToAction("Index", "Home");
         }
     }
 }
