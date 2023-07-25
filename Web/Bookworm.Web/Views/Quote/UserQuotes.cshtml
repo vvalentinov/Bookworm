@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "My Quotes";
-    var quotes = Model.Quotes.ToList();
 }
 
 <div class="d-flex justify-content-center mt-5">
@@ -18,65 +17,84 @@
 </div>
 
 
-@*<input class="btn btn-outline-info unapprovedQuotesBtn" type='button' value='Show Unapproved Quotes' />*@
+@if (Model.Quotes.Count() == 0)
+{
+    <h3 class="text-center mt-5 display-3">You haven't uploaded any quotes!</h3>
+}
+else
+{
+    <div class="my-3">
+        <div class="d-flex align-items-center mb-2">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" onclick="approvedQuotes()">
+            <label class="form-check-label fs-5 ms-2" for="flexRadioDefault1">
+                Show Approved Quotes
+            </label>
+        </div>
+        <div class="d-flex align-items-center">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" onclick="unapprovedQuotes()">
+            <label class="form-check-label fs-5 ms-2" for="flexRadioDefault2">
+                Show Unapproved Quotes
+            </label>
+        </div>
+    </div>
 
-<div class="table-responsive my-5">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center" scope="col">#</th>
-                <th class="text-center" scope="col">Content</th>
-                <th class="text-center" scope="col">Author</th>
-                <th class="text-center" scope="col">Movie</th>
-                <th class="text-center" scope="col">Book</th>
-                <th class="text-center" scope="col">IsApproved</th>
-                <th class="text-center" scope="col">Edit</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 1; i <= quotes.Count - 1; i++)
-            {
+
+
+    <div class="table-responsive my-5">
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <th class="align-middle" scope="row">@i</th>
-                    <td class="align-middle">@quotes[i].Content</td>
-                    @if (@quotes[i].AuthorName != null)
-                    {
-                        <td class="text-center align-middle">@quotes[i].AuthorName</td>
-                    }
-                    else
-                    {
-                        <td class="text-center align-middle">—</td>
-                    }
-                    @if (@quotes[i].MovieTitle != null)
-                    {
-                        <td class="text-center align-middle">@quotes[i].MovieTitle</td>
-                    }
-                    else
-                    {
-                        <td class="text-center align-middle">—</td>
-                    }
-                    @if (@quotes[i].BookTitle != null)
-                    {
-                        <td class="text-center align-middle">@quotes[i].BookTitle</td>
-                    }
-                    else
-                    {
-                        <td class="text-center align-middle">—</td>
-                    }
-                    <td class="text-center align-middle">@(quotes[i].IsApproved ? "Yes" : "No")</td>
-                    <td class="text-center align-middle">
-                        <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@quotes[i].Id" class="btn btn-warning">Edit</a>
-                    </td>
+                    <th class="text-center align-middle" scope="col">#</th>
+                    <th class="text-center align-middle" scope="col">Content</th>
+                    <th class="text-center align-middle" scope="col">Author</th>
+                    <th class="text-center align-middle" scope="col">Movie</th>
+                    <th class="text-center align-middle" scope="col">Book</th>
+                    <th class="text-center align-middle" scope="col">Is Approved</th>
+                    <th class="text-center align-middle" scope="col">Edit</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody class="table-body">
+                @for (int i = 0; i <= Model.Quotes.Count() - 1; i++)
+                {
+                    <tr>
+                        <th class="text-center align-middle" scope="row">@(i + 1)</th>
+                        <td class="align-middle">@Model.Quotes[i].Content</td>
+                        @if (@Model.Quotes[i].AuthorName != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].AuthorName</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle">—</td>
+                        }
+                        @if (@Model.Quotes[i].MovieTitle != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].MovieTitle</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle">—</td>
+                        }
+                        @if (@Model.Quotes[i].BookTitle != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].BookTitle</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle">—</td>
+                        }
+                        <td class="text-center align-middle">@(Model.Quotes[i].IsApproved ? "Yes" : "No")</td>
+                        <td class="text-center align-middle">
+                            <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@Model.Quotes[i].Id" class="btn btn-warning">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
 
 @section Scripts{
-    <script>
-        $('.unapprovedQuotesBtn').click(function () {
-            $('td:contains("Yes")').parent().toggle();
-        });
-    </script>
+    <script src="~/js/updateQuotesTable.js"></script>
 }

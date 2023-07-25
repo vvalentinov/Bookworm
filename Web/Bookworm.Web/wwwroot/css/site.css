@@ -262,3 +262,12 @@ input[type="radio"] {
             width: 100%;
         }
 }
+
+@media only screen and (max-width: 370px) {
+    .homeBtnsSection {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+}

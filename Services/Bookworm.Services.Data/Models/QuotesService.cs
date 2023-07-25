@@ -159,6 +159,24 @@
                         .FirstOrDefault();
         }
 
+        public List<QuoteViewModel> GetUserApprovedQuotes(string userId)
+        {
+            var approvedQuotes = this.quoteRepository.AllAsNoTracking()
+                .Where(x => x.UserId == userId && x.IsApproved)
+                .OrderByDescending(x => x.CreatedOn)
+                                       .Select(x => new QuoteViewModel()
+                                       {
+                                           Id = x.Id,
+                                           Content = x.Content,
+                                           AuthorName = x.AuthorName,
+                                           BookTitle = x.BookTitle,
+                                           MovieTitle = x.MovieTitle,
+                                           IsApproved = x.IsApproved,
+                                       }).ToList();
+
+            return approvedQuotes;
+        }
+
         public UserQuotesViewModel GetUserQuotes(string userId)
         {
             var quotes = this.quoteRepository.AllAsNoTracking()
@@ -167,17 +185,40 @@
                                        .Select(x => new QuoteViewModel()
                                        {
                                            Id = x.Id,
+                                           Content = x.Content,
                                            AuthorName = x.AuthorName,
                                            BookTitle = x.BookTitle,
                                            MovieTitle = x.MovieTitle,
-                                           Content = x.Content,
                                            IsApproved = x.IsApproved,
                                        }).ToList();
 
             int approvedQuotesCount = quotes.Where(x => x.IsApproved).Count();
             int unapprovedQuotesCount = quotes.Where(x => x.IsApproved == false).Count();
 
-            return new UserQuotesViewModel() { Quotes = quotes, ApprovedQuotesCount = approvedQuotesCount, UnapprovedQuotesCount = unapprovedQuotesCount };
+            return new UserQuotesViewModel()
+            {
+                Quotes = quotes,
+                ApprovedQuotesCount = approvedQuotesCount,
+                UnapprovedQuotesCount = unapprovedQuotesCount,
+            };
+        }
+
+        public List<QuoteViewModel> GetUserUnapprovedQuotes(string userId)
+        {
+            var unapprovedQuotes = this.quoteRepository.AllAsNoTracking()
+                .Where(x => x.UserId == userId && x.IsApproved == false)
+                .OrderByDescending(x => x.CreatedOn)
+                                       .Select(x => new QuoteViewModel()
+                                       {
+                                           Id = x.Id,
+                                           Content = x.Content,
+                                           AuthorName = x.AuthorName,
+                                           BookTitle = x.BookTitle,
+                                           MovieTitle = x.MovieTitle,
+                                           IsApproved = x.IsApproved,
+                                       }).ToList();
+
+            return unapprovedQuotes;
         }
     }
 }

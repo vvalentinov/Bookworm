@@ -4,7 +4,7 @@
 
     public class UserQuotesViewModel
     {
-        public IEnumerable<QuoteViewModel> Quotes { get; set; }
+        public List<QuoteViewModel> Quotes { get; set; }
 
         public int ApprovedQuotesCount { get; set; }
 

@@ -84,7 +84,7 @@
 @if (Model.QuotesCount > 0)
 {
     <nav aria-label="...">
-        <ul class="pagination pagination-lg justify-content-center">
+        <ul class="pagination justify-content-center">
             <li class="page-item @if (Model.HasPreviousPage == false){<text>disabled</text>}">
                 <a class="page-link" asp-action="All" asp-route-page="@Model.PreviousPageNumber"><i class="fa-solid fa-arrow-left"></i></a>
             </li>

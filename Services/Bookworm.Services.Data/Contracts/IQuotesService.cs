@@ -34,5 +34,9 @@
             string movieTitle);
 
         QuoteViewModel GetQuoteById(int quoteId);
+
+        List<QuoteViewModel> GetUserApprovedQuotes(string userId);
+
+        List<QuoteViewModel> GetUserUnapprovedQuotes(string userId);
     }
 }
