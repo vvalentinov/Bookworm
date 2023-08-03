@@ -1,117 +1,122 @@
-﻿using System.Reflection;
-
-using Bookworm.Data;
-using Bookworm.Data.Models;
-using Bookworm.Data.Seeding;
-using Bookworm.Services.Mapping;
-using Bookworm.Web.ViewModels;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-builder.WebHost.ConfigureKestrel(options =>
+﻿namespace Bookworm.Web
 {
-    options.Limits.MaxRequestBodySize = 100_000_000;
-});
+    using System.Reflection;
 
-// Add services to the container.
-builder.Services.AddApplicationDbContexts(builder.Configuration);
+    using Bookworm.Data;
+    using Bookworm.Data.Models;
+    using Bookworm.Data.Seeding;
+    using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
-                .AddRoles<ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(o => o.AddPolicy("My Policy", builder =>
-{
-    builder.AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader();
-}));
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 100_000_000;
+            });
 
-builder.Services.AddAuthentication()
-    .AddFacebook(options =>
-{
-    options.AppId = builder.Configuration["Facebook:AppId"];
-    options.AppSecret = builder.Configuration["Facebook:AppSecret"];
-});
+            // Add services to the container.
+            builder.Services.AddApplicationDbContexts(builder.Configuration);
 
-builder.Services.Configure<CookiePolicyOptions>(options =>
-{
-    options.CheckConsentNeeded = context => true;
-    options.MinimumSameSitePolicy = SameSiteMode.None;
-});
+            builder.Services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
+                            .AddRoles<ApplicationRole>()
+                            .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddControllersWithViews(
-                options =>
+            builder.Services.AddCors(o => o.AddPolicy("My Policy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            }));
+
+            builder.Services.AddAuthentication()
+                .AddFacebook(options =>
                 {
-                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                }).AddRazorRuntimeCompilation();
+                    options.AppId = builder.Configuration["Facebook:AppId"];
+                    options.AppSecret = builder.Configuration["Facebook:AppSecret"];
+                });
 
-builder.Services.AddRazorPages();
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
-builder.Services.AddSingleton(builder.Configuration);
+            builder.Services.AddControllersWithViews(
+                            options =>
+                            {
+                                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                            }).AddRazorRuntimeCompilation();
 
-builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddRazorPages();
 
-builder.Services.AddDistributedSqlServerCache(options =>
-{
-    options.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
-    options.SchemaName = "dbo";
-    options.TableName = "Cache";
-});
+            builder.Services.AddSingleton(builder.Configuration);
 
-WebApplication app = builder.Build();
+            builder.Services.AddApplicationServices(builder.Configuration);
 
-AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+            builder.Services.AddDistributedSqlServerCache(options =>
+            {
+                options.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+                options.SchemaName = "dbo";
+                options.TableName = "Cache";
+            });
 
-using (IServiceScope serviceScope = app.Services.CreateScope())
-{
-    ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            WebApplication app = builder.Build();
 
-    // dbContext.Database.Migrate();
-    new ApplicationDbContextSeeder(builder.Configuration)
-        .SeedAsync(dbContext, serviceScope.ServiceProvider)
-        .GetAwaiter()
-        .GetResult();
+            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+
+            using (IServiceScope serviceScope = app.Services.CreateScope())
+            {
+                ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                // dbContext.Database.Migrate();
+                new ApplicationDbContextSeeder(builder.Configuration)
+                    .SeedAsync(dbContext, serviceScope.ServiceProvider)
+                    .GetAwaiter()
+                    .GetResult();
+            }
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app
+                .UseStaticFiles()
+                .UseCookiePolicy()
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
+                .UseCors("My Policy");
+
+            app.MapControllerRoute(
+                name: "areaRoute",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapRazorPages();
+
+            app.Run();
+        }
+    }
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-app.UseStaticFiles();
-
-app.UseCookiePolicy();
-
-app.UseRouting();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.UseCors("My Policy");
-
-app.MapControllerRoute(
-    name: "areaRoute",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapRazorPages();
-
-app.Run();

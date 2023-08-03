@@ -112,7 +112,7 @@
                 "Some movie title",
                 "567b180c-85d6-4f22-953e-4790431e957f");
 
-            int result = this.quotesService.GetAllQuotes(1, 6).QuotesCount;
+            int result = this.quotesService.GetAllQuotes().Quotes.Count;
 
             Assert.Equal(2, result);
         }

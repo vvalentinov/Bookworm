@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Services.Data.Enums;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IQuotesService
@@ -14,7 +15,7 @@
             string movieTitle,
             string userId);
 
-        QuoteListingViewModel GetAllQuotes(int page, int quotesPerPage);
+        QuoteListingViewModel GetAllQuotes();
 
         IEnumerable<T> GetAllUnapprovedQuotes<T>();
 
@@ -35,8 +36,8 @@
 
         QuoteViewModel GetQuoteById(int quoteId);
 
-        List<QuoteViewModel> GetUserApprovedQuotes(string userId);
+        List<QuoteViewModel> GetQuotesByType(string userId, QuoteType type);
 
-        List<QuoteViewModel> GetUserUnapprovedQuotes(string userId);
+        List<QuoteViewModel> SearchQuote(string content, string userId, QuoteType? type = null);
     }
 }

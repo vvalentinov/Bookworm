@@ -1,42 +1,66 @@
 ﻿namespace Bookworm.Web.Controllers
 {
+    using System;
+
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Enums;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
     [Route("api/[controller]")]
-    public class UserQuoteController : BaseController
+    public class UserQuoteController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IQuotesService quotesService;
 
-        public UserQuoteController(UserManager<ApplicationUser> userManager, IQuotesService quotesService)
+        public UserQuoteController(
+            UserManager<ApplicationUser> userManager,
+            IQuotesService quotesService)
         {
             this.userManager = userManager;
             this.quotesService = quotesService;
         }
 
         [Authorize]
-        [HttpGet("GetApprovedQuotes")]
-        public ActionResult GetApprovedQuotes()
+        [HttpGet(nameof(GetQuotes))]
+        public ActionResult GetQuotes(string type)
         {
-            string userId = this.userManager.GetUserId(this.User);
-            var quotes = this.quotesService.GetUserApprovedQuotes(userId);
+            if (Enum.TryParse(type, out QuoteType quoteType))
+            {
+                string userId = this.userManager.GetUserId(this.User);
+                var quotes = this.quotesService.GetQuotesByType(userId, quoteType);
+                JsonResult jsonResult = new JsonResult(quotes);
 
-            return this.Json(quotes);
+                return jsonResult;
+            }
+            else
+            {
+                return this.NotFound();
+            }
         }
 
         [Authorize]
-        [HttpGet("GetUnapprovedQuotes")]
-        public ActionResult GetUnapprovedQuotes()
+        [HttpGet(nameof(SearchQuote))]
+        public ActionResult SearchQuote(string content, string type)
         {
             string userId = this.userManager.GetUserId(this.User);
-            var quotes = this.quotesService.GetUserUnapprovedQuotes(userId);
+            if (Enum.TryParse(type, out QuoteType quoteType))
+            {
+                var quotesByType = this.quotesService.SearchQuote(content, userId, quoteType);
+                JsonResult jsonQuotesByType = new JsonResult(quotesByType);
 
-            return this.Json(quotes);
+                return jsonQuotesByType;
+            }
+            else
+            {
+                var quotes = this.quotesService.SearchQuote(content, userId);
+                JsonResult jsonResult = new JsonResult(quotes);
+
+                return jsonResult;
+            }
         }
     }
 }

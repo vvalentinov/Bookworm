@@ -1,125 +1,171 @@
-let approvedQuotesCheckbox = document.getElementById('flexRadioDefault1');
-let unpprovedQuotesCheckbox = document.getElementById('flexRadioDefault2');
+//Radio Elements
+const approvedQuotesRadioEl = document.getElementById('approvedQuotesRadio');
+const unpprovedQuotesRadioEl = document.getElementById('unapprovedQuotesRadio');
+const movieQuotesRadioEl = document.getElementById('movieQuotesRadio');
+const bookQuotesRadioEl = document.getElementById('bookQuotesRadio');
 
-function approvedQuotes() {
-    approvedQuotesCheckbox.addEventListener('change', function () {
-        if (this.checked) {
-            $.ajax({
-                url: '/api/UserQuote/GetApprovedQuotes',
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    updateQuotesTable(data);
-                }
-            });
+// Search Elements
+const searchQuotesInput = document.getElementById('searchQuotesInput');
+const searchQuotesButton = document.getElementById('searchQuotesBtn');
+
+
+// Function to search for quotes
+function searchQuotes() {
+    let searchValue = searchQuotesInput.value;
+    if (searchValue == '') {
+        return;
+    }
+
+    let alertMessage = document.getElementById('alertMessageContainer');
+    if (alertMessage) {
+        return;
+    }
+
+    var xhr = new XMLHttpRequest();
+
+    let checkedRadio = getCheckedRadio();
+
+    if (checkedRadio != undefined) {
+        switch (checkedRadio.id) {
+            case 'approvedQuotesRadio':
+                xhr.open('GET', `/api/UserQuote/SearchQuote?content=${searchValue}&type=ApprovedQuotes`, true);
+                break;
+            case 'unapprovedQuotesRadio':
+                xhr.open('GET', `/api/UserQuote/SearchQuote?content=${searchValue}&type=UnapprovedQuotes`, true);
+                break;
+            case 'movieQuotesRadio':
+                xhr.open('GET', `/api/UserQuote/SearchQuote?content=${searchValue}&type=MovieQuotes`, true);
+                break;
+            case 'bookQuotesRadio':
+                xhr.open('GET', `/api/UserQuote/SearchQuote?content=${searchValue}&type=BookQuotes`, true);
+                break;
         }
-    });
-}
-
-function unapprovedQuotes() {
-    unpprovedQuotesCheckbox.addEventListener('change', function () {
-        if (this.checked) {
-            $.ajax({
-                url: '/api/UserQuote/GetUnapprovedQuotes',
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    updateQuotesTable(data);
-                }
-            });
-        }
-    });
-}
-
-
-function updateQuotesTable(data) {
-    let tableElement = document.getElementsByClassName('table-responsive')[0];
-    if (data.length == 0) {
-        // tableElement.setAttribute('display', 'none');
-        tableElement.style.display = 'none';
     } else {
-        tableElement.style.display = '';
-        let tableBodyElement = document.getElementsByClassName('table-body')[0];
+        xhr.open('GET', `/api/UserQuote/SearchQuote?content=${searchValue}`, true);
+    }
 
-        while (tableBodyElement.lastElementChild) {
-            tableBodyElement.removeChild(tableBodyElement.lastElementChild);
-        }
-
-        for (let i = 0; i < data.length; i++) {
-            let tableRowElement = document.createElement('tr');
-
-            let thElement = document.createElement('th');
-            thElement.className = 'text-center align-middle';
-            thElement.textContent = (i + 1).toString();
-
-            let tdContent = document.createElement('td');
-            tdContent.className = 'align-middle';
-            tdContent.textContent = data[i].content;
-
-            let tdAuthor = document.createElement('td');
-            tdAuthor.className = 'text-center align-middle';
-            if (data[i].authorName == null) {
-                let iconElement = document.createElement('i');
-                iconElement.className = 'fa-regular fa-circle-xmark fa-xl x-icon';
-                tdAuthor.appendChild(iconElement);
-            } else {
-                tdAuthor.textContent = data[i].authorName;
-            }
-
-            let tdMovie = document.createElement('td');
-            tdMovie.className = 'text-center align-middle';
-            if (data[i].movieTitle == null) {
-                let iconElement = document.createElement('i');
-                iconElement.className = 'fa-regular fa-circle-xmark fa-xl x-icon';
-                tdMovie.appendChild(iconElement);
-            } else {
-                tdMovie.textContent = data[i].movieTitle;
-            }
-
-
-            let tdBook = document.createElement('td');
-            tdBook.className = 'text-center align-middle';
-            if (data[i].bookTitle == null) {
-                let iconElement = document.createElement('i');
-                iconElement.className = 'fa-regular fa-circle-xmark fa-xl x-icon';
-                tdBook.appendChild(iconElement);
-            } else {
-                tdBook.textContent = data[i].bookTitle;
-            }
-
-            let tdIsApproved = document.createElement('td');
-            tdIsApproved.className = 'text-center align-middle';
-            if (data[i].isApproved == true) {
-                let iconElement = document.createElement('i');
-                iconElement.className = 'fa-solid fa-thumbs-up fa-xl';
-                tdIsApproved.appendChild(iconElement);
-            } else {
-                let iconElement = document.createElement('i');
-                iconElement.className = 'fa-solid fa-thumbs-down fa-xl';
-                tdIsApproved.appendChild(iconElement);
-            }
-
-            let tdEdit = document.createElement('td');
-            tdEdit.className = 'text-center align-middle';
-            let anchorElement = document.createElement('a');
-            anchorElement.className = 'btn btn-warning';
-
-            anchorElement.href = `Edit/${data[i].id}`;
-            tdEdit.appendChild(anchorElement);
-            anchorElement.textContent = 'Edit';
-
-            tableRowElement.appendChild(thElement);
-            tableRowElement.appendChild(tdContent);
-            tableRowElement.appendChild(tdAuthor);
-            tableRowElement.appendChild(tdMovie);
-            tableRowElement.appendChild(tdBook);
-            tableRowElement.appendChild(tdIsApproved);
-            tableRowElement.appendChild(tdEdit);
-
-            tableBodyElement.append(tableRowElement);
+    xhr.onload = function () {
+        if (this.status == 200) {
+            updateQuotesTable(JSON.parse(this.response));
         }
     }
 
+    xhr.send();
+}
+
+
+// Add event listeners to search elements
+searchQuotesButton.addEventListener('click', searchQuotes);
+searchQuotesInput.addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+        searchQuotes();
+    }
+});
+
+
+// Function to retrieve checked radio element
+function getCheckedRadio() {
+    const radioButtons = document.getElementsByName('btnradio');
+    for (let i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+            return radioButtons[i];
+        }
+    }
+}
+
+// Function to add 'change' event listener to radio elements
+radioAddEventListener();
+function radioAddEventListener() {
+    const radioButtons = document.getElementsByName('btnradio');
+    for (let i = 0; i < radioButtons.length; i++) {
+        radioButtons[i].addEventListener('change', function () {
+            searchQuotesInput.value = '';
+            var xhr = new XMLHttpRequest();
+            switch (radioButtons[i].id) {
+                case 'approvedQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in your approved quotes...';
+                    xhr.open('GET', '/api/UserQuote/GetQuotes?type=ApprovedQuotes', true);
+                    break;
+                case 'unapprovedQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in your unapproved quotes...';
+                    xhr.open('GET', '/api/UserQuote/GetQuotes?type=UnapprovedQuotes', true);
+                    break;
+                case 'movieQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in your movie quotes...';
+                    xhr.open('GET', '/api/UserQuote/GetQuotes?type=MovieQuotes', true);
+                    break;
+                case 'bookQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in your book quotes...';
+                    xhr.open('GET', '/api/UserQuote/GetQuotes?type=BookQuotes', true);
+                    break;
+            }
+            xhr.onload = function () {
+                if (this.status == 200) {
+                    updateQuotesTable(JSON.parse(this.response));
+                }
+            }
+
+            xhr.send();
+        });
+    }
+}
+
+// Function to create and append alert message
+function alertMessage() {
+    let mainElement = document.querySelector('main[role="main"]');
+
+    let alertMessageContainer = document.createElement('div');
+    alertMessageContainer.id = 'alertMessageContainer';
+    let alertMessage = document.createElement('div');
+
+    alertMessage.className = 'alert alert-info alert-dismissible fade show animate__animated animate__pulse';
+    alertMessage.role = 'alert';
+    alertMessage.textContent = 'Sorry! There were no quotes found based on your search!';
+
+    let alertMessageButton = document.createElement('button');
+    alertMessageButton.type = 'button';
+    alertMessageButton.className = 'btn-close';
+    alertMessageButton.setAttribute('data-bs-dismiss', 'alert');
+    alertMessageButton.setAttribute('aria-label', 'Close');
+
+    alertMessage.appendChild(alertMessageButton);
+    alertMessageContainer.appendChild(alertMessage);
+
+    setTimeout(() => {
+        alertMessageContainer.remove();
+    }, 5000);
+
+    mainElement.appendChild(alertMessageContainer);
+}
+
+// Function to update quotes table with new data
+function updateQuotesTable(data) {
+    let tableElement = document.getElementsByClassName('table-responsive')[0];
+    if (data.length == 0) {
+        tableElement.style.display = 'none';
+
+        alertMessage();
+    } else {
+        tableElement.style.display = '';
+        const quotes = data.map((obj) => obj.content);
+        filterTableRows(quotes);
+    }
+}
+
+// Function to filter the table
+function filterTableRows(filterValue) {
+    let tableBodyElement = document.getElementsByClassName('table-body')[0];
+    var rows = tableBodyElement.getElementsByTagName("tr");
+    for (var i = rows.length - 1; i >= 0; i--) {
+        if (rows[i].style.display == 'none') {
+            rows[i].style.display = '';
+        }
+    }
+
+    for (var i = rows.length - 1; i >= 0; i--) {
+        var cellValue = rows[i].getElementsByTagName("td")[0].textContent;
+        if (filterValue.includes(cellValue) == false) {
+            rows[i].style.display = 'none';
+        }
+    }
 }

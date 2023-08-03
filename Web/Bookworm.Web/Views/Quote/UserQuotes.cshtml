@@ -8,7 +8,7 @@
     <div class="card text-center title-card animate__animated animate__jackInTheBox">
         <div class="card-body">
             <blockquote class="blockquote">
-                <h2 class="mb-4">@ViewData["Title"]</h2>
+                <h2 class="mb-4">@ViewData["Title"] (@Model.Quotes.Count)</h2>
                 <footer class="blockquote-footer">Approved Quotes: @Model.ApprovedQuotesCount</footer>
                 <footer class="blockquote-footer">Unapproved Quotes: @Model.UnapprovedQuotesCount</footer>
             </blockquote>
@@ -23,22 +23,24 @@
 }
 else
 {
-    <div class="my-3 d-flex align-items-center">
-        <div class="d-flex align-items-center mb-2">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" onclick="approvedQuotes()">
-            <label class="form-check-label fs-5 ms-2" for="flexRadioDefault1">
-                Show Approved Quotes
-            </label>
-        </div>
-        <div class="d-flex align-items-center ms-5">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" onclick="unapprovedQuotes()">
-            <label class="form-check-label fs-5 ms-2" for="flexRadioDefault2">
-                Show Unapproved Quotes
-            </label>
-        </div>
+    <div class="btn-group mt-5 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio" id="approvedQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="approvedQuotesRadio">Show only approved quotes</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="unapprovedQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="unapprovedQuotesRadio">Show only unapproved quotes</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="bookQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="bookQuotesRadio">Show only book quotes</label>
     </div>
 
-
+    <div class="input-group my-5">
+        <input type="text" class="form-control border border-2" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
+        <button class="btn border border-2" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
 
     <div class="table-responsive my-5">
         <table class="table table-bordered">
@@ -86,11 +88,11 @@ else
                         <td class="text-center align-middle">
                             @if (Model.Quotes[i].IsApproved)
                             {
-                                <i class="fa-solid fa-thumbs-up fa-xl"></i>
+                                <i class="fa-solid fa-circle-check fa-xl checkIcon"></i>
                             }
                             else
                             {
-                                <i class="fa-solid fa-thumbs-down fa-xl"></i>
+                                <i class="fa-regular fa-circle-xmark fa-xl x-icon"></i>
                             }
                         </td>
                         <td class="text-center align-middle">

@@ -17,6 +17,8 @@ body {
     font-family: 'Diphylleia', serif;
     display: flex;
     flex-direction: column;
+
+    padding-top: 3.5rem;
 }
 
 .navbar {
@@ -62,6 +64,21 @@ body {
         color: var(--clr-secondary);
     }
 
+.btn-group label {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+}
+
+.btn-group .btn-check:hover + .btn {
+    background-color: var(--clr-secondary);
+    color: var(--clr-white);
+}
+
+.btn-group .btn-check:checked + .btn {
+    background-color: var(--clr-secondary);
+    color: var(--clr-black);
+}
+
 .logout-btn {
     background-color: var(--clr-secondary);
     color: var(--clr-white);
@@ -90,12 +107,20 @@ a {
     text-decoration: none;
 }
 
+#searchQuotesBtn:hover {
+    background-color: var(--clr-secondary);
+}
+
 .x-icon,
 .fa-thumbs-down {
     color: red;
 }
 
 .fa-thumbs-up {
+    color: var(--clr-secondary);
+}
+
+.checkIcon {
     color: var(--clr-secondary);
 }
 /*Pagination Styles*/

@@ -8,9 +8,9 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Enums;
     using Bookworm.Services.Mapping;
     using Bookworm.Services.Messaging;
-    using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Identity;
 
@@ -97,7 +97,7 @@
             await this.quoteRepository.SaveChangesAsync();
         }
 
-        public QuoteListingViewModel GetAllQuotes(int page, int quotesPerPage)
+        public QuoteListingViewModel GetAllQuotes()
         {
             return new QuoteListingViewModel()
             {
@@ -112,16 +112,8 @@
                     Content = x.Content,
                     AuthorName = x.AuthorName,
                 })
-                .Skip((page - 1) * quotesPerPage)
-                .Take(quotesPerPage)
                 .OrderByDescending(x => x.Id)
                 .ToList(),
-                PageNumber = page,
-                QuotesCount = this.quoteRepository
-                                .AllAsNoTracking()
-                                .Where(x => x.IsApproved == true)
-                                .Count(),
-                QuotesPerPage = quotesPerPage,
             };
         }
 
@@ -159,24 +151,6 @@
                         .FirstOrDefault();
         }
 
-        public List<QuoteViewModel> GetUserApprovedQuotes(string userId)
-        {
-            var approvedQuotes = this.quoteRepository.AllAsNoTracking()
-                .Where(x => x.UserId == userId && x.IsApproved)
-                .OrderByDescending(x => x.CreatedOn)
-                                       .Select(x => new QuoteViewModel()
-                                       {
-                                           Id = x.Id,
-                                           Content = x.Content,
-                                           AuthorName = x.AuthorName,
-                                           BookTitle = x.BookTitle,
-                                           MovieTitle = x.MovieTitle,
-                                           IsApproved = x.IsApproved,
-                                       }).ToList();
-
-            return approvedQuotes;
-        }
-
         public UserQuotesViewModel GetUserQuotes(string userId)
         {
             var quotes = this.quoteRepository.AllAsNoTracking()
@@ -203,11 +177,39 @@
             };
         }
 
-        public List<QuoteViewModel> GetUserUnapprovedQuotes(string userId)
+        public List<QuoteViewModel> SearchQuote(string content, string userId, QuoteType? type)
         {
-            var unapprovedQuotes = this.quoteRepository.AllAsNoTracking()
-                .Where(x => x.UserId == userId && x.IsApproved == false)
+            var quotes = this.quoteRepository.AllAsNoTracking()
+                .Where(x => x.Content.Contains(content) && x.UserId == userId)
                 .OrderByDescending(x => x.CreatedOn)
+                                      .Select(x => new QuoteViewModel()
+                                      {
+                                          Id = x.Id,
+                                          Content = x.Content,
+                                          AuthorName = x.AuthorName,
+                                          BookTitle = x.BookTitle,
+                                          MovieTitle = x.MovieTitle,
+                                          IsApproved = x.IsApproved,
+                                      }).ToList();
+            switch (type)
+            {
+                case QuoteType.ApprovedQuotes:
+                    return quotes.Where(q => q.IsApproved).ToList();
+                case QuoteType.UnapprovedQuotes:
+                    return quotes.Where(q => q.IsApproved == false).ToList();
+                case QuoteType.MovieQuotes:
+                    return quotes.Where(q => q.MovieTitle != null).ToList();
+                case QuoteType.BookQuotes:
+                    return quotes.Where(q => q.BookTitle != null).ToList();
+                default: return quotes;
+            }
+        }
+
+        public List<QuoteViewModel> GetQuotesByType(string userId, QuoteType type)
+        {
+            var quotes = this.quoteRepository.AllAsNoTracking()
+                                       .Where(x => x.UserId == userId)
+                                       .OrderByDescending(x => x.CreatedOn)
                                        .Select(x => new QuoteViewModel()
                                        {
                                            Id = x.Id,
@@ -217,8 +219,18 @@
                                            MovieTitle = x.MovieTitle,
                                            IsApproved = x.IsApproved,
                                        }).ToList();
-
-            return unapprovedQuotes;
+            switch (type)
+            {
+                case QuoteType.ApprovedQuotes:
+                    return quotes.Where(q => q.IsApproved).ToList();
+                case QuoteType.UnapprovedQuotes:
+                    return quotes.Where(q => q.IsApproved == false).ToList();
+                case QuoteType.MovieQuotes:
+                    return quotes.Where(q => q.MovieTitle != null).ToList();
+                case QuoteType.BookQuotes:
+                    return quotes.Where(q => q.BookTitle != null).ToList();
+                default: return quotes;
+            }
         }
     }
 }

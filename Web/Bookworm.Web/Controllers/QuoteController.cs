@@ -63,9 +63,9 @@
             return this.RedirectToAction("Index", "Home");
         }
 
-        public IActionResult All(int page = 1)
+        public IActionResult All()
         {
-            QuoteListingViewModel quotes = this.quotesService.GetAllQuotes(page, 6);
+            QuoteListingViewModel quotes = this.quotesService.GetAllQuotes();
             return this.View(quotes);
         }
 
