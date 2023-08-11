@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Mvc;

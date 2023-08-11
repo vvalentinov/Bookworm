@@ -5,14 +5,15 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Data.Enums;
     using Bookworm.Services.Mapping;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
     public class QuotesService : IQuotesService
     {
@@ -33,19 +34,49 @@
             this.userManager = userManager;
         }
 
-        public async Task AddQuoteAsync(
+        public async Task AddGeneralQuoteAsync(
             string content,
             string authorName,
-            string bookTitle,
-            string movieTitle,
             string userId)
         {
             Quote quote = new Quote()
             {
                 Content = content,
                 AuthorName = authorName,
-                BookTitle = bookTitle,
+                UserId = userId,
+            };
+
+            await this.quoteRepository.AddAsync(quote);
+            await this.quoteRepository.SaveChangesAsync();
+        }
+
+        public async Task AddMovieQuoteAsync(
+            string content,
+            string movieTitle,
+            string userId)
+        {
+            Quote quote = new Quote()
+            {
+                Content = content,
                 MovieTitle = movieTitle,
+                UserId = userId,
+            };
+
+            await this.quoteRepository.AddAsync(quote);
+            await this.quoteRepository.SaveChangesAsync();
+        }
+
+        public async Task AddBookQuoteAsync(
+            string content,
+            string bookTitle,
+            string author,
+            string userId)
+        {
+            Quote quote = new Quote()
+            {
+                Content = content,
+                BookTitle = bookTitle,
+                AuthorName = author,
                 UserId = userId,
             };
 
@@ -75,8 +106,8 @@
 
         public async Task DeleteQuoteAsync(int quoteId)
         {
-            var quote = this.quoteRepository.All().First(x => x.Id == quoteId && x.IsApproved == false);
-            this.quoteRepository.Delete(quote);
+            var quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            quote.IsDeleted = true;
             await this.quoteRepository.SaveChangesAsync();
         }
 
@@ -103,7 +134,7 @@
             {
                 Quotes = this.quoteRepository
                 .AllAsNoTracking()
-                .Where(x => x.IsApproved == true)
+                .Where(x => x.IsApproved && x.IsDeleted == false)
                 .Select(x => new QuoteViewModel()
                 {
                     Id = x.Id,
@@ -121,7 +152,7 @@
         {
             return this.quoteRepository
               .AllAsNoTracking()
-              .Where(x => x.IsApproved == false)
+              .Where(x => x.IsApproved == false && x.IsDeleted == false)
               .OrderBy(x => x.CreatedOn)
               .To<T>()
               .ToList();
@@ -145,7 +176,7 @@
         {
             return this.quoteRepository
                         .AllAsNoTracking()
-                        .Where(x => x.IsApproved == true)
+                        .Where(x => x.IsApproved == true && x.IsDeleted == false)
                         .OrderBy(x => Guid.NewGuid())
                         .To<T>()
                         .FirstOrDefault();
@@ -154,7 +185,7 @@
         public UserQuotesViewModel GetUserQuotes(string userId)
         {
             var quotes = this.quoteRepository.AllAsNoTracking()
-                                       .Where(x => x.UserId == userId)
+                                       .Where(x => x.UserId == userId && x.IsDeleted == false)
                                        .OrderByDescending(x => x.CreatedOn)
                                        .Select(x => new QuoteViewModel()
                                        {
@@ -180,7 +211,7 @@
         public List<QuoteViewModel> SearchQuote(string content, string userId, QuoteType? type)
         {
             var quotes = this.quoteRepository.AllAsNoTracking()
-                .Where(x => x.Content.Contains(content) && x.UserId == userId)
+                .Where(x => x.Content.Contains(content) && (userId == null || x.UserId == userId))
                 .OrderByDescending(x => x.CreatedOn)
                                       .Select(x => new QuoteViewModel()
                                       {
@@ -191,16 +222,19 @@
                                           MovieTitle = x.MovieTitle,
                                           IsApproved = x.IsApproved,
                                       }).ToList();
+
             switch (type)
             {
-                case QuoteType.ApprovedQuotes:
+                case QuoteType.ApprovedQuote:
                     return quotes.Where(q => q.IsApproved).ToList();
-                case QuoteType.UnapprovedQuotes:
+                case QuoteType.UnapprovedQuote:
                     return quotes.Where(q => q.IsApproved == false).ToList();
-                case QuoteType.MovieQuotes:
+                case QuoteType.MovieQuote:
                     return quotes.Where(q => q.MovieTitle != null).ToList();
-                case QuoteType.BookQuotes:
+                case QuoteType.BookQuote:
                     return quotes.Where(q => q.BookTitle != null).ToList();
+                case QuoteType.GeneralQuote:
+                    return quotes.Where(q => q.BookTitle == null && q.MovieTitle == null).ToList();
                 default: return quotes;
             }
         }
@@ -208,7 +242,7 @@
         public List<QuoteViewModel> GetQuotesByType(string userId, QuoteType type)
         {
             var quotes = this.quoteRepository.AllAsNoTracking()
-                                       .Where(x => x.UserId == userId)
+                                       .Where(x => userId == null || x.UserId == userId)
                                        .OrderByDescending(x => x.CreatedOn)
                                        .Select(x => new QuoteViewModel()
                                        {
@@ -221,16 +255,23 @@
                                        }).ToList();
             switch (type)
             {
-                case QuoteType.ApprovedQuotes:
+                case QuoteType.ApprovedQuote:
                     return quotes.Where(q => q.IsApproved).ToList();
-                case QuoteType.UnapprovedQuotes:
+                case QuoteType.UnapprovedQuote:
                     return quotes.Where(q => q.IsApproved == false).ToList();
-                case QuoteType.MovieQuotes:
+                case QuoteType.MovieQuote:
                     return quotes.Where(q => q.MovieTitle != null).ToList();
-                case QuoteType.BookQuotes:
+                case QuoteType.BookQuote:
                     return quotes.Where(q => q.BookTitle != null).ToList();
+                case QuoteType.GeneralQuote:
+                    return quotes.Where(q => q.MovieTitle == null && q.BookTitle == null).ToList();
                 default: return quotes;
             }
+        }
+
+        public async Task<bool> QuoteExists(string content)
+        {
+            return await this.quoteRepository.AllAsNoTracking().AnyAsync(x => x.Content.Contains(content));
         }
     }
 }

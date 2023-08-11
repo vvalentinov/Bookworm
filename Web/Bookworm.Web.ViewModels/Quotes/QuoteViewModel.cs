@@ -2,6 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
 
@@ -15,6 +16,8 @@
         public string UserId { get; set; }
 
         public bool IsApproved { get; set; }
+
+        public QuoteType Type { get; set; }
 
         [Required(ErrorMessage = QuoteContentRequired)]
         [StringLength(QuoteMaxLength, MinimumLength = QuoteMinLength, ErrorMessage = QuoteLength)]

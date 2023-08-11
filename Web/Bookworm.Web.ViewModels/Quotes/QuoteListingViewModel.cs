@@ -1,6 +1,5 @@
 ﻿namespace Bookworm.Web.ViewModels.Quotes
 {
-    using System;
     using System.Collections.Generic;
 
     public class QuoteListingViewModel

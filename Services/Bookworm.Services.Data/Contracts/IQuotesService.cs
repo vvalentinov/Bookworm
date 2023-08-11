@@ -3,17 +3,28 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Services.Data.Enums;
+    using Bookworm.Common.Enums;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IQuotesService
     {
-        Task AddQuoteAsync(
+        Task AddGeneralQuoteAsync(
             string content,
             string authorName,
-            string bookTitle,
+            string userId);
+
+        Task AddMovieQuoteAsync(
+            string content,
             string movieTitle,
             string userId);
+
+        Task AddBookQuoteAsync(
+            string content,
+            string bookTitle,
+            string author,
+            string userId);
+
+        Task<bool> QuoteExists(string content);
 
         QuoteListingViewModel GetAllQuotes();
 

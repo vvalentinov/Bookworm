@@ -5,106 +5,58 @@
     var index = 1;
 }
 
-<table id="quotesTable" class="table table-bordered table-responsive mt-5">
+<table class="table table-dark table-bordered table-responsive my-5">
     <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Quote</th>
-            <th scope="col">Author</th>
-            <th scope="col">Book</th>
-            <th scope="col">Movie</th>
-            <th scope="col">Approve</th>
-            <th scope="col">Delete</th>
+            <th class="text-center" scope="col">Author</th>
+            <th class="text-center" scope="col">Book</th>
+            <th class="text-center" scope="col">Movie</th>
+            <th class="text-center" scope="col">Approve</th>
+            <th class="text-center" scope="col">Delete</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var quote in Model)
         {
             <tr>
-                <th scope="row">
+                <th scope="row" class="text-center align-middle">
                     @index
                 </th>
-                <td>@quote.Content</td>
+                <td class="align-middle">@quote.Content</td>
                 @if (quote.AuthorName != null)
                 {
-                    <td>@quote.AuthorName</td>
+                    <td class="text-center align-middle">@quote.AuthorName</td>
                 }
                 else
                 {
-                    <td class="text-center">―</td>
+                    <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                 }
                 @if (quote.BookTitle != null)
                 {
-                    <td><strong>@quote.BookTitle</strong></td>
+                    <td class="text-center align-middle">@quote.BookTitle</td>
                 }
                 else
                 {
-                    <td class="text-center">―</td>
+                    <td class="text-center  align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                 }
                 @if (quote.MovieTitle != null)
                 {
-                    <td>@quote.MovieTitle</td>
+                    <td class="text-center  align-middle">@quote.MovieTitle</td>
                 }
                 else
                 {
-                    <td class="text-center">―</td>
+                    <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                 }
-                <td class="text-center"><a class="btn btn-outline-success" asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId">Approve</a></td>
-                <td class="text-center"><a class="btn btn-outline-danger" asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id">Delete</a></td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-success" asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId"><i class="fa-solid fa-circle-check fa-xl px-2"></i></a>
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-danger" asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id"><i class="fa-solid fa-trash-can fa-xl px-2"></i></a>
+                </td>
             </tr>
             index++;
         }
     </tbody>
 </table>
-
-@*<table id="quotesTable" class="table table-bordered animate__animated animate__zoomIn w-50">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Quote</th>
-            <th scope="col">Author</th>
-            <th scope="col">Book</th>
-            <th scope="col">Movie</th>
-            <th scope="col">Approve</th>
-            <th scope="col">Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var quote in Model)
-        {
-            <tr>
-                <th scope="row">
-                    @index
-                </th>
-                <td style="font-style: italic;">@quote.Content</td>
-                @if (quote.AuthorName != null)
-                {
-                    <td>@quote.AuthorName</td>
-                }
-                else
-                {
-                    <td>―</td>
-                }
-                @if (quote.BookTitle != null)
-                {
-                    <td><strong>@quote.BookTitle</strong></td>
-                }
-                else
-                {
-                    <td>―</td>
-                }
-                @if (quote.MovieTitle != null)
-                {
-                    <td>@quote.MovieTitle</td>
-                }
-                else
-                {
-                    <td>―</td>
-                }
-                <td class="text-center"><a class="btn btn-outline-success" asp-action="ApproveQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id" asp-route-userId="@quote.UserId">Approve</a></td>
-                <td class="text-center"><a class="btn btn-outline-danger" asp-action="DeleteQuote" asp-controller="Quote" asp-area="admin" asp-route-id="@quote.Id">Delete</a></td>
-            </tr>
-            index++;
-        }
-    </tbody>
-</table>*@

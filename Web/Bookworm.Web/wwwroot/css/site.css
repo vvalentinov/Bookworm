@@ -17,7 +17,6 @@ body {
     font-family: 'Diphylleia', serif;
     display: flex;
     flex-direction: column;
-
     padding-top: 3.5rem;
 }
 
@@ -49,6 +48,58 @@ body {
                 background-color: var(--clr-secondary);
                 color: var(--clr-black);
             }
+
+.dropdown .dropdown-menu {
+    border-color: var(--clr-secondary);
+    border: solid 3px var(--clr-secondary);
+}
+
+.modal-header {
+    background-color: var(--clr-primary);
+}
+
+    .modal-header h1 {
+        color: white;
+    }
+
+.modal .model-content .modal-header .custom-close-btn {
+    color: red;
+    cursor: pointer;
+}
+
+.modal-body,
+.modal-footer {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+}
+
+    .modal-body img {
+        border-radius: 10px;
+    }
+
+    .modal-body button {
+        background-color: var(--clr-secondary);
+    }
+
+        .modal-body button:hover {
+            background-color: var(--clr-secondary);
+            color: var(--clr-black);
+        }
+
+.modal-content {
+    border: solid 3px var(--clr-secondary);
+}
+
+.modal .modal-header .btn-modal-close {
+    color:red;
+    border: solid 2px red;
+    background: none;
+}
+
+#quoteImg {
+    cursor: pointer;
+    height: 50%;
+}
 
 .fa-bars {
     color: var(--clr-white);
@@ -145,7 +196,9 @@ a {
 
 
 /*Table Styles*/
-.table tr td, .table thead tr th, .table tbody th {
+.table tr td,
+.table thead tr th,
+.table tbody th {
     background-color: var(--clr-primary);
     color: var(--clr-white);
 }

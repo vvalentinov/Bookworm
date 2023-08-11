@@ -1,4 +1,4 @@
-﻿@model QuoteViewModel
+﻿@model UploadQuoteViewModel
 
 @{
     ViewData["Title"] = "Upload Quote";
@@ -12,30 +12,114 @@
     </div>
 </div>
 
+<!-- Button trigger modal -->
+<h3 class="text-center mt-5">What type of quote do you wish to upload:</h3>
+<div class="d-flex justify-content-around my-5">
+    <button type="button" class="btn button btn-lg py-3" data-bs-toggle="modal" data-bs-target="#movieModal">
+        <strong>Movie Quote</strong><i class="fa-solid fa-film ms-2 fa-xl"></i>
+    </button>
 
-<form method="post" class="col-8 mx-auto d-flex justify-content-center flex-column">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group fs-4">
-        <label asp-for="Content">Content*</label>
-        <textarea asp-for="Content" class="form-control border border-2 fs-5" rows="6"></textarea>
-        <span asp-validation-for="Content" class="small text-danger"></span>
+    <button type="button" class="btn button btn-lg" data-bs-toggle="modal" data-bs-target="#bookModal">
+        <strong>Book Quote</strong><i class="fa-solid fa-book ms-2 fa-xl"></i>
+    </button>
+
+    <button type="button" class="btn button btn-lg" data-bs-toggle="modal" data-bs-target="#otherModal">
+        <strong>General Quote</strong><i class="fa-solid fa-user-pen ms-2 fa-xl"></i>
+    </button>
+</div>
+
+
+<!-- Modal for Movie Quote -->
+<div class="modal fade " id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Movie Quote</h1>
+                <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <img class="col-4" src="@Model.MovieQuoteModel.ImageUrl" />
+                <form method="post" asp-controller="Quote" asp-action="AddMovieQuote" class="col-8 mx-auto d-flex justify-content-center flex-column ps-4">
+                    <div class="form-group fs-4">
+                        <label asp-for="@Model.MovieQuoteModel.Content">Content*</label>
+                        <textarea asp-for="@Model.MovieQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+                        <span asp-validation-for="@Model.MovieQuoteModel.Content" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group mt-4 fs-4">
+                        <label asp-for="@Model.MovieQuoteModel.MovieTitle">Movie Title*</label>
+                        <input asp-for="@Model.MovieQuoteModel.MovieTitle" type="text" class="form-control border border-2 fs-5">
+                        <span asp-validation-for="@Model.MovieQuoteModel.MovieTitle" class="small text-danger"></span>
+                    </div>
+                    <div class="text-center mt-4 mb-5">
+                        <button type="submit" class="fs-5 btn button text-center form-button"><strong>Upload Quote<i class="ms-2 fas fa-upload icon"></i></strong></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="form-group mt-4 fs-4">
-        <label asp-for="AuthorName">Author's Name</label>
-        <input asp-for="AuthorName" type="text" class="form-control border border-2 fs-5">
-        <span asp-validation-for="AuthorName" class="small text-danger"></span>
+</div>
+
+<!-- Modal for Book Quote -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Upload Book Quote</h1>
+                <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <img class="col-4" src="@Model.BookQuoteModel.ImageUrl" />
+                <form method="post" asp-controller="Quote" asp-action="AddBookQuote" class="col-8 mx-auto d-flex justify-content-center flex-column ps-4">
+                    <div class="form-group fs-4">
+                        <label asp-for="@Model.BookQuoteModel.Content">Content*</label>
+                        <textarea asp-for="@Model.BookQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+                        <span asp-validation-for="@Model.BookQuoteModel.Content" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group mt-4 fs-4">
+                        <label asp-for="@Model.BookQuoteModel.BookTitle">Book Title*</label>
+                        <input asp-for="@Model.BookQuoteModel.BookTitle" type="text" class="form-control border border-2 fs-5">
+                        <span asp-validation-for="@Model.BookQuoteModel.BookTitle" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group mt-4 fs-4">
+                        <label asp-for="@Model.BookQuoteModel.AuthorName">Author's Name*</label>
+                        <input asp-for="@Model.BookQuoteModel.AuthorName" type="text" class="form-control border border-2 fs-5">
+                        <span asp-validation-for="@Model.BookQuoteModel.AuthorName" class="small text-danger"></span>
+                    </div>
+                    <div class="text-center mt-4 mb-5">
+                        <button type="submit" class="fs-5 btn button text-center form-button"><strong>Upload Quote<i class="ms-2 fas fa-upload icon"></i></strong></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="form-group mt-4 fs-4">
-        <label asp-for="BookTitle">Book Title</label>
-        <input asp-for="BookTitle" type="text" class="form-control border border-2 fs-5">
-        <span asp-validation-for="BookTitle" class="small text-danger"></span>
+</div>
+
+<!-- Modal for General Quote -->
+<div class="modal fade" id="otherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Upload General Quote</h1>
+                <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body d-flex align-items-stretch">
+                <img class="col-4" src="@Model.GeneralQuoteModel.ImageUrl" />
+                <form method="post" asp-controller="Quote" asp-action="Add" class="col-8 mx-auto d-flex justify-content-center flex-column px-4">
+                    <div class="form-group fs-4">
+                        <label asp-for="GeneralQuoteModel.Content">Content*</label>
+                        <textarea asp-for="GeneralQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+                        <span asp-validation-for="GeneralQuoteModel.Content" class="small text-danger"></span>
+                    </div>
+                    <div class="form-group mt-4 fs-4">
+                        <label asp-for="GeneralQuoteModel.AuthorName">Author's Name*</label>
+                        <input asp-for="GeneralQuoteModel.AuthorName" type="text" class="form-control border border-2 fs-5">
+                        <span asp-validation-for="GeneralQuoteModel.AuthorName" class="small text-danger"></span>
+                    </div>
+                    <div class="text-center mt-4 mb-5">
+                        <button type="submit" class="fs-5 btn button text-center form-button"><strong>Upload Quote<i class="ms-2 fas fa-upload icon"></i></strong></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="form-group mt-4 fs-4">
-        <label asp-for="MovieTitle">Movie Title</label>
-        <input asp-for="MovieTitle" type="text" class="form-control border border-2 fs-5">
-        <span asp-validation-for="MovieTitle" class="small text-danger"></span>
-    </div>
-    <div class="text-center mt-4 mb-5">
-        <button type="submit" class="fs-5 btn button text-center form-button"><strong>Upload Quote<i class="ms-2 fas fa-upload icon"></i></strong></button>
-    </div>
-</form>
+</div>

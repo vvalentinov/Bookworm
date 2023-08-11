@@ -23,23 +23,29 @@
 }
 else
 {
-    <div class="btn-group mt-5 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
+    <h4 class="text-center mt-5 mb-3">Filter quotes by visibility:</h4>
+    <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
         <input type="radio" class="btn-check" name="btnradio" id="approvedQuotesRadio" autocomplete="off">
         <label class="btn border border-2" for="approvedQuotesRadio">Show only approved quotes</label>
 
         <input type="radio" class="btn-check" name="btnradio" id="unapprovedQuotesRadio" autocomplete="off">
         <label class="btn border border-2" for="unapprovedQuotesRadio">Show only unapproved quotes</label>
-
+    </div>
+    <h4 class="text-center mt-3 mb-3">Filter quotes by type:</h4>
+    <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
         <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
         <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
 
         <input type="radio" class="btn-check" name="btnradio" id="bookQuotesRadio" autocomplete="off">
         <label class="btn border border-2" for="bookQuotesRadio">Show only book quotes</label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="otherQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="otherQuotesRadio">Show only general quotes</label>
     </div>
 
     <div class="input-group my-5">
-        <input type="text" class="form-control border border-2" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
-        <button class="btn border border-2" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <input type="text" class="form-control border border-2 border-black" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
+        <button class="btn border border-2 border-black" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 
     <div class="table-responsive my-5">
@@ -53,6 +59,7 @@ else
                     <th class="text-center align-middle" scope="col">Book</th>
                     <th class="text-center align-middle" scope="col">Is Approved</th>
                     <th class="text-center align-middle" scope="col">Edit</th>
+                    <th class="text-center align-middle" scope="col">Delete</th>
                 </tr>
             </thead>
             <tbody class="table-body">
@@ -67,7 +74,7 @@ else
                         }
                         else
                         {
-                            <td class="text-center align-middle"><i class="fa-regular fa-circle-xmark fa-xl x-icon"></i></td>
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         @if (@Model.Quotes[i].MovieTitle != null)
                         {
@@ -75,7 +82,7 @@ else
                         }
                         else
                         {
-                            <td class="text-center align-middle"><i class="fa-regular fa-circle-xmark fa-xl x-icon"></i></td>
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         @if (@Model.Quotes[i].BookTitle != null)
                         {
@@ -83,7 +90,7 @@ else
                         }
                         else
                         {
-                            <td class="text-center align-middle"><i class="fa-regular fa-circle-xmark fa-xl x-icon"></i></td>
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         <td class="text-center align-middle">
                             @if (Model.Quotes[i].IsApproved)
@@ -98,6 +105,9 @@ else
                         <td class="text-center align-middle">
                             <a asp-area="" asp-action="Edit" asp-controller="Quote" asp-route-id="@Model.Quotes[i].Id" class="btn btn-warning">Edit</a>
                         </td>
+                        <td class="text-center align-middle">
+                            <a asp-area="" asp-action="Delete" asp-controller="Quote" asp-route-id="@Model.Quotes[i].Id" class="btn btn-outline-danger"><i class="fa-solid fa-trash-can fa-xl"></i></a>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -107,5 +117,5 @@ else
 
 
 @section Scripts{
-    <script src="~/js/updateQuotesTable.js" charset="UTF-8"></script>
+    <script type="module" src="~/js/quotes/userQuotes.js" charset="UTF-8"></script>
 }

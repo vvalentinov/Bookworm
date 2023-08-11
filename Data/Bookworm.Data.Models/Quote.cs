@@ -7,12 +7,13 @@
 
     using static Bookworm.Common.DataConstants;
 
-    public class Quote : BaseModel<int>
+    public class Quote : BaseDeletableModel<int>
     {
         [Required]
         [MaxLength(QuoteMaxLength)]
         public string Content { get; set; }
 
+        [Required]
         public bool IsApproved { get; set; }
 
         public string AuthorName { get; set; }

@@ -2,9 +2,9 @@
 {
     using System;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Data.Enums;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -25,16 +25,28 @@
         }
 
         [Authorize]
-        [HttpGet(nameof(GetQuotes))]
-        public ActionResult GetQuotes(string type)
+        [HttpGet(nameof(GetUserQuotesByType))]
+        public ActionResult GetUserQuotesByType(string type)
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 string userId = this.userManager.GetUserId(this.User);
                 var quotes = this.quotesService.GetQuotesByType(userId, quoteType);
-                JsonResult jsonResult = new JsonResult(quotes);
+                return new JsonResult(quotes);
+            }
+            else
+            {
+                return this.NotFound();
+            }
+        }
 
-                return jsonResult;
+        [HttpGet(nameof(GetAllQuotesByType))]
+        public ActionResult GetAllQuotesByType(string type)
+        {
+            if (Enum.TryParse(type, out QuoteType quoteType))
+            {
+                var quotes = this.quotesService.GetQuotesByType(null, quoteType);
+                return new JsonResult(quotes);
             }
             else
             {
@@ -43,23 +55,34 @@
         }
 
         [Authorize]
-        [HttpGet(nameof(SearchQuote))]
-        public ActionResult SearchQuote(string content, string type)
+        [HttpGet(nameof(SearchUserQuotesByContent))]
+        public ActionResult SearchUserQuotesByContent(string content, string type)
         {
             string userId = this.userManager.GetUserId(this.User);
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 var quotesByType = this.quotesService.SearchQuote(content, userId, quoteType);
-                JsonResult jsonQuotesByType = new JsonResult(quotesByType);
-
-                return jsonQuotesByType;
+                return new JsonResult(quotesByType);
             }
             else
             {
                 var quotes = this.quotesService.SearchQuote(content, userId);
-                JsonResult jsonResult = new JsonResult(quotes);
+                return new JsonResult(quotes);
+            }
+        }
 
-                return jsonResult;
+        [HttpGet(nameof(SearchAllQuotesByContent))]
+        public ActionResult SearchAllQuotesByContent(string content, string type)
+        {
+            if (Enum.TryParse(type, out QuoteType quoteType))
+            {
+                var quotesByType = this.quotesService.SearchQuote(content, null, quoteType);
+                return new JsonResult(quotesByType);
+            }
+            else
+            {
+                var quotes = this.quotesService.SearchQuote(content, null);
+                return new JsonResult(quotes);
             }
         }
     }

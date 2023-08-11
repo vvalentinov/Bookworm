@@ -13,6 +13,23 @@
     </div>
 </div>
 
+
+<div class="btn-group mt-5 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
+    <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="bookQuotesRadio" autocomplete="off">
+    <label class="btn border border-2" for="bookQuotesRadio">Show only book quotes</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="otherQuotesRadio" autocomplete="off">
+    <label class="btn border border-2" for="otherQuotesRadio">Show only general quotes</label>
+</div>
+
+<div class="input-group my-5">
+    <input type="text" class="form-control border border-2 border-black" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
+    <button class="btn border border-2 border-black" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+</div>
+
 <div class="table-responsive my-5">
     <table class="table table-bordered">
         <thead>
@@ -36,7 +53,7 @@
                     }
                     else
                     {
-                        <td class="text-center align-middle"><i class="fa-regular fa-circle-xmark fa-xl x-icon"></i></td>
+                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                     }
                     @if (@Model.Quotes[i].MovieTitle != null)
                     {
@@ -44,7 +61,7 @@
                     }
                     else
                     {
-                        <td class="text-center align-middle"><i class="fa-regular fa-circle-xmark x-icon"></i></td>
+                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                     }
                     @if (@Model.Quotes[i].BookTitle != null)
                     {
@@ -52,10 +69,14 @@
                     }
                     else
                     {
-                        <td class="text-center align-middle"><i class="fa-regular fa-circle-xmark x-icon"></i></td>
+                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                     }
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script type="module" src="~/js/quotes/allQuotes.js"></script>
+}
