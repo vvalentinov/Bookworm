@@ -23,7 +23,7 @@
     @if (Model.AuthorName != null)
     {
         <div class="form-group my-3">
-            <label asp-for="AuthorName"><strong>Author's Name</strong></label>
+            <label asp-for="AuthorName"><strong>Author's Name*</strong></label>
             <input value="@Model.AuthorName" asp-for="AuthorName" type="text" class="form-control border border-2 fs-5">
             <span asp-validation-for="AuthorName" class="small text-danger"></span>
         </div>
@@ -31,7 +31,7 @@
     @if (Model.BookTitle != null)
     {
         <div class="form-group my-3">
-            <label asp-for="BookTitle"><strong>Book Title</strong></label>
+            <label asp-for="BookTitle"><strong>Book Title*</strong></label>
             <input asp-for="BookTitle" value="@Model.BookTitle" type="text" class="form-control border border-2 fs-5">
             <span asp-validation-for="BookTitle" class="small text-danger"></span>
         </div>
@@ -39,7 +39,7 @@
     @if (Model.MovieTitle != null)
     {
         <div class="form-group my-3">
-            <label asp-for="MovieTitle"><strong>Movie Title</strong></label>
+            <label asp-for="MovieTitle"><strong>Movie Title*</strong></label>
             <input asp-for="MovieTitle" value="@Model.MovieTitle" type="text" class="form-control border border-2 fs-5">
             <span asp-validation-for="MovieTitle" class="small text-danger"></span>
         </div>
