@@ -38,7 +38,7 @@
                 <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body d-flex justify-content-center">
-                <img class="col-4" src="@Model.MovieQuoteModel.ImageUrl" />
+                <img class="col-4" src="@Model.MovieQuoteImgUrl" />
                 <form method="post" asp-controller="Quote" asp-action="AddMovieQuote" class="col-8 mx-auto d-flex justify-content-center flex-column ps-4">
                     <div class="form-group fs-4">
                         <label asp-for="@Model.MovieQuoteModel.Content">Content*</label>
@@ -68,7 +68,7 @@
                 <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body d-flex justify-content-center">
-                <img class="col-4" src="@Model.BookQuoteModel.ImageUrl" />
+                <img class="col-4" src="@Model.BookQuoteImgUrl" />
                 <form method="post" asp-controller="Quote" asp-action="AddBookQuote" class="col-8 mx-auto d-flex justify-content-center flex-column ps-4">
                     <div class="form-group fs-4">
                         <label asp-for="@Model.BookQuoteModel.Content">Content*</label>
@@ -103,7 +103,7 @@
                 <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body d-flex align-items-stretch">
-                <img class="col-4" src="@Model.GeneralQuoteModel.ImageUrl" />
+                <img class="col-4" src="@Model.GeneralQuoteImgUrl" />
                 <form method="post" asp-controller="Quote" asp-action="Add" class="col-8 mx-auto d-flex justify-content-center flex-column px-4">
                     <div class="form-group fs-4">
                         <label asp-for="GeneralQuoteModel.Content">Content*</label>

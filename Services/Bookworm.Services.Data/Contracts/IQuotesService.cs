@@ -24,9 +24,19 @@
             string author,
             string userId);
 
+        string GetMovieQuoteImageUrl();
+
+        string GetBookQuoteImageUrl();
+
+        string GetGeneralQuoteImageUrl();
+
         Task<bool> QuoteExists(string content);
 
-        QuoteListingViewModel GetAllQuotes();
+        Task<QuoteListingViewModel> GetAllQuotes(string userId);
+
+        Task<int> LikeQuoteAsync(int quoteId, string userId);
+
+        Task<int> DislikeQuoteAsync(int quoteId, string userId);
 
         IEnumerable<T> GetAllUnapprovedQuotes<T>();
 

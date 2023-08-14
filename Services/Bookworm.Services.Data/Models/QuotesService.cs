@@ -14,21 +14,31 @@
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
 
     public class QuotesService : IQuotesService
     {
         private readonly IRepository<Quote> quoteRepository;
+        private readonly IRepository<QuoteLike> quoteLikesRepository;
+        private readonly IDeletableEntityRepository<UserQuoteLike> usersQuotesLikesRepository;
+        private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly UserManager<ApplicationUser> userManager;
 
         public QuotesService(
             IRepository<Quote> quoteRepository,
+            IRepository<QuoteLike> quoteLikesRepository,
+            IDeletableEntityRepository<UserQuoteLike> usersQuotesLikesRepository,
+            IConfiguration configuration,
             IEmailSender emailSender,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             UserManager<ApplicationUser> userManager)
         {
             this.quoteRepository = quoteRepository;
+            this.quoteLikesRepository = quoteLikesRepository;
+            this.usersQuotesLikesRepository = usersQuotesLikesRepository;
+            this.configuration = configuration;
             this.emailSender = emailSender;
             this.userRepository = userRepository;
             this.userManager = userManager;
@@ -128,11 +138,9 @@
             await this.quoteRepository.SaveChangesAsync();
         }
 
-        public QuoteListingViewModel GetAllQuotes()
+        public async Task<QuoteListingViewModel> GetAllQuotes(string userId)
         {
-            return new QuoteListingViewModel()
-            {
-                Quotes = this.quoteRepository
+            var quotes = this.quoteRepository
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved && x.IsDeleted == false)
                 .Select(x => new QuoteViewModel()
@@ -144,7 +152,17 @@
                     AuthorName = x.AuthorName,
                 })
                 .OrderByDescending(x => x.Id)
-                .ToList(),
+                .ToList();
+
+            foreach (var quote in quotes)
+            {
+                quote.Likes = await this.GetQuoteLikesAsync(quote.Id);
+                quote.HasBeenLiked = userId != null && await this.CheckIfQuoteHasBeenLiked(quote.Id, userId);
+            }
+
+            return new QuoteListingViewModel()
+            {
+                Quotes = quotes,
             };
         }
 
@@ -272,6 +290,110 @@
         public async Task<bool> QuoteExists(string content)
         {
             return await this.quoteRepository.AllAsNoTracking().AnyAsync(x => x.Content.Contains(content));
+        }
+
+        public async Task<int> LikeQuoteAsync(int quoteId, string userId)
+        {
+            QuoteLike quote = await this.quoteLikesRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.QuoteId == quoteId);
+
+            if (quote == null)
+            {
+                quote = new QuoteLike()
+                {
+                    QuoteId = quoteId,
+                    Likes = 1,
+                };
+
+                await this.quoteLikesRepository.AddAsync(quote);
+                await this.quoteLikesRepository.SaveChangesAsync();
+            }
+            else
+            {
+                quote.Likes++;
+            }
+
+            UserQuoteLike userQuoteLike = await this.usersQuotesLikesRepository
+                .AllWithDeleted()
+                .FirstOrDefaultAsync(x => x.QuoteId == quoteId && x.UserId == userId);
+
+            if (userQuoteLike == null)
+            {
+                userQuoteLike = new UserQuoteLike()
+                {
+                    UserId = userId,
+                    QuoteId = quoteId,
+                };
+
+                await this.usersQuotesLikesRepository.AddAsync(userQuoteLike);
+                await this.usersQuotesLikesRepository.SaveChangesAsync();
+            }
+            else
+            {
+                userQuoteLike.IsDeleted = false;
+            }
+
+            await this.quoteLikesRepository.SaveChangesAsync();
+
+            return quote.Likes;
+        }
+
+        public async Task<int> DislikeQuoteAsync(int quoteId, string userId)
+        {
+            QuoteLike quoteLike = await this.quoteLikesRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.QuoteId == quoteId);
+
+            UserQuoteLike userQuoteLike = await this.usersQuotesLikesRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.QuoteId == quoteId && x.UserId == userId);
+
+            userQuoteLike.IsDeleted = true;
+
+            if (quoteLike.Likes > 0)
+            {
+                quoteLike.Likes--;
+            }
+
+            await this.quoteLikesRepository.SaveChangesAsync();
+            return quoteLike.Likes;
+        }
+
+        public string GetMovieQuoteImageUrl()
+        {
+            return this.configuration.GetValue<string>("QuotesImages:MovieQuotes");
+        }
+
+        public string GetBookQuoteImageUrl()
+        {
+            return this.configuration.GetValue<string>("QuotesImages:BookQuotes");
+        }
+
+        public string GetGeneralQuoteImageUrl()
+        {
+            return this.configuration.GetValue<string>("QuotesImages:GeneralQuotes");
+        }
+
+        private async Task<int> GetQuoteLikesAsync(int quoteId)
+        {
+            QuoteLike quote = await this.quoteLikesRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.QuoteId == quoteId);
+
+            return quote == null ? 0 : quote.Likes;
+        }
+
+        private async Task<bool> CheckIfQuoteHasBeenLiked(int quoteId, string userId)
+        {
+            UserQuoteLike quote = await this.usersQuotesLikesRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.QuoteId == quoteId &&
+                    x.UserId == userId &&
+                    x.IsDeleted == false);
+
+            return quote != null;
         }
     }
 }

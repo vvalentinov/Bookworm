@@ -39,6 +39,10 @@
                 <th class="text-center align-middle" scope="col">Author</th>
                 <th class="text-center align-middle" scope="col">Movie</th>
                 <th class="text-center align-middle" scope="col">Book</th>
+                @if (this.User.Identity.IsAuthenticated)
+                {
+                    <th class="text-center align-middle" scope="col">Likes</th>
+                }
             </tr>
         </thead>
         <tbody class="table-body">
@@ -71,12 +75,21 @@
                     {
                         <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                     }
+                    @if (this.User.Identity.IsAuthenticated)
+                    {
+                        <td class="text-center align-middle likes-container">
+                            <i onclick="likeQuoteFunc(@Model.Quotes[i].Id, this)" class="@(Model.Quotes[i].HasBeenLiked ? "fa-solid" : "fa-regular") fa-thumbs-up fa-xl"></i>
+                            <span id="likesCount">(@Model.Quotes[i].Likes)</span>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
+<form method="post" id="antiForgeryForm"></form>
 @section Scripts {
     <script type="module" src="~/js/quotes/allQuotes.js"></script>
+    <script src="~/js/quotes/likeQuote.js"></script>
 }

@@ -40,6 +40,10 @@
 
         public DbSet<Quote> Quotes { get; set; }
 
+        public DbSet<QuoteLike> QuotesLikes { get; set; }
+
+        public DbSet<UserQuoteLike> UsersQuotesLikes { get; set; }
+
         public DbSet<Rating> Ratings { get; set; }
 
         public DbSet<Vote> Votes { get; set; }

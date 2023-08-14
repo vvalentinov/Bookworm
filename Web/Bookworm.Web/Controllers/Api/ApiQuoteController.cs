@@ -1,6 +1,7 @@
-﻿namespace Bookworm.Web.Controllers
+﻿namespace Bookworm.Web.Controllers.Api
 {
     using System;
+    using System.Threading.Tasks;
 
     using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
@@ -10,13 +11,13 @@
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
-    [Route("api/[controller]")]
-    public class UserQuoteController : ControllerBase
+    [Route("[controller]")]
+    public class ApiQuoteController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IQuotesService quotesService;
 
-        public UserQuoteController(
+        public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
             IQuotesService quotesService)
         {
@@ -84,6 +85,22 @@
                 var quotes = this.quotesService.SearchQuote(content, null);
                 return new JsonResult(quotes);
             }
+        }
+
+        [Authorize]
+        [HttpPost(nameof(LikeQuote))]
+        public async Task<int> LikeQuote(int quoteId)
+        {
+            string userId = this.userManager.GetUserId(this.User);
+            return await this.quotesService.LikeQuoteAsync(quoteId, userId);
+        }
+
+        [Authorize]
+        [HttpPost(nameof(DislikeQuote))]
+        public async Task<int> DislikeQuote(int quoteId)
+        {
+            string userId = this.userManager.GetUserId(this.User);
+            return await this.quotesService.DislikeQuoteAsync(quoteId, userId);
         }
     }
 }

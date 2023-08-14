@@ -4,6 +4,7 @@ using Bookworm.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookworm.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230812101448_AddQuoteLikes")]
+    partial class AddQuoteLikes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -477,7 +480,7 @@ namespace Bookworm.Data.Migrations
                     b.ToTable("Quotes");
                 });
 
-            modelBuilder.Entity("Bookworm.Data.Models.QuoteLike", b =>
+            modelBuilder.Entity("Bookworm.Data.Models.QuoteLikes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -567,44 +570,6 @@ namespace Bookworm.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.UserQuoteLike", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.HasIndex("QuoteId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UsersQuotesLikes");
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Vote", b =>
@@ -835,7 +800,7 @@ namespace Bookworm.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bookworm.Data.Models.QuoteLike", b =>
+            modelBuilder.Entity("Bookworm.Data.Models.QuoteLikes", b =>
                 {
                     b.HasOne("Bookworm.Data.Models.Quote", "Quote")
                         .WithMany()
@@ -857,25 +822,6 @@ namespace Bookworm.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Book");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Bookworm.Data.Models.UserQuoteLike", b =>
-                {
-                    b.HasOne("Bookworm.Data.Models.Quote", "Quote")
-                        .WithMany()
-                        .HasForeignKey("QuoteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Bookworm.Data.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Quote");
 
                     b.Navigation("User");
                 });

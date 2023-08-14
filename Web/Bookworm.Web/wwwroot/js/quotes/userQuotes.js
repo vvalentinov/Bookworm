@@ -24,23 +24,23 @@ function searchQuotes() {
     if (checkedRadio != undefined) {
         switch (checkedRadio.id) {
             case 'approvedQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchUserQuotesByContent?content=${searchValue}&type=ApprovedQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=ApprovedQuote`, true);
                 break;
             case 'unapprovedQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchUserQuotesByContent?content=${searchValue}&type=UnapprovedQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=UnapprovedQuote`, true);
                 break;
             case 'movieQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchUserQuotesByContent?content=${searchValue}&type=MovieQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=MovieQuote`, true);
                 break;
             case 'bookQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchUserQuotesByContent?content=${searchValue}&type=BookQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=BookQuote`, true);
                 break;
             case 'otherQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchUserQuotesByContent?content=${searchValue}&type=GeneralQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=GeneralQuote`, true);
                 break;
         }
     } else {
-        xhr.open('GET', `/api/UserQuote/SearchUserQuotesByContent?content=${searchValue}`, true);
+        xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}`, true);
     }
 
     xhr.onload = function () {
@@ -85,23 +85,23 @@ function radioAddEventListener() {
             switch (radioButtons[i].id) {
                 case 'approvedQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in approved quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetUserQuotesByType?type=ApprovedQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=ApprovedQuote', true);
                     break;
                 case 'unapprovedQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in unapproved quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetUserQuotesByType?type=UnapprovedQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=UnapprovedQuote', true);
                     break;
                 case 'movieQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in movie quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetUserQuotesByType?type=MovieQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=MovieQuote', true);
                     break;
                 case 'bookQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in book quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetUserQuotesByType?type=BookQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=BookQuote', true);
                     break;
                 case 'otherQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in other quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetUserQuotesByType?type=GeneralQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=GeneralQuote', true);
                     break;
             }
             xhr.onload = function () {

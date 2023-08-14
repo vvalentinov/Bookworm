@@ -69,16 +69,29 @@
             return this.RedirectToAction("Index", "Home");
         }
 
-        public IActionResult All()
+        public async Task<IActionResult> All()
         {
-            QuoteListingViewModel quotes = this.quotesService.GetAllQuotes();
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            string userId = null;
+            if (user != null)
+            {
+                userId = user.Id;
+            }
+
+            QuoteListingViewModel quotes = await this.quotesService.GetAllQuotes(userId);
             return this.View(quotes);
         }
 
         [Authorize]
         public IActionResult Add()
         {
-            return this.View(new UploadQuoteViewModel(this.configuration));
+            UploadQuoteViewModel model = new UploadQuoteViewModel()
+            {
+                MovieQuoteImgUrl = this.quotesService.GetMovieQuoteImageUrl(),
+                BookQuoteImgUrl = this.quotesService.GetBookQuoteImageUrl(),
+                GeneralQuoteImgUrl = this.quotesService.GetGeneralQuoteImageUrl(),
+            };
+            return this.View(model);
         }
 
         [Authorize]

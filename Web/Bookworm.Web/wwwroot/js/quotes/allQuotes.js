@@ -25,13 +25,13 @@ function searchQuotes() {
     if (checkedRadio != undefined) {
         switch (checkedRadio.id) {
             case 'movieQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchAllQuotesByContent?content=${searchValue}&type=MovieQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=MovieQuote`, true);
                 break;
             case 'bookQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchAllQuotesByContent?content=${searchValue}&type=BookQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=BookQuote`, true);
                 break;
             case 'otherQuotesRadio':
-                xhr.open('GET', `/api/UserQuote/SearchAllQuotesByContent?content=${searchValue}&type=GeneralQuote`, true);
+                xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=GeneralQuote`, true);
                 break;
         }
     } else {
@@ -80,15 +80,15 @@ function radioAddEventListener() {
             switch (radioButtons[i].id) {
                 case 'movieQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in movie quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetAllQuotesByType?type=MovieQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetAllQuotesByType?type=MovieQuote', true);
                     break;
                 case 'bookQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in book quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetAllQuotesByType?type=BookQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetAllQuotesByType?type=BookQuote', true);
                     break;
                 case 'otherQuotesRadio':
-                    searchQuotesInput.placeholder = 'Search in other quotes...';
-                    xhr.open('GET', '/api/UserQuote/GetAllQuotesByType?type=GeneralQuote', true);
+                    searchQuotesInput.placeholder = 'Search in general quotes...';
+                    xhr.open('GET', '/ApiQuote/GetAllQuotesByType?type=GeneralQuote', true);
                     break;
             }
             xhr.onload = function () {

@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.Controllers
+﻿namespace Bookworm.Web.Controllers.Api
 {
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -10,11 +10,11 @@
 
     [ApiController]
     [Route("api/[controller]")]
-    public class RatingController : BaseController
+    public class ApiRatingController : BaseController
     {
         private readonly IRatingsService votesService;
 
-        public RatingController(IRatingsService votesService)
+        public ApiRatingController(IRatingsService votesService)
         {
             this.votesService = votesService;
         }

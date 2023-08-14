@@ -19,15 +19,18 @@
     {
         private readonly IConfiguration configuration;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<LoginModel> logger;
 
         public LoginModel(
             SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<LoginModel> logger,
             IConfiguration configuration)
         {
             this.configuration = configuration;
             this.signInManager = signInManager;
+            this.userManager = userManager;
             this.logger = logger;
         }
 
@@ -68,6 +71,13 @@
 
             if (this.ModelState.IsValid)
             {
+                var user = await this.userManager.FindByEmailAsync(this.Input.Email);
+                if (user.UserName != this.Input.UserName)
+                {
+                    this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return this.Page();
+                }
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await this.signInManager.PasswordSignInAsync(

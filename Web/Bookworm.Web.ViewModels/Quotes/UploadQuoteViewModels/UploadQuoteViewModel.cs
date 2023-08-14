@@ -2,21 +2,19 @@
 {
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
-    using Microsoft.Extensions.Configuration;
 
     public class UploadQuoteViewModel : IMapFrom<Quote>
     {
-        private readonly IConfiguration configuration;
+        public UploadGeneralQuoteViewModel GeneralQuoteModel { get; set; }
 
-        public UploadQuoteViewModel(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
+        public UploadMovieQuoteViewModel MovieQuoteModel { get; set; }
 
-        public UploadGeneralQuoteViewModel GeneralQuoteModel => new UploadGeneralQuoteViewModel(this.configuration);
+        public UploadBookQuoteViewModel BookQuoteModel { get; set; }
 
-        public UploadMovieQuoteViewModel MovieQuoteModel => new UploadMovieQuoteViewModel(this.configuration);
+        public string MovieQuoteImgUrl { get; set; }
 
-        public UploadBookQuoteViewModel BookQuoteModel => new UploadBookQuoteViewModel(this.configuration);
+        public string BookQuoteImgUrl { get; set; }
+
+        public string GeneralQuoteImgUrl { get; set; }
     }
 }

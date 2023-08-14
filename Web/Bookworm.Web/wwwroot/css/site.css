@@ -105,6 +105,10 @@ body {
     color: var(--clr-white);
 }
 
+.fa-thumbs-up {
+    cursor: pointer;
+}
+
 .button {
     background-color: var(--clr-primary);
     color: var(--clr-white);
