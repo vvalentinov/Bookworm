@@ -6,7 +6,7 @@
 
     using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -17,14 +17,20 @@
     public class ApiQuoteController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IQuotesService quotesService;
+        private readonly IRetrieveQuotesService retrieveQuotesService;
+        private readonly ISearchQuoteService searchQuoteService;
+        private readonly IManageQuoteLikesService manageQuoteLikesService;
 
         public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
-            IQuotesService quotesService)
+            IRetrieveQuotesService retrieveQuotesService,
+            ISearchQuoteService searchQuoteService,
+            IManageQuoteLikesService manageQuoteLikesService)
         {
             this.userManager = userManager;
-            this.quotesService = quotesService;
+            this.retrieveQuotesService = retrieveQuotesService;
+            this.searchQuoteService = searchQuoteService;
+            this.manageQuoteLikesService = manageQuoteLikesService;
         }
 
         [Authorize]
@@ -34,7 +40,7 @@
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 string userId = this.userManager.GetUserId(this.User);
-                List<QuoteViewModel> quotes = this.quotesService.GetQuotesByType(userId, quoteType);
+                List<QuoteViewModel> quotes = this.retrieveQuotesService.GetQuotesByType(userId, quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -48,7 +54,7 @@
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotes = this.quotesService.GetQuotesByType(null, quoteType);
+                List<QuoteViewModel> quotes = this.retrieveQuotesService.GetQuotesByType(null, quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -64,12 +70,12 @@
             string userId = this.userManager.GetUserId(this.User);
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotesByType = this.quotesService.SearchQuote(content, userId, quoteType);
+                List<QuoteViewModel> quotesByType = this.searchQuoteService.SearchQuoteByContent(content, userId, quoteType);
                 return new JsonResult(quotesByType);
             }
             else
             {
-                List<QuoteViewModel> quotes = this.quotesService.SearchQuote(content, userId);
+                List<QuoteViewModel> quotes = this.searchQuoteService.SearchQuoteByContent(content, userId);
                 return new JsonResult(quotes);
             }
         }
@@ -79,12 +85,12 @@
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotesByType = this.quotesService.SearchQuote(content, null, quoteType);
+                List<QuoteViewModel> quotesByType = this.searchQuoteService.SearchQuoteByContent(content, null, quoteType);
                 return new JsonResult(quotesByType);
             }
             else
             {
-                List<QuoteViewModel> quotes = this.quotesService.SearchQuote(content, null);
+                List<QuoteViewModel> quotes = this.searchQuoteService.SearchQuoteByContent(content, null);
                 return new JsonResult(quotes);
             }
         }
@@ -94,7 +100,7 @@
         public async Task<int> LikeQuote(int quoteId)
         {
             string userId = this.userManager.GetUserId(this.User);
-            return await this.quotesService.LikeQuoteAsync(quoteId, userId);
+            return await this.manageQuoteLikesService.LikeQuoteAsync(quoteId, userId);
         }
 
         [Authorize]
@@ -102,7 +108,7 @@
         public async Task<int> DislikeQuote(int quoteId)
         {
             string userId = this.userManager.GetUserId(this.User);
-            return await this.quotesService.DislikeQuoteAsync(quoteId, userId);
+            return await this.manageQuoteLikesService.DislikeQuoteAsync(quoteId, userId);
         }
     }
 }

@@ -6,7 +6,9 @@
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Data.Models;
+    using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Messaging;
     using CloudinaryDotNet;
     using global::Azure.Storage.Blobs;
@@ -33,7 +35,7 @@
 
             services.AddTransient<ISettingsService, SettingsService>();
 
-            services.AddTransient<IQuotesService, QuotesService>();
+            AddQuotesServices(services);
 
             services.AddTransient<ICategoriesService, CategoriesService>();
 
@@ -83,6 +85,17 @@
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;
+        }
+
+        private static void AddQuotesServices(IServiceCollection services)
+        {
+            services.AddTransient<ICheckIfQuoteExistsService, CheckIfQuoteExistsService>();
+            services.AddTransient<IGetQuoteTypeImgUrlService, GetQuoteTypeImgUrlService>();
+            services.AddTransient<IManageQuoteLikesService, ManageQuoteLikesService>();
+            services.AddTransient<IRetrieveQuotesService, RetrieveQuotesService>();
+            services.AddTransient<ISearchQuoteService, SearchQuoteService>();
+            services.AddTransient<IUpdateQuoteService, UpdateQuoteService>();
+            services.AddTransient<IUploadQuoteService, UploadQuoteService>();
         }
     }
 }

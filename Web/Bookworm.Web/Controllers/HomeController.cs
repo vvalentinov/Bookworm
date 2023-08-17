@@ -3,6 +3,7 @@
     using System.Diagnostics;
 
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels;
     using Bookworm.Web.ViewModels.Home;
     using Bookworm.Web.ViewModels.Quotes;
@@ -10,12 +11,14 @@
 
     public class HomeController : BaseController
     {
-        private readonly IQuotesService quotesService;
+        private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IBooksService booksService;
 
-        public HomeController(IQuotesService quotesService, IBooksService booksService)
+        public HomeController(
+            IRetrieveQuotesService retrieveQuotesService,
+            IBooksService booksService)
         {
-            this.quotesService = quotesService;
+            this.retrieveQuotesService = retrieveQuotesService;
             this.booksService = booksService;
         }
 
@@ -23,7 +26,7 @@
         {
             IndexViewModel model = new ()
             {
-                RandomQuote = this.quotesService.GetRandomQuote<QuoteViewModel>(),
+                RandomQuote = this.retrieveQuotesService.GetRandomQuote<QuoteViewModel>(),
                 RecentBooks = this.booksService.GetRecentBooks(12),
                 PopularBooks = this.booksService.GetPopularBooks(12),
             };

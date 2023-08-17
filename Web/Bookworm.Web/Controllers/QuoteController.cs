@@ -4,7 +4,7 @@
 
     using Bookworm.Common;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.Quotes;
     using Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels;
     using Microsoft.AspNetCore.Authorization;
@@ -14,18 +14,32 @@
     public class QuoteController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IQuotesService quotesService;
+        private readonly IRetrieveQuotesService retrieveQuotesService;
+        private readonly IUpdateQuoteService updateQuoteService;
+        private readonly IUploadQuoteService uploadQuoteService;
+        private readonly IGetQuoteTypeImgUrlService getQuoteTypeImgUrlService;
+        private readonly ICheckIfQuoteExistsService checkIfQuoteExistsService;
 
-        public QuoteController(UserManager<ApplicationUser> userManager, IQuotesService quotesService)
+        public QuoteController(
+            UserManager<ApplicationUser> userManager,
+            IRetrieveQuotesService retrieveQuotesService,
+            IUpdateQuoteService updateQuoteService,
+            IUploadQuoteService uploadQuoteService,
+            IGetQuoteTypeImgUrlService getQuoteTypeImgUrlService,
+            ICheckIfQuoteExistsService checkIfQuoteExistsService)
         {
             this.userManager = userManager;
-            this.quotesService = quotesService;
+            this.retrieveQuotesService = retrieveQuotesService;
+            this.updateQuoteService = updateQuoteService;
+            this.uploadQuoteService = uploadQuoteService;
+            this.getQuoteTypeImgUrlService = getQuoteTypeImgUrlService;
+            this.checkIfQuoteExistsService = checkIfQuoteExistsService;
         }
 
         [Authorize]
         public IActionResult Edit(int id)
         {
-            QuoteViewModel quote = this.quotesService.GetQuoteById(id);
+            QuoteViewModel quote = this.retrieveQuotesService.GetQuoteById(id);
             return this.View(quote);
         }
 
@@ -33,7 +47,7 @@
         [Authorize]
         public async Task<IActionResult> Edit(QuoteViewModel quote)
         {
-            await this.quotesService.EditQuoteAsync(
+            await this.updateQuoteService.EditQuoteAsync(
                 quote.Id,
                 quote.Content,
                 quote.AuthorName,
@@ -50,7 +64,7 @@
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
-            UserQuotesViewModel quotes = await this.quotesService.GetUserQuotesAsync(user.Id);
+            UserQuotesViewModel quotes = await this.retrieveQuotesService.GetUserQuotesAsync(user.Id);
 
             return this.View(quotes);
         }
@@ -58,7 +72,7 @@
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            await this.quotesService.DeleteQuoteAsync(id);
+            await this.updateQuoteService.DeleteQuoteAsync(id);
             this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted quote!";
             return this.RedirectToAction("Index", "Home");
         }
@@ -72,7 +86,7 @@
                 userId = user.Id;
             }
 
-            QuoteListingViewModel quotes = await this.quotesService.GetAllQuotesAsync(userId);
+            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllQuotesAsync(userId);
             return this.View(quotes);
         }
 
@@ -81,9 +95,9 @@
         {
             UploadQuoteViewModel model = new UploadQuoteViewModel()
             {
-                MovieQuoteImgUrl = this.quotesService.GetMovieQuoteImageUrl(),
-                BookQuoteImgUrl = this.quotesService.GetBookQuoteImageUrl(),
-                GeneralQuoteImgUrl = this.quotesService.GetGeneralQuoteImageUrl(),
+                MovieQuoteImgUrl = this.getQuoteTypeImgUrlService.GetMovieQuoteImageUrl(),
+                BookQuoteImgUrl = this.getQuoteTypeImgUrlService.GetBookQuoteImageUrl(),
+                GeneralQuoteImgUrl = this.getQuoteTypeImgUrlService.GetGeneralQuoteImageUrl(),
             };
 
             return this.View(model);
@@ -98,7 +112,7 @@
                 return this.View("Add");
             }
 
-            if (await this.quotesService.QuoteExists(generalQuoteModel.Content))
+            if (await this.checkIfQuoteExistsService.QuoteExists(generalQuoteModel.Content))
             {
                 this.TempData[MessageConstant.ErrorMessage] = "This quote already exist! Try again!";
                 return this.View("Add");
@@ -106,7 +120,7 @@
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
-            await this.quotesService.AddGeneralQuoteAsync(
+            await this.uploadQuoteService.UploadGeneralQuoteAsync(
                 generalQuoteModel.Content,
                 generalQuoteModel.AuthorName,
                 user.Id);
@@ -125,7 +139,7 @@
                 return this.View("Add");
             }
 
-            if (await this.quotesService.QuoteExists(movieQuoteModel.Content))
+            if (await this.checkIfQuoteExistsService.QuoteExists(movieQuoteModel.Content))
             {
                 this.TempData[MessageConstant.WarningMessage] = "This quote already exist! Try again!";
                 return this.View("Add");
@@ -133,7 +147,7 @@
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
-            await this.quotesService.AddMovieQuoteAsync(
+            await this.uploadQuoteService.UploadMovieQuoteAsync(
                 movieQuoteModel.Content,
                 movieQuoteModel.MovieTitle,
                 user.Id);
@@ -152,7 +166,7 @@
                 return this.View("Add");
             }
 
-            if (await this.quotesService.QuoteExists(bookQuoteModel.Content))
+            if (await this.checkIfQuoteExistsService.QuoteExists(bookQuoteModel.Content))
             {
                 this.TempData[MessageConstant.WarningMessage] = "This quote already exist! Try again!";
                 return this.View("Add");
@@ -160,7 +174,7 @@
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
-            await this.quotesService.AddBookQuoteAsync(
+            await this.uploadQuoteService.UploadBookQuoteAsync(
                 bookQuoteModel.Content,
                 bookQuoteModel.BookTitle,
                 bookQuoteModel.AuthorName,
