@@ -57,6 +57,7 @@ else
                     <th class="text-center align-middle" scope="col">Author</th>
                     <th class="text-center align-middle" scope="col">Movie</th>
                     <th class="text-center align-middle" scope="col">Book</th>
+                    <th class="text-center align-middle" scope="col">Likes</th>
                     <th class="text-center align-middle" scope="col">Is Approved</th>
                     <th class="text-center align-middle" scope="col">Edit</th>
                     <th class="text-center align-middle" scope="col">Delete</th>
@@ -92,6 +93,7 @@ else
                         {
                             <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
+                        <td class="text-center align-middle">@Model.Quotes[i].Likes</td>
                         <td class="text-center align-middle">
                             @if (Model.Quotes[i].IsApproved)
                             {

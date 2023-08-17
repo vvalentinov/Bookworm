@@ -1,9 +1,6 @@
 ﻿namespace Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels
 {
-    using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
-
-    public class UploadQuoteViewModel : IMapFrom<Quote>
+    public class UploadQuoteViewModel
     {
         public UploadGeneralQuoteViewModel GeneralQuoteModel { get; set; }
 

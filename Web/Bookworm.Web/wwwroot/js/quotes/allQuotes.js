@@ -1,5 +1,4 @@
 import { updateQuotesTable } from './updateQuotesTable.js';
-// import { alertMessage } from './quoteAlertMessage.js';
 
 // Search Elements
 const searchQuotesInput = document.getElementById('searchQuotesInput');
@@ -35,7 +34,7 @@ function searchQuotes() {
                 break;
         }
     } else {
-        xhr.open('GET', `/api/UserQuote/SearchAllQuotesByContent?content=${searchValue}`, true);
+        xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}`, true);
     }
 
     xhr.onload = function () {

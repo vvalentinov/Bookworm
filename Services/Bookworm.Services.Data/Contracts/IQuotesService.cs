@@ -32,7 +32,7 @@
 
         Task<bool> QuoteExists(string content);
 
-        Task<QuoteListingViewModel> GetAllQuotes(string userId);
+        Task<QuoteListingViewModel> GetAllQuotesAsync(string userId);
 
         Task<int> LikeQuoteAsync(int quoteId, string userId);
 
@@ -44,7 +44,7 @@
 
         Task ApproveQuote(int id, string userId);
 
-        UserQuotesViewModel GetUserQuotes(string userId);
+        Task<UserQuotesViewModel> GetUserQuotesAsync(string userId);
 
         Task DeleteQuoteAsync(int quoteId);
 

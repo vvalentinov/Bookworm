@@ -1,11 +1,13 @@
 ﻿namespace Bookworm.Web.Controllers.Api
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -32,7 +34,7 @@
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 string userId = this.userManager.GetUserId(this.User);
-                var quotes = this.quotesService.GetQuotesByType(userId, quoteType);
+                List<QuoteViewModel> quotes = this.quotesService.GetQuotesByType(userId, quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -46,7 +48,7 @@
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                var quotes = this.quotesService.GetQuotesByType(null, quoteType);
+                List<QuoteViewModel> quotes = this.quotesService.GetQuotesByType(null, quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -62,12 +64,12 @@
             string userId = this.userManager.GetUserId(this.User);
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                var quotesByType = this.quotesService.SearchQuote(content, userId, quoteType);
+                List<QuoteViewModel> quotesByType = this.quotesService.SearchQuote(content, userId, quoteType);
                 return new JsonResult(quotesByType);
             }
             else
             {
-                var quotes = this.quotesService.SearchQuote(content, userId);
+                List<QuoteViewModel> quotes = this.quotesService.SearchQuote(content, userId);
                 return new JsonResult(quotes);
             }
         }
@@ -77,12 +79,12 @@
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                var quotesByType = this.quotesService.SearchQuote(content, null, quoteType);
+                List<QuoteViewModel> quotesByType = this.quotesService.SearchQuote(content, null, quoteType);
                 return new JsonResult(quotesByType);
             }
             else
             {
-                var quotes = this.quotesService.SearchQuote(content, null);
+                List<QuoteViewModel> quotes = this.quotesService.SearchQuote(content, null);
                 return new JsonResult(quotes);
             }
         }

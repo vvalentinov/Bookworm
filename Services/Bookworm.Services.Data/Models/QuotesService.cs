@@ -138,26 +138,19 @@
             await this.quoteRepository.SaveChangesAsync();
         }
 
-        public async Task<QuoteListingViewModel> GetAllQuotes(string userId)
+        public async Task<QuoteListingViewModel> GetAllQuotesAsync(string userId)
         {
-            var quotes = this.quoteRepository
+            List<QuoteViewModel> quotes = this.quoteRepository
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved && x.IsDeleted == false)
-                .Select(x => new QuoteViewModel()
-                {
-                    Id = x.Id,
-                    BookTitle = x.BookTitle,
-                    MovieTitle = x.MovieTitle,
-                    Content = x.Content,
-                    AuthorName = x.AuthorName,
-                })
+                .To<QuoteViewModel>()
                 .OrderByDescending(x => x.Id)
                 .ToList();
 
             foreach (var quote in quotes)
             {
                 quote.Likes = await this.GetQuoteLikesAsync(quote.Id);
-                quote.HasBeenLiked = userId != null && await this.CheckIfQuoteHasBeenLiked(quote.Id, userId);
+                quote.HasBeenLiked = userId != null && await this.CheckIfQuoteHasBeenLikedAsync(quote.Id, userId);
             }
 
             return new QuoteListingViewModel()
@@ -200,23 +193,21 @@
                         .FirstOrDefault();
         }
 
-        public UserQuotesViewModel GetUserQuotes(string userId)
+        public async Task<UserQuotesViewModel> GetUserQuotesAsync(string userId)
         {
-            var quotes = this.quoteRepository.AllAsNoTracking()
-                                       .Where(x => x.UserId == userId && x.IsDeleted == false)
-                                       .OrderByDescending(x => x.CreatedOn)
-                                       .Select(x => new QuoteViewModel()
-                                       {
-                                           Id = x.Id,
-                                           Content = x.Content,
-                                           AuthorName = x.AuthorName,
-                                           BookTitle = x.BookTitle,
-                                           MovieTitle = x.MovieTitle,
-                                           IsApproved = x.IsApproved,
-                                       }).ToList();
+            List<QuoteViewModel> quotes = this.quoteRepository.AllAsNoTracking()
+                                          .Where(x => x.UserId == userId && x.IsDeleted == false)
+                                          .OrderByDescending(x => x.CreatedOn)
+                                          .To<QuoteViewModel>()
+                                          .ToList();
 
             int approvedQuotesCount = quotes.Where(x => x.IsApproved).Count();
             int unapprovedQuotesCount = quotes.Where(x => x.IsApproved == false).Count();
+
+            foreach (var quote in quotes)
+            {
+                quote.Likes = await this.GetQuoteLikesAsync(quote.Id);
+            }
 
             return new UserQuotesViewModel()
             {
@@ -228,18 +219,12 @@
 
         public List<QuoteViewModel> SearchQuote(string content, string userId, QuoteType? type)
         {
-            var quotes = this.quoteRepository.AllAsNoTracking()
+            List<QuoteViewModel> quotes = this.quoteRepository
+                .AllAsNoTracking()
                 .Where(x => x.Content.Contains(content) && (userId == null || x.UserId == userId))
                 .OrderByDescending(x => x.CreatedOn)
-                                      .Select(x => new QuoteViewModel()
-                                      {
-                                          Id = x.Id,
-                                          Content = x.Content,
-                                          AuthorName = x.AuthorName,
-                                          BookTitle = x.BookTitle,
-                                          MovieTitle = x.MovieTitle,
-                                          IsApproved = x.IsApproved,
-                                      }).ToList();
+                .To<QuoteViewModel>()
+                .ToList();
 
             switch (type)
             {
@@ -259,18 +244,11 @@
 
         public List<QuoteViewModel> GetQuotesByType(string userId, QuoteType type)
         {
-            var quotes = this.quoteRepository.AllAsNoTracking()
+            List<QuoteViewModel> quotes = this.quoteRepository.AllAsNoTracking()
                                        .Where(x => userId == null || x.UserId == userId)
                                        .OrderByDescending(x => x.CreatedOn)
-                                       .Select(x => new QuoteViewModel()
-                                       {
-                                           Id = x.Id,
-                                           Content = x.Content,
-                                           AuthorName = x.AuthorName,
-                                           BookTitle = x.BookTitle,
-                                           MovieTitle = x.MovieTitle,
-                                           IsApproved = x.IsApproved,
-                                       }).ToList();
+                                       .To<QuoteViewModel>()
+                                       .ToList();
             switch (type)
             {
                 case QuoteType.ApprovedQuote:
@@ -384,7 +362,7 @@
             return quote == null ? 0 : quote.Likes;
         }
 
-        private async Task<bool> CheckIfQuoteHasBeenLiked(int quoteId, string userId)
+        private async Task<bool> CheckIfQuoteHasBeenLikedAsync(int quoteId, string userId)
         {
             UserQuoteLike quote = await this.usersQuotesLikesRepository
                 .AllAsNoTracking()

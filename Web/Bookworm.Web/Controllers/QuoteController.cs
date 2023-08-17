@@ -10,22 +10,16 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
 
     public class QuoteController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IQuotesService quotesService;
-        private readonly IConfiguration configuration;
 
-        public QuoteController(
-            UserManager<ApplicationUser> userManager,
-            IQuotesService quotesService,
-            IConfiguration configuration)
+        public QuoteController(UserManager<ApplicationUser> userManager, IQuotesService quotesService)
         {
             this.userManager = userManager;
             this.quotesService = quotesService;
-            this.configuration = configuration;
         }
 
         [Authorize]
@@ -56,7 +50,7 @@
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
-            var quotes = this.quotesService.GetUserQuotes(user.Id);
+            UserQuotesViewModel quotes = await this.quotesService.GetUserQuotesAsync(user.Id);
 
             return this.View(quotes);
         }
@@ -78,7 +72,7 @@
                 userId = user.Id;
             }
 
-            QuoteListingViewModel quotes = await this.quotesService.GetAllQuotes(userId);
+            QuoteListingViewModel quotes = await this.quotesService.GetAllQuotesAsync(userId);
             return this.View(quotes);
         }
 
@@ -91,6 +85,7 @@
                 BookQuoteImgUrl = this.quotesService.GetBookQuoteImageUrl(),
                 GeneralQuoteImgUrl = this.quotesService.GetGeneralQuoteImageUrl(),
             };
+
             return this.View(model);
         }
 

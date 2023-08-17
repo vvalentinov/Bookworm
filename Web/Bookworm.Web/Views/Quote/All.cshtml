@@ -27,7 +27,7 @@
 
 <div class="input-group my-5">
     <input type="text" class="form-control border border-2 border-black" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
-    <button class="btn border border-2 border-black" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+    <button class="btn border border-2 border-black" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass fa-xl"></i></button>
 </div>
 
 <div class="table-responsive my-5">
@@ -78,7 +78,7 @@
                     @if (this.User.Identity.IsAuthenticated)
                     {
                         <td class="text-center align-middle likes-container">
-                            <i onclick="likeQuoteFunc(@Model.Quotes[i].Id, this)" class="@(Model.Quotes[i].HasBeenLiked ? "fa-solid" : "fa-regular") fa-thumbs-up fa-xl"></i>
+                            <i onclick="likeQuoteFunc(@Model.Quotes[i].Id, this)" class="@(Model.Quotes[i].HasBeenLiked ? "fa-solid" : "fa-regular") fa-thumbs-up fa-2xl"></i>
                             <span id="likesCount">(@Model.Quotes[i].Likes)</span>
                         </td>
                     }
