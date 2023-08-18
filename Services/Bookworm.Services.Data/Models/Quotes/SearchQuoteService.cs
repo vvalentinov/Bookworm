@@ -13,10 +13,14 @@
     public class SearchQuoteService : ISearchQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
+        private readonly IRepository<QuoteLike> quoteLikesRepository;
 
-        public SearchQuoteService(IDeletableEntityRepository<Quote> quoteRepository)
+        public SearchQuoteService(
+            IDeletableEntityRepository<Quote> quoteRepository,
+            IRepository<QuoteLike> quoteLikesRepository)
         {
             this.quoteRepository = quoteRepository;
+            this.quoteLikesRepository = quoteLikesRepository;
         }
 
         public List<QuoteViewModel> SearchQuoteByContent(
@@ -43,6 +47,10 @@
                     return quotes.Where(q => q.BookTitle != null).ToList();
                 case QuoteType.GeneralQuote:
                     return quotes.Where(q => q.BookTitle == null && q.MovieTitle == null).ToList();
+                case QuoteType.LikedQuote:
+                    return quotes.Where(q => this.quoteLikesRepository
+                                             .AllAsNoTracking()
+                                             .Any(x => x.QuoteId == q.Id && x.Likes > 0)).ToList();
                 default: return quotes;
             }
         }

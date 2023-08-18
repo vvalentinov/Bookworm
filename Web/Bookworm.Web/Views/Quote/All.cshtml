@@ -23,6 +23,9 @@
 
     <input type="radio" class="btn-check" name="btnradio" id="otherQuotesRadio" autocomplete="off">
     <label class="btn border border-2" for="otherQuotesRadio">Show only general quotes</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="likedQuotesRadio" autocomplete="off">
+    <label class="btn border border-2" for="likedQuotesRadio">Show only liked quotes</label>
 </div>
 
 <div class="input-group my-5">
@@ -39,10 +42,7 @@
                 <th class="text-center align-middle" scope="col">Author</th>
                 <th class="text-center align-middle" scope="col">Movie</th>
                 <th class="text-center align-middle" scope="col">Book</th>
-                @if (this.User.Identity.IsAuthenticated)
-                {
-                    <th class="text-center align-middle" scope="col">Likes</th>
-                }
+                <th class="text-center align-middle" scope="col">Likes</th>
             </tr>
         </thead>
         <tbody class="table-body">
@@ -75,13 +75,17 @@
                     {
                         <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                     }
-                    @if (this.User.Identity.IsAuthenticated)
-                    {
-                        <td class="text-center align-middle likes-container">
-                            <i onclick="likeQuoteFunc(@Model.Quotes[i].Id, this)" class="@(Model.Quotes[i].HasBeenLiked ? "fa-solid" : "fa-regular") fa-thumbs-up fa-2xl"></i>
-                            <span id="likesCount">(@Model.Quotes[i].Likes)</span>
-                        </td>
-                    }
+                    <td class="text-center align-middle likes-container">
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            <i onclick="likeQuoteFunc(@Model.Quotes[i].Id, this)" class="@(Model.Quotes[i].HasBeenLiked ? "fa-solid" : "fa-regular") fa-thumbs-up fa-2xl likeQuote"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-regular fa-thumbs-up fa-2xl"></i>
+                        }
+                        <span id="likesCount">(@Model.Quotes[i].Likes)</span>
+                    </td>
                 </tr>
             }
         </tbody>

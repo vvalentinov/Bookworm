@@ -35,8 +35,11 @@ function searchQuotes() {
             case 'bookQuotesRadio':
                 xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=BookQuote`, true);
                 break;
-            case 'otherQuotesRadio':
+            case 'generalQuotesRadio':
                 xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=GeneralQuote`, true);
+                break;
+            case 'likedQuotesRadio':
+                xhr.open('GET', `/ApiQuote/SearchUserQuotesByContent?content=${searchValue}&type=LikedQuote`, true);
                 break;
         }
     } else {
@@ -99,9 +102,13 @@ function radioAddEventListener() {
                     searchQuotesInput.placeholder = 'Search in book quotes...';
                     xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=BookQuote', true);
                     break;
-                case 'otherQuotesRadio':
-                    searchQuotesInput.placeholder = 'Search in other quotes...';
+                case 'generalQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in general quotes...';
                     xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=GeneralQuote', true);
+                    break;
+                case 'likedQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in liked quotes...';
+                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=LikedQuote', true);
                     break;
             }
             xhr.onload = function () {

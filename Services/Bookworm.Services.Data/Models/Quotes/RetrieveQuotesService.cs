@@ -127,6 +127,10 @@
                     return quotes.Where(q => q.BookTitle != null).ToList();
                 case QuoteType.GeneralQuote:
                     return quotes.Where(q => q.MovieTitle == null && q.BookTitle == null).ToList();
+                case QuoteType.LikedQuote:
+                    return quotes.Where(q => this.quoteLikesRepository
+                                             .AllAsNoTracking()
+                                             .Any(x => x.QuoteId == q.Id && x.Likes > 0)).ToList();
                 default: return quotes;
             }
         }

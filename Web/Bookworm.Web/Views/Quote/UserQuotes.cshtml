@@ -4,14 +4,10 @@
     ViewData["Title"] = "My Quotes";
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card animate__animated animate__jackInTheBox">
+<div class="d-flex justify-content-center my-5">
+    <div class="card title-card animate__animated animate__jackInTheBox">
         <div class="card-body">
-            <blockquote class="blockquote">
-                <h2 class="mb-4">@ViewData["Title"] (@Model.Quotes.Count)</h2>
-                <footer class="blockquote-footer">Approved Quotes: @Model.ApprovedQuotesCount</footer>
-                <footer class="blockquote-footer">Unapproved Quotes: @Model.UnapprovedQuotesCount</footer>
-            </blockquote>
+            <h3>@this.ViewData["Title"] (@Model.Quotes.Count)</h3>
         </div>
     </div>
 </div>
@@ -26,10 +22,10 @@ else
     <h4 class="text-center mt-5 mb-3">Filter quotes by visibility:</h4>
     <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
         <input type="radio" class="btn-check" name="btnradio" id="approvedQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="approvedQuotesRadio">Show only approved quotes</label>
+        <label class="btn border border-2" for="approvedQuotesRadio">Show only approved quotes - @Model.ApprovedQuotesCount</label>
 
         <input type="radio" class="btn-check" name="btnradio" id="unapprovedQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="unapprovedQuotesRadio">Show only unapproved quotes</label>
+        <label class="btn border border-2" for="unapprovedQuotesRadio">Show only unapproved quotes - @Model.UnapprovedQuotesCount</label>
     </div>
     <h4 class="text-center mt-3 mb-3">Filter quotes by type:</h4>
     <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
@@ -39,8 +35,13 @@ else
         <input type="radio" class="btn-check" name="btnradio" id="bookQuotesRadio" autocomplete="off">
         <label class="btn border border-2" for="bookQuotesRadio">Show only book quotes</label>
 
-        <input type="radio" class="btn-check" name="btnradio" id="otherQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="otherQuotesRadio">Show only general quotes</label>
+        <input type="radio" class="btn-check" name="btnradio" id="generalQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="generalQuotesRadio">Show only general quotes</label>
+    </div>
+    <h4 class="text-center mt-3 mb-3">Filter quotes by likes:</h4>
+    <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio" id="likedQuotesRadio" autocomplete="off">
+        <label class="btn border border-2" for="likedQuotesRadio">Show only liked quotes</label>
     </div>
 
     <div class="input-group my-5">

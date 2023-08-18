@@ -32,6 +32,9 @@ function searchQuotes() {
             case 'otherQuotesRadio':
                 xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=GeneralQuote`, true);
                 break;
+            case 'likedQuotesRadio':
+                xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=LikedQuote`, true);
+                break;
         }
     } else {
         xhr.open('GET', `/ApiQuote/SearchAllQuotesByContent?content=${searchValue}`, true);
@@ -88,6 +91,10 @@ function radioAddEventListener() {
                 case 'otherQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in general quotes...';
                     xhr.open('GET', '/ApiQuote/GetAllQuotesByType?type=GeneralQuote', true);
+                    break;
+                case 'likedQuotesRadio':
+                    searchQuotesInput.placeholder = 'Search in liked quotes...';
+                    xhr.open('GET', '/ApiQuote/GetAllQuotesByType?type=LikedQuote', true);
                     break;
             }
             xhr.onload = function () {

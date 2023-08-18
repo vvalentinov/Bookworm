@@ -7,5 +7,6 @@
         MovieQuote,
         BookQuote,
         GeneralQuote,
+        LikedQuote,
     }
 }
