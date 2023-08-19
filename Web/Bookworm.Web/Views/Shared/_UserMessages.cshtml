@@ -18,9 +18,7 @@
 {
     <script>
         $(function () {
-            toastr.options.closeButton = true;
-            toastr.options.timeOut = 10000;
-            toastr.success('When admin approves your quote others may see it', '@TempData[MessageConstant.SuccessMessage].ToString()');
+            toastr.success('@TempData[MessageConstant.SuccessMessage].ToString()');
         })
     </script>
 }

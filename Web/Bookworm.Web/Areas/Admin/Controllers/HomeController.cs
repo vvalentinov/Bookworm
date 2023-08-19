@@ -4,7 +4,6 @@
 
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController
@@ -23,7 +22,7 @@
         public IActionResult Index()
         {
             int unapprovedBooksCount = this.booksService.GetUnapprovedBooks().ToList().Count;
-            int unapprovedQuotesCount = this.retrieveQuotesService.GetAllUnapprovedQuotes<QuoteViewModel>().ToList().Count;
+            int unapprovedQuotesCount = this.retrieveQuotesService.GetAllUnapprovedQuotes().Quotes.Count;
             this.ViewData["BooksCount"] = unapprovedBooksCount;
             this.ViewData["QuotesCount"] = unapprovedQuotesCount;
             return this.View();

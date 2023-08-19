@@ -2,17 +2,17 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using static Bookworm.Common.DataConstants;
-    using static Bookworm.Common.ErrorMessages;
+    using static Bookworm.Common.Quotes.QuotesDataConstants;
+    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
     public class UploadMovieQuoteViewModel
     {
-        [Required(ErrorMessage = QuoteContentRequired)]
-        [StringLength(QuoteMaxLength, MinimumLength = QuoteMinLength, ErrorMessage = QuoteLength)]
+        [Required(ErrorMessage = QuoteContentRequiredError)]
+        [StringLength(QuoteContentMaxLength, MinimumLength = QuoteContentMinLength, ErrorMessage = QuoteContentLengthError)]
         public string Content { get; set; }
 
-        [Required(ErrorMessage = MovieTitleRequired)]
-        [StringLength(MovieTitleMaxLenght, MinimumLength = MovieTitleMinLenght, ErrorMessage = MovieTitleLength)]
+        [Required(ErrorMessage = QuoteMovieTitleRequiredError)]
+        [StringLength(QuoteMovieTitleMaxLength, MinimumLength = QuoteMovieTitleMinLength, ErrorMessage = QuoteMovieTitleLengthError)]
         public string MovieTitle { get; set; }
     }
 }

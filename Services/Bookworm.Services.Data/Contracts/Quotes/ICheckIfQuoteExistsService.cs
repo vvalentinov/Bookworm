@@ -4,6 +4,6 @@
 
     public interface ICheckIfQuoteExistsService
     {
-        Task<bool> QuoteExists(string content);
+        Task<bool> QuoteExistsAsync(string content);
     }
 }

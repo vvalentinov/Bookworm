@@ -4,8 +4,10 @@
 
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.Quotes;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [Authorize]
     public class QuoteController : BaseController
     {
         private readonly IRetrieveQuotesService retrieveQuotesService;
@@ -19,22 +21,36 @@
             this.updateQuoteService = updateQuoteService;
         }
 
-        public IActionResult AllQuotes()
+        public IActionResult UnapprovedQuotes()
         {
-            var quotes = this.retrieveQuotesService.GetAllUnapprovedQuotes<QuoteViewModel>();
-            return this.View(quotes);
+            QuoteListingViewModel unapprovedQuotes = this.retrieveQuotesService.GetAllUnapprovedQuotes();
+            return this.View(unapprovedQuotes);
         }
 
-        public async Task<IActionResult> ApproveQuote(int id, string userId)
+        public IActionResult DeletedQuotes()
         {
-            await this.updateQuoteService.ApproveQuote(id, userId);
-            return this.RedirectToAction(nameof(this.AllQuotes), "Quote");
+            QuoteListingViewModel deletedQuotes = this.retrieveQuotesService.GetAllDeletedQuotes();
+            return this.View(deletedQuotes);
         }
 
-        public async Task<IActionResult> DeleteQuote(int id)
+        public async Task<IActionResult> ApproveQuote(int quoteId, string userId)
         {
-            await this.updateQuoteService.DeleteQuoteAsync(id);
-            return this.RedirectToAction(nameof(this.AllQuotes), "Quote");
+            await this.updateQuoteService.ApproveQuoteAsync(quoteId, userId);
+            return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int quoteId)
+        {
+            await this.updateQuoteService.DeleteQuoteAsync(quoteId);
+            return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Undelete(int quoteId)
+        {
+            await this.updateQuoteService.UndeleteQuoteAsync(quoteId);
+            return this.RedirectToAction(nameof(this.DeletedQuotes), "Quote");
         }
     }
 }

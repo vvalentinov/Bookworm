@@ -20,24 +20,12 @@
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.Limits.MaxRequestBodySize = 100_000_000;
-            });
-
             // Add services to the container.
             builder.Services.AddApplicationDbContexts(builder.Configuration);
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
                             .AddRoles<ApplicationRole>()
                             .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            builder.Services.AddCors(o => o.AddPolicy("My Policy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-            }));
 
             builder.Services.AddAuthentication()
                 .AddFacebook(options =>
@@ -103,8 +91,7 @@
                 .UseCookiePolicy()
                 .UseRouting()
                 .UseAuthentication()
-                .UseAuthorization()
-                .UseCors("My Policy");
+                .UseAuthorization();
 
             app.MapControllerRoute(
                 name: "areaRoute",

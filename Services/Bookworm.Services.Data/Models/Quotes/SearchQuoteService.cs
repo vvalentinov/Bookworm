@@ -30,7 +30,7 @@
         {
             List<QuoteViewModel> quotes = this.quoteRepository
                 .AllAsNoTracking()
-                .Where(x => x.Content.Contains(content) && (userId == null || x.UserId == userId))
+                .Where(x => x.Content.ToLower().Contains(content.ToLower()) && (userId == null || x.UserId == userId))
                 .OrderByDescending(x => x.CreatedOn)
                 .To<QuoteViewModel>()
                 .ToList();

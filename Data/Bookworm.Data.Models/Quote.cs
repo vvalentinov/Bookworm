@@ -5,12 +5,12 @@
 
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.DataConstants;
+    using static Bookworm.Common.Quotes.QuotesDataConstants;
 
     public class Quote : BaseDeletableModel<int>
     {
         [Required]
-        [MaxLength(QuoteMaxLength)]
+        [MaxLength(QuoteContentMaxLength)]
         public string Content { get; set; }
 
         [Required]

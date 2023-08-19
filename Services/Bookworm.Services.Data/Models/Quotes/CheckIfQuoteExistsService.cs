@@ -16,7 +16,7 @@
             this.quoteRepository = quoteRepository;
         }
 
-        public async Task<bool> QuoteExists(string content)
+        public async Task<bool> QuoteExistsAsync(string content)
         {
             return await this.quoteRepository.AllAsNoTracking().AnyAsync(x => x.Content.Contains(content));
         }

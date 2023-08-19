@@ -50,14 +50,28 @@
             };
         }
 
-        public IEnumerable<T> GetAllUnapprovedQuotes<T>()
+        public QuoteListingViewModel GetAllUnapprovedQuotes()
         {
-            return this.quoteRepository
+            List<QuoteViewModel> quotes = this.quoteRepository
               .AllAsNoTracking()
-              .Where(x => x.IsApproved == false && x.IsDeleted == false)
+              .Where(x => x.IsApproved == false)
               .OrderBy(x => x.CreatedOn)
-              .To<T>()
+              .To<QuoteViewModel>()
               .ToList();
+
+            return new QuoteListingViewModel() { Quotes = quotes };
+        }
+
+        public QuoteListingViewModel GetAllDeletedQuotes()
+        {
+            List<QuoteViewModel> quotes = this.quoteRepository
+                .AllAsNoTrackingWithDeleted()
+                .Where(x => x.IsDeleted)
+                .OrderBy(x => x.CreatedOn)
+                .To<QuoteViewModel>()
+                .ToList();
+
+            return new QuoteListingViewModel() { Quotes = quotes };
         }
 
         public QuoteViewModel GetQuoteById(int quoteId)

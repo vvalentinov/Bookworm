@@ -16,15 +16,6 @@
         public const byte BookPublisherMin = 2;
         public const byte BookPublisherMax = 100;
 
-        public const byte QuoteMinLength = 10;
-        public const int QuoteMaxLength = 350;
-        public const int QuoteSourceMaxLength = 150;
-
-        public const byte MovieTitleMinLenght = 3;
-        public const byte MovieTitleMaxLenght = 150;
-        public const byte QuoteBookTitleMinLenght = 3;
-        public const byte QuoteBookTitleMaxLenght = 150;
-
         public const string BookFileAllowedExtension = ".pdf";
     }
 }

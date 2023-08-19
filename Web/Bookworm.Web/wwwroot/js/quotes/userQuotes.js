@@ -1,5 +1,15 @@
 import { updateQuotesTable } from './updateQuotesTable.js';
 
+const deleteQuoteBtns = document.querySelectorAll('.deleteQuoteBtn');
+const deleteQuoteIdInput = document.getElementById('deleteQuoteId');
+
+deleteQuoteBtns.forEach(button => {
+    button.addEventListener('click', function () {
+        const quoteId = this.getAttribute('data-quote-id');
+        deleteQuoteIdInput.value = quoteId;
+    });
+});
+
 // Search Elements
 const searchQuotesInput = document.getElementById('searchQuotesInput');
 const searchQuotesButton = document.getElementById('searchQuotesBtn');

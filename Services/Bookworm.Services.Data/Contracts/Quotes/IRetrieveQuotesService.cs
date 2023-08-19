@@ -12,7 +12,9 @@
 
         Task<UserQuotesViewModel> GetUserQuotesAsync(string userId);
 
-        IEnumerable<T> GetAllUnapprovedQuotes<T>();
+        QuoteListingViewModel GetAllUnapprovedQuotes();
+
+        QuoteListingViewModel GetAllDeletedQuotes();
 
         QuoteViewModel GetQuoteById(int quoteId);
 

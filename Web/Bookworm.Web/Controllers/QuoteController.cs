@@ -11,6 +11,9 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
+    using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
+
     public class QuoteController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -43,8 +46,8 @@
             return this.View(quote);
         }
 
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Edit(QuoteViewModel quote)
         {
             await this.updateQuoteService.EditQuoteAsync(
@@ -54,7 +57,7 @@
                 quote.BookTitle,
                 quote.MovieTitle);
 
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully edited quote";
+            this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
 
             return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
         }
@@ -63,35 +66,28 @@
         public async Task<IActionResult> UserQuotes()
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
             UserQuotesViewModel quotes = await this.retrieveQuotesService.GetUserQuotesAsync(user.Id);
-
             return this.View(quotes);
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int quoteId)
         {
-            await this.updateQuoteService.DeleteQuoteAsync(id);
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted quote!";
-            return this.RedirectToAction("Index", "Home");
+            await this.updateQuoteService.DeleteQuoteAsync(quoteId);
+            this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
+            return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
         }
 
         public async Task<IActionResult> All()
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            string userId = null;
-            if (user != null)
-            {
-                userId = user.Id;
-            }
-
-            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllQuotesAsync(userId);
+            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllQuotesAsync(user?.Id);
             return this.View(quotes);
         }
 
         [Authorize]
-        public IActionResult Add()
+        public IActionResult Upload()
         {
             UploadQuoteViewModel model = new UploadQuoteViewModel()
             {
@@ -105,17 +101,17 @@
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Add(UploadGeneralQuoteViewModel generalQuoteModel)
+        public async Task<IActionResult> UploadGeneralQuote(UploadGeneralQuoteViewModel generalQuoteModel)
         {
             if (this.ModelState.IsValid == false)
             {
-                return this.View("Add");
+                return this.View(nameof(this.Upload));
             }
 
-            if (await this.checkIfQuoteExistsService.QuoteExists(generalQuoteModel.Content))
+            if (await this.checkIfQuoteExistsService.QuoteExistsAsync(generalQuoteModel.Content))
             {
-                this.TempData[MessageConstant.ErrorMessage] = "This quote already exist! Try again!";
-                return this.View("Add");
+                this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
+                return this.View(nameof(this.Upload));
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
@@ -125,24 +121,24 @@
                 generalQuoteModel.AuthorName,
                 user.Id);
 
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully added quote!";
+            this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
 
             return this.RedirectToAction("Index", "Home");
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddMovieQuote(UploadMovieQuoteViewModel movieQuoteModel)
+        public async Task<IActionResult> UploadMovieQuote(UploadMovieQuoteViewModel movieQuoteModel)
         {
             if (this.ModelState.IsValid == false)
             {
-                return this.View("Add");
+                return this.View(nameof(this.Upload));
             }
 
-            if (await this.checkIfQuoteExistsService.QuoteExists(movieQuoteModel.Content))
+            if (await this.checkIfQuoteExistsService.QuoteExistsAsync(movieQuoteModel.Content))
             {
-                this.TempData[MessageConstant.WarningMessage] = "This quote already exist! Try again!";
-                return this.View("Add");
+                this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
+                return this.View(nameof(this.Upload));
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
@@ -152,24 +148,24 @@
                 movieQuoteModel.MovieTitle,
                 user.Id);
 
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully added quote!";
+            this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
 
             return this.RedirectToAction("Index", "Home");
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddBookQuote(UploadBookQuoteViewModel bookQuoteModel)
+        public async Task<IActionResult> UploadBookQuote(UploadBookQuoteViewModel bookQuoteModel)
         {
             if (this.ModelState.IsValid == false)
             {
-                return this.View("Add");
+                return this.View(nameof(this.Upload));
             }
 
-            if (await this.checkIfQuoteExistsService.QuoteExists(bookQuoteModel.Content))
+            if (await this.checkIfQuoteExistsService.QuoteExistsAsync(bookQuoteModel.Content))
             {
-                this.TempData[MessageConstant.WarningMessage] = "This quote already exist! Try again!";
-                return this.View("Add");
+                this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
+                return this.View(nameof(this.Upload));
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
@@ -180,7 +176,7 @@
                 bookQuoteModel.AuthorName,
                 user.Id);
 
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully added quote!";
+            this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
 
             return this.RedirectToAction("Index", "Home");
         }
