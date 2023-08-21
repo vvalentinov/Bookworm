@@ -21,6 +21,12 @@
             this.updateQuoteService = updateQuoteService;
         }
 
+        public IActionResult ApprovedQuotes()
+        {
+            QuoteListingViewModel approvedQuotes = this.retrieveQuotesService.GetAllApprovedQuotes();
+            return this.View(approvedQuotes);
+        }
+
         public IActionResult UnapprovedQuotes()
         {
             QuoteListingViewModel unapprovedQuotes = this.retrieveQuotesService.GetAllUnapprovedQuotes();
@@ -51,6 +57,13 @@
         {
             await this.updateQuoteService.UndeleteQuoteAsync(quoteId);
             return this.RedirectToAction(nameof(this.DeletedQuotes), "Quote");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unapprove(int quoteId)
+        {
+            await this.updateQuoteService.UnapproveQuoteAsync(quoteId);
+            return this.RedirectToAction(nameof(this.ApprovedQuotes), "Quote");
         }
     }
 }

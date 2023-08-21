@@ -12,6 +12,8 @@
 
         Task<UserQuotesViewModel> GetUserQuotesAsync(string userId);
 
+        QuoteListingViewModel GetAllApprovedQuotes();
+
         QuoteListingViewModel GetAllUnapprovedQuotes();
 
         QuoteListingViewModel GetAllDeletedQuotes();

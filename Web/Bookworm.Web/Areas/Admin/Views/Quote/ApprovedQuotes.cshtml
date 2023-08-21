@@ -1,0 +1,102 @@
+﻿@model QuoteListingViewModel
+
+@{
+    ViewData["Title"] = "Approved Quotes";
+}
+
+@if (Model.Quotes.Count == 0)
+{
+    <h3 class="text-center mt-5 display-3">There are no approved quotes!</h3>
+}
+else
+{
+    <h3 class="text-center mt-5">Manage approved quotes!</h3>
+    <div class="my-5">
+        <table class="table table-striped table-dark table-bordered table-responsive" id="dataTable">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Quote</th>
+                    <th class="text-center" scope="col">Author</th>
+                    <th class="text-center" scope="col">Book</th>
+                    <th class="text-center" scope="col">Movie</th>
+                    <th class="text-center" scope="col">Unapprove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i <= Model.Quotes.Count() - 1; i++)
+                {
+                    <tr>
+                        <th scope="row" class="text-center align-middle">@(i + 1)</th>
+                        <td class="align-middle">@Model.Quotes[i].Content</td>
+                        @if (Model.Quotes[i].AuthorName != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].AuthorName</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        }
+                        @if (Model.Quotes[i].BookTitle != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].BookTitle</td>
+                        }
+                        else
+                        {
+                            <td class="text-center  align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        }
+                        @if (Model.Quotes[i].MovieTitle != null)
+                        {
+                            <td class="text-center  align-middle">@Model.Quotes[i].MovieTitle</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        }
+                        <td class="text-center align-middle">
+                            <a class="btn btn-danger unapproveQuoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#unapproveQuoteModal"><i class="fa-solid fa-circle-xmark fa-xl"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<!-- Unapprove Quote Modal -->
+<div class="modal fade" id="unapproveQuoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Unapprove quote</h1>
+                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <strong>Are you sure you want to unapprove this quote?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Unapprove">
+                    <input type="hidden" name="quoteId" id="unapproveQuoteId" value="" />
+                    <button type="submit" id="confirmUnapproveQuoteBtn" class="btn btn-danger">Unapprove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        const unapproveQuoteBtns = document.querySelectorAll('.unapproveQuoteBtn');
+        const unapproveQuoteIdInput = document.getElementById('unapproveQuoteId');
+
+        unapproveQuoteBtns.forEach(button => {
+            button.addEventListener('click', function () {
+                const quoteId = this.getAttribute('data-quote-id');
+                unapproveQuoteIdInput.value = quoteId;
+            });
+        });
+    </script>
+    <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
+    <script src="~/js/datatable.js"></script>
+}

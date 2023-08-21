@@ -50,6 +50,18 @@
             };
         }
 
+        public QuoteListingViewModel GetAllApprovedQuotes()
+        {
+            List<QuoteViewModel> quotes = this.quoteRepository
+              .AllAsNoTracking()
+              .Where(x => x.IsApproved)
+              .OrderBy(x => x.CreatedOn)
+              .To<QuoteViewModel>()
+              .ToList();
+
+            return new QuoteListingViewModel() { Quotes = quotes };
+        }
+
         public QuoteListingViewModel GetAllUnapprovedQuotes()
         {
             List<QuoteViewModel> quotes = this.quoteRepository

@@ -53,6 +53,13 @@
             await this.quoteRepository.SaveChangesAsync();
         }
 
+        public async Task UnapproveQuoteAsync(int quoteId)
+        {
+            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            quote.IsApproved = false;
+            await this.quoteRepository.SaveChangesAsync();
+        }
+
         public async Task EditQuoteAsync(
             int quoteId,
             string content,

@@ -10,6 +10,8 @@
 
         Task UndeleteQuoteAsync(int quoteId);
 
+        Task UnapproveQuoteAsync(int quoteId);
+
         Task EditQuoteAsync(
             int quoteId,
             string content,
