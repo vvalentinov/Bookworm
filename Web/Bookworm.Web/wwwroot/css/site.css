@@ -91,7 +91,7 @@ body {
 }
 
 .modal .modal-header .btn-modal-close {
-    color:red;
+    color: red;
     border: solid 2px red;
     background: none;
 }
@@ -140,17 +140,22 @@ body {
     border-radius: 10px;
 }
 
-.loginRegisterFormContainer {
-    margin: 1.5rem 10rem;
+/*Login and Register*/
+.loginRegisterContainer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
-    .loginRegisterFormContainer .loginRegisterForm .fa-facebook {
-        color: var(--clr-white);
-    }
-
-a {
-    color: var(--clr-secondary);
+.loginRegisterForm {
+    flex-basis: 50%;
 }
+
+.loginRegisterImg {
+    height: 30rem;
+    flex-basis: 40%;
+}
+
 
 .bookworm-footer {
     background-color: var(--clr-primary);
@@ -249,6 +254,8 @@ a {
 
 a[class="form-link"] {
     color: var(--clr-primary);
+    font-size: 1.2rem;
+    text-decoration: none;
 }
 
     a[class="form-link"]:hover {
@@ -285,7 +292,16 @@ a[class="privacy-link"] {
         color: var(--clr-secondary);
     }
 
-/*Radio Buttons Styles*/
+/*Radio Buttons and Checkboxes Styles*/
+input[type="checkbox"] {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+    input[type="checkbox"]:checked {
+        accent-color: var(--clr-secondary);
+    }
+
 input[type="radio"] {
     appearance: none;
     margin: 0.5rem;
@@ -338,6 +354,21 @@ input[type="radio"] {
 
     .loginRegisterForm {
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .loginRegisterImg {
+        display: none;
+    }
+
+    .loginRegisterContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .loginRegisterForm {
+        flex-basis: 80%;
     }
 }
 
