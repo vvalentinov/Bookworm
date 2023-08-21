@@ -66,24 +66,6 @@
                 return this.Page();
             }
 
-            string anonymousPicture = this.configuration.GetValue<string>("AnonymousProfilePictureUrl");
-            if (this.Input.ProfilePictureFile != null)
-            {
-                if (user.ProfilePictureUrl != null && user.ProfilePictureUrl != anonymousPicture)
-                {
-                    await this.cloudinaryService.DeleteImage(user.UserName);
-                }
-
-                string pictureUrl = await this.cloudinaryService.UploadImageAsync(this.Input.ProfilePictureFile);
-                user.ProfilePictureUrl = pictureUrl;
-                await this.userManager.UpdateAsync(user);
-            }
-            else
-            {
-                user.ProfilePictureUrl = anonymousPicture;
-                await this.userManager.UpdateAsync(user);
-            }
-
             var phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
             if (this.Input.PhoneNumber != phoneNumber)
             {
@@ -106,7 +88,6 @@
             var phoneNumber = await this.userManager.GetPhoneNumberAsync(user);
 
             this.Username = userName;
-            this.ProfilePictureUrl = user.ProfilePictureUrl;
 
             this.Input = new InputModel
             {
@@ -119,9 +100,6 @@
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
-
-            [Display(Name = "Profile Picture")]
-            public IFormFile ProfilePictureFile { get; set; }
         }
     }
 }

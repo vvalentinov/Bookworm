@@ -96,7 +96,6 @@
                     CreatedOn = x.CreatedOn,
                     Id = x.Id,
                     UserId = x.UserId,
-                    UserProfilePictureUrl = x.User.ProfilePictureUrl,
                     UserUserName = x.User.UserName,
                     DownVotesCount = this.voteRepository
                                          .AllAsNoTracking()

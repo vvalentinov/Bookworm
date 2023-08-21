@@ -95,7 +95,7 @@
         [HttpPost]
         public async Task<IActionResult> Edit(UserViewModel model)
         {
-            await this.usersService.EditUser(model.Id, model.UserName, model.ProfilePictureFile);
+            await this.usersService.EditUser(model.Id, model.UserName);
             return this.RedirectToAction(nameof(this.Edit), new { model.Id });
         }
     }

@@ -24,8 +24,6 @@ namespace Bookworm.Data.Models
             this.Quotes = new HashSet<Quote>();
         }
 
-        public string ProfilePictureUrl { get; set; }
-
         public int Points { get; set; }
 
         // Audit info

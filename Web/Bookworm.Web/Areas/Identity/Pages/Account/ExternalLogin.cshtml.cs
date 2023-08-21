@@ -122,13 +122,10 @@
 
             if (this.ModelState.IsValid)
             {
-                string pictureUrl = this.configuration.GetValue<string>("AnonymousProfilePictureUrl");
-
-                var user = new ApplicationUser
+                ApplicationUser user = new ApplicationUser
                 {
                     UserName = this.Input.Email,
                     Email = this.Input.Email,
-                    ProfilePictureUrl = pictureUrl,
                 };
 
                 var result = await this.userManager.CreateAsync(user);

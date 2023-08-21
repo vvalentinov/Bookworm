@@ -4,15 +4,10 @@
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
+
 <h4 class="text-center">@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
-@if (@Model.ProfilePictureUrl != null)
-{
-    <div class="text-center">
-        <img src=@Model.ProfilePictureUrl style="border-radius:50%;width:15rem;">
-    </div>
 
-}
 <div class="row justify-content-center">
 
 
@@ -22,10 +17,6 @@
             <div class="form-group">
                 <label asp-for="Username"></label>
                 <input asp-for="Username" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ProfilePictureFile" class="form-label"></label>
-                <input asp-for="Input.ProfilePictureFile" class="form-control" type="file">
             </div>
             <div class="form-group">
                 <label asp-for="Input.PhoneNumber"></label>

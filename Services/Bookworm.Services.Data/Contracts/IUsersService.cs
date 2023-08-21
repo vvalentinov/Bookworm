@@ -5,7 +5,6 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Users;
-    using Microsoft.AspNetCore.Http;
 
     public interface IUsersService
     {
@@ -15,7 +14,7 @@
 
         ApplicationUser GetUserWithId(string id);
 
-        Task EditUser(string userId, string username, IFormFile pictureFile);
+        Task EditUser(string userId, string username);
 
         IEnumerable<UserStatisticsViewModel> GetUsersStatistics();
     }
