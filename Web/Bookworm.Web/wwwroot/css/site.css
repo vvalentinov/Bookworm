@@ -96,6 +96,24 @@ body {
     background: none;
 }
 
+/*Toast*/
+.toast-header-success {
+    background-color: var(--clr-secondary);
+}
+
+.toast-header-warning {
+    background-color: #fff3cd;
+}
+
+.toast-header-error {
+    background-color: #dc3545;
+}
+
+.toast-body {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+}
+
 #quoteImg {
     cursor: pointer;
     height: 50%;

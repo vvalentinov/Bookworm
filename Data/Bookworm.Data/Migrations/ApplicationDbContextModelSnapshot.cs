@@ -171,7 +171,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.AuthorBook", b =>
@@ -194,7 +194,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("AuthorsBooks");
+                    b.ToTable("AuthorsBooks", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Book", b =>
@@ -268,7 +268,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Category", b =>
@@ -295,7 +295,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Comment", b =>
@@ -335,7 +335,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.FavoriteBook", b =>
@@ -364,7 +364,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FavoriteBooks");
+                    b.ToTable("FavoriteBooks", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Language", b =>
@@ -387,7 +387,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Publisher", b =>
@@ -418,7 +418,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("Publishers", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Quote", b =>
@@ -468,7 +468,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Quotes");
+                    b.ToTable("Quotes", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.QuoteLike", b =>
@@ -495,7 +495,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("QuoteId");
 
-                    b.ToTable("QuotesLikes");
+                    b.ToTable("QuotesLikes", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Rating", b =>
@@ -527,7 +527,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Setting", b =>
@@ -560,7 +560,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Settings");
+                    b.ToTable("Settings", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.UserPoints", b =>
@@ -596,7 +596,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersPoints");
+                    b.ToTable("UsersPoints", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.UserQuoteLike", b =>
@@ -634,7 +634,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersQuotesLikes");
+                    b.ToTable("UsersQuotesLikes", (string)null);
                 });
 
             modelBuilder.Entity("Bookworm.Data.Models.Vote", b =>
@@ -667,7 +667,7 @@ namespace Bookworm.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Votes");
+                    b.ToTable("Votes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

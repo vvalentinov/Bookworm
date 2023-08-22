@@ -138,7 +138,7 @@
             if (await this.checkIfQuoteExistsService.QuoteExistsAsync(movieQuoteModel.Content))
             {
                 this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
-                return this.View(nameof(this.Upload));
+                return this.RedirectToAction(nameof(this.Upload), "Quote");
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);

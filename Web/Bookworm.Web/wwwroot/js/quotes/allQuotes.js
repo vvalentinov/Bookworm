@@ -69,12 +69,13 @@ function getCheckedRadio() {
             return radioButtons[i];
         }
     }
-}
+};
 
 // Function to add 'change' event listener to radio elements
 radioAddEventListener();
 function radioAddEventListener() {
     const radioButtons = document.getElementsByName('btnradio');
+
     for (let i = 0; i < radioButtons.length; i++) {
         radioButtons[i].addEventListener('change', function () {
             searchQuotesInput.value = '';
