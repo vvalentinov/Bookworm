@@ -6,42 +6,50 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
     public class UpdateQuoteService : IUpdateQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IDeletableEntityRepository<UserPoints> userPointsRepository;
 
         public UpdateQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository,
-            UserManager<ApplicationUser> userManager)
+            IDeletableEntityRepository<UserPoints> userPointsRepository)
         {
             this.quoteRepository = quoteRepository;
-            this.userRepository = userRepository;
-            this.userManager = userManager;
+            this.userPointsRepository = userPointsRepository;
         }
 
-        public async Task ApproveQuoteAsync(int id, string userId)
+        public async Task ApproveQuoteAsync(int quoteId, string userId)
         {
-            ApplicationUser user = this.userRepository.All().First(x => x.Id == userId);
-
-            Quote quote = this.quoteRepository.All().First(x => x.Id == id);
+            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
             quote.IsApproved = true;
-            quote.IsDeleted = false;
-            this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();
 
-            user.Points += 3;
-            await this.userManager.UpdateAsync(user);
+            UserPoints userPoints = await this.userPointsRepository.All().FirstOrDefaultAsync(x => x.UserId == userId);
+            if (userPoints == null)
+            {
+                userPoints = new UserPoints()
+                {
+                    UserId = userId,
+                    Points = 2,
+                };
+
+                await this.userPointsRepository.AddAsync(userPoints);
+            }
+            else
+            {
+                userPoints.Points += 2;
+            }
+
+            await this.userPointsRepository.SaveChangesAsync();
         }
 
         public async Task DeleteQuoteAsync(int quoteId)
         {
             Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
-            quote.IsDeleted = true;
+            this.quoteRepository.Delete(quote);
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
         }
@@ -49,7 +57,7 @@
         public async Task UndeleteQuoteAsync(int quoteId)
         {
             Quote quote = this.quoteRepository.AllWithDeleted().First(x => x.Id == quoteId);
-            quote.IsDeleted = false;
+            this.quoteRepository.Undelete(quote);
             await this.quoteRepository.SaveChangesAsync();
         }
 
@@ -58,6 +66,14 @@
             Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
+
+            UserPoints userPoints = this.userPointsRepository.All().First(x => x.UserId == quote.UserId);
+            if (userPoints.Points > 0)
+            {
+                userPoints.Points -= 2;
+            }
+
+            await this.userPointsRepository.SaveChangesAsync();
         }
 
         public async Task EditQuoteAsync(

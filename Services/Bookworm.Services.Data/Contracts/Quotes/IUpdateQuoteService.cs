@@ -4,7 +4,7 @@
 
     public interface IUpdateQuoteService
     {
-        Task ApproveQuoteAsync(int id, string userId);
+        Task ApproveQuoteAsync(int quoteId, string userId);
 
         Task DeleteQuoteAsync(int quoteId);
 

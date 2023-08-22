@@ -26,7 +26,6 @@
                 new ApplicationUser()
                 {
                     Id = "5865cc89-166a-4abe-8749-8498291e9499",
-                    Points = 3,
                 },
             };
 
@@ -73,7 +72,6 @@
             Book book = this.books.SingleOrDefault();
             ApplicationUser user = this.users.SingleOrDefault();
             Assert.True(book.IsApproved);
-            Assert.Equal(8, user.Points);
         }
     }
 }

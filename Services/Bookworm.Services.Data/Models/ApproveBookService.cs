@@ -32,7 +32,6 @@
         {
             var user = this.userRepository.All().First(x => x.Id == userId);
             string email = user.Email;
-            user.Points += 5;
             await this.userManager.UpdateAsync(user);
 
             var book = this.bookRepository.All().First(x => x.Id == bookId);

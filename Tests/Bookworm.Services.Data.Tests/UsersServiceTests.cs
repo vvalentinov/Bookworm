@@ -30,19 +30,16 @@
                 {
                     Id = "cc741abb-7aba-42eb-bc02-d64d931af949",
                     UserName = "First Username",
-                    Points = 5,
                 },
                 new ApplicationUser()
                 {
                     Id = "cf24e05f-3520-4f65-ac00-45bc33adb0b2",
                     UserName = "Second Username",
-                    Points = 12,
                 },
                 new ApplicationUser()
                 {
                     Id = "87955cda-29b4-460c-b8f3-d0656388787a",
                     UserName = "Third Username",
-                    Points = 25,
                 },
             };
 

@@ -82,12 +82,10 @@
         {
             return this.usersRepository
                 .AllAsNoTracking()
-                .OrderByDescending(x => x.Points)
                 .Select(x => new UserStatisticsViewModel()
                 {
                     Id = x.Id,
                     UserName = x.UserName,
-                    Points = x.Points,
                     UploadedBooks = this.bookRepository.AllAsNoTracking().Where(b => b.UserId == x.Id && b.IsApproved == true).Count(),
                     UploadedQuotes = this.quoteRepository.AllAsNoTracking().Where(q => q.UserId == x.Id && q.IsApproved == true).Count(),
                 }).ToList();

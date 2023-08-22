@@ -44,6 +44,8 @@
 
         public DbSet<UserQuoteLike> UsersQuotesLikes { get; set; }
 
+        public DbSet<UserPoints> UsersPoints { get; set; }
+
         public DbSet<Rating> Ratings { get; set; }
 
         public DbSet<Vote> Votes { get; set; }
