@@ -8,6 +8,8 @@
 
         Task DeleteQuoteAsync(int quoteId);
 
+        Task SelfQuoteDeleteAsync(int quoteId, string userId);
+
         Task UndeleteQuoteAsync(int quoteId);
 
         Task UnapproveQuoteAsync(int quoteId);

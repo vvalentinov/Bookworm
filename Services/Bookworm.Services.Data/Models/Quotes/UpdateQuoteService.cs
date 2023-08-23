@@ -8,6 +8,8 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.UsersPointsDataConstants;
+
     public class UpdateQuoteService : IUpdateQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
@@ -33,14 +35,14 @@
                 userPoints = new UserPoints()
                 {
                     UserId = userId,
-                    Points = 2,
+                    Points = QuotePoints,
                 };
 
                 await this.userPointsRepository.AddAsync(userPoints);
             }
             else
             {
-                userPoints.Points += 2;
+                userPoints.Points += QuotePoints;
             }
 
             await this.userPointsRepository.SaveChangesAsync();
@@ -48,10 +50,19 @@
 
         public async Task DeleteQuoteAsync(int quoteId)
         {
-            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
-            this.quoteRepository.Delete(quote);
-            quote.IsApproved = false;
-            await this.quoteRepository.SaveChangesAsync();
+            await this.DeleteQuote(quoteId);
+        }
+
+        public async Task SelfQuoteDeleteAsync(int quoteId, string userId)
+        {
+            await this.DeleteQuote(quoteId);
+            UserPoints userPoints = await this.userPointsRepository.All().FirstAsync(x => x.UserId == userId);
+            if (userPoints.Points > 0)
+            {
+                userPoints.Points -= QuotePoints;
+            }
+
+            await this.userPointsRepository.SaveChangesAsync();
         }
 
         public async Task UndeleteQuoteAsync(int quoteId)
@@ -70,7 +81,7 @@
             UserPoints userPoints = this.userPointsRepository.All().First(x => x.UserId == quote.UserId);
             if (userPoints.Points > 0)
             {
-                userPoints.Points -= 2;
+                userPoints.Points -= QuotePoints;
             }
 
             await this.userPointsRepository.SaveChangesAsync();
@@ -90,6 +101,14 @@
             quote.MovieTitle = movieTitle;
 
             this.quoteRepository.Update(quote);
+            await this.quoteRepository.SaveChangesAsync();
+        }
+
+        private async Task DeleteQuote(int quoteId)
+        {
+            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            this.quoteRepository.Delete(quote);
+            quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
         }
     }

@@ -22,11 +22,6 @@
         public const string AuthorNameLength = "Author name must be between 2 and 50 characters!";
         public const string AuthorNameRequired = "Author name field is required!";
 
-        public const string MovieTitleRequired = "Movie title field is required!";
-        public const string MovieTitleLength = "Movie name must be between 3 and 150 characters!";
-        public const string QuoteBookTitleRequired = "Book title field is required!";
-        public const string QuoteBookTitleLength = "Book title must be between 3 and 150 characters!";
-
         public const string EmptyPdfField = "PDF file field is empty!";
         public const string InvalidPdfSize = "Book PDF file must not exceed 50 MB!";
         public const string EmptyImageField = "Image file field is empty!";

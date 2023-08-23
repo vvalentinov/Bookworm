@@ -74,7 +74,8 @@
         [HttpPost]
         public async Task<IActionResult> Delete(int quoteId)
         {
-            await this.updateQuoteService.DeleteQuoteAsync(quoteId);
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            await this.updateQuoteService.SelfQuoteDeleteAsync(quoteId, user.Id);
             this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
             return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
         }

@@ -78,6 +78,12 @@
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 
+            builder.Entity<AuthorBook>().HasQueryFilter(x => x.Author.IsDeleted == false);
+
+            builder.Entity<QuoteLike>().HasQueryFilter(x => x.Quote.IsDeleted == false);
+
+            builder.Entity<Vote>().HasQueryFilter(x => x.Comment.IsDeleted == false);
+
             this.ConfigureUserIdentityRelations(builder);
 
             EntityIndexesConfiguration.Configure(builder);
