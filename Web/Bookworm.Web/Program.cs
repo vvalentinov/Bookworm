@@ -1,4 +1,8 @@
-﻿namespace Bookworm.Web
+﻿using System.Diagnostics.CodeAnalysis;
+
+[assembly: SuppressMessage("Microsoft.StyleCop.CSharp.OrderingRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Example justification.")]
+
+namespace Bookworm.Web
 {
     using System.Reflection;
 
