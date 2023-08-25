@@ -54,7 +54,7 @@ else
                             <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         <td class="text-center align-middle">
-                            <a class="btn btn-danger unapproveQuoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#unapproveQuoteModal"><i class="fa-solid fa-circle-xmark fa-xl"></i></a>
+                            <a class="btn btn-danger quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#unapproveQuoteModal"><i class="fa-solid fa-circle-xmark fa-xl"></i></a>
                         </td>
                     </tr>
                 }
@@ -77,8 +77,8 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Unapprove">
-                    <input type="hidden" name="quoteId" id="unapproveQuoteId" value="" />
-                    <button type="submit" id="confirmUnapproveQuoteBtn" class="btn btn-danger">Unapprove</button>
+                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Unapprove</button>
                 </form>
             </div>
         </div>
@@ -86,17 +86,7 @@ else
 </div>
 
 @section Scripts{
-    <script>
-        const unapproveQuoteBtns = document.querySelectorAll('.unapproveQuoteBtn');
-        const unapproveQuoteIdInput = document.getElementById('unapproveQuoteId');
-
-        unapproveQuoteBtns.forEach(button => {
-            button.addEventListener('click', function () {
-                const quoteId = this.getAttribute('data-quote-id');
-                unapproveQuoteIdInput.value = quoteId;
-            });
-        });
-    </script>
+    <script src="~/js/quotes/quoteAdminModal.js"></script>
     <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
     <script src="~/js/datatable.js"></script>
 }

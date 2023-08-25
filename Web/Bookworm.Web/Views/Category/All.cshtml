@@ -2,41 +2,18 @@
 
 @{
     this.ViewData["Title"] = "Categories";
+    this.ViewData["Is-Categories"] = true;
+    this.ViewData["Message"] = "Categories";
 }
 
 <div class="mt-5">
-    <h2 class="text-center text-uppercase">
-        Categories
-    </h2>
-    <div class="divider-custom">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-        <div class="divider-custom-line"></div>
-    </div>
+    <partial name="PartialViews/_CustomDivider"/>
 </div>
 
 
 <div class="container mb-5">
     @for (int i = 0; i <= Model.Count - 1; i += 3)
     {
-       @* <div class="col-md-6 col-lg-4 mb-5">
-            <div class="portfolio-item mx-auto"
-                 data-bs-toggle="modal"
-                 data-bs-target="#portfolioModal1">
-                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
-                    <div class="portfolio-item-caption-content text-center text-white">
-                        <i class="fas fa-plus fa-3x"></i>
-                    </div>
-                </div>
-                <img class="img-fluid"
-                     src="@Model[i].ImageUrl"
-                     alt="..." />
-            </div>
-        </div>
-*@
-      
-
-
         <div class="row">
             <div class="col-md-4 my-3">
                 <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i].Name">

@@ -35,7 +35,7 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        <partial class="login-partial" name="_LoginPartial" />
+                        <partial class="login-partial" name="PartialViews/_LoginPartial" />
                     </ul>
                 </div>
             </div>
@@ -43,7 +43,7 @@
     </header>
 
     <div class="container">
-        <partial name="_CookieConsentPartial" />
+        <partial name="PartialViews/_CookieConsentPartial" />
         <main role="main">
             @this.RenderBody()
         </main>
@@ -62,7 +62,7 @@
 
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
-    <partial name="_UserMessages" />
+    <partial name="PartialViews/_UserMessagesPartial" />
     @await this.RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,18 +1,15 @@
 ﻿@page
 @model RegisterModel
+
 @{
-    ViewData["Title"] = "Register";
+    this.ViewData["Title"] = "Register";
+    this.ViewData["Message"] = "Create an Account";
 }
 
 <div class="loginRegisterContainer my-5">
     <img src="@Model.RegisterPictureUrl" class="loginRegisterImg rounded-4 img-fluid animate__animated animate__fadeInLeft animate__faster" alt="Books Image...">
     <div class="loginRegisterForm animate__animated animate__fadeInRight animate__faster">
-        <h5 class="card-title text-center fs-3">Create an Account</h5>
-        <div class="divider-custom">
-            <div class="divider-custom-line"></div>
-            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-            <div class="divider-custom-line"></div>
-        </div>
+        <partial name="PartialViews/_CustomDivider" />
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-floating">

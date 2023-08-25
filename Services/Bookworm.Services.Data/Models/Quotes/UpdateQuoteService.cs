@@ -23,18 +23,18 @@
             this.userPointsRepository = userPointsRepository;
         }
 
-        public async Task ApproveQuoteAsync(int quoteId, string userId)
+        public async Task ApproveQuoteAsync(int quoteId)
         {
             Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
             quote.IsApproved = true;
             await this.quoteRepository.SaveChangesAsync();
 
-            UserPoints userPoints = await this.userPointsRepository.All().FirstOrDefaultAsync(x => x.UserId == userId);
+            UserPoints userPoints = await this.userPointsRepository.All().FirstOrDefaultAsync(x => x.UserId == quote.UserId);
             if (userPoints == null)
             {
                 userPoints = new UserPoints()
                 {
-                    UserId = userId,
+                    UserId = quote.UserId,
                     Points = QuotePoints,
                 };
 

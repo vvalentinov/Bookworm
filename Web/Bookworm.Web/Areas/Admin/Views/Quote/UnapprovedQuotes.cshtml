@@ -55,10 +55,10 @@ else
                             <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         <td class="text-center align-middle">
-                            <a class="btn btn-success approveQuoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#approveQuoteModal"><i class="fa-solid fa-circle-check fa-xl px-2"></i></a>
+                            <a class="btn btn-success quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#approveQuoteModal"><i class="fa-solid fa-circle-check fa-xl px-2"></i></a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-danger deleteQuoteBtn" data-quote-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal"><i class="fa-solid fa-trash-can fa-xl px-2"></i></a>
+                            <a class="btn btn-danger quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal"><i class="fa-solid fa-trash-can fa-xl px-2"></i></a>
                         </td>
                     </tr>
                 }
@@ -82,9 +82,8 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-area="admin" asp-controller="Quote" asp-action="ApproveQuote">
-                    <input type="hidden" name="quoteId" id="approveQuoteId" value="" />
-                    <input type="hidden" name="userId" id="approveQuoteUserId" value="" />
-                    <button type="submit" id="confirmApproveQuoteBtn" class="btn btn-danger">Approve</button>
+                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Approve</button>
                 </form>
             </div>
         </div>
@@ -105,8 +104,8 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Delete">
-                    <input type="hidden" name="quoteId" id="deleteQuoteId" value="" />
-                    <button type="submit" id="confirmDeleteQuoteBtn" class="btn btn-danger">Delete</button>
+                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
         </div>
@@ -114,30 +113,7 @@ else
 </div>
 
 @section Scripts{
-    <script>
-        const approveQuoteBtns = document.querySelectorAll('.approveQuoteBtn');
-        const approveQuoteIdInput = document.getElementById('approveQuoteId');
-        const approveQuoteUserIdInput = document.getElementById('approveQuoteUserId');
-
-        approveQuoteBtns.forEach(button => {
-            button.addEventListener('click', function () {
-                const quoteId = this.getAttribute('data-quote-id');
-                const userId = this.getAttribute('data-quote-userId');
-                approveQuoteIdInput.value = quoteId;
-                approveQuoteUserIdInput.value = userId;
-            });
-        });
-
-        const deleteQuoteBtns = document.querySelectorAll('.deleteQuoteBtn');
-        const deleteQuoteIdInput = document.getElementById('deleteQuoteId');
-
-        deleteQuoteBtns.forEach(button => {
-            button.addEventListener('click', function () {
-                const quoteId = this.getAttribute('data-quote-id');
-                deleteQuoteIdInput.value = quoteId;
-            });
-        });
-    </script>
+    <script src="~/js/quotes/quoteAdminModal.js"></script>
     <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
     <script src="~/js/datatable.js"></script>
 }

@@ -39,9 +39,10 @@
             return this.View(deletedQuotes);
         }
 
-        public async Task<IActionResult> ApproveQuote(int quoteId, string userId)
+        [HttpPost]
+        public async Task<IActionResult> ApproveQuote(int quoteId)
         {
-            await this.updateQuoteService.ApproveQuoteAsync(quoteId, userId);
+            await this.updateQuoteService.ApproveQuoteAsync(quoteId);
             return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
         }
 

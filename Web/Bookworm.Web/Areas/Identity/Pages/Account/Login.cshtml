@@ -2,18 +2,14 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    this.ViewData["Title"] = "Log in";
+    this.ViewData["Message"] = "Log in to your Account";
 }
 
 <div class="loginRegisterContainer my-5">
     <img src="@Model.LoginPictureUrl" class="loginRegisterImg rounded-4 img-fluid animate__animated animate__fadeInLeft animate__faster" alt="Books Image..." />
     <div class="loginRegisterForm animate__animated animate__fadeInRight animate__faster">
-        <h5 class="card-title text-center fs-3">Log in to your Account</h5>
-        <div class="divider-custom">
-            <div class="divider-custom-line"></div>
-            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-            <div class="divider-custom-line"></div>
-        </div>
+        <partial name="PartialViews/_CustomDivider" />
         <form id="account" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-floating">
