@@ -9,7 +9,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
 
-    using static Bookworm.Common.DataConstants;
+    using static Bookworm.Common.Authors.AuthorsDataConstants;
 
     public class EditBookService : IEditBookService
     {
@@ -48,7 +48,7 @@
 
             foreach (string authorName in authors)
             {
-                if (authorName.Length < AuthorNameMin || authorName.Length > AuthorNameMax)
+                if (authorName.Length < AuthorNameMinLength || authorName.Length > AuthorNameMaxLength)
                 {
                     throw new Exception("Author's name must be between 2 and 50 characters long!");
                 }

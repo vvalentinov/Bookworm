@@ -19,9 +19,7 @@
             return $"This file extension is not allowed!";
         }
 
-        protected override ValidationResult IsValid(
-                object value,
-                ValidationContext validationContext)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             IFormFile file = value as IFormFile;
             if (file != null)

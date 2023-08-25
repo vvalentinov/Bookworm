@@ -7,8 +7,9 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
-    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Bookworm.Web.ViewModels.Categories;
 
     public class RandomBookService : IRandomBookService
     {
@@ -52,22 +53,14 @@
             return books;
         }
 
-        public IEnumerable<SelectListItem> GetCategories()
+        public IEnumerable<CategoryViewModel> GetCategories()
         {
-            List<SelectListItem> categories = this.categoriesRepository
+            List<CategoryViewModel> categories = this.categoriesRepository
                                                   .AllAsNoTracking()
                                                   .OrderBy(x => x.Name)
-                                                  .Select(x => new SelectListItem()
-                                                  {
-                                                      Text = x.Name,
-                                                      Value = x.Name,
-                                                  }).ToList();
-            SelectListItem selectListItem = new SelectListItem()
-            {
-                Text = "Random",
-                Value = "Random",
-            };
-            categories.Add(selectListItem);
+                                                  .To<CategoryViewModel>()
+                                                  .ToList();
+
             return categories;
         }
     }

@@ -108,7 +108,7 @@ else
                             <a asp-area="" asp-controller="Quote" asp-action="Edit" asp-route-id="@Model.Quotes[i].Id" class="btn btn-outline-warning"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-outline-danger deleteQuoteBtn" data-quote-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal"><i class="fa-solid fa-trash-can fa-xl"></i></a>
+                            <a class="btn btn-outline-danger quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal"><i class="fa-solid fa-trash-can fa-xl"></i></a>
                         </td>
                     </tr>
                 }
@@ -131,8 +131,8 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-controller="Quote" asp-action="Delete">
-                    <input type="hidden" name="quoteId" id="deleteQuoteId" value="" />
-                    <button type="submit" id="confirmDeleteQuoteBtn" class="btn btn-danger">Delete</button>
+                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
         </div>
@@ -140,5 +140,6 @@ else
 </div>
 
 @section Scripts{
+    <script src="~/js/quotes/quoteModal.js"></script>
     <script type="module" src="~/js/quotes/userQuotes.js" charset="UTF-8"></script>
 }

@@ -2,8 +2,6 @@
 {
     using System.Collections.Generic;
 
-    using Microsoft.AspNetCore.Mvc.Rendering;
-
     public class UserRolesViewModel
     {
         public string UserId { get; set; }

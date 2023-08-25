@@ -1,7 +1,7 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System.Diagnostics;
-    using Bookworm.Common;
+
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels;

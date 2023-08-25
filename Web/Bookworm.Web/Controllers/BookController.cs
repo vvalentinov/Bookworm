@@ -8,6 +8,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -55,7 +56,7 @@
                 PagesCount = book.PagesCount,
                 PublishedYear = book.Year,
                 Publisher = book.PublisherName,
-                Categories = this.categoriesService.GetCategoriesAsSelectListItems(),
+                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
                 Languages = this.languagesService.GetAllLanguages(),
             };
             return this.View(model);
@@ -67,7 +68,7 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
+                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
@@ -88,7 +89,7 @@
             catch (Exception ex)
             {
                 this.ModelState.AddModelError(string.Empty, ex.Message);
-                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
+                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
@@ -139,11 +140,13 @@
         [Authorize]
         public IActionResult Upload()
         {
-            return this.View(new UploadBookFormModel()
+            UploadBookFormModel model = new UploadBookFormModel()
             {
-                Categories = this.categoriesService.GetCategoriesAsSelectListItems(),
+                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
                 Languages = this.languagesService.GetAllLanguages(),
-            });
+            };
+
+            return this.View(model);
         }
 
         [Authorize]
@@ -152,7 +155,7 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
+                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
@@ -171,14 +174,14 @@
                     model.BookFile,
                     model.ImageFile,
                     model.CategoryId,
-                    model.AuthorsNames?.Select(x => x.Name),
+                    model.Authors?.Select(x => x.Name),
                     user.Id,
                     user.UserName);
             }
             catch (Exception ex)
             {
                 this.ModelState.AddModelError(string.Empty, ex.Message);
-                model.Categories = this.categoriesService.GetCategoriesAsSelectListItems();
+                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }

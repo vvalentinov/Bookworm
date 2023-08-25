@@ -16,7 +16,12 @@
     </div>
     <div class="form-group">
         <label asp-for="LanguageId"><strong>Select Language</strong></label>
-        <select asp-for="LanguageId" asp-items="@Model.Languages" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+        <select asp-for="LanguageId" size="5" aria-label="size 5 select example" class="form-select form-control">
+            @foreach (var language in Model.Languages)
+            {
+                <option value=@language.Id>@language.Name</option>
+            }
+        </select>
     </div>
     <div class="form-group justify-content-center">
         <label asp-for="PagesCount"><strong>Number of Pages</strong></label>
@@ -25,7 +30,12 @@
     </div>
     <div class="form-group">
         <label asp-for="CategoryId"><strong>Select Category</strong></label>
-        <select asp-for="CategoryId" asp-items="@Model.Categories" size="5" aria-label="size 5 select example" class="form-select form-control"></select>
+        <select asp-for="CategoryId" size="5" aria-label="size 5 select example" class="form-select form-control">
+            @foreach (var category in Model.Categories)
+            {
+                <option value=@category.Id>@category.Name</option>
+            }
+        </select>
     </div>
     <div class="form-group justify-content-center">
         <label asp-for="PublishedYear"><strong>Year</strong></label>

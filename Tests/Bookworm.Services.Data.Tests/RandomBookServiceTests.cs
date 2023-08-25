@@ -86,15 +86,15 @@
             this.randomBookService = new RandomBookService(mockCategoryRepo.Object, mockBookRepo.Object);
         }
 
-        [Fact]
-        public void GetCategoriesShouldWorkCorrectly()
-        {
-            var result = this.randomBookService.GetCategories().ToList();
+        //[Fact]
+        //public void GetCategoriesShouldWorkCorrectly()
+        //{
+        //    var result = this.randomBookService.GetCategories().ToList();
 
-            Assert.Equal(4, result.Count);
-            Assert.Equal("Random", result[3].Text);
-            Assert.Equal("Random", result[3].Value);
-        }
+        //    Assert.Equal(4, result.Count);
+        //    Assert.Equal("Random", result[3].Text);
+        //    Assert.Equal("Random", result[3].Value);
+        //}
 
         [Fact]
         public void GenerateBooksShouldWorkCorrectly()

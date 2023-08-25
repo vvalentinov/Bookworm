@@ -8,7 +8,7 @@
     using Bookworm.Data.Common.Models;
     using Microsoft.AspNetCore.Http;
 
-    using static Bookworm.Common.DataConstants;
+    using static Bookworm.Common.Books.BooksDataConstants;
 
     public class Book : BaseDeletableModel<string>
     {

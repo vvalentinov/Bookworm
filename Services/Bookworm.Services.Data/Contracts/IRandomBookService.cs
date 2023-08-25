@@ -3,11 +3,11 @@
     using System.Collections.Generic;
 
     using Bookworm.Web.ViewModels.Books;
-    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Bookworm.Web.ViewModels.Categories;
 
     public interface IRandomBookService
     {
-        IEnumerable<SelectListItem> GetCategories();
+        IEnumerable<CategoryViewModel> GetCategories();
 
         IEnumerable<BookViewModel> GenerateBooks(string category, int countBooks);
     }

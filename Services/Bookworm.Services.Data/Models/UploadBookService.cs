@@ -11,8 +11,10 @@
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
 
-    using static Bookworm.Common.DataConstants;
-    using static Bookworm.Common.ErrorMessages;
+    using static Bookworm.Common.Authors.AuthorsDataConstants;
+    using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
+    using static Bookworm.Common.Books.BooksDataConstants;
+    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
     public class UploadBookService : IUploadBookService
     {
@@ -52,17 +54,17 @@
         {
             if (bookFile == null || bookFile.Length == 0)
             {
-                throw new Exception(EmptyPdfField);
+                throw new Exception(BookPdfFileEmptyError);
             }
 
             if (bookFile.Length > 50_000_000)
             {
-                throw new Exception(InvalidPdfSize);
+                throw new Exception(BookInvalidPdfSizeError);
             }
 
             if (imageFile == null || imageFile.Length == 0)
             {
-                throw new Exception(EmptyImageField);
+                throw new Exception(BookImageFileEmptyError);
             }
 
             string[] permittedImageExtensions = { ".png", ".jpg", ".jpeg" };
@@ -71,34 +73,34 @@
 
             if (bookFileExtension != BookFileAllowedExtension)
             {
-                throw new Exception(InvalidBookFileExtension);
+                throw new Exception(BookFileInvalidExtensionError);
             }
 
             if (permittedImageExtensions.Contains(bookImageExtension) == false)
             {
-                throw new Exception(InvalidImageFileExtension);
+                throw new Exception(BookInvalidImageFileError);
             }
 
             if (authors == null)
             {
-                throw new Exception(EmptyAuthorsField);
+                throw new Exception(BookMissingAuthorsError);
             }
 
             foreach (string authorName in authors)
             {
-                if (authorName.Length < AuthorNameMin || authorName.Length > AuthorNameMax)
+                if (authorName.Length < AuthorNameMinLength || authorName.Length > AuthorNameMaxLength)
                 {
-                    throw new Exception(InvalidAuthorNameLength);
+                    throw new Exception(InvalidAuthorNameLengthError);
                 }
             }
 
             if (await this.blobService.CheckIfBlobExistsAsync(bookFile.FileName))
             {
-                throw new Exception(ChangeBookFileName);
+                throw new Exception(ChangeBookFileNameError);
             }
             else if (await this.blobService.CheckIfBlobExistsAsync(imageFile.FileName))
             {
-                throw new Exception(ChangeImageFileName);
+                throw new Exception(ChangeImageFileNameError);
             }
 
             await this.blobService.UploadBlobAsync(bookFile);

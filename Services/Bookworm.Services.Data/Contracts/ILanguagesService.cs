@@ -2,11 +2,11 @@
 {
     using System.Collections.Generic;
 
-    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Bookworm.Web.ViewModels.Languages;
 
     public interface ILanguagesService
     {
-        IEnumerable<SelectListItem> GetAllLanguages();
+        IEnumerable<LanguageViewModel> GetAllLanguages();
 
         string GetLanguageName(int languageId);
     }

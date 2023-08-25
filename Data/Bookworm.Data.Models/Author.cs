@@ -5,7 +5,7 @@
 
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.DataConstants;
+    using static Bookworm.Common.Authors.AuthorsDataConstants;
 
     public class Author : BaseDeletableModel<int>
     {
@@ -15,7 +15,7 @@
         }
 
         [Required]
-        [MaxLength(AuthorNameMax)]
+        [MaxLength(AuthorNameMaxLength)]
         public string Name { get; set; }
 
         public virtual ICollection<AuthorBook> AuthorsBooks { get; set; }
