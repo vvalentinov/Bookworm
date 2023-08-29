@@ -2,16 +2,10 @@
 
 @{
     this.ViewData["Title"] = "Favorite Books";
+    this.ViewData["Icon-Class"] = "fa-book";
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card animate__animated animate__jackInTheBox">
-        <div class="card-body">
-            <h3>@this.ViewData["Title"]</h3>
-        </div>
-    </div>
-</div>
-
+<partial name="PartialViews/_TitleCardPartial" />
 
 <div class="row">
     @foreach (var book in Model)

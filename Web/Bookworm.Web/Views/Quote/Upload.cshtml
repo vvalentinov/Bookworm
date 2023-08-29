@@ -2,15 +2,10 @@
 
 @{
     ViewData["Title"] = "Upload Quote";
+    ViewData["Icon-Class"] = "fa-pen";
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card animate__animated animate__jackInTheBox">
-        <div class="card-body">
-            <h3>@this.ViewData["Title"]<i class="fas fa-pen icon ms-3"></i></h3>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial" />
 
 <!-- Button trigger modal -->
 <h3 class="text-center mt-5">What type of quote do you wish to upload:</h3>

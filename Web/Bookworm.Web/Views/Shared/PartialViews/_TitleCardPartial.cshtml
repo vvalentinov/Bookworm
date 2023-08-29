@@ -1,0 +1,24 @@
+﻿@{
+    var title = ViewData["Title"];
+    var iconClass = ViewData["Icon-Class"];
+    var count = ViewData["Count"];
+}
+
+<div class="d-flex justify-content-center mt-5">
+    <div class="card text-center title-card animate__animated animate__jackInTheBox">
+        <div class="card-body">
+            @if (count != null)
+            {
+                <h3>@title (@count)</h3>
+            }
+            else if(iconClass != null)
+            {
+                <h3>@title<i class="fas @iconClass icon ms-3"></i></h3>
+            }
+            else
+            {
+                <h3>@title</h3>
+            }
+        </div>
+    </div>
+</div>

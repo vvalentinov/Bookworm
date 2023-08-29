@@ -1,19 +1,14 @@
 ﻿@model QuoteListingViewModel
 
 @{
-    this.ViewData["Title"] = "All Quotes";
     var quotes = this.Model.Quotes.ToList();
+    this.ViewData["Title"] = "All Quotes";
+    this.ViewData["Count"] = quotes.Count;
 }
 
-<div class="d-flex justify-content-center my-5">
-    <div class="card title-card animate__animated animate__jackInTheBox">
-        <div class="card-body">
-            <h3>@this.ViewData["Title"] (@Model.Quotes.Count)</h3>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial" />
 
-<div class="btn-group mb-3 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
+<div class="btn-group my-5 mb-3 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
     <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
     <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
 

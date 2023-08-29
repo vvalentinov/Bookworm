@@ -1,20 +1,13 @@
 ﻿@model IEnumerable<UserStatisticsViewModel>
 
 @{
-    ViewData["Title"] = "Top Users";
+    ViewData["Title"] = "Users Statistics";
     int index = 1;
 }
 
-<div class="col d-flex justify-content-center">
-    <div id="textCard" class="card col-5 text-center">
-        <div class="card-body">
-            <h1 class="display-4">Users Statistics</h1>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial" />
 
-
-<table class="table table-bordered">
+<table class="table table-bordered mt-5">
     <thead>
         <tr>
             <th scope="col">#</th>

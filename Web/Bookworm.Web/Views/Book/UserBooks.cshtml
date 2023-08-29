@@ -1,16 +1,11 @@
 ﻿@model BookListingViewModel
 
 @{
-    ViewData["Title"] = "My Books";
+    this.ViewData["Title"] = "My Books";
+    this.ViewData["Count"] = Model.BookCount;
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card animate__animated animate__jackInTheBox">
-        <div class="card-body">
-            <h2>@ViewData["Title"] (@Model.BookCount)</h2>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial" />
 
 <div>
     <div class="row">

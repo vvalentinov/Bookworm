@@ -100,11 +100,7 @@
 
         public IActionResult Random()
         {
-            RandomBookFormViewModel model = new ()
-            {
-                Categories = this.randomBookService.GetCategories(),
-            };
-
+            RandomBookFormViewModel model = new RandomBookFormViewModel();
             return this.View(model);
         }
 

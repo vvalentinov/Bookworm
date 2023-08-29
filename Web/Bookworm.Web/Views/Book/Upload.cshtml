@@ -2,15 +2,10 @@
 
 @{
     this.ViewData["Title"] = "Upload Book";
+    this.ViewData["Icon-Class"] = "fa-book";
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card animate__animated animate__jackInTheBox">
-        <div class="card-body">
-            <h3>@this.ViewData["Title"]<i class="fas fa-book icon ms-3"></i></h3>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial" />
 
 <form method="post" enctype="multipart/form-data" class="col-8 mx-auto d-flex justify-content-center flex-column">
     <div asp-validation-summary="All" class="small text-danger mt-3 fs-4"></div>
