@@ -1,9 +1,11 @@
-﻿namespace Bookworm.Web.Infrastructure
+﻿namespace Bookworm.Web.Infrastructure.Attributes
 {
     using System.ComponentModel.DataAnnotations;
     using System.IO;
 
     using Microsoft.AspNetCore.Http;
+
+    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
     public class BookFileAllowedExtensionAttribute : ValidationAttribute
     {
@@ -14,11 +16,6 @@
             this.extension = extension;
         }
 
-        public string GetErrorMessage()
-        {
-            return $"This file extension is not allowed!";
-        }
-
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             IFormFile file = value as IFormFile;
@@ -27,7 +24,7 @@
                 string extension = Path.GetExtension(file.FileName);
                 if (this.extension != extension)
                 {
-                    return new ValidationResult(this.GetErrorMessage());
+                    return new ValidationResult(BookInvalidFileExtensionError);
                 }
             }
 

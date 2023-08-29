@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    using Bookworm.Web.Infrastructure;
+    using Bookworm.Web.Infrastructure.Attributes;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Categories;
     using Bookworm.Web.ViewModels.Languages;

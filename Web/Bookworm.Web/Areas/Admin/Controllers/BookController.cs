@@ -6,7 +6,7 @@
     using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;

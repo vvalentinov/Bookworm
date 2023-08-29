@@ -6,7 +6,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Models;
+    using Bookworm.Services.Data.Models.Books;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Moq;

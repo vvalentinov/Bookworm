@@ -1,0 +1,6 @@
+﻿@model IEnumerable<CategoryViewModel>
+
+@foreach (var category in Model)
+{
+    <option value=@category.Id>@category.Name</option>
+}

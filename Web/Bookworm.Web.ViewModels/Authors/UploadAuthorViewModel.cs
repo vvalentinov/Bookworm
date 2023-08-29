@@ -7,7 +7,7 @@
 
     public class UploadAuthorViewModel
     {
-        [Required]
+        [Required(ErrorMessage = RequiredAuthorNameError)]
         [StringLength(AuthorNameMaxLength, MinimumLength = AuthorNameMinLength, ErrorMessage = InvalidAuthorNameLengthError)]
         public string Name { get; set; }
     }

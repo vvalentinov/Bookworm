@@ -1,0 +1,6 @@
+﻿@model IEnumerable<LanguageViewModel>
+
+@foreach (var language in Model)
+{
+    <option value=@language.Id>@language.Name</option>
+}

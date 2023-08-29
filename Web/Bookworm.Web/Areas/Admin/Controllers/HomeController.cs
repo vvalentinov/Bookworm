@@ -1,8 +1,7 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
     using System.Linq;
-
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Mvc;
 

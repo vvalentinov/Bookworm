@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Categories;
@@ -26,19 +26,19 @@
         {
             if (category == "Random")
             {
-                category = this.categoriesRepository
+                category = categoriesRepository
                     .AllAsNoTracking()
                     .OrderBy(x => Guid.NewGuid())
                     .First()
                     .Name;
             }
 
-            int categoryId = this.categoriesRepository
+            int categoryId = categoriesRepository
                                  .AllAsNoTracking()
                                  .First(x => x.Name == category)
                                  .Id;
 
-            List<BookViewModel> books = this.bookRepository
+            List<BookViewModel> books = bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.CategoryId == categoryId)
                 .OrderBy(x => Guid.NewGuid())
@@ -55,7 +55,7 @@
 
         public IEnumerable<CategoryViewModel> GetCategories()
         {
-            List<CategoryViewModel> categories = this.categoriesRepository
+            List<CategoryViewModel> categories = categoriesRepository
                                                   .AllAsNoTracking()
                                                   .OrderBy(x => x.Name)
                                                   .To<CategoryViewModel>()

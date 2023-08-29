@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -6,6 +6,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
 
     public class DeleteBookService : IDeleteBookService
     {
@@ -22,16 +23,16 @@
 
         public async Task DeleteBookAsync(string bookId)
         {
-            var book = this.bookRepository.All().First(x => x.Id == bookId);
-            var blob = this.blobService.GetBlobClient(book.FileUrl);
+            var book = bookRepository.All().First(x => x.Id == bookId);
+            var blob = blobService.GetBlobClient(book.FileUrl);
 
             if (blob != null)
             {
-                await this.blobService.DeleteBlobAsync(blob.Name);
+                await blobService.DeleteBlobAsync(blob.Name);
             }
 
-            this.bookRepository.Delete(book);
-            await this.bookRepository.SaveChangesAsync();
+            bookRepository.Delete(book);
+            await bookRepository.SaveChangesAsync();
         }
     }
 }

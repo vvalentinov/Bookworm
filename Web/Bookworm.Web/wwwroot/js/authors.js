@@ -1,22 +1,24 @@
-﻿function AddAuthor() {
+﻿
+const addAuthorBtn = document.getElementById('addAuthorBtn');
+addAuthorBtn.addEventListener('click', function () {
     let authorsContainer = document.getElementById('authorsContainer');
-    let addAuthorBtn = document.getElementById('addAuthorBtn');
-    let authorsCount = [...authorsContainer.children].slice(2).length;
+    let authorsCount = authorsContainer.childElementCount - 2;
 
     //Create and append author
     let authorContainer = document.createElement('div');
-    authorContainer.className = "input-group mt-4 animate__animated animate__zoomIn";
+    authorContainer.className = 'input-group mt-4 animate__animated animate__zoomIn';
 
     let inputElement = document.createElement('input');
-    inputElement.type = "text";
-    inputElement.className = "form-control border border-2";
-    inputElement.placeholder = "Author's Name";
+    inputElement.name = `Authors[${authorsCount}].Name`;
+    inputElement.type = 'text';
+    inputElement.className = 'form-control border border-2';
+    inputElement.placeholder = 'Author\'s Name';
 
     let buttonElement = document.createElement('button');
-    buttonElement.className = "btn btn-outline-danger";
-    buttonElement.type = "button";
-    buttonElement.id = "deleteAuthorBtn";
-    buttonElement.textContent = "Remove";
+    buttonElement.className = 'btn btn-outline-danger';
+    buttonElement.type = 'button';
+    buttonElement.id = 'deleteAuthorBtn';
+    buttonElement.textContent = 'Remove';
     buttonElement.addEventListener('click', function handleClick(event) {
         event.target.parentElement.remove();
         if (authorsCount < 5) {
@@ -35,10 +37,12 @@
         if (alertEl == undefined) {
             alert();
         }
-        
+
         return;
     }
-}
+});
+
+
 
 
 // Create and append alert message

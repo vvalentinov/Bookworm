@@ -1,13 +1,11 @@
 ﻿namespace Bookworm.Data.Models
 {
-    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class AuthorBook
-    {
-        [Key]
-        public int Id { get; set; }
+    using Bookworm.Data.Common.Models;
 
+    public class AuthorBook : BaseModel<int>
+    {
         [ForeignKey(nameof(Author))]
         public int AuthorId { get; set; }
 

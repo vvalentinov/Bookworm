@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System;
     using System.Collections.Generic;
@@ -9,6 +9,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.Authors.AuthorsDataConstants;
@@ -73,7 +74,7 @@
 
             if (bookFileExtension != BookFileAllowedExtension)
             {
-                throw new Exception(BookFileInvalidExtensionError);
+                throw new Exception(BookInvalidFileExtensionError);
             }
 
             if (permittedImageExtensions.Contains(bookImageExtension) == false)
@@ -84,6 +85,11 @@
             if (authors == null)
             {
                 throw new Exception(BookMissingAuthorsError);
+            }
+
+            if (authors.Any() == false)
+            {
+                throw new Exception("You must add at least one author!");
             }
 
             foreach (string authorName in authors)
@@ -118,13 +124,12 @@
                 if (bookPublisher == null)
                 {
                     bookPublisher = new Publisher() { Name = publisher };
-
                     await this.publisherRepository.AddAsync(bookPublisher);
                     await this.publisherRepository.SaveChangesAsync();
                 }
             }
 
-            Book book = new ()
+            Book book = new Book
             {
                 Title = title,
                 LanguageId = languageId,
@@ -138,7 +143,7 @@
                 PublisherId = bookPublisher?.Id,
             };
 
-            List<AuthorBook> bookAuthors = new ();
+            List<AuthorBook> bookAuthors = new List<AuthorBook>();
             foreach (string author in authors)
             {
                 Author bookAauthor = this.authorRepository
@@ -148,12 +153,15 @@
                 if (bookAauthor == null)
                 {
                     bookAauthor = new Author() { Name = author };
-
                     await this.authorRepository.AddAsync(bookAauthor);
                     await this.authorRepository.SaveChangesAsync();
                 }
 
-                AuthorBook authorBook = new () { BookId = book.Id, AuthorId = bookAauthor.Id };
+                AuthorBook authorBook = new AuthorBook()
+                {
+                    BookId = book.Id,
+                    AuthorId = bookAauthor.Id,
+                };
                 bookAuthors.Add(authorBook);
             }
 

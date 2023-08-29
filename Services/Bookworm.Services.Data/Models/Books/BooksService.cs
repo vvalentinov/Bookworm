@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,6 +6,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
 
@@ -48,25 +49,25 @@
 
         public BookViewModel GetBookWithId(string bookId, string userId = null)
         {
-            Book book = this.bookRepository.AllAsNoTracking().First(x => x.Id == bookId);
+            Book book = bookRepository.AllAsNoTracking().First(x => x.Id == bookId);
 
-            bool isFavorite = this.favoriteBookRepository.AllAsNoTracking().Any(x => x.BookId == bookId && x.UserId == userId);
+            bool isFavorite = favoriteBookRepository.AllAsNoTracking().Any(x => x.BookId == bookId && x.UserId == userId);
 
-            string category = this.categoriesService.GetCategoryName(book.CategoryId);
+            string category = categoriesService.GetCategoryName(book.CategoryId);
 
-            List<int> authorsIds = this.authorsBooksRepository
+            List<int> authorsIds = authorsBooksRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
                 .Select(x => x.AuthorId)
                 .ToList();
 
-            List<string> authors = this.authorRepository
+            List<string> authors = authorRepository
                 .AllAsNoTracking()
                 .Where(x => authorsIds.Contains(x.Id))
                 .Select(x => x.Name)
                 .ToList();
 
-            Publisher publisher = this.publishersRepository
+            Publisher publisher = publishersRepository
                 .AllAsNoTracking()
                 .FirstOrDefault(x => x.Id == book.PublisherId);
 
@@ -77,17 +78,17 @@
                 publisherName = publisher.Name;
             }
 
-            string language = this.languagesService.GetLanguageName(book.LanguageId);
+            string language = languagesService.GetLanguageName(book.LanguageId);
 
             double votesAvg = 0;
-            int votesCount = this.ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
+            int votesCount = ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
 
             if (votesCount > 0)
             {
-                votesAvg = this.ratingRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
+                votesAvg = ratingRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
             }
 
-            List<CommentViewModel> comments = this.commentRepository
+            List<CommentViewModel> comments = commentRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
                 .Select(x => new CommentViewModel()
@@ -97,21 +98,21 @@
                     Id = x.Id,
                     UserId = x.UserId,
                     UserUserName = x.User.UserName,
-                    DownVotesCount = this.voteRepository
+                    DownVotesCount = voteRepository
                                          .AllAsNoTracking()
                                          .Where(v => v.CommentId == x.Id && v.Value == VoteValue.DownVote)
                                          .Count(),
-                    UpVotesCount = this.voteRepository
+                    UpVotesCount = voteRepository
                                          .AllAsNoTracking()
                                          .Where(v => v.CommentId == x.Id && v.Value == VoteValue.UpVote)
                                          .Count(),
-                    UserVote = (int)this.voteRepository
+                    UserVote = (int)voteRepository
                                         .AllAsNoTracking()
                                         .FirstOrDefault(v => v.UserId == userId && v.CommentId == x.Id).Value,
                 })
                 .ToList();
 
-            return this.bookRepository
+            return bookRepository
               .AllAsNoTracking()
               .Where(x => x.Id == bookId)
               .Select(x => new BookViewModel()
@@ -130,7 +131,7 @@
                   CategoryName = category,
                   RatingsAvg = votesAvg,
                   RatingsCount = votesCount,
-                  UserRating = this.ratingRepository.AllAsNoTracking().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
+                  UserRating = ratingRepository.AllAsNoTracking().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
                   Comments = comments,
                   IsFavorite = isFavorite,
                   IsUserBook = userId != null && book.UserId == userId,
@@ -141,8 +142,8 @@
         {
             return new BookListingViewModel()
             {
-                CategoryName = this.categoriesService.GetCategoryName(categoryId),
-                Books = this.bookRepository
+                CategoryName = categoriesService.GetCategoryName(categoryId),
+                Books = bookRepository
                             .AllAsNoTracking()
                             .Where(x => x.CategoryId == categoryId && x.IsApproved == true)
                             .Select(x => new BookViewModel()
@@ -156,7 +157,7 @@
                             .OrderByDescending(x => x.Id)
                             .ToList(),
                 PageNumber = page,
-                BookCount = this.bookRepository
+                BookCount = bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.CategoryId == categoryId && x.IsApproved == true)
                                 .Count(),
@@ -168,7 +169,7 @@
         {
             return new BookListingViewModel()
             {
-                Books = this.bookRepository
+                Books = bookRepository
                             .AllAsNoTracking()
                             .Where(x => x.UserId == userId)
                             .OrderByDescending(x => x.CreatedOn)
@@ -183,7 +184,7 @@
                             .OrderByDescending(x => x.Id)
                             .ToList(),
                 PageNumber = page,
-                BookCount = this.bookRepository
+                BookCount = bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.UserId == userId)
                                 .Count(),
@@ -193,7 +194,7 @@
 
         public IList<BookViewModel> GetPopularBooks(int count)
         {
-            return this.bookRepository
+            return bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved == true)
                 .OrderByDescending(x => x.DownloadsCount)
@@ -208,7 +209,7 @@
 
         public IList<BookViewModel> GetRecentBooks(int count)
         {
-            return this.bookRepository
+            return bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved == true)
                 .OrderByDescending(x => x.CreatedOn)
@@ -223,7 +224,7 @@
 
         public IEnumerable<BookViewModel> GetUnapprovedBooks()
         {
-            return this.bookRepository
+            return bookRepository
                .AllAsNoTracking()
                .Where(x => x.IsApproved == false)
                .Select(x => new BookViewModel()
@@ -237,23 +238,23 @@
 
         public BookViewModel GetUnapprovedBookWithId(string bookId)
         {
-            Book book = this.bookRepository.All().First(x => x.Id == bookId);
+            Book book = bookRepository.All().First(x => x.Id == bookId);
 
-            string category = this.categoriesService.GetCategoryName(book.CategoryId);
+            string category = categoriesService.GetCategoryName(book.CategoryId);
 
-            List<int> authorsIds = this.authorsBooksRepository
+            List<int> authorsIds = authorsBooksRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
                 .Select(x => x.AuthorId)
                 .ToList();
 
-            List<string> authors = this.authorRepository
+            List<string> authors = authorRepository
                 .AllAsNoTracking()
                 .Where(x => authorsIds.Contains(x.Id))
                 .Select(x => x.Name)
                 .ToList();
 
-            Publisher publisher = this.publishersRepository
+            Publisher publisher = publishersRepository
                 .AllAsNoTracking()
                 .FirstOrDefault(x => x.Id == book.PublisherId);
 
@@ -264,9 +265,9 @@
                 publisherName = publisher.Name;
             }
 
-            string language = this.languagesService.GetLanguageName(book.LanguageId);
+            string language = languagesService.GetLanguageName(book.LanguageId);
 
-            return this.bookRepository
+            return bookRepository
               .AllAsNoTracking()
               .Where(x => x.Id == bookId)
               .Select(x => new BookViewModel()

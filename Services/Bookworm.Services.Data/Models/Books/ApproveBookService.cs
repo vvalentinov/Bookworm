@@ -1,11 +1,11 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Identity;
 
@@ -30,16 +30,16 @@
 
         public async Task ApproveBook(string bookId, string userId)
         {
-            var user = this.userRepository.All().First(x => x.Id == userId);
+            var user = userRepository.All().First(x => x.Id == userId);
             string email = user.Email;
-            await this.userManager.UpdateAsync(user);
+            await userManager.UpdateAsync(user);
 
-            var book = this.bookRepository.All().First(x => x.Id == bookId);
+            var book = bookRepository.All().First(x => x.Id == bookId);
             book.IsApproved = true;
-            this.bookRepository.Update(book);
-            await this.bookRepository.SaveChangesAsync();
+            bookRepository.Update(book);
+            await bookRepository.SaveChangesAsync();
 
-            await this.emailSender.SendEmailAsync(
+            await emailSender.SendEmailAsync(
                     "bookwormerwebsite@gmail.com",
                     "Bookworm",
                     $"{email}",

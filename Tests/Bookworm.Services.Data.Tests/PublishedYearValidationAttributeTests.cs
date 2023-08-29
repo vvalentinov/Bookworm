@@ -1,8 +1,7 @@
 ﻿namespace Bookworm.Services.Data.Tests
 {
     using System;
-
-    using Bookworm.Web.Infrastructure;
+    using Bookworm.Web.Infrastructure.Attributes;
     using Xunit;
 
     public class PublishedYearValidationAttributeTests

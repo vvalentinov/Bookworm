@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Contracts
+﻿namespace Bookworm.Services.Data.Contracts.Books
 {
     using System.Threading.Tasks;
 

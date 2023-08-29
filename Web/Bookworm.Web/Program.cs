@@ -31,6 +31,13 @@ namespace Bookworm.Web
                             .AddRoles<ApplicationRole>()
                             .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.AddCors(o => o.AddPolicy("My Policy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            }));
+
             builder.Services.AddAuthentication()
                 .AddFacebook(options =>
                 {
@@ -95,7 +102,8 @@ namespace Bookworm.Web
                 .UseCookiePolicy()
                 .UseRouting()
                 .UseAuthentication()
-                .UseAuthorization();
+                .UseAuthorization()
+                .UseCors("My Policy");
 
             app.MapControllerRoute(
                 name: "areaRoute",

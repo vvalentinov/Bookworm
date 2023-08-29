@@ -10,7 +10,7 @@
 
         public const string BookPublisherLengthError = "Publisher must be between 2 and 100 characters long!";
 
-        public const string BookPagesCountRangeError = "Pages must be between 5 and 3000!";
+        public const string BookPagesCountRangeError = "The number of pages must be between 5 and 3000!";
 
         public const string BookPublishedYearInvalidError = "Invalid year value!";
 
@@ -23,8 +23,8 @@
 
         public const string BookImageFileEmptyError = "Book image file is empty!";
 
-        public const string BookFileInvalidExtensionError = "Must be in PDF format!";
-        public const string BookInvalidImageFileError = "Valid formats are: JPG, JPEG and PNG!";
+        public const string BookInvalidFileExtensionError = "Invalid book file extension. Allowed extension: .pdf!";
+        public const string BookInvalidImageFileError = "Invalid image file extension. Allowed extensions: .jpg, .jpeg, .png!";
 
         public const string BookMissingAuthorsError = "You must add at least one author!";
 

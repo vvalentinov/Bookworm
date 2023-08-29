@@ -7,6 +7,7 @@
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Authorization;
@@ -140,23 +141,16 @@
         [Authorize]
         public IActionResult Upload()
         {
-            UploadBookFormModel model = new UploadBookFormModel()
-            {
-                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
-                Languages = this.languagesService.GetAllLanguages(),
-            };
-
+            UploadBookViewModel model = new UploadBookViewModel();
             return this.View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Upload(UploadBookFormModel model)
+        public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
             if (this.ModelState.IsValid == false)
             {
-                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
-                model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
 
@@ -181,8 +175,7 @@
             catch (Exception ex)
             {
                 this.ModelState.AddModelError(string.Empty, ex.Message);
-                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
-                model.Languages = this.languagesService.GetAllLanguages();
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
                 return this.View(model);
             }
 

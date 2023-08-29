@@ -170,7 +170,7 @@ body {
 }
 
 .loginRegisterImg {
-    height: 30rem;
+    height: 40rem;
     flex-basis: 40%;
 }
 
@@ -288,7 +288,8 @@ a[class="privacy-link"] {
         color: var(--clr-secondary);
     }
 
-.form-control:focus {
+.form-control:focus,
+.form-select:focus {
     box-shadow: 0 0 0 0.2rem var(--clr-secondary);
 }
 

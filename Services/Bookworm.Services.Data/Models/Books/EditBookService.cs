@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
-
+    using Bookworm.Services.Data.Contracts.Books;
     using static Bookworm.Common.Authors.AuthorsDataConstants;
 
     public class EditBookService : IEditBookService
@@ -57,18 +56,18 @@
             int publisherId = 0;
             if (publisherName != null)
             {
-                var publisher = this.publishersRepository.All().FirstOrDefault(x => x.Name == publisherName);
+                var publisher = publishersRepository.All().FirstOrDefault(x => x.Name == publisherName);
                 if (publisher == null)
                 {
                     publisher = new Publisher() { Name = publisherName };
-                    await this.publishersRepository.AddAsync(publisher);
-                    await this.publishersRepository.SaveChangesAsync();
+                    await publishersRepository.AddAsync(publisher);
+                    await publishersRepository.SaveChangesAsync();
                 }
 
                 publisherId = publisher.Id;
             }
 
-            var book = this.booksRepository.All().First(x => x.Id == bookId);
+            var book = booksRepository.All().First(x => x.Id == bookId);
 
             book.Title = title;
             book.Description = description;
@@ -78,27 +77,27 @@
             book.Year = publishedYear;
             book.PublisherId = publisherId;
 
-            var authorBooks = this.authorsBooksRepository.All().Where(x => x.BookId == bookId).ToList();
+            var authorBooks = authorsBooksRepository.All().Where(x => x.BookId == bookId).ToList();
             foreach (var authorBook in authorBooks)
             {
-                this.authorsBooksRepository.Delete(authorBook);
+                authorsBooksRepository.Delete(authorBook);
             }
 
-            await this.authorsBooksRepository.SaveChangesAsync();
+            await authorsBooksRepository.SaveChangesAsync();
 
             var authorIds = new List<int>();
 
             foreach (string authorName in authors)
             {
-                var author = this.authorsRepository
+                var author = authorsRepository
                     .AllAsNoTracking()
                     .FirstOrDefault(x => x.Name == authorName);
 
                 if (author == null)
                 {
                     author = new Author() { Name = authorName };
-                    await this.authorsRepository.AddAsync(author);
-                    await this.authorsRepository.SaveChangesAsync();
+                    await authorsRepository.AddAsync(author);
+                    await authorsRepository.SaveChangesAsync();
                 }
 
                 authorIds.Add(author.Id);
@@ -107,12 +106,12 @@
             foreach (var id in authorIds)
             {
                 var authorBook = new AuthorBook() { AuthorId = id, BookId = bookId };
-                await this.authorsBooksRepository.AddAsync(authorBook);
+                await authorsBooksRepository.AddAsync(authorBook);
             }
 
-            await this.authorsBooksRepository.SaveChangesAsync();
-            this.booksRepository.Update(book);
-            await this.booksRepository.SaveChangesAsync();
+            await authorsBooksRepository.SaveChangesAsync();
+            booksRepository.Update(book);
+            await booksRepository.SaveChangesAsync();
         }
     }
 }

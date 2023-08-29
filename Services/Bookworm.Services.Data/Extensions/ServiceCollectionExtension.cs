@@ -6,8 +6,10 @@
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Data.Models;
+    using Bookworm.Services.Data.Models.Books;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Messaging;
     using CloudinaryDotNet;
