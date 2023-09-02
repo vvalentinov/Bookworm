@@ -4,30 +4,19 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.Extensions.Configuration;
 
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly IConfiguration configuration;
-        private readonly ICloudinaryService cloudinaryService;
 
-        public IndexModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IConfiguration configuration,
-            ICloudinaryService cloudinaryService)
+        public IndexModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.configuration = configuration;
-            this.cloudinaryService = cloudinaryService;
         }
 
         public string Username { get; set; }

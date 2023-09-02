@@ -14,24 +14,27 @@
         <input asp-for="Title" type="text" class="form-control border border-2">
         <span asp-validation-for="Title" class="small text-danger"></span>
     </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="LanguageId"></label>
-        <select asp-for="LanguageId" size="8" aria-label="size 5 select example" class="fs-5 form-select border border-2">
-            <vc:languages></vc:languages>
-        </select>
-        <span asp-validation-for="LanguageId" class="small text-danger"></span>
+    <div class="d-flex justify-content-center gap-3">
+        <div class="mt-4 fs-4 w-50">
+            <label asp-for="LanguageId"></label>
+            <select asp-for="LanguageId" size="8" aria-label="size 5 select example" class="fs-5 form-select border border-2">
+                <vc:languages></vc:languages>
+            </select>
+            <span asp-validation-for="LanguageId" class="small text-danger"></span>
+        </div>
+        <div class="mt-4 fs-4 w-50">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" size="8" aria-label="size 5 select example" class="fs-5 form-select border border-2">
+                <vc:categories></vc:categories>
+            </select>
+            <span asp-validation-for="CategoryId" class="small text-danger"></span>
+        </div>
     </div>
+
     <div class="mt-4 fs-4">
         <label asp-for="PagesCount"></label>
         <input asp-for="PagesCount" type="number" class="form-control border border-2">
         <span asp-validation-for="PagesCount" class="small text-danger"></span>
-    </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="CategoryId"></label>
-        <select asp-for="CategoryId" size="8" aria-label="size 5 select example" class="fs-5 form-select border border-2">
-            <vc:categories></vc:categories>
-        </select>
-        <span asp-validation-for="CategoryId" class="small text-danger"></span>
     </div>
     <div class="mt-4 fs-4">
         <label asp-for="PublishedYear"></label>
@@ -59,7 +62,7 @@
     </div>
     <div class="mt-4 fs-4">
         <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control border border-2" rows="12"></textarea>
+        <textarea asp-for="Description"></textarea>
         <span asp-validation-for="Description" class="small text-danger"></span>
     </div>
     <div class="text-center mt-4 mb-5">
@@ -69,4 +72,11 @@
 
 @section Scripts{
     <script src="~/js/authors.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: "textarea",
+            plugins: ["code", "image", "link", "lists", "preview", "searchreplace", "table", "wordcount"]
+        });
+    </script>
 }

@@ -23,16 +23,16 @@
 
         public async Task DeleteBookAsync(string bookId)
         {
-            var book = bookRepository.All().First(x => x.Id == bookId);
-            var blob = blobService.GetBlobClient(book.FileUrl);
+            var book = this.bookRepository.All().First(x => x.Id == bookId);
+            var blob = this.blobService.GetBlobClient(book.FileUrl);
 
             if (blob != null)
             {
-                await blobService.DeleteBlobAsync(blob.Name);
+                await this.blobService.DeleteBlobAsync(blob.Name);
             }
 
-            bookRepository.Delete(book);
-            await bookRepository.SaveChangesAsync();
+            this.bookRepository.Delete(book);
+            await this.bookRepository.SaveChangesAsync();
         }
     }
 }

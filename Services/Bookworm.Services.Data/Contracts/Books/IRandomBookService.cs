@@ -7,8 +7,6 @@
 
     public interface IRandomBookService
     {
-        IEnumerable<CategoryViewModel> GetCategories();
-
         IEnumerable<BookViewModel> GenerateBooks(string category, int countBooks);
     }
 }

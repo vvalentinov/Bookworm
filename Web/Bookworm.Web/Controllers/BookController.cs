@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@
         private readonly IRandomBookService randomBookService;
         private readonly IBlobService blobService;
         private readonly IEditBookService editBookService;
+        private readonly IValidateUploadedBookService validateBookService;
 
         public BookController(
             IBooksService booksService,
@@ -33,7 +35,8 @@
             ILanguagesService languagesService,
             IRandomBookService randomBookService,
             IBlobService blobService,
-            IEditBookService editBookService)
+            IEditBookService editBookService,
+            IValidateUploadedBookService validateBookService)
         {
             this.booksService = booksService;
             this.categoriesService = categoriesService;
@@ -43,6 +46,7 @@
             this.randomBookService = randomBookService;
             this.blobService = blobService;
             this.editBookService = editBookService;
+            this.validateBookService = validateBookService;
         }
 
         [Authorize]
@@ -107,7 +111,7 @@
         [HttpPost]
         public IActionResult Random(RandomBookFormViewModel model)
         {
-            var books = this.randomBookService.GenerateBooks(model.CategoryName, model.CountBooks);
+            IEnumerable<BookViewModel> books = this.randomBookService.GenerateBooks(model.CategoryName, model.CountBooks);
             return this.View("GeneratedBooks", books);
         }
 
@@ -150,33 +154,37 @@
                 return this.View(model);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
             try
             {
-                await this.uploadBookService.UploadBookAsync(
-                    model.Title,
-                    model.Description,
-                    model.LanguageId,
-                    model.Publisher,
-                    model.PagesCount,
-                    model.PublishedYear,
+                this.validateBookService.ValidateUploadedBook(
                     model.BookFile,
                     model.ImageFile,
-                    model.CategoryId,
-                    model.Authors?.Select(x => x.Name),
-                    user.Id,
-                    user.UserName);
+                    model.Authors.Select(x => x.Name));
             }
             catch (Exception ex)
             {
-                this.ModelState.AddModelError(string.Empty, ex.Message);
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
                 return this.View(model);
             }
 
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+
+            await this.uploadBookService.UploadBookAsync(
+                model.Title,
+                model.Description,
+                model.LanguageId,
+                model.Publisher,
+                model.PagesCount,
+                model.PublishedYear,
+                model.BookFile,
+                model.ImageFile,
+                model.CategoryId,
+                model.Authors?.Select(x => x.Name),
+                user.Id,
+                user.UserName);
+
             this.TempData[MessageConstant.SuccessMessage] = "Successfully added book!";
-            return this.View("Views/Book/ThankYouBook.cshtml");
+            return this.RedirectToAction("Index", "Home");
         }
 
         [Authorize]

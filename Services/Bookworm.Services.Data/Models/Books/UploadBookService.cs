@@ -1,9 +1,6 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
@@ -11,32 +8,30 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Authors.AuthorsDataConstants;
-    using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
     using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
     public class UploadBookService : IUploadBookService
     {
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Publisher> publisherRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
+        private readonly IRepository<AuthorBook> authorBookRepository;
         private readonly IBlobService blobService;
-        private readonly ICloudinaryService cloudinaryService;
 
         public UploadBookService(
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Publisher> publisherRepository,
             IDeletableEntityRepository<Author> authorRepository,
-            IBlobService blobService,
-            ICloudinaryService cloudinaryService)
+            IRepository<AuthorBook> authorBookRepository,
+            IBlobService blobService)
         {
             this.booksRepository = booksRepository;
             this.publisherRepository = publisherRepository;
             this.authorRepository = authorRepository;
+            this.authorBookRepository = authorBookRepository;
             this.blobService = blobService;
-            this.cloudinaryService = cloudinaryService;
         }
 
         public async Task UploadBookAsync(
@@ -53,81 +48,11 @@
             string userId,
             string userName)
         {
-            if (bookFile == null || bookFile.Length == 0)
-            {
-                throw new Exception(BookPdfFileEmptyError);
-            }
+            await this.blobService.UploadBlobAsync(bookFile, BookFileUploadPath);
+            await this.blobService.UploadBlobAsync(imageFile, BookImageFileUploadPath);
 
-            if (bookFile.Length > 50_000_000)
-            {
-                throw new Exception(BookInvalidPdfSizeError);
-            }
-
-            if (imageFile == null || imageFile.Length == 0)
-            {
-                throw new Exception(BookImageFileEmptyError);
-            }
-
-            string[] permittedImageExtensions = { ".png", ".jpg", ".jpeg" };
-            string bookFileExtension = Path.GetExtension(bookFile.FileName);
-            string bookImageExtension = Path.GetExtension(imageFile.FileName);
-
-            if (bookFileExtension != BookFileAllowedExtension)
-            {
-                throw new Exception(BookInvalidFileExtensionError);
-            }
-
-            if (permittedImageExtensions.Contains(bookImageExtension) == false)
-            {
-                throw new Exception(BookInvalidImageFileError);
-            }
-
-            if (authors == null)
-            {
-                throw new Exception(BookMissingAuthorsError);
-            }
-
-            if (authors.Any() == false)
-            {
-                throw new Exception("You must add at least one author!");
-            }
-
-            foreach (string authorName in authors)
-            {
-                if (authorName.Length < AuthorNameMinLength || authorName.Length > AuthorNameMaxLength)
-                {
-                    throw new Exception(InvalidAuthorNameLengthError);
-                }
-            }
-
-            if (await this.blobService.CheckIfBlobExistsAsync(bookFile.FileName))
-            {
-                throw new Exception(ChangeBookFileNameError);
-            }
-            else if (await this.blobService.CheckIfBlobExistsAsync(imageFile.FileName))
-            {
-                throw new Exception(ChangeImageFileNameError);
-            }
-
-            await this.blobService.UploadBlobAsync(bookFile);
-
-            string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri(bookFile.FileName);
-            string imageUrl = await this.cloudinaryService.UploadImageAsync(imageFile);
-
-            Publisher bookPublisher = null;
-            if (publisher != null)
-            {
-                bookPublisher = this.publisherRepository
-               .AllAsNoTracking()
-               .FirstOrDefault(x => x.Name == publisher);
-
-                if (bookPublisher == null)
-                {
-                    bookPublisher = new Publisher() { Name = publisher };
-                    await this.publisherRepository.AddAsync(bookPublisher);
-                    await this.publisherRepository.SaveChangesAsync();
-                }
-            }
+            string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri($"{BookFileUploadPath}{bookFile.FileName}");
+            string bookImageFileBlobUrl = this.blobService.GetBlobAbsoluteUri($"{BookImageFileUploadPath}{imageFile.FileName}");
 
             Book book = new Book
             {
@@ -139,35 +64,46 @@
                 CategoryId = categoryId,
                 UserId = userId,
                 FileUrl = bookFileBlobUrl,
-                ImageUrl = imageUrl,
-                PublisherId = bookPublisher?.Id,
+                ImageUrl = bookImageFileBlobUrl,
             };
 
-            List<AuthorBook> bookAuthors = new List<AuthorBook>();
-            foreach (string author in authors)
+            if (string.IsNullOrWhiteSpace(publisher) == false)
             {
-                Author bookAauthor = this.authorRepository
-                                         .AllAsNoTracking()
-                                         .FirstOrDefault(x => x.Name == author);
+                Publisher bookPublisher = await this.publisherRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Name == publisher);
 
-                if (bookAauthor == null)
+                if (bookPublisher == null)
                 {
-                    bookAauthor = new Author() { Name = author };
-                    await this.authorRepository.AddAsync(bookAauthor);
+                    bookPublisher = new Publisher() { Name = publisher };
+                    await this.publisherRepository.AddAsync(bookPublisher);
+                    await this.publisherRepository.SaveChangesAsync();
+                }
+
+                book.PublisherId = bookPublisher.Id;
+            }
+
+            await this.booksRepository.AddAsync(book);
+            await this.booksRepository.SaveChangesAsync();
+
+            foreach (string authorName in authors)
+            {
+                Author author = await this.authorRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Name == authorName);
+
+                if (author == null)
+                {
+                    author = new Author() { Name = authorName };
+                    await this.authorRepository.AddAsync(author);
                     await this.authorRepository.SaveChangesAsync();
                 }
 
                 AuthorBook authorBook = new AuthorBook()
                 {
                     BookId = book.Id,
-                    AuthorId = bookAauthor.Id,
+                    AuthorId = author.Id,
                 };
-                bookAuthors.Add(authorBook);
-            }
 
-            book.AuthorsBooks = bookAuthors;
-            await this.booksRepository.AddAsync(book);
-            await this.booksRepository.SaveChangesAsync();
+                await this.authorBookRepository.AddAsync(authorBook);
+                await this.authorBookRepository.SaveChangesAsync();
+            }
         }
     }
 }

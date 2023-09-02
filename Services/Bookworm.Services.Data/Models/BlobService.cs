@@ -82,11 +82,17 @@
             return blobClient.Uri.AbsoluteUri;
         }
 
-        public async Task UploadBlobAsync(IFormFile file)
+        public async Task UploadBlobAsync(IFormFile file, string path = null)
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = containerClient.GetBlobClient(file.FileName);
+            string fileName = file.FileName;
+            if (path != null)
+            {
+                fileName = path + fileName;
+            }
+
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
             byte[] fileBytes = GetFileBytes(file);
             await using MemoryStream memoryStream = new (fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });

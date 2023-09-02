@@ -12,7 +12,6 @@
     using Bookworm.Services.Data.Models.Books;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Messaging;
-    using CloudinaryDotNet;
     using global::Azure.Storage.Blobs;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -21,53 +20,23 @@
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            Cloudinary cloudinary = new (config.GetValue<string>("Cloudinary:CloudinaryUrl"));
-
-            services.AddSingleton(cloudinary);
-
-            services.AddSingleton(x => new BlobServiceClient(config.GetConnectionString("StorageConnection")));
+            services.AddScoped(x => new BlobServiceClient(config.GetConnectionString("StorageConnection")));
 
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
-
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-
             services.AddTransient<IEmailSender>(x => new SendGridEmailSender(config["SendGrid:ApiKey"]));
-
             services.AddTransient<ISettingsService, SettingsService>();
 
             AddQuotesServices(services);
-
+            AddBooksServices(services);
             services.AddTransient<ICategoriesService, CategoriesService>();
-
-            services.AddTransient<IBooksService, BooksService>();
-
-            services.AddTransient<IUploadBookService, UploadBookService>();
-
             services.AddTransient<ILanguagesService, LanguagesService>();
-
-            services.AddTransient<IFavoriteBooksService, FavoriteBookService>();
-
             services.AddTransient<ICommentsService, CommentsService>();
-
             services.AddTransient<IBlobService, BlobService>();
-
             services.AddTransient<IRatingsService, RatingsService>();
-
             services.AddTransient<IVoteService, VotesService>();
-
-            services.AddTransient<IRandomBookService, RandomBookService>();
-
             services.AddTransient<IUsersService, UsersService>();
-
-            services.AddTransient<ICloudinaryService, CloudinaryService>();
-
-            services.AddTransient<IDeleteBookService, DeleteBookService>();
-
-            services.AddTransient<IEditBookService, EditBookService>();
-
-            services.AddTransient<IApproveBookService, ApproveBookService>();
 
             services.AddAntiforgery(options =>
             {
@@ -79,7 +48,7 @@
 
         public static IServiceCollection AddApplicationDbContexts(this IServiceCollection services, IConfiguration config)
         {
-            var connectionString = config.GetConnectionString("DefaultConnection");
+            string connectionString = config.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(connectionString));
@@ -98,6 +67,18 @@
             services.AddTransient<ISearchQuoteService, SearchQuoteService>();
             services.AddTransient<IUpdateQuoteService, UpdateQuoteService>();
             services.AddTransient<IUploadQuoteService, UploadQuoteService>();
+        }
+
+        private static void AddBooksServices(IServiceCollection services)
+        {
+            services.AddTransient<IValidateUploadedBookService, ValidateUploadedBookService>();
+            services.AddTransient<IBooksService, BooksService>();
+            services.AddTransient<IUploadBookService, UploadBookService>();
+            services.AddTransient<IFavoriteBooksService, FavoriteBookService>();
+            services.AddTransient<IRandomBookService, RandomBookService>();
+            services.AddTransient<IDeleteBookService, DeleteBookService>();
+            services.AddTransient<IEditBookService, EditBookService>();
+            services.AddTransient<IApproveBookService, ApproveBookService>();
         }
     }
 }

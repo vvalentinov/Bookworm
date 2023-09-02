@@ -17,5 +17,8 @@
         public const int BookPublishedYearMin = 1800;
 
         public const string BookFileAllowedExtension = ".pdf";
+
+        public const string BookFileUploadPath = "Books/";
+        public const string BookImageFileUploadPath = "BooksImages/";
     }
 }

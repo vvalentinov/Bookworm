@@ -7,8 +7,6 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.Infrastructure.Attributes;
     using Bookworm.Web.ViewModels.Authors;
-    using Bookworm.Web.ViewModels.Categories;
-    using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.Books.BooksDataConstants;

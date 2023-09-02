@@ -68,6 +68,28 @@
       "files": [
         "jquery.dataTables.min.js"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "tinymce@6.6.2",
+      "destination": "wwwroot/lib/tinymce/",
+      "files": [
+        "tinymce.min.js",
+        "icons/default/icons.min.js",
+        "models/dom/model.min.js",
+        "plugins/code/plugin.min.js",
+        "plugins/image/plugin.min.js",
+        "plugins/lists/plugin.min.js",
+        "plugins/preview/plugin.min.js",
+        "plugins/wordcount/plugin.min.js",
+        "plugins/table/plugin.min.js",
+        "plugins/searchreplace/plugin.min.js",
+        "plugins/link/plugin.min.js",
+        "themes/silver/theme.min.js",
+        "skins/ui/oxide/content.min.css",
+        "skins/ui/oxide/skin.min.css",
+        "skins/content/default/content.min.css"
+      ]
     }
   ]
 }

@@ -60,8 +60,7 @@
             this.approveBookService = new ApproveBookService(
                 mockBookRepo.Object,
                 mockUserRepo.Object,
-                mockUserManager.Object,
-                mockEmailSender.Object);
+                mockUserManager.Object);
         }
 
         [Fact]
