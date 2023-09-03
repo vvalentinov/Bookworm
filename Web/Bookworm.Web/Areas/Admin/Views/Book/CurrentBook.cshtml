@@ -1,10 +1,53 @@
 ﻿@model BookViewModel
 
 @{
-    ViewData["Title"] = $"{Model.Title}";
+    this.ViewData["Title"] = $"{Model.Title}";
 }
 
-<section class="bookSection" style="margin-bottom:2rem">
+<div class="d-flex justify-content-center mt-5 gap-5 align-items-center">
+    <img class="w-25 rounded-3" src=@Model.ImageUrl alt=@Model.Title />
+    <ul class="list-group w-75 fs-5 rounded">
+        <li class="list-group-item"><strong>@Model.Title</strong></li>
+        @if (Model.PublisherName != null)
+        {
+            <li class="list-group-item">Publisher: @Model.PublisherName</li>
+        }
+        <li class="list-group-item">
+            Category: <a asp-controller="Book" asp-action="All" asp-route-categoryName="@Model.CategoryName">@Model.CategoryName</a>
+        </li>
+        <li class="list-group-item">Pages: @Model.PagesCount</li>
+        <li class="list-group-item">Language: @Model.Language</li>
+        <li class="list-group-item">Downloads: @Model.DownloadsCount</li>
+        <li class="list-group-item">
+            <span>Average Score: <span>@Model.RatingsAvg.ToString("f1")</span><span>/5</span><span>(Ratings count: <span>@Model.RatingsCount</span>)</span></span>
+        </li>
+        <li class="list-group-item">
+            <dl>
+                <dt>Authors:</dt>
+                @foreach (var author in Model.Authors)
+                {
+                    <dd>- @author</dd>
+                }
+            </dl>
+        </li>
+    </ul>
+</div>
+<div class="mt-5 d-flex justify-content-evenly">
+    <a class="btn btn-primary" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
+        Approve<i class="fas fa-download icon ms-3"></i>
+    </a>
+    <a class="btn btn-lg button" asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle=@Model.Title>
+        Post Comment<i class="fa-solid fa-comment ms-2"></i>
+    </a>
+</div>
+<div class="card border-secondary my-5">
+    <h5 class="card-header">Book Description</h5>
+    <div class="card-body">
+        <p class="card-text">@Model.Description</p>
+    </div>
+</div>
+
+@* <section class="bookSection" style="margin-bottom:2rem">
     <div class="card border-dark">
         <div class="card-body">
             <div class="px-4 px-lg-5">
@@ -22,7 +65,7 @@
                             </a>
                         </div>
                         <div class="m-4 text-center">
-                            <a class="btn btn-danger flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id" >
+                            <a class="btn btn-danger flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id">
                                 Delete
                             </a>
                         </div>
@@ -80,4 +123,4 @@
             <p class="card-text">@Model.Description</p>
         </div>
     </div>
-</section>
+</section> *@

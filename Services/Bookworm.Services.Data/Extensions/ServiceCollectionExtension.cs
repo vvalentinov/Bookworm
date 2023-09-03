@@ -30,6 +30,7 @@
 
             AddQuotesServices(services);
             AddBooksServices(services);
+
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<ILanguagesService, LanguagesService>();
             services.AddTransient<ICommentsService, CommentsService>();

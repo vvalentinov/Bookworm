@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -8,6 +9,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Messaging;
+    using Bookworm.Web.ViewModels.Books;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -57,6 +59,12 @@
         public IActionResult AllBooks()
         {
             var books = this.booksService.GetUnapprovedBooks();
+            return this.View(books);
+        }
+
+        public IActionResult UnapprovedBooks()
+        {
+            IEnumerable<BookViewModel> books = this.booksService.GetUnapprovedBooks();
             return this.View(books);
         }
 

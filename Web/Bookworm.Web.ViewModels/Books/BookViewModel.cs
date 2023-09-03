@@ -5,6 +5,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Comments;
+    using Ganss.Xss;
 
     public class BookViewModel : IMapFrom<Book>
     {
@@ -13,6 +14,8 @@
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
 
         public string PublisherName { get; set; }
 

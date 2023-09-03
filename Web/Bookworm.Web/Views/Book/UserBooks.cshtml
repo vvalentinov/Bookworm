@@ -7,28 +7,35 @@
 
 <partial name="PartialViews/_TitleCardPartial" />
 
-<div>
-    <div class="row">
-        @foreach (var book in Model.Books)
-        {
-            <div class="col-md-3 mt-5 mb-4">
-                <a asp-controller="Book" asp-action="CurrentBook" asp-route-id="@book.Id">
-                    <div class="card bg-dark text-light h-100">
-                        <img title="@book.Title" class="zoom" src="@book.ImageUrl" alt="Book" height="300">
-                    </div>
-                </a>
-            </div>
-        }
-    </div>
+<div class="row">
+    @foreach (var book in Model.Books)
+    {
+        <div class="col-md-3 mt-5 mb-4">
+            <a asp-controller="Book" asp-action="CurrentBook" asp-route-id="@book.Id">
+                <div class="card bg-dark text-light h-100">
+                    <img title="@book.Title" class="zoom" src="@book.ImageUrl" alt=@book.Title height="300">
+                </div>
+            </a>
+        </div>
+    }
 </div>
+
 @if (Model.BookCount > 0)
 {
-    <hr />
-    <nav id="booksPagination" aria-label="...">
+    <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item @if (Model.HasPreviousPage == false){<text>disabled</text>}">
-                   <a id="previous" class="page-link" asp-controller="Book" asp-action="UserBooks" asp-route-page="@Model.PreviousPageNumber">Previous</a>
-            </li>
+            @if (Model.HasPreviousPage == false)
+            {
+                <li class="page-item disabled">
+                    <a id="previous" class="page-link" asp-controller="Book" asp-action="UserBooks" asp-route-page="@Model.PreviousPageNumber">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a id="previous" class="page-link" asp-controller="Book" asp-action="UserBooks" asp-route-page="@Model.PreviousPageNumber">Previous</a>
+                </li>
+            }
             @for (int i = Model.PageNumber - 3; i < Model.PageNumber; i++)
             {
                 if (i > 0)
@@ -49,9 +56,22 @@
                     <li class="page-item"><a class="page-link" asp-controller="Book" asp-action="UserBooks" asp-route-page="@i">@i</a></li>
                 }
             }
-            <li class="page-item @if (Model.HasNextPage == false) {<text>disabled</text>}">
-                <a class="page-link" asp-controller="Book" asp-action="UserBooks"  asp-route-page="@Model.NextPageNumber">Next</a>
-            </li>
+            @if (Model.HasNextPage == false)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" asp-controller="Book" asp-action="UserBooks" asp-route-page="@Model.NextPageNumber">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Book" asp-action="UserBooks" asp-route-page="@Model.NextPageNumber">Next</a>
+                </li>
+            }
         </ul>
     </nav>
+}
+else
+{
+    <h2 class="text-center mt-5">You haven't uploaded any books yet!</h2>
 }

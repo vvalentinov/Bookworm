@@ -222,6 +222,17 @@ body {
 }
 
 
+.list-group .list-group-item {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+    word-wrap: break-word;
+}
+
+    .list-group .list-group-item a {
+        color: var(--clr-secondary);
+        text-decoration: none;
+    }
+
 /*Table Styles*/
 .table tr td,
 .table thead tr th,

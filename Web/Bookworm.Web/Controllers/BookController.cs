@@ -15,6 +15,8 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Books.BooksSuccessMessagesConstants;
+
     public class BookController : BaseController
     {
         private readonly IBooksService booksService;
@@ -99,7 +101,7 @@
                 return this.View(model);
             }
 
-            return this.RedirectToAction("CurrentBook", "Book", new { id = model.Id });
+            return this.RedirectToAction(nameof(this.CurrentBook), "Book", new { id = model.Id });
         }
 
         public IActionResult Random()
@@ -156,14 +158,16 @@
 
             try
             {
-                this.validateBookService.ValidateUploadedBook(
+                await this.validateBookService.ValidateUploadedBookAsync(
                     model.BookFile,
                     model.ImageFile,
-                    model.Authors.Select(x => x.Name));
+                    model.Authors.Select(x => x.Name),
+                    model.CategoryId,
+                    model.LanguageId);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException exception)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
                 return this.View(model);
             }
 
@@ -179,11 +183,11 @@
                 model.BookFile,
                 model.ImageFile,
                 model.CategoryId,
-                model.Authors?.Select(x => x.Name),
+                model.Authors.Select(x => x.Name),
                 user.Id,
                 user.UserName);
 
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully added book!";
+            this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
             return this.RedirectToAction("Index", "Home");
         }
 

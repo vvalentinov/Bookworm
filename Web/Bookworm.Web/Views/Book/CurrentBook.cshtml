@@ -2,405 +2,52 @@
 
 @{
     this.ViewData["Title"] = Model.Title;
-    int? userRating = Model.UserRating;
-    var isFavorite = Model.IsFavorite;
 }
 
-<section class="bookSection">
-    <div class="card border-dark">
-        <div class="card-body">
-            <div class="px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5">
-                    <div class="col-md-4">
-                        <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn img-fluid img-thumbnail" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
-                        <div class="m-4 text-center">
-                            <a class="btn button flex-shrink-0" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
-                                Download<i class="fas fa-download icon"></i>
-                            </a>
-                            <div class="m-4 text-center">
-                                <a class="btn button" asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle=@Model.Title>
-                                    Post Comment
-                                </a>
-                            </div>
-                            @if (Model.IsUserBook)
-                            {
-                                <div class="m-4 text-center">
-                                    <a class="btn btn-warning" asp-controller="Book" asp-action="Edit" asp-route-bookId="@Model.Id">
-                                        Edit
-                                    </a>
-                                </div>
-                            }
-                            <div class="m-4 text-center">
-                                @if (isFavorite)
-                                {
-                                    <a>
-                                        <i id="addToFavoritesButton" class="fas fa-heart fa-2x favoriteBookHeart" aria-hidden="true" title="This book is added to favorites"></i>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a onclick="addToFavorites()">
-                                        <i id="addToFavoritesButton" class="far fa-heart fa-2x" aria-hidden="true" title="Add Book to Favorites"></i>
-                                    </a>
-                                }
-                            </div>
-                        </div>
-                        @if (this.User.IsInRole("Administrator"))
-                        {
-                            <div class="m-4 text-center">
-                                <form id="deleteForm" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id"></form>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
-                                    Delete
-                                </button>
-                            </div>
-                        }
-
-                    </div>
-                    <div class="col-md-8">
-                        <ul class="list-group">
-                            <li class="list-group-item bookTitle">
-                                @if (Model.Title.Length > 100)
-                                {
-                                    string title = Model.Title.Substring(0, 100) + "...";
-                                    @title
-                                }
-                                else
-                                {
-                                    @Model.Title
-                                }
-                            </li>
-                            @if (@Model.PublisherName != null)
-                            {
-                                <li class="list-group-item list-group-item-action">
-                                    Publisher: @Model.PublisherName
-                                </li>
-                            }
-                            <li class="list-group-item list-group-item-action">
-                                Category: <a asp-controller="Book" asp-action="All" asp-route-categoryName="@Model.CategoryName">@Model.CategoryName</a>
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                Pages: @Model.PagesCount
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                Language: @Model.Language
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                Downloads: <span id="downloadsBookCount">@Model.DownloadsCount</span>
-                            </li>
-
-                            <li class="list-group-item list-group-item-action">
-                                <dl>
-                                    <dt>Authors:</dt>
-                                    @foreach (var author in Model.Authors)
-                                    {
-                                        <dd>- @author</dd>
-                                    }
-                                </dl>
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                <span>Average Score: <span id="averageVoteValue">@Model.RatingsAvg.ToString("f1")</span><span>/5</span><span>(Ratings count: <span id="votesCount">@Model.RatingsCount</span>)</span></span>
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                <a href="#comments">Comments: @Model.Comments.Count()</a>
-                            </li>
-                        </ul>
-                        <div class="text-center">
-                            <div class="rating-wrapper" id="customRating">
-                                @if (userRating == 1)
-                                {
-                                    @for (int i = 5; i >= 1; i--)
-                                    {
-                                        @if (i == 1)
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-                                        else
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-                                    }
-                                }
-                                else if (userRating == 2)
-                                {
-                                    @for (int i = 5; i >= 1; i--)
-                                    {
-                                        @if (i == 1 || i == 2)
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-                                        else
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-
-                                    }
-                                }
-                                else if (userRating == 3)
-                                {
-                                    @for (int i = 5; i >= 1; i--)
-                                    {
-                                        @if (i == 1 || i == 2 || i == 3)
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-                                        else
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-                                    }
-                                }
-                                else if (userRating == 4)
-                                {
-                                    @for (int i = 5; i >= 1; i--)
-                                    {
-                                        @if (i == 1 || i == 2 || i == 3 || i == 4)
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-                                        else
-                                        {
-                                            <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                            <label for="@i-star-rating" class="star-rating">
-                                                <i class="fas fa-star d-inline-block"></i>
-                                            </label>
-                                        }
-
-                                    }
-                                }
-                                else if (userRating == 5)
-                                {
-                                    @for (int i = 5; i >= 1; i--)
-                                    {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i" checked>
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
-                                }
-                                else
-                                {
-                                    @for (int i = 5; i >= 1; i--)
-                                    {
-                                        <input class="starInput" type="checkbox" id="@i-star-rating" name="star-rating" value="@i" data-vote="@i">
-                                        <label for="@i-star-rating" class="star-rating">
-                                            <i class="fas fa-star d-inline-block"></i>
-                                        </label>
-                                    }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card border-secondary col-md-13 bookDescription">
-        <h5 class="card-header">Book Description</h5>
-        <div class="card-body">
-            <p class="card-text">@Model.Description</p>
-        </div>
-    </div>
-</section>
-<hr />
-
-
-<section id="comments">
-
-    @foreach (var comment in Model.Comments)
-    {
-        <div class="commentContainer mt-5">
-            <div class="d-flex justify-content-center row">
-                <div class="col-12">
-                    <div class="d-flex flex-column comment-section">
-                        <div class="p-2">
-                            <div class="d-flex flex-row user-info">
-                                <img class="rounded-circle" src="@comment.UserProfilePictureUrl" width="40">
-                                <div class="d-flex flex-column justify-content-start ml-2">
-                                    <span class="d-block font-weight-bold name">
-                                        @comment.UserUserName
-                                    </span>
-                                    <span class="date text-black-50">
-                                        Shared publicly - <span>@comment.CreatedOn.Date.ToString("d")</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <p class="comment-text">@Html.Raw(comment.SanitizedContent)</p>
-                            </div>
-                        </div>
-                        <div class="bg-white">
-                            <div class="d-flex flex-row fs-12">
-                                <div class="p-2 like">
-                                    <a onclick="sendVote(@comment.Id, true)">
-                                        <i id="@comment.Id-like" class="fas fa-thumbs-up @(comment.UserVote == 1 ? "liked" : "like")" aria-hidden="true"></i>
-                                    </a>
-                                    <span class="ml-1">Like(<span id="@comment.Id-up">@comment.UpVotesCount</span>)</span>
-                                </div>
-                                <div class="p-2 dislike">
-                                    <a onclick="sendVote(@comment.Id, false)">
-                                        <i id="@comment.Id-dislike" class="fas fa-thumbs-down @(comment.UserVote == -1 ? "liked" : "like")" aria-hidden="true"></i>
-                                    </a>
-                                    <span class="ml-1">Dislike(<span id="@comment.Id-down">@comment.DownVotesCount</span>)</span>
-                                </div>
-                                @if (this.User.IsInRole("Administrator"))
-                                {
-                                    <div class="mt-2">
-
-                                        <a asp-action="Delete" asp-controller="Comment" asp-area="admin" asp-route-commentId="@comment.Id" class="btn button btn-sm shadow-none">
-                                            Delete comment
-                                        </a>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-</section>
-
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delete book</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this book?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="deleteForm.submit()">Delete</button>
-                <button type="button" class="btn button" data-dismiss="modal">Close</button>
-            </div>
-        </div>
+<div class="d-flex justify-content-center mt-5 gap-5 align-items-center">
+    <img class="w-25 rounded-3" src=@Model.ImageUrl alt=@Model.Title />
+    <ul class="list-group w-75 fs-5 rounded">
+        <li class="list-group-item"><strong>@Model.Title</strong></li>
+        @if (Model.PublisherName != null)
+        {
+            <li class="list-group-item">Publisher: @Model.PublisherName</li>
+        }
+        <li class="list-group-item">
+            Category: <a asp-controller="Book" asp-action="All" asp-route-categoryName="@Model.CategoryName">@Model.CategoryName</a>
+        </li>
+        <li class="list-group-item">Pages: @Model.PagesCount</li>
+        <li class="list-group-item">Language: @Model.Language</li>
+        <li class="list-group-item">Downloads: @Model.DownloadsCount</li>
+        <li class="list-group-item">Comments: @Model.Comments.Count()</li>
+        <li class="list-group-item">
+            <span>Average Score: <span>@Model.RatingsAvg.ToString("f1")</span><span>/5</span><span>(Ratings count: <span>@Model.RatingsCount</span>)</span></span>
+        </li>
+        <li class="list-group-item">
+            <dl>
+                <dt>Authors:</dt>
+                @foreach (var author in Model.Authors)
+                {
+                    <dd>- @author</dd>
+                }
+            </dl>
+        </li>
+    </ul>
+</div>
+<div class="mt-5 d-flex justify-content-evenly">
+    <a class="btn btn-lg button" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
+        Download<i class="fas fa-download icon ms-2"></i>
+    </a>
+    <a class="btn btn-lg button" asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle=@Model.Title>
+        Post Comment<i class="fa-solid fa-comment ms-2"></i>
+    </a>
+</div>
+<div class="card border-secondary my-5">
+    <h5 class="card-header">Book Description</h5>
+    <div class="card-body">
+        <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
     </div>
 </div>
 
 <form method="post" id="antiForgeryForm"></form>
 <form method="post" id="votesForm"></form>
 <form method="post" id="favoriteBookForm"></form>
-@section Scripts{
-<script>
-    function addToFavorites() {
-            var token = $("#favoriteBookForm input[name=__RequestVerificationToken]").val();
-        $.ajax({
-            url: "/favoriteBook/addToFavorites",
-            type: "POST",
-            data: { id: '@Model.Id' },
-            headers: { 'X-CSRF-TOKEN': token },
-            success: function () {
-                $('#addToFavoritesButton').removeClass("far fa-heart");
-                $('#addToFavoritesButton').addClass("fas fa-heart favoriteBookHeart");
-            }
-        });
-    }
-</script>
-<script>
-        function sendVote(commentId, isUpVote) {
-            var token = $("#votesForm input[name=__RequestVerificationToken]").val();
-            var json = { commentId: commentId, isUpVote: isUpVote };
-            $.ajax({
-                url: "/api/vote",
-                type: "POST",
-                data: JSON.stringify(json),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: { 'X-CSRF-TOKEN': token },
-                success: function (data) {
-                    var upVotes = data.upVotesCount;
-                    var downVotes = data.downVotesCount;
-                    var commentId = data.commentId;
-                    $('#' + commentId + '-up').html(upVotes);
-                    $('#' + commentId + '-down').html(downVotes);
-                    if(isUpVote){
-                        $('#' + commentId + '-like').addClass("liked");
-                        $('#' + commentId + '-dislike').removeClass("liked");
-                    }else{
-                         $('#' + commentId + '-like').removeClass("liked");
-                        $('#' + commentId + '-dislike').addClass("liked");
-                    }
-                }
-            });
-        }
-
-        $("[data-vote]").each(function(el) {
-            $(this).on("click", function () {
-                var value = $(this).attr("data-vote");
-                var bookId = '@Model.Id';
-                var antiForgeryToken = $('#antiForgeryForm input[name=__RequestVerificationToken]').val();
-                var data = { bookId: bookId, value: value };
-                $.ajax({
-                    type: "POST",
-                    url: "/api/Rating",
-                    data: JSON.stringify(data),
-                    headers: {
-                        'X-CSRF-TOKEN': antiForgeryToken
-                    },
-                    contentType: 'application/json',
-                    success: function (data) {
-                        $('#averageVoteValue').html(data.averageVote.toFixed(1));
-                        $('#votesCount').html(data.votesCount);
-                        var userVote = data.userVote;
-                        if(userVote == 1){
-                            $('#1-star-rating').prop('checked', true);
-                            $('#2-star-rating').prop('checked', false);
-                            $('#3-star-rating').prop('checked', false);
-                            $('#4-star-rating').prop('checked', false);
-                            $('#5-star-rating').prop('checked', false);
-                        }else if(userVote == 2){
-                            $('#1-star-rating').prop('checked', true);
-                            $('#2-star-rating').prop('checked', true);
-                            $('#3-star-rating').prop('checked', false);
-                            $('#4-star-rating').prop('checked', false);
-                            $('#5-star-rating').prop('checked', false);
-                        }else if(userVote == 3){
-                            $('#1-star-rating').prop('checked', true);
-                            $('#2-star-rating').prop('checked', true);
-                            $('#3-star-rating').prop('checked', true);
-                            $('#4-star-rating').prop('checked', false);
-                            $('#5-star-rating').prop('checked', false);
-                        }else if(userVote == 4){
-                            $('#1-star-rating').prop('checked', true);
-                            $('#2-star-rating').prop('checked', true);
-                            $('#3-star-rating').prop('checked', true);
-                            $('#4-star-rating').prop('checked', true);
-                            $('#5-star-rating').prop('checked', false);
-                        }else if(userVote == 5){
-                            $('#1-star-rating').prop('checked', true);
-                            $('#2-star-rating').prop('checked', true);
-                            $('#3-star-rating').prop('checked', true);
-                            $('#4-star-rating').prop('checked', true);
-                            $('#5-star-rating').prop('checked', true);
-                        }
-                    }
-                });
-            })
-    });
-</script>
-}

@@ -11,6 +11,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\admin-lte\**" />
+	  <Content Remove="wwwroot\admin-lte\**" />
+	  <EmbeddedResource Remove="wwwroot\admin-lte\**" />
+	  <None Remove="wwwroot\admin-lte\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<AdditionalFiles Include="..\..\stylecop.json" />
 	</ItemGroup>
 
