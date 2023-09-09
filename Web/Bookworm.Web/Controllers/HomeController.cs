@@ -12,11 +12,11 @@
     public class HomeController : BaseController
     {
         private readonly IRetrieveQuotesService retrieveQuotesService;
-        private readonly IBooksService booksService;
+        private readonly IRetrieveBooksService booksService;
 
         public HomeController(
             IRetrieveQuotesService retrieveQuotesService,
-            IBooksService booksService)
+            IRetrieveBooksService booksService)
         {
             this.retrieveQuotesService = retrieveQuotesService;
             this.booksService = booksService;

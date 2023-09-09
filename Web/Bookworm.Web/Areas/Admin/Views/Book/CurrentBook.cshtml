@@ -4,16 +4,16 @@
     this.ViewData["Title"] = $"{Model.Title}";
 }
 
-<div class="d-flex justify-content-center mt-5 gap-5 align-items-center">
+<div class="mt-5 row-gap no-gutters">
     <img class="w-25 rounded-3" src=@Model.ImageUrl alt=@Model.Title />
-    <ul class="list-group w-75 fs-5 rounded">
+    <ul class="list-group w-75 fs-5">
         <li class="list-group-item"><strong>@Model.Title</strong></li>
         @if (Model.PublisherName != null)
         {
             <li class="list-group-item">Publisher: @Model.PublisherName</li>
         }
         <li class="list-group-item">
-            Category: <a asp-controller="Book" asp-action="All" asp-route-categoryName="@Model.CategoryName">@Model.CategoryName</a>
+            Category: @Model.CategoryName
         </li>
         <li class="list-group-item">Pages: @Model.PagesCount</li>
         <li class="list-group-item">Language: @Model.Language</li>
@@ -32,95 +32,40 @@
         </li>
     </ul>
 </div>
-<div class="mt-5 d-flex justify-content-evenly">
-    <a class="btn btn-primary" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
-        Approve<i class="fas fa-download icon ms-3"></i>
+@* <div class="mt-5 row no-gutters justify-content-center">
+    <a class="btn btn-danger modalBtn" data-model-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#approveBookModal">
+        Approve
     </a>
-    <a class="btn btn-lg button" asp-controller="Comment" asp-action="Create" asp-route-bookId="@Model.Id" asp-route-bookTitle=@Model.Title>
-        Post Comment<i class="fa-solid fa-comment ms-2"></i>
-    </a>
-</div>
+</div> *@
 <div class="card border-secondary my-5">
     <h5 class="card-header">Book Description</h5>
     <div class="card-body">
-        <p class="card-text">@Model.Description</p>
+        <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
     </div>
 </div>
 
-@* <section class="bookSection" style="margin-bottom:2rem">
-    <div class="card border-dark">
-        <div class="card-body">
-            <div class="px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5">
-                    <div class="col-md-4">
-                        <img class="card-img-top mb-5 mb-md-0 animate__animated animate__zoomIn img-fluid img-thumbnail" src="@Model.ImageUrl" title="@Model.Title" alt="@Model.Title" />
-                        <div class="m-4 text-center">
-                            <a class="btn btn-primary flex-shrink-0" asp-area="" asp-controller="Book" asp-action="Download" asp-route-id="@Model.Id">
-                                Download<i class="fas fa-download icon"></i>
-                            </a>
-                        </div>
-                        <div class="m-4 text-center">
-                            <a class="btn btn-success flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="ApproveBook" asp-route-bookId="@Model.Id" asp-route-userId="@Model.UserId">
-                                Approve
-                            </a>
-                        </div>
-                        <div class="m-4 text-center">
-                            <a class="btn btn-danger flex-shrink-0" asp-area="admin" asp-controller="Book" asp-action="Delete" asp-route-bookId="@Model.Id">
-                                Delete
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <ul class="list-group">
-                            <li class="list-group-item bookTitle">
-                                @if (Model.Title.Length > 100)
-                                {
-                                    string title = Model.Title.Substring(0, 100) + "...";
-                                    @title
-                                }
-                                else
-                                {
-                                    @Model.Title
-                                }
-                            </li>
-                            @if (@Model.PublisherName != null)
-                            {
-                                <li class="list-group-item list-group-item-action">
-                                    Publisher: @Model.PublisherName
-                                </li>
-                            }
-                            <li class="list-group-item list-group-item-action">
-                                Category: @Model.CategoryName
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                Pages: @Model.PagesCount
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                Language: @Model.Language
-                            </li>
-                            <li class="list-group-item list-group-item-action">
-                                Downloads: <span id="downloadsBookCount">@Model.DownloadsCount</span>
-                            </li>
-
-                            <li class="list-group-item list-group-item-action">
-                                <dl>
-                                    <dt>Authors:</dt>
-                                    @foreach (var author in Model.Authors)
-                                    {
-                                        <dd>- @author</dd>
-                                    }
-                                </dl>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+<!-- Approve Book Modal -->
+@* <div class="modal fade" id="approveBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Approve Book</h1>
+                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <strong>Are you sure you want to approve this book?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                <form method="post" asp-area="admin" asp-controller="Book" asp-action="ApproveBook">
+                    <input type="hidden" name="bookId" class="modelIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Approve</button>
+                </form>
             </div>
         </div>
     </div>
-    <div class="card border-secondary col-md-13 bookDescription">
-        <h5 class="card-header">Book Description</h5>
-        <div class="card-body">
-            <p class="card-text">@Model.Description</p>
-        </div>
-    </div>
-</section> *@
+</div> *@
+
+@section Scripts{
+    <script src="~/js/modal.js"></script>
+}

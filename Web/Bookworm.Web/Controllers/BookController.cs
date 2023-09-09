@@ -19,25 +19,25 @@
 
     public class BookController : BaseController
     {
-        private readonly IBooksService booksService;
+        private readonly IRetrieveBooksService booksService;
         private readonly ICategoriesService categoriesService;
         private readonly IUploadBookService uploadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
         private readonly IRandomBookService randomBookService;
         private readonly IBlobService blobService;
-        private readonly IEditBookService editBookService;
+        private readonly IUpdateBookService updateBookService;
         private readonly IValidateUploadedBookService validateBookService;
 
         public BookController(
-            IBooksService booksService,
+            IRetrieveBooksService booksService,
             ICategoriesService categoriesService,
             IUploadBookService uploadBookService,
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService,
             IRandomBookService randomBookService,
             IBlobService blobService,
-            IEditBookService editBookService,
+            IUpdateBookService updateBookService,
             IValidateUploadedBookService validateBookService)
         {
             this.booksService = booksService;
@@ -47,7 +47,7 @@
             this.languagesService = languagesService;
             this.randomBookService = randomBookService;
             this.blobService = blobService;
-            this.editBookService = editBookService;
+            this.updateBookService = updateBookService;
             this.validateBookService = validateBookService;
         }
 
@@ -82,7 +82,7 @@
 
             try
             {
-                await this.editBookService.EditBookAsync(
+                await this.updateBookService.EditBookAsync(
                          model.Id,
                          model.Title,
                          model.Description,

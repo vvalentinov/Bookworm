@@ -8,26 +8,87 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
+    using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Authors.AuthorsDataConstants;
+    using static Bookworm.Common.UsersPointsDataConstants;
 
-    public class EditBookService : IEditBookService
+    public class UpdateBookService : IUpdateBookService
     {
+        private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IDeletableEntityRepository<UserPoints> usersPointsRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Author> authorsRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
 
-        public EditBookService(
+        public UpdateBookService(
+            IDeletableEntityRepository<Book> bookRepository,
+            IDeletableEntityRepository<UserPoints> usersPointsRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Author> authorsRepository,
             IRepository<AuthorBook> authorsBooksRepository)
         {
+            this.bookRepository = bookRepository;
+            this.usersPointsRepository = usersPointsRepository;
             this.publishersRepository = publishersRepository;
             this.booksRepository = booksRepository;
             this.authorsRepository = authorsRepository;
             this.authorsBooksRepository = authorsBooksRepository;
+        }
+
+        public async Task ApproveBookAsync(string bookId)
+        {
+            Book book = this.bookRepository.All().First(x => x.Id == bookId);
+            book.IsApproved = true;
+            await this.bookRepository.SaveChangesAsync();
+
+            UserPoints user = await this.usersPointsRepository.All().FirstOrDefaultAsync(x => x.UserId == book.UserId);
+
+            if (user == null)
+            {
+                user = new UserPoints()
+                {
+                    UserId = book.UserId,
+                    Points = BookPoints,
+                };
+            }
+            else
+            {
+                user.Points += BookPoints;
+            }
+
+            await this.usersPointsRepository.SaveChangesAsync();
+        }
+
+        public async Task UnapproveBookAsync(string bookId)
+        {
+            var book = this.bookRepository.All().First(x => x.Id == bookId);
+            book.IsApproved = false;
+            await this.bookRepository.SaveChangesAsync();
+
+            UserPoints userPoints = this.usersPointsRepository.All().First(x => x.UserId == book.UserId);
+            if (userPoints.Points > 0)
+            {
+                userPoints.Points -= BookPoints;
+            }
+
+            await this.usersPointsRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteBookAsync(string bookId)
+        {
+            Book book = this.bookRepository.All().First(x => x.Id == bookId);
+            this.bookRepository.Delete(book);
+            await this.bookRepository.SaveChangesAsync();
+        }
+
+        public async Task UndeleteBookAsync(string bookId)
+        {
+            Book book = this.bookRepository.AllWithDeleted().First(x => x.Id == bookId);
+            this.bookRepository.Undelete(book);
+            await this.bookRepository.SaveChangesAsync();
         }
 
         public async Task EditBookAsync(

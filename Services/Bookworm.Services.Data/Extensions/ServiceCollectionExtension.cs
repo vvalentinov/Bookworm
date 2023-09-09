@@ -73,13 +73,11 @@
         private static void AddBooksServices(IServiceCollection services)
         {
             services.AddTransient<IValidateUploadedBookService, ValidateUploadedBookService>();
-            services.AddTransient<IBooksService, BooksService>();
+            services.AddTransient<IRetrieveBooksService, RetrieveBooksService>();
             services.AddTransient<IUploadBookService, UploadBookService>();
             services.AddTransient<IFavoriteBooksService, FavoriteBookService>();
             services.AddTransient<IRandomBookService, RandomBookService>();
-            services.AddTransient<IDeleteBookService, DeleteBookService>();
-            services.AddTransient<IEditBookService, EditBookService>();
-            services.AddTransient<IApproveBookService, ApproveBookService>();
+            services.AddTransient<IUpdateBookService, UpdateBookService>();
         }
     }
 }

@@ -1,16 +1,79 @@
 ﻿@model IEnumerable<BookViewModel>
 
-<h2 class="text-center mt-5">Manage Unapproved Books</h2>
+@{
+    this.ViewData["Title"] = "Unapproved Books";
+}
 
-<div class="row">
-    @foreach (var book in Model)
-    {
-        <div class="col-md-3 mt-5 mb-4">
-            <a asp-area="admin" asp-controller="Book" asp-action="CurrentBook" asp-route-bookId="@book.Id" asp-route-userId="@book.UserId">
+@if (Model.Any() == false)
+{
+    <h2 class="text-center mt-5">There are no books waiting to be approved!</h2>
+}
+else
+{
+    <h2 class="text-center mt-5">Manage Unapproved Books</h2>
+    <div class="row">
+        @foreach (var book in Model)
+        {
+            <div class="col-md-3 mt-5 mb-4">
                 <div class="card">
-                    <img title="@book.Title" src="@book.ImageUrl" alt="Book" height="300">
+                    <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title">
+                    <div class="card-body card-body-book no-gutters">
+                        <div class="row-gap">
+                            <a class="btn btn-danger w-50 modalBtn" data-model-id="@book.Id" data-bs-toggle="modal" data-bs-target="#approveBookModal">Approve</a>
+                            <a asp-area="admin" asp-controller="Book" asp-action="CurrentBook" asp-route-bookId="@book.Id" asp-route-userId="@book.UserId" class="btn btn-success w-50">View</a>
+                        </div>
+                        <a class="btn btn-danger w-100 mt-3 modalBtn" data-model-id="@book.Id" data-bs-toggle="modal" data-bs-target="#deleteBookModal">Delete</a>
+                    </div>
                 </div>
-            </a>
+            </div>
+        }
+    </div>
+}
+
+<!-- Unapprove Book Modal -->
+<div class="modal fade" id="approveBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Approve Book</h1>
+                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <strong>Are you sure you want to approve this book?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                <form method="post" asp-area="admin" asp-controller="Book" asp-action="ApproveBook">
+                    <input type="hidden" name="bookId" class="modelIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Approve</button>
+                </form>
+            </div>
         </div>
-    }
+    </div>
 </div>
+
+<!-- Delete Book Modal -->
+<div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Book</h1>
+                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <strong>Are you sure you want to delete this book?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                <form method="post" asp-area="admin" asp-controller="Book" asp-action="Delete">
+                    <input type="hidden" name="bookId" class="modelIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/modal.js"></script>
+}

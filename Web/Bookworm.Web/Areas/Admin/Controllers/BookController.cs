@@ -15,37 +15,35 @@
 
     public class BookController : BaseController
     {
-        private readonly IDeleteBookService deleteBookService;
-        private readonly IBooksService booksService;
-        private readonly IApproveBookService approveBookService;
+        private readonly IRetrieveBooksService retrieveBooksService;
+        private readonly IUpdateBookService updateBookService;
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IEmailSender emailSender;
         private readonly UserManager<ApplicationUser> userManager;
 
         public BookController(
-            IDeleteBookService deleteBookService,
-            IBooksService booksService,
-            IApproveBookService approveBookService,
+            IRetrieveBooksService retrieveBooksService,
+            IUpdateBookService updateBookService,
             IDeletableEntityRepository<Book> bookRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             IEmailSender emailSender,
             UserManager<ApplicationUser> userManager)
         {
-            this.deleteBookService = deleteBookService;
-            this.booksService = booksService;
-            this.approveBookService = approveBookService;
+            this.retrieveBooksService = retrieveBooksService;
+            this.updateBookService = updateBookService;
             this.bookRepository = bookRepository;
             this.userRepository = userRepository;
             this.emailSender = emailSender;
             this.userManager = userManager;
         }
 
+        [HttpPost]
         public async Task<IActionResult> Delete(string bookId)
         {
             try
             {
-                await this.deleteBookService.DeleteBookAsync(bookId);
+                await this.updateBookService.DeleteBookAsync(bookId);
                 this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted book!";
             }
             catch (Exception)
@@ -56,28 +54,49 @@
             return this.RedirectToAction("Index", "Home", new { area = " " });
         }
 
-        public IActionResult AllBooks()
+        public IActionResult UnapprovedBooks()
         {
-            var books = this.booksService.GetUnapprovedBooks();
+            IEnumerable<BookViewModel> books = this.retrieveBooksService.GetUnapprovedBooks();
             return this.View(books);
         }
 
-        public IActionResult UnapprovedBooks()
+        public IActionResult DeletedBooks()
         {
-            IEnumerable<BookViewModel> books = this.booksService.GetUnapprovedBooks();
+            IEnumerable<BookViewModel> books = this.retrieveBooksService.GetDeletedBooks();
+            return this.View(books);
+        }
+
+        public IActionResult ApprovedBooks()
+        {
+            IEnumerable<BookViewModel> books = this.retrieveBooksService.GetApprovedBooks();
             return this.View(books);
         }
 
         public IActionResult CurrentBook(string bookId)
         {
-            var book = this.booksService.GetUnapprovedBookWithId(bookId);
+            var book = this.retrieveBooksService.GetUnapprovedBookWithId(bookId);
             return this.View(book);
         }
 
-        public async Task<IActionResult> ApproveBook(string bookId, string userId)
+        [HttpPost]
+        public async Task<IActionResult> ApproveBook(string bookId)
         {
-            await this.approveBookService.ApproveBook(bookId, userId);
-            return this.RedirectToAction(nameof(this.AllBooks), "Book");
+            await this.updateBookService.ApproveBookAsync(bookId);
+            return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnapproveBook(string bookId)
+        {
+            await this.updateBookService.UnapproveBookAsync(bookId);
+            return this.RedirectToAction(nameof(this.ApprovedBooks), "Book");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UndeleteBook(string bookId)
+        {
+            await this.updateBookService.UndeleteBookAsync(bookId);
+            return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
         }
     }
 }

@@ -4,7 +4,7 @@
 
     using Bookworm.Web.ViewModels.Books;
 
-    public interface IBooksService
+    public interface IRetrieveBooksService
     {
         BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
 
@@ -19,5 +19,9 @@
         IList<BookViewModel> GetRecentBooks(int count);
 
         IEnumerable<BookViewModel> GetUnapprovedBooks();
+
+        IEnumerable<BookViewModel> GetApprovedBooks();
+
+        IEnumerable<BookViewModel> GetDeletedBooks();
     }
 }

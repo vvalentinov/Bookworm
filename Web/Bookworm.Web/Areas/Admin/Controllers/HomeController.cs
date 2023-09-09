@@ -7,11 +7,11 @@
 
     public class HomeController : BaseController
     {
-        private readonly IBooksService booksService;
+        private readonly IRetrieveBooksService booksService;
         private readonly IRetrieveQuotesService retrieveQuotesService;
 
         public HomeController(
-            IBooksService booksService,
+            IRetrieveBooksService booksService,
             IRetrieveQuotesService retrieveQuotesService)
         {
             this.booksService = booksService;

@@ -1,6 +1,7 @@
 
 @import url("https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i");
 @import url("https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css");
+
 :root {
     --blue: #4e73df;
     --indigo: #6610f2;
@@ -189,10 +190,10 @@ figure {
     margin: 0 0 1rem;
 }
 
-img {
+/*img {
     vertical-align: middle;
     border-style: none;
-}
+}*/
 
 svg {
     overflow: hidden;
@@ -584,6 +585,11 @@ pre {
     flex-wrap: wrap;
     margin-right: -0.75rem;
     margin-left: -0.75rem;
+}
+
+.row-gap {
+    display: flex;
+    gap: 10px;
 }
 
 .no-gutters {
@@ -4753,6 +4759,10 @@ input[type="button"].btn-block {
     padding: 1.25rem;
 }
 
+.card-body-book {
+    background-color: var(--primary);
+}
+
 .card-title {
     margin-bottom: 0.75rem;
 }
@@ -4777,7 +4787,8 @@ input[type="button"].btn-block {
 .card-header {
     padding: 0.75rem 1.25rem;
     margin-bottom: 0;
-    background-color: #f8f9fc;
+    background-color: var(--primary);
+    color: white;
     border-bottom: 1px solid #e3e6f0;
 }
 
@@ -4815,6 +4826,10 @@ input[type="button"].btn-block {
     left: 0;
     padding: 1.25rem;
     border-radius: calc(0.35rem - 1px);
+}
+
+.imgCard {
+    /*height: 200rem;*/
 }
 
 .card-img,
@@ -5472,6 +5487,8 @@ a.badge-dark:focus, a.badge-dark.focus {
     padding-left: 0;
     margin-bottom: 0;
     border-radius: 0.35rem;
+    background-color: var(--dark);
+    color: white;
 }
 
 .list-group-item-action {
@@ -5496,7 +5513,7 @@ a.badge-dark:focus, a.badge-dark.focus {
     position: relative;
     display: block;
     padding: 0.75rem 1.25rem;
-    background-color: #fff;
+    /*background-color: #fff;*/
     border: 1px solid rgba(0, 0, 0, 0.125);
 }
 

@@ -3,8 +3,16 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface IEditBookService
+    public interface IUpdateBookService
     {
+        Task DeleteBookAsync(string bookId);
+
+        Task ApproveBookAsync(string bookId);
+
+        Task UnapproveBookAsync(string bookId);
+
+        Task UndeleteBookAsync(string bookId);
+
         Task EditBookAsync(
             string bookId,
             string title,

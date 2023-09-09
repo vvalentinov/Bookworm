@@ -10,7 +10,7 @@
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
 
-    public class BooksService : IBooksService
+    public class RetrieveBooksService : IRetrieveBooksService
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
@@ -23,7 +23,7 @@
         private readonly ILanguagesService languagesService;
         private readonly IRepository<FavoriteBook> favoriteBookRepository;
 
-        public BooksService(
+        public RetrieveBooksService(
             IDeletableEntityRepository<Book> bookRepository,
             IRepository<AuthorBook> authorsBooksRepository,
             IDeletableEntityRepository<Author> authorRepository,
@@ -227,6 +227,34 @@
             return this.bookRepository
                .AllAsNoTracking()
                .Where(x => x.IsApproved == false)
+               .Select(x => new BookViewModel()
+               {
+                   Id = x.Id,
+                   UserId = x.UserId,
+                   ImageUrl = x.ImageUrl,
+                   Title = x.Title,
+               }).ToList();
+        }
+
+        public IEnumerable<BookViewModel> GetApprovedBooks()
+        {
+            return this.bookRepository
+               .AllAsNoTracking()
+               .Where(x => x.IsApproved)
+               .Select(x => new BookViewModel()
+               {
+                   Id = x.Id,
+                   UserId = x.UserId,
+                   ImageUrl = x.ImageUrl,
+                   Title = x.Title,
+               }).ToList();
+        }
+
+        public IEnumerable<BookViewModel> GetDeletedBooks()
+        {
+            return this.bookRepository
+               .AllAsNoTrackingWithDeleted()
+               .Where(x => x.IsDeleted)
                .Select(x => new BookViewModel()
                {
                    Id = x.Id,

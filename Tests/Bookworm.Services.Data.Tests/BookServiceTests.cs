@@ -22,7 +22,7 @@
         private readonly IList<Vote> votes;
         private readonly IList<FavoriteBook> favoriteBooks;
 
-        private readonly BooksService booksService;
+        private readonly RetrieveBooksService booksService;
 
         public BookServiceTests()
         {
@@ -147,7 +147,7 @@
             mockBookRepo.Setup(x => x.AllAsNoTracking()).Returns(this.books.AsQueryable());
             mockBookRepo.Setup(x => x.All()).Returns(this.books.AsQueryable());
 
-            this.booksService = new BooksService(
+            this.booksService = new RetrieveBooksService(
                 mockBookRepo.Object,
                 mockAuthorBookRepo.Object,
                 mockAuthorRepo.Object,
