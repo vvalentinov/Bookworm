@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System.Diagnostics;
+    using System.Threading.Tasks;
 
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Contracts.Quotes;
@@ -22,13 +23,13 @@
             this.booksService = booksService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             IndexViewModel model = new ()
             {
-                RandomQuote = this.retrieveQuotesService.GetRandomQuote<QuoteViewModel>(),
-                RecentBooks = this.booksService.GetRecentBooks(12),
-                PopularBooks = this.booksService.GetPopularBooks(12),
+                RandomQuote = await this.retrieveQuotesService.GetRandomQuoteAsync<QuoteViewModel>(),
+                RecentBooks = await this.booksService.GetRecentBooksAsync(12),
+                PopularBooks = await this.booksService.GetPopularBooksAsync(12),
             };
 
             return this.View(model);

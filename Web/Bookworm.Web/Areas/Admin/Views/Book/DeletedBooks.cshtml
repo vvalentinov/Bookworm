@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BookViewModel>
+﻿@model List<BookViewModel>
 
 @{
     this.ViewData["Title"] = "Deleted Books";
@@ -11,18 +11,31 @@
 else
 {
     <h2 class="text-center mt-5">Manage Deleted Books</h2>
-    <div class="row">
-        @foreach (var book in Model)
-        {
-            <div class="col-md-3 mt-5 mb-4">
-                <div class="card">
-                    <img src="@book.ImageUrl" class="card-img-top" alt="@book.Title">
-                    <div class="card-body card-body-book no-gutters text-center">
-                        <a class="btn btn-danger modalBtn w-100" data-model-id="@book.Id" data-bs-toggle="modal" data-bs-target="#undeleteBookModal">Undelete</a>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="my-5">
+        <table class="table table-striped table-dark table-bordered" id="dataTable">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Book</th>
+                    <th class="text-center" scope="col">Undelete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i <= Model.Count() - 1; i++)
+                {
+                    <tr>
+                        <th scope="row" class="text-center align-middle">@(i + 1)</th>
+                        <td class="align-middle">@Model[i].Title</td>
+
+                        <td class="text-center align-middle">
+                            <a class="btn btn-success modalBtn" data-model-id="@Model[i].Id" data-bs-toggle="modal" data-bs-target="#undeleteBookModal">
+                                <i class="fa-solid fa-circle-check fa-xl px-2"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 }
 
@@ -50,4 +63,6 @@ else
 
 @section Scripts{
     <script src="~/js/modal.js"></script>
+    <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
+    <script src="~/js/datatable.js"></script>
 }

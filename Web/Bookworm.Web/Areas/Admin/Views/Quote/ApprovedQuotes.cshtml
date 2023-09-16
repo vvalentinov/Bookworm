@@ -54,7 +54,9 @@ else
                             <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         <td class="text-center align-middle">
-                            <a class="btn btn-danger quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#unapproveQuoteModal"><i class="fa-solid fa-circle-xmark fa-xl"></i></a>
+                            <a class="btn btn-danger modalBtn" data-model-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#unapproveQuoteModal">
+                                <i class="fa-solid fa-circle-xmark fa-xl"></i>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -69,7 +71,9 @@ else
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Unapprove quote</h1>
-                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
+                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-x"></i>
+                </button>
             </div>
             <div class="modal-body">
                 <strong>Are you sure you want to unapprove this quote?</strong>
@@ -77,7 +81,7 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Unapprove">
-                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <input type="hidden" name="quoteId" class="modelIdInput" value="" />
                     <button type="submit" class="btn btn-danger">Unapprove</button>
                 </form>
             </div>
@@ -86,7 +90,7 @@ else
 </div>
 
 @section Scripts{
-    <script src="~/js/quotes/quoteModal.js"></script>
+    <script src="~/js/modal.js"></script>
     <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
     <script src="~/js/datatable.js"></script>
 }

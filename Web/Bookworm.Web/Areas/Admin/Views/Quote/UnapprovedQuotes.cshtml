@@ -55,17 +55,20 @@ else
                             <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
                         }
                         <td class="text-center align-middle">
-                            <a class="btn btn-success quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-quote-userId="@Model.Quotes[i].UserId" data-bs-toggle="modal" data-bs-target="#approveQuoteModal"><i class="fa-solid fa-circle-check fa-xl px-2"></i></a>
+                            <a class="btn btn-success modalBtn" data-model-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#approveQuoteModal">
+                                <i class="fa-solid fa-circle-check fa-xl px-2"></i>
+                            </a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-danger quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal"><i class="fa-solid fa-trash-can fa-xl px-2"></i></a>
+                            <a class="btn btn-danger modalBtn" data-model-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal">
+                                <i class="fa-solid fa-trash-can fa-xl px-2"></i>
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-
 }
 
 <!-- Approve Quote Modal -->
@@ -82,7 +85,7 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-area="admin" asp-controller="Quote" asp-action="ApproveQuote">
-                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <input type="hidden" name="quoteId" class="modelIdInput" value="" />
                     <button type="submit" class="btn btn-danger">Approve</button>
                 </form>
             </div>
@@ -104,7 +107,7 @@ else
             <div class="modal-footer">
                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                 <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Delete">
-                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
+                    <input type="hidden" name="quoteId" class="modelIdInput" value="" />
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
@@ -113,7 +116,7 @@ else
 </div>
 
 @section Scripts{
-    <script src="~/js/quotes/quoteModal.js"></script>
+    <script src="~/js/modal.js"></script>
     <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
     <script src="~/js/datatable.js"></script>
 }

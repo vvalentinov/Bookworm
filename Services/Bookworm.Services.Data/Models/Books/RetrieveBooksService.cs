@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
@@ -9,6 +10,7 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
+    using Microsoft.EntityFrameworkCore;
 
     public class RetrieveBooksService : IRetrieveBooksService
     {
@@ -47,36 +49,31 @@
             this.favoriteBookRepository = favoriteBookRepository;
         }
 
-        public BookViewModel GetBookWithId(string bookId, string userId = null)
+        public async Task<BookViewModel> GetBookWithIdAsync(string bookId, string userId = null)
         {
-            Book book = this.bookRepository.AllAsNoTracking().First(x => x.Id == bookId);
+            Book book = await this.bookRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(book => book.Id == bookId);
 
-            bool isFavorite = this.favoriteBookRepository.AllAsNoTracking().Any(x => x.BookId == bookId && x.UserId == userId);
+            string categoryName = await this.categoriesService.GetCategoryNameAsync(book.CategoryId);
 
-            string category = this.categoriesService.GetCategoryName(book.CategoryId);
-
-            List<int> authorsIds = this.authorsBooksRepository
+            List<int> authorsIds = await this.authorsBooksRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
                 .Select(x => x.AuthorId)
-                .ToList();
+                .ToListAsync();
 
-            List<string> authors = this.authorRepository
+            List<string> authors = await this.authorRepository
                 .AllAsNoTracking()
-                .Where(x => authorsIds.Contains(x.Id))
+                .Where(author => authorsIds.Contains(author.Id))
                 .Select(x => x.Name)
-                .ToList();
+                .ToListAsync();
 
-            Publisher publisher = this.publishersRepository
+            Publisher publisher = await this.publishersRepository
                 .AllAsNoTracking()
-                .FirstOrDefault(x => x.Id == book.PublisherId);
+                .FirstOrDefaultAsync(publisher => publisher.Id == book.PublisherId);
 
-            string publisherName = null;
-
-            if (publisher != null)
-            {
-                publisherName = publisher.Name;
-            }
+            string publisherName = publisher?.Name;
 
             string language = this.languagesService.GetLanguageName(book.LanguageId);
 
@@ -85,67 +82,83 @@
 
             if (votesCount > 0)
             {
-                votesAvg = this.ratingRepository.All().Where(x => x.BookId == bookId).Average(x => x.Value);
+                votesAvg = this.ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Average(x => x.Value);
             }
 
-            List<CommentViewModel> comments = this.commentRepository
+            BookViewModel model = new BookViewModel()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Description = book.Description,
+                DownloadsCount = book.DownloadsCount,
+                FileUrl = book.FileUrl,
+                ImageUrl = book.ImageUrl,
+                Language = language,
+                PagesCount = book.PagesCount,
+                Year = book.Year,
+                Authors = authors,
+                PublisherName = publisherName,
+                CategoryName = categoryName,
+                RatingsAvg = votesAvg,
+                RatingsCount = votesCount,
+            };
+
+            if (userId != null)
+            {
+                List<CommentViewModel> comments = await this.commentRepository
                 .AllAsNoTracking()
-                .Where(x => x.BookId == bookId)
-                .Select(x => new CommentViewModel()
+                .Where(comment => comment.BookId == bookId)
+                .Select(comment => new CommentViewModel()
                 {
-                    Content = x.Content,
-                    CreatedOn = x.CreatedOn,
-                    Id = x.Id,
-                    UserId = x.UserId,
-                    UserUserName = x.User.UserName,
+                    Id = comment.Id,
+                    UserId = comment.UserId,
+                    Content = comment.Content,
+                    CreatedOn = comment.CreatedOn,
+                    UserUserName = comment.User.UserName,
                     DownVotesCount = this.voteRepository
                                          .AllAsNoTracking()
-                                         .Where(v => v.CommentId == x.Id && v.Value == VoteValue.DownVote)
+                                         .Where(vote => vote.CommentId == comment.Id && vote.Value == VoteValue.DownVote)
                                          .Count(),
                     UpVotesCount = this.voteRepository
                                          .AllAsNoTracking()
-                                         .Where(v => v.CommentId == x.Id && v.Value == VoteValue.UpVote)
+                                         .Where(vote => vote.CommentId == comment.Id && vote.Value == VoteValue.UpVote)
                                          .Count(),
                     UserVote = (int)this.voteRepository
                                         .AllAsNoTracking()
-                                        .FirstOrDefault(v => v.UserId == userId && v.CommentId == x.Id).Value,
+                                        .FirstOrDefault(v => v.UserId == userId && v.CommentId == comment.Id).Value,
                 })
-                .ToList();
+                .ToListAsync();
 
-            return this.bookRepository
-              .AllAsNoTracking()
-              .Where(x => x.Id == bookId)
-              .Select(x => new BookViewModel()
-              {
-                  Id = x.Id,
-                  Title = x.Title,
-                  Description = x.Description,
-                  DownloadsCount = x.DownloadsCount,
-                  FileUrl = x.FileUrl,
-                  ImageUrl = x.ImageUrl,
-                  Language = language,
-                  PagesCount = x.PagesCount,
-                  Year = x.Year,
-                  Authors = authors,
-                  PublisherName = publisherName,
-                  CategoryName = category,
-                  RatingsAvg = votesAvg,
-                  RatingsCount = votesCount,
-                  UserRating = this.ratingRepository.AllAsNoTracking().FirstOrDefault(x => x.BookId == bookId && x.UserId == userId).Value,
-                  Comments = comments,
-                  IsFavorite = isFavorite,
-                  IsUserBook = userId != null && book.UserId == userId,
-              }).FirstOrDefault();
+                model.Comments = comments;
+
+                bool isFavorite = await this.favoriteBookRepository
+                    .AllAsNoTracking()
+                    .AnyAsync(x => x.BookId == bookId && x.UserId == userId);
+
+                model.IsFavorite = isFavorite;
+                model.IsUserBook = book.UserId == userId;
+
+                Rating rating = await this.ratingRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(rating => rating.BookId == bookId && rating.UserId == userId);
+
+                if (rating != null)
+                {
+                    model.UserRating = rating.Value;
+                }
+            }
+
+            return model;
         }
 
-        public BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage)
+        public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page, int booksPerPage)
         {
-            return new BookListingViewModel()
+            BookListingViewModel model = new BookListingViewModel()
             {
-                CategoryName = this.categoriesService.GetCategoryName(categoryId),
-                Books = this.bookRepository
+                CategoryName = await this.categoriesService.GetCategoryNameAsync(categoryId),
+                Books = await this.bookRepository
                             .AllAsNoTracking()
-                            .Where(x => x.CategoryId == categoryId && x.IsApproved == true)
+                            .Where(x => x.CategoryId == categoryId && x.IsApproved)
                             .Select(x => new BookViewModel()
                             {
                                 Id = x.Id,
@@ -155,21 +168,23 @@
                             .Skip((page - 1) * booksPerPage)
                             .Take(booksPerPage)
                             .OrderByDescending(x => x.Id)
-                            .ToList(),
+                            .ToListAsync(),
                 PageNumber = page,
-                BookCount = this.bookRepository
+                BookCount = await this.bookRepository
                                 .AllAsNoTracking()
-                                .Where(x => x.CategoryId == categoryId && x.IsApproved == true)
-                                .Count(),
+                                .Where(x => x.CategoryId == categoryId && x.IsApproved)
+                                .CountAsync(),
                 BooksPerPage = booksPerPage,
             };
+
+            return model;
         }
 
-        public BookListingViewModel GetUserBooks(string userId, int page, int booksPerPage)
+        public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page, int booksPerPage)
         {
-            return new BookListingViewModel()
+            BookListingViewModel model = new BookListingViewModel()
             {
-                Books = this.bookRepository
+                Books = await this.bookRepository
                             .AllAsNoTracking()
                             .Where(x => x.UserId == userId)
                             .OrderByDescending(x => x.CreatedOn)
@@ -182,137 +197,107 @@
                             .Skip((page - 1) * booksPerPage)
                             .Take(booksPerPage)
                             .OrderByDescending(x => x.Id)
-                            .ToList(),
+                            .ToListAsync(),
                 PageNumber = page,
-                BookCount = this.bookRepository
+                BookCount = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.UserId == userId)
-                                .Count(),
+                                .CountAsync(),
                 BooksPerPage = booksPerPage,
             };
+
+            return model;
         }
 
-        public IList<BookViewModel> GetPopularBooks(int count)
+        public async Task<IList<BookViewModel>> GetPopularBooksAsync(int count)
         {
-            return this.bookRepository
+            List<BookViewModel> popularBooks = await this.bookRepository
                 .AllAsNoTracking()
-                .Where(x => x.IsApproved == true)
+                .Where(x => x.IsApproved)
                 .OrderByDescending(x => x.DownloadsCount)
                 .Take(count)
                 .Select(x => new BookViewModel()
                 {
-                    ImageUrl = x.ImageUrl,
                     Id = x.Id,
+                    ImageUrl = x.ImageUrl,
                 })
-                .ToList();
+                .ToListAsync();
+
+            return popularBooks;
         }
 
-        public IList<BookViewModel> GetRecentBooks(int count)
+        public async Task<IList<BookViewModel>> GetRecentBooksAsync(int count)
         {
-            return this.bookRepository
+            List<BookViewModel> recentBooks = await this.bookRepository
                 .AllAsNoTracking()
-                .Where(x => x.IsApproved == true)
+                .Where(x => x.IsApproved)
                 .OrderByDescending(x => x.CreatedOn)
                 .Take(count)
                 .Select(x => new BookViewModel()
                 {
-                    ImageUrl = x.ImageUrl,
                     Id = x.Id,
+                    ImageUrl = x.ImageUrl,
                 })
-                .ToList();
+                .ToListAsync();
+
+            return recentBooks;
         }
 
-        public IEnumerable<BookViewModel> GetUnapprovedBooks()
+        public async Task<List<BookViewModel>> GetUnapprovedBooksAsync()
         {
-            return this.bookRepository
+            List<BookViewModel> unapprovedBooks = await this.bookRepository
                .AllAsNoTracking()
                .Where(x => x.IsApproved == false)
                .Select(x => new BookViewModel()
                {
                    Id = x.Id,
                    UserId = x.UserId,
-                   ImageUrl = x.ImageUrl,
                    Title = x.Title,
-               }).ToList();
+               }).ToListAsync();
+
+            return unapprovedBooks;
         }
 
-        public IEnumerable<BookViewModel> GetApprovedBooks()
+        public async Task<int> GetUnapprovedBooksCountAsync()
         {
-            return this.bookRepository
+            int unapprovedBooksCount = await this.bookRepository
+                .AllAsNoTracking()
+                .Where(book => book.IsApproved == false)
+                .CountAsync();
+
+            return unapprovedBooksCount;
+        }
+
+        public async Task<List<BookViewModel>> GetApprovedBooksAsync()
+        {
+            List<BookViewModel> approvedBooks = await this.bookRepository
                .AllAsNoTracking()
-               .Where(x => x.IsApproved)
-               .Select(x => new BookViewModel()
+               .Where(book => book.IsApproved)
+               .Select(book => new BookViewModel()
                {
-                   Id = x.Id,
-                   UserId = x.UserId,
-                   ImageUrl = x.ImageUrl,
-                   Title = x.Title,
-               }).ToList();
+                   Id = book.Id,
+                   UserId = book.UserId,
+                   ImageUrl = book.ImageUrl,
+                   Title = book.Title,
+               }).ToListAsync();
+
+            return approvedBooks;
         }
 
-        public IEnumerable<BookViewModel> GetDeletedBooks()
+        public async Task<List<BookViewModel>> GetDeletedBooksAsync()
         {
-            return this.bookRepository
-               .AllAsNoTrackingWithDeleted()
-               .Where(x => x.IsDeleted)
-               .Select(x => new BookViewModel()
-               {
-                   Id = x.Id,
-                   UserId = x.UserId,
-                   ImageUrl = x.ImageUrl,
-                   Title = x.Title,
-               }).ToList();
-        }
-
-        public BookViewModel GetUnapprovedBookWithId(string bookId)
-        {
-            Book book = this.bookRepository.All().First(x => x.Id == bookId);
-
-            string category = this.categoriesService.GetCategoryName(book.CategoryId);
-
-            List<int> authorsIds = this.authorsBooksRepository
-                .AllAsNoTracking()
-                .Where(x => x.BookId == bookId)
-                .Select(x => x.AuthorId)
-                .ToList();
-
-            List<string> authors = this.authorRepository
-                .AllAsNoTracking()
-                .Where(x => authorsIds.Contains(x.Id))
-                .Select(x => x.Name)
-                .ToList();
-
-            Publisher publisher = this.publishersRepository
-                .AllAsNoTracking()
-                .FirstOrDefault(x => x.Id == book.PublisherId);
-
-            string publisherName = null;
-
-            if (publisher != null)
-            {
-                publisherName = publisher.Name;
-            }
-
-            string language = this.languagesService.GetLanguageName(book.LanguageId);
-
-            return this.bookRepository
-              .AllAsNoTracking()
-              .Where(x => x.Id == bookId)
-              .Select(x => new BookViewModel()
+            List<BookViewModel> deletedBooks = await this.bookRepository
+              .AllAsNoTrackingWithDeleted()
+              .Where(book => book.IsDeleted)
+              .Select(book => new BookViewModel()
               {
-                  Id = x.Id,
-                  UserId = x.UserId,
-                  Title = x.Title,
-                  Description = x.Description,
-                  FileUrl = x.FileUrl,
-                  ImageUrl = x.ImageUrl,
-                  Language = language,
-                  PagesCount = x.PagesCount,
-                  Year = x.Year,
-                  Authors = authors,
-                  PublisherName = publisherName,
-                  CategoryName = category,
-              }).FirstOrDefault();
+                  Id = book.Id,
+                  UserId = book.UserId,
+                  ImageUrl = book.ImageUrl,
+                  Title = book.Title,
+              }).ToListAsync();
+
+            return deletedBooks;
         }
     }
 }

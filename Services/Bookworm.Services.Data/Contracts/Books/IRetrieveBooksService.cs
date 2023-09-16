@@ -1,27 +1,28 @@
 ﻿namespace Bookworm.Services.Data.Contracts.Books
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Bookworm.Web.ViewModels.Books;
 
     public interface IRetrieveBooksService
     {
-        BookListingViewModel GetBooks(int categoryId, int page, int booksPerPage);
+        Task<BookListingViewModel> GetBooksAsync(int categoryId, int page, int booksPerPage);
 
-        BookListingViewModel GetUserBooks(string userId, int page, int booksPerPage);
+        Task<BookListingViewModel> GetUserBooksAsync(string userId, int page, int booksPerPage);
 
-        BookViewModel GetBookWithId(string bookId, string userId = null);
+        Task<BookViewModel> GetBookWithIdAsync(string bookId, string userId = null);
 
-        BookViewModel GetUnapprovedBookWithId(string bookId);
+        Task<IList<BookViewModel>> GetPopularBooksAsync(int count);
 
-        IList<BookViewModel> GetPopularBooks(int count);
+        Task<IList<BookViewModel>> GetRecentBooksAsync(int count);
 
-        IList<BookViewModel> GetRecentBooks(int count);
+        Task<List<BookViewModel>> GetUnapprovedBooksAsync();
 
-        IEnumerable<BookViewModel> GetUnapprovedBooks();
+        Task<List<BookViewModel>> GetApprovedBooksAsync();
 
-        IEnumerable<BookViewModel> GetApprovedBooks();
+        Task<List<BookViewModel>> GetDeletedBooksAsync();
 
-        IEnumerable<BookViewModel> GetDeletedBooks();
+        Task<int> GetUnapprovedBooksCountAsync();
     }
 }

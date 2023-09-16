@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
-    using System.Linq;
+    using System.Threading.Tasks;
+
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,14 @@
             this.retrieveQuotesService = retrieveQuotesService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            int unapprovedBooksCount = this.booksService.GetUnapprovedBooks().ToList().Count;
-            int unapprovedQuotesCount = this.retrieveQuotesService.GetAllUnapprovedQuotes().Quotes.Count;
+            int unapprovedBooksCount = await this.booksService.GetUnapprovedBooksCountAsync();
+            int unapprovedQuotesCount = await this.retrieveQuotesService.GetUnapprovedQuotesCountAsync();
+
             this.ViewData["BooksCount"] = unapprovedBooksCount;
             this.ViewData["QuotesCount"] = unapprovedQuotesCount;
+
             return this.View();
         }
     }

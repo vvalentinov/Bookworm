@@ -40,7 +40,7 @@
 
         public async Task ApproveBookAsync(string bookId)
         {
-            Book book = this.bookRepository.All().First(x => x.Id == bookId);
+            Book book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
             book.IsApproved = true;
             await this.bookRepository.SaveChangesAsync();
 
@@ -64,11 +64,11 @@
 
         public async Task UnapproveBookAsync(string bookId)
         {
-            var book = this.bookRepository.All().First(x => x.Id == bookId);
+            Book book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
             book.IsApproved = false;
             await this.bookRepository.SaveChangesAsync();
 
-            UserPoints userPoints = this.usersPointsRepository.All().First(x => x.UserId == book.UserId);
+            UserPoints userPoints = await this.usersPointsRepository.All().FirstAsync(x => x.UserId == book.UserId);
             if (userPoints.Points > 0)
             {
                 userPoints.Points -= BookPoints;
@@ -79,14 +79,14 @@
 
         public async Task DeleteBookAsync(string bookId)
         {
-            Book book = this.bookRepository.All().First(x => x.Id == bookId);
+            Book book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
             this.bookRepository.Delete(book);
             await this.bookRepository.SaveChangesAsync();
         }
 
         public async Task UndeleteBookAsync(string bookId)
         {
-            Book book = this.bookRepository.AllWithDeleted().First(x => x.Id == bookId);
+            Book book = await this.bookRepository.AllWithDeleted().FirstAsync(x => x.Id == bookId);
             this.bookRepository.Undelete(book);
             await this.bookRepository.SaveChangesAsync();
         }

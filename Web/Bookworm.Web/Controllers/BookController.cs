@@ -52,9 +52,9 @@
         }
 
         [Authorize]
-        public IActionResult Edit(string bookId)
+        public async Task<IActionResult> Edit(string bookId)
         {
-            var book = this.booksService.GetBookWithId(bookId);
+            var book = await this.booksService.GetBookWithIdAsync(bookId);
             var model = new EditBookFormModel()
             {
                 Id = book.Id,
@@ -117,11 +117,11 @@
             return this.View("GeneratedBooks", books);
         }
 
-        public IActionResult All(string categoryName, int page = 1)
+        public async Task<IActionResult> All(string categoryName, int page = 1)
         {
             int categoryId = this.categoriesService.GetCategoryId(categoryName);
 
-            BookListingViewModel model = this.booksService.GetBooks(categoryId, page, 12);
+            BookListingViewModel model = await this.booksService.GetBooksAsync(categoryId, page, 12);
             return this.View(model);
         }
 
@@ -129,14 +129,14 @@
         public async Task<IActionResult> UserBooks(int page = 1)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookListingViewModel books = this.booksService.GetUserBooks(user.Id, page, 12);
+            BookListingViewModel books = await this.booksService.GetUserBooksAsync(user.Id, page, 12);
             return this.View(books);
         }
 
         public async Task<IActionResult> CurrentBook(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookViewModel bookViewModel = this.booksService.GetBookWithId(id, user?.Id);
+            BookViewModel bookViewModel = await this.booksService.GetBookWithIdAsync(id, user?.Id);
             return this.View(bookViewModel);
         }
 

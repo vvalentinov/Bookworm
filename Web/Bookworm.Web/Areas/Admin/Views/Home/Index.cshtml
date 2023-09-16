@@ -1,11 +1,12 @@
 ﻿@{
-    var unapprovedBooksCount = ViewData["BooksCount"];
-    var unapprovedQuotesCount = ViewData["QuotesCount"];
+    this.ViewData["Title"] = "Home Admin";
+    var unapprovedBooksCount = this.ViewData["BooksCount"];
+    var unapprovedQuotesCount = this.ViewData["QuotesCount"];
 }
 
 <h1 class="text-center mt-5">Welcome to Admin Area!</h1>
 
-<div class="d-flex justify-content-center gap-3 mt-5">
+<div class="row-gap no-gutters justify-content-center mt-5">
     <div class="mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -29,7 +30,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col">
                         <div class=" font-weight-bold text-primary text-uppercase mb-1">
-                            Pending Quotes Requests
+                            Pending Quote Requests
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">@unapprovedQuotesCount</div>
                     </div>

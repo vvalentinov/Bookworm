@@ -21,21 +21,21 @@
             this.updateQuoteService = updateQuoteService;
         }
 
-        public IActionResult ApprovedQuotes()
+        public async Task<IActionResult> ApprovedQuotes()
         {
-            QuoteListingViewModel approvedQuotes = this.retrieveQuotesService.GetAllApprovedQuotes();
+            QuoteListingViewModel approvedQuotes = await this.retrieveQuotesService.GetAllApprovedQuotesAsync();
             return this.View(approvedQuotes);
         }
 
-        public IActionResult UnapprovedQuotes()
+        public async Task<IActionResult> UnapprovedQuotes()
         {
-            QuoteListingViewModel unapprovedQuotes = this.retrieveQuotesService.GetAllUnapprovedQuotes();
+            QuoteListingViewModel unapprovedQuotes = await this.retrieveQuotesService.GetAllUnapprovedQuotesAsync();
             return this.View(unapprovedQuotes);
         }
 
-        public IActionResult DeletedQuotes()
+        public async Task<IActionResult> DeletedQuotes()
         {
-            QuoteListingViewModel deletedQuotes = this.retrieveQuotesService.GetAllDeletedQuotes();
+            QuoteListingViewModel deletedQuotes = await this.retrieveQuotesService.GetAllDeletedQuotesAsync();
             return this.View(deletedQuotes);
         }
 

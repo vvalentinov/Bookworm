@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Services.Data.Contracts
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -12,6 +13,6 @@
 
         IEnumerable<SelectListItem> GetCategoriesAsSelectListItems();
 
-        string GetCategoryName(int categoryId);
+        Task<string> GetCategoryNameAsync(int categoryId);
     }
 }

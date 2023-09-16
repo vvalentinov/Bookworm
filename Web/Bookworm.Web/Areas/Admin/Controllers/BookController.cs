@@ -54,27 +54,27 @@
             return this.RedirectToAction("Index", "Home", new { area = " " });
         }
 
-        public IActionResult UnapprovedBooks()
+        public async Task<IActionResult> UnapprovedBooks()
         {
-            IEnumerable<BookViewModel> books = this.retrieveBooksService.GetUnapprovedBooks();
+            List<BookViewModel> books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
             return this.View(books);
         }
 
-        public IActionResult DeletedBooks()
+        public async Task<IActionResult> DeletedBooks()
         {
-            IEnumerable<BookViewModel> books = this.retrieveBooksService.GetDeletedBooks();
+            List<BookViewModel> books = await this.retrieveBooksService.GetDeletedBooksAsync();
             return this.View(books);
         }
 
-        public IActionResult ApprovedBooks()
+        public async Task<IActionResult> ApprovedBooks()
         {
-            IEnumerable<BookViewModel> books = this.retrieveBooksService.GetApprovedBooks();
-            return this.View(books);
+            List<BookViewModel> approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
+            return this.View(approvedBooks);
         }
 
-        public IActionResult CurrentBook(string bookId)
+        public async Task<IActionResult> CurrentBook(string bookId)
         {
-            var book = this.retrieveBooksService.GetUnapprovedBookWithId(bookId);
+            BookViewModel book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
             return this.View(book);
         }
 

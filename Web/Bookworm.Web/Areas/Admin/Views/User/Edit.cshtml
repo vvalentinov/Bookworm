@@ -4,25 +4,17 @@
     ViewData["Title"] = "Edit User";
 }
 
-<h1 class="text-center">@ViewData["Title"]</h1>
-
-<div class="text-center">
-    <img src="@Model.ProfilePictureUrl" alt="Profile Picture" style="width:200px;border-radius: 50%">
-</div>
+<h1 class="text-center mt-5">@ViewData["Title"]</h1>
 
 
-<form id="profile-form" method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="UserName"></label>
         <input asp-for="UserName" class="form-control" />
     </div>
-    <div class="form-group">
-        <label asp-for="ProfilePictureFile" class="form-label"></label>
-        <input asp-for="ProfilePictureFile" class="form-control" type="file">
-    </div>
     <input type="hidden" asp-for="Id">
     <div class="text-center">
-        <button id="update-profile-button" type="submit" class="btn btn-outline-warning">Edit Profile</button>
+        <button id="update-profile-button" type="submit" class="btn btn-outline-danger">Edit Profile</button>
     </div>
 </form>

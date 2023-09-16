@@ -40,9 +40,9 @@
         }
 
         [Authorize]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            QuoteViewModel quote = this.retrieveQuotesService.GetQuoteById(id);
+            QuoteViewModel quote = await this.retrieveQuotesService.GetQuoteByIdAsync(id);
             return this.View(quote);
         }
 

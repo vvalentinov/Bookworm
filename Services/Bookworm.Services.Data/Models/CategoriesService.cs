@@ -2,12 +2,14 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Mapping;
     using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
 
     public class CategoriesService : ICategoriesService
     {
@@ -48,12 +50,13 @@
                 .Id;
         }
 
-        public string GetCategoryName(int categoryId)
+        public async Task<string> GetCategoryNameAsync(int categoryId)
         {
-            return this.categoriesRepository
+            Category category = await this.categoriesRepository
                 .AllAsNoTracking()
-                .First(c => c.Id == categoryId)
-                .Name;
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+
+            return category?.Name;
         }
     }
 }

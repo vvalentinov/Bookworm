@@ -35,12 +35,12 @@
 
         [Authorize]
         [HttpGet(nameof(GetUserQuotesByType))]
-        public ActionResult GetUserQuotesByType(string type)
+        public async Task<ActionResult> GetUserQuotesByType(string type)
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 string userId = this.userManager.GetUserId(this.User);
-                List<QuoteViewModel> quotes = this.retrieveQuotesService.GetQuotesByType(userId, quoteType);
+                List<QuoteViewModel> quotes = await this.retrieveQuotesService.GetQuotesByTypeAsync(userId, quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -50,11 +50,11 @@
         }
 
         [HttpGet(nameof(GetAllQuotesByType))]
-        public ActionResult GetAllQuotesByType(string type)
+        public async Task<ActionResult> GetAllQuotesByType(string type)
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotes = this.retrieveQuotesService.GetQuotesByType(null, quoteType);
+                List<QuoteViewModel> quotes = await this.retrieveQuotesService.GetQuotesByTypeAsync(null, quoteType);
                 return new JsonResult(quotes);
             }
             else

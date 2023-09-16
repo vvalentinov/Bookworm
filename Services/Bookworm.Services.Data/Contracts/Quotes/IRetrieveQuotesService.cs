@@ -12,16 +12,18 @@
 
         Task<UserQuotesViewModel> GetUserQuotesAsync(string userId);
 
-        QuoteListingViewModel GetAllApprovedQuotes();
+        Task<QuoteListingViewModel> GetAllApprovedQuotesAsync();
 
-        QuoteListingViewModel GetAllUnapprovedQuotes();
+        Task<QuoteListingViewModel> GetAllUnapprovedQuotesAsync();
 
-        QuoteListingViewModel GetAllDeletedQuotes();
+        Task<QuoteListingViewModel> GetAllDeletedQuotesAsync();
 
-        QuoteViewModel GetQuoteById(int quoteId);
+        Task<QuoteViewModel> GetQuoteByIdAsync(int quoteId);
 
-        List<QuoteViewModel> GetQuotesByType(string userId, QuoteType type);
+        Task<List<QuoteViewModel>> GetQuotesByTypeAsync(string userId, QuoteType type);
 
-        T GetRandomQuote<T>();
+        Task<T> GetRandomQuoteAsync<T>();
+
+        Task<int> GetUnapprovedQuotesCountAsync();
     }
 }

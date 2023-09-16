@@ -5,30 +5,28 @@
     var items = (List<SelectListItem>)ViewBag.RoleItems;
 }
 
-<div class="row">
-    <div class="col-4">
-        <form method="post">
-            <input type="hidden" name="UserId" value="@Model.UserId" />
-            <input type="hidden" name="Username" value="@Model.Username" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <h3>Username: @Html.DisplayFor(m => m.Username)</h3>
+<div class="col-6">
+    <form method="post">
+        <input type="hidden" name="UserId" value="@Model.UserId" />
+        <input type="hidden" name="Username" value="@Model.Username" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-floating">
+            <h3>Username: @Html.DisplayFor(m => m.Username)</h3>
+        </div>
+        <div class="form-floating">
+            <h3>Roles: @Html.DisplayFor(m => m.UserRoles)</h3>
+        </div>
+        <div class="form-floating">
+            <div class="form-group">
+                <label>Change User Roles</label>
+                <select asp-for="Roles" asp-items="@items" class="form-control"></select>
             </div>
-            <div class="form-floating">
-                <h3>Roles: @Html.DisplayFor(m => m.UserRoles)</h3>
+        </div>
+        <div class="row">&nbsp;</div>
+        <div class="row">
+            <div class="col-8 text-center">
+                <button id="login-submit" type="submit" class="btn btn-outline-danger">Change User Roles</button>
             </div>
-            <div class="form-floating">
-                <div class="form-group">
-                    <label>Change User Roles</label>
-                    <select asp-for="Roles" asp-items="@items" class="form-control"></select>
-                </div>
-            </div>
-            <div class="row">&nbsp;</div>
-            <div class="row">
-                <div class="col-8 text-center">
-                    <button id="login-submit" type="submit" class="btn btn-outline-danger">Change User Roles</button>
-                </div>
-            </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
