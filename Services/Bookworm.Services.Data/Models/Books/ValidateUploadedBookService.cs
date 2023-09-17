@@ -82,16 +82,6 @@
             {
                 throw new InvalidOperationException(BookMissingAuthorsError);
             }
-
-            if (await this.blobService.CheckIfBlobExistsAsync(bookFile.FileName))
-            {
-                throw new InvalidOperationException(ChangeBookFileNameError);
-            }
-
-            if (await this.blobService.CheckIfBlobExistsAsync(imageFile.FileName))
-            {
-                throw new InvalidOperationException(ChangeImageFileNameError);
-            }
         }
     }
 }

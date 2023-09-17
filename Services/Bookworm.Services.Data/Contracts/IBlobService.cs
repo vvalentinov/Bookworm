@@ -9,7 +9,10 @@
 
     public interface IBlobService
     {
-        Task UploadBlobAsync(IFormFile file, string pathPrefix = null);
+        Task UploadBlobAsync(
+            IFormFile file,
+            string uniqueName,
+            string pathPrefix = null);
 
         Task DeleteBlobAsync(string blobName);
 

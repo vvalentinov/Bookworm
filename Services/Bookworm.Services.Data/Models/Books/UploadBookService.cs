@@ -1,6 +1,8 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
@@ -48,11 +50,14 @@
             string userId,
             string userName)
         {
-            await this.blobService.UploadBlobAsync(bookFile, BookFileUploadPath);
-            await this.blobService.UploadBlobAsync(imageFile, BookImageFileUploadPath);
+            string uniqueBookFileName = $"{Path.GetFileNameWithoutExtension(bookFile.FileName)}{Guid.NewGuid()}{Path.GetExtension(bookFile.FileName)}";
+            string uniqueBookImageName = $"{Path.GetFileNameWithoutExtension(imageFile.FileName)}{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
 
-            string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri($"{BookFileUploadPath}{bookFile.FileName}");
-            string bookImageFileBlobUrl = this.blobService.GetBlobAbsoluteUri($"{BookImageFileUploadPath}{imageFile.FileName}");
+            await this.blobService.UploadBlobAsync(bookFile, uniqueBookFileName, BookFileUploadPath);
+            await this.blobService.UploadBlobAsync(imageFile, uniqueBookImageName, BookImageFileUploadPath);
+
+            string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri($"{BookFileUploadPath}{uniqueBookFileName}");
+            string bookImageFileBlobUrl = this.blobService.GetBlobAbsoluteUri($"{BookImageFileUploadPath}{uniqueBookImageName}");
 
             Book book = new Book
             {
@@ -69,7 +74,9 @@
 
             if (string.IsNullOrWhiteSpace(publisher) == false)
             {
-                Publisher bookPublisher = await this.publisherRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Name == publisher);
+                Publisher bookPublisher = await this.publisherRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Name == publisher);
 
                 if (bookPublisher == null)
                 {
@@ -86,7 +93,9 @@
 
             foreach (string authorName in authors)
             {
-                Author author = await this.authorRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Name == authorName);
+                Author author = await this.authorRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Name == authorName);
 
                 if (author == null)
                 {
