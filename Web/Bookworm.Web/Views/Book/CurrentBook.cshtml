@@ -5,8 +5,8 @@
 }
 
 <div class="d-flex justify-content-center mt-5 gap-5 align-items-center">
-    <img class="w-25 rounded-3" src=@Model.ImageUrl alt=@Model.Title />
-    <ul class="list-group w-75 fs-5 rounded">
+    <img class="w-25 rounded-3 border border-3 border-dark" src=@Model.ImageUrl alt=@Model.Title />
+    <ul class="list-group w-75 fs-5 rounded border border-3 border-dark">
         <li class="list-group-item"><strong>@Model.Title</strong></li>
         @if (Model.PublisherName != null)
         {
@@ -41,7 +41,7 @@
         Post Comment<i class="fa-solid fa-comment ms-2"></i>
     </a>
 </div>
-<div class="card border-secondary my-5">
+<div class="card border-dark border-3 my-5">
     <h5 class="card-header">Book Description</h5>
     <div class="card-body">
         <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
