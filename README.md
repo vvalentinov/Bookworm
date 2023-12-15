@@ -1,8 +1,8 @@
-# :books:Bookworm
+# Bookworm
 ASP NET CORE Web application, where users can upload and download books in PDF format. This project is the defense project for ASP.NET Core course (part of the C# Web Module at Software University).
 
 
-# :hammer:Used Technologies:
+# Used Technologies:
 - ASP NET CORE Model-View-Controller 6.0
 - Entity Framework Core 6.0
 - ASP NET CORE Areas
@@ -16,7 +16,7 @@ ASP NET CORE Web application, where users can upload and download books in PDF f
 - HTML5
 - CSS
 
-# :x:Restrictions:
+# Restrictions:
 * Guest Visitor:
    * Not-Logged In users are restricted to only browsing books and quotes.
 * Logged-In User:
@@ -33,12 +33,6 @@ ASP NET CORE Web application, where users can upload and download books in PDF f
    * Can change user's username or profile picture.
    * Can give a role to user.
 
----
-Using ASP NET CORE MVC-Template created by:
-
-- [Nikolay Kostov](https://github.com/NikolayIT)
-
-- [Vladislav Karamfilov](https://github.com/vladislav-karamfilov)
-
-- [Stoyan Shopov](https://github.com/StoyanShopov)
+   <br/>
+Using Asp Net Core Template - [Template](https://github.com/NikolayIT/ASP.NET-Core-Template).
   
