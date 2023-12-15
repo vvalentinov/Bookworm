@@ -4,42 +4,31 @@
     var unapprovedQuotesCount = this.ViewData["QuotesCount"];
 }
 
-<h1 class="text-center mt-5">Welcome to Admin Area!</h1>
+<h1 class="text-center pt-5">Welcome to Admin Area!</h1>
 
-<div class="row-gap no-gutters justify-content-center mt-5">
-    <div class="mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class=" font-weight-bold text-primary text-uppercase mb-1">
-                            Pending Book Requests
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">@unapprovedBooksCount</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-book fa-2x"></i>
-                    </div>
-                </div>
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@unapprovedBooksCount</h3>
+                <p>Pending Book Requests</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-book fa-2x"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <div class="mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col">
-                        <div class=" font-weight-bold text-primary text-uppercase mb-1">
-                            Pending Quote Requests
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">@unapprovedQuotesCount</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-pen fa-2x"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@unapprovedQuotesCount</h3>
+                <p>Pending Quote Requests</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-pen fa-2x"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 </div>
-

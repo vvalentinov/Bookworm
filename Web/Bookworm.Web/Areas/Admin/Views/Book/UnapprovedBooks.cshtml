@@ -6,11 +6,11 @@
 
 @if (Model.Any() == false)
 {
-    <h2 class="text-center mt-5">There are no books waiting to be approved!</h2>
+    <h2 class="text-center pt-5">There are no books waiting to be approved!</h2>
 }
 else
 {
-    <h2 class="text-center mt-5">Manage Unapproved Books</h2>
+    <h2 class="text-center pt-5">Manage Unapproved Books</h2>
     <div class="my-5">
         <table class="table table-striped table-dark table-bordered" id="dataTable">
             <thead>
@@ -50,12 +50,16 @@ else
 }
 
 <!-- Approve Book Modal -->
-<div class="modal fade" id="approveBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+    class="modal fade"
+    id="approveBookModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Approve Book</h1>
-                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body text-center">
                 <strong>Are you sure you want to approve this book?</strong>
@@ -72,12 +76,16 @@ else
 </div>
 
 <!-- Delete Book Modal -->
-<div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+    class="modal fade"
+    id="deleteBookModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Book</h1>
-                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body text-center">
                 <strong>Are you sure you want to delete this book?</strong>

@@ -90,6 +90,16 @@
         "skins/ui/oxide/skin.min.css",
         "skins/content/default/content.min.css"
       ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "admin-lte@3.2.0",
+      "destination": "wwwroot/lib/admin-lte/",
+      "files": [
+        "dist/css/adminlte.min.css",
+        "dist/js/adminlte.min.js",
+        "dist/img/AdminLTELogo.png"
+      ]
     }
   ]
 }
