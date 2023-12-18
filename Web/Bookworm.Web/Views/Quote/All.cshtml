@@ -1,14 +1,16 @@
 ﻿@model QuoteListingViewModel
 
 @{
-    var quotes = this.Model.Quotes.ToList();
+    List<QuoteViewModel> quotes = this.Model.Quotes.ToList();
     this.ViewData["Title"] = "All Quotes";
     this.ViewData["Count"] = quotes.Count;
 }
 
 <partial name="PartialViews/_TitleCardPartial" />
 
-<div class="btn-group my-5 mb-3 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
+<div class="btn-group my-5 mb-3 d-flex justify-content-center"
+     role="group"
+     aria-label="Basic radio toggle button group">
     <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
     <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
 
@@ -23,10 +25,18 @@
 </div>
 
 <div class="input-group mb-3">
-    <input type="text" class="form-control border border-2 border-black" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
-    <button class="btn border border-2 border-black" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass fa-xl"></i></button>
+    <input type="text"
+           class="form-control border border-2 border-black"
+           id="searchQuotesInput"
+           placeholder="Search quotes..."
+           aria-label="Recipient's username"
+           aria-describedby="button-addon2">
+    <button class="btn border border-2 border-black"
+            type="button"
+            id="searchQuotesBtn">
+        <i class="fa-solid fa-magnifying-glass fa-xl"></i>
+    </button>
 </div>
-
 
 <div class="table-responsive mb-3">
     <table class="table table-bordered">

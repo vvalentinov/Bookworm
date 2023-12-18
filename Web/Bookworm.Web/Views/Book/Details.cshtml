@@ -1,0 +1,73 @@
+﻿@model BookViewModel
+
+@{
+    this.ViewData["Title"] = Model.Title;
+}
+
+<section class="bookDetailsInfoSection">
+    <div>
+        <img class="img-fluid" src=@Model.ImageUrl alt=@Model.Title />
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>@Model.Title</strong></li>
+        @if (Model.PublisherName != null)
+        {
+            <li class="list-group-item">Publisher: @Model.PublisherName</li>
+        }
+        <li class="list-group-item">
+            Category:
+            <a asp-controller="Book"
+               asp-action="All"
+               asp-route-categoryName="@Model.CategoryName">
+                @Model.CategoryName
+            </a>
+        </li>
+        <li class="list-group-item">Pages: @Model.PagesCount</li>
+        <li class="list-group-item">Language: @Model.Language</li>
+        <li class="list-group-item">Downloads: @Model.DownloadsCount</li>
+        <li class="list-group-item">Comments: @Model.Comments.Count()</li>
+        <li class="list-group-item">
+            <span>
+                Average Score: <span>@Model.RatingsAvg.ToString("f1")</span>
+                <span>/5</span>
+                <span>(Ratings count: <span>@Model.RatingsCount</span>)</span>
+            </span>
+        </li>
+        <li class="list-group-item">
+            <dl>
+                <dt>Authors:</dt>
+                @foreach (var author in Model.Authors)
+                {
+                    <dd>- @author</dd>
+                }
+            </dl>
+        </li>
+    </ul>
+</section>
+
+<section class="bookDetailsActionsSection">
+    <a class="btn btn-lg button"
+       asp-controller="Book"
+       asp-action="Download"
+       asp-route-id="@Model.Id">
+        Download<i class="fas fa-download icon ms-2"></i>
+    </a>
+    <a class="btn btn-lg button"
+       asp-controller="Comment"
+       asp-action="Create"
+       asp-route-bookId="@Model.Id"
+       asp-route-bookTitle=@Model.Title>
+        Post Comment<i class="fa-solid fa-comment ms-2"></i>
+    </a>
+</section>
+
+<section class="bookDetailsDescSection">
+    <div class="card">
+        <div class="card-header">
+            Book Description
+        </div>
+        <div class="card-body">
+            <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
+        </div>
+    </div>
+</section>

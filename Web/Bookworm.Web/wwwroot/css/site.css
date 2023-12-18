@@ -1,5 +1,7 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Diphylleia&display=swap');
 
+@import "bookDetails.css";
+
 :root {
     --clr-primary: #34495E;
     --clr-secondary: #1abc9c;
@@ -17,7 +19,7 @@ body {
     font-family: 'Diphylleia', serif;
     display: flex;
     flex-direction: column;
-    padding-top: 3.5rem;
+    padding-top: 5rem;
 }
 
 .navbar {
@@ -95,6 +97,20 @@ body {
     border: solid 2px red;
     background: none;
 }
+
+.homeBtnsSection {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+    .homeBtnsSection div {
+        flex-basis: 50%;
+    }
+
+        .homeBtnsSection div a {
+            width: 100%;
+        }
 
 /*Toast*/
 .toast-header-success {
@@ -220,18 +236,6 @@ body {
     background-color: var(--clr-secondary);
     border: solid 2px var(--clr-black);
 }
-
-
-.list-group .list-group-item {
-    background-color: var(--clr-primary);
-    color: var(--clr-white);
-    word-wrap: break-word;
-}
-
-    .list-group .list-group-item a {
-        color: var(--clr-secondary);
-        text-decoration: none;
-    }
 
 /*Table Styles*/
 .table tr td,

@@ -101,7 +101,7 @@
                 return this.View(model);
             }
 
-            return this.RedirectToAction(nameof(this.CurrentBook), "Book", new { id = model.Id });
+            return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
         }
 
         public IActionResult Random()
@@ -133,7 +133,7 @@
             return this.View(books);
         }
 
-        public async Task<IActionResult> CurrentBook(string id)
+        public async Task<IActionResult> Details(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             BookViewModel bookViewModel = await this.booksService.GetBookWithIdAsync(id, user?.Id);

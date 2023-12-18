@@ -38,7 +38,7 @@
 
 @if (this.User.Identity.IsAuthenticated)
 {
-    <section class="d-flex justify-content-evenly homeBtnsSection my-5">
+    <section class="homeBtnsSection">
         <div>
             <a asp-controller="Book" asp-action="Upload" class="btn button btn-lg animate__animated animate__pulse">
                 Upload Book
@@ -51,6 +51,3 @@
         </div>
     </section>
 }
-
-@*<partial name="_RecentlyUploadedBooksPartial" />
-<partial name="_MostDownloadedBooksPartial" />*@
