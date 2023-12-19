@@ -14,30 +14,21 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICommentsService commentsService;
 
-        public CommentController(UserManager<ApplicationUser> userManager, ICommentsService commentsService)
+        public CommentController(
+            UserManager<ApplicationUser> userManager,
+            ICommentsService commentsService)
         {
             this.userManager = userManager;
             this.commentsService = commentsService;
         }
 
-        [Authorize]
-        public IActionResult Create(string bookId, string bookTitle)
-        {
-            CreateCommentInputModel model = new CreateCommentInputModel()
-            {
-                BookId = bookId,
-                BookTitle = bookTitle,
-            };
-            return this.View(model);
-        }
-
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create(CreateCommentInputModel model)
+        public async Task<IActionResult> Post([Bind(Prefix = "PostComment")]PostCommentInputModel model)
         {
             string userId = this.userManager.GetUserId(this.User);
-            await this.commentsService.Create(userId, model.Content, model.BookId);
-            return this.RedirectToAction("CurrentBook", "Book", new { id = model.BookId });
+            await this.commentsService.CreateAsync(userId, model.Content, model.BookId);
+            return this.RedirectToAction("Details", "Book", new { id = model.BookId });
         }
     }
 }

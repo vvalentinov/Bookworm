@@ -52,13 +52,6 @@
        asp-route-id="@Model.Id">
         Download<i class="fas fa-download icon ms-2"></i>
     </a>
-    <a class="btn btn-lg button"
-       asp-controller="Comment"
-       asp-action="Create"
-       asp-route-bookId="@Model.Id"
-       asp-route-bookTitle=@Model.Title>
-        Post Comment<i class="fa-solid fa-comment ms-2"></i>
-    </a>
 </section>
 
 <section class="bookDetailsDescSection">
@@ -71,3 +64,49 @@
         </div>
     </div>
 </section>
+
+<section class="bookDetailsCommentsSection">
+    <div class="formContainer">
+        <form method="post" asp-controller="Comment" asp-action="Post">
+            <input type="hidden" asp-for="PostComment.BookId" value="@Model.Id" />
+            <div class="form-group">
+                <textarea asp-for="PostComment.Content" class="form-control" rows="15"></textarea>
+                <span asp-validation-for="PostComment.Content" class="text-danger"></span>
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="button btn btn-lg">Post Comment</button>
+            </div>
+        </form>
+    </div>
+    <section class="commentsSection">
+        <h2>Comments: @Model.Comments.Count()</h2>
+        @foreach (var comment in Model.Comments)
+        {
+            <article class="card">
+                <div class="card-header">
+                    <span>Posted by - @comment.UserUserName</span>
+                    @if (this.User.Identity.Name == comment.UserUserName)
+                    {
+                        <div>
+                            <button class="btn btn-lg btn-primary">Delete</button>
+                            <button class="btn btn-lg btn-primary">Edit</button>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@Html.Raw(@comment.SanitizedContent)</p>
+                </div>
+            </article>
+        }
+    </section>
+</section>
+
+@section Scripts {
+    <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: "textarea",
+            plugins: "image table link code wordcount lists preview searchreplace"
+        });
+    </script>
+}

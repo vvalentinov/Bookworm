@@ -11,6 +11,7 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Categories;
+    using Bookworm.Web.ViewModels.Comments;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,11 @@
             this.updateBookService = updateBookService;
             this.validateBookService = validateBookService;
         }
+
+        //public async Task<IActionResult> PostComment(PostCommentInputModel commentModel)
+        //{
+        //    return null;
+        //}
 
         [Authorize]
         public async Task<IActionResult> Edit(string bookId)

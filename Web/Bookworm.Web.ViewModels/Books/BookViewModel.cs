@@ -45,6 +45,8 @@
 
         public string CategoryName { get; set; }
 
+        public PostCommentInputModel PostComment { get; set; }
+
         public IEnumerable<string> Authors { get; set; }
 
         public IEnumerable<CommentViewModel> Comments { get; set; }

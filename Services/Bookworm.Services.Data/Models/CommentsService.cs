@@ -12,15 +12,20 @@
         private readonly IDeletableEntityRepository<Comment> commentRepository;
         private readonly IRepository<Vote> voteRepository;
 
-        public CommentsService(IDeletableEntityRepository<Comment> commentRepository, IRepository<Vote> voteRepository)
+        public CommentsService(
+            IDeletableEntityRepository<Comment> commentRepository,
+            IRepository<Vote> voteRepository)
         {
             this.commentRepository = commentRepository;
             this.voteRepository = voteRepository;
         }
 
-        public async Task Create(string userId, string content, string bookId)
+        public async Task CreateAsync(
+            string userId,
+            string content,
+            string bookId)
         {
-            var comment = new Comment()
+            Comment comment = new Comment()
             {
                 UserId = userId,
                 Content = content,

@@ -64,3 +64,49 @@
         .bookDetailsDescSection .card .card-body {
             text-align: justify;
         }
+
+.bookDetailsCommentsSection {
+    border: solid 2px black;
+    padding: 2rem 0;
+}
+
+    .bookDetailsCommentsSection .tox {
+        border: solid 2px black;
+    }
+
+    .bookDetailsCommentsSection h2 {
+        text-align: center;
+    }
+
+    .bookDetailsCommentsSection .formContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+        .bookDetailsCommentsSection .formContainer form {
+            width: 70%;
+            border: solid 2px black;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+.commentsSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 2rem;
+}
+
+    .commentsSection .card {
+        width: 70%;
+        border: solid 2px black;
+        font-size: 1.1rem;
+    }
+
+        .commentsSection .card .card-header {
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
