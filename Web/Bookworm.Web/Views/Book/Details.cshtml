@@ -25,7 +25,14 @@
         <li class="list-group-item">Pages: @Model.PagesCount</li>
         <li class="list-group-item">Language: @Model.Language</li>
         <li class="list-group-item">Downloads: @Model.DownloadsCount</li>
-        <li class="list-group-item">Comments: @Model.Comments.Count()</li>
+        @if (Model.Comments?.Count() > 0)
+        {
+            <li class="list-group-item">Comments: @Model.Comments.Count()</li>
+        }
+        else
+        {
+            <li class="list-group-item">Comments: 0</li>
+        }
         <li class="list-group-item">
             <span>
                 Average Score: <span>@Model.RatingsAvg.ToString("f1")</span>
@@ -78,28 +85,66 @@
             </div>
         </form>
     </div>
-    <section class="commentsSection">
-        <h2>Comments: @Model.Comments.Count()</h2>
-        @foreach (var comment in Model.Comments)
-        {
-            <article class="card">
-                <div class="card-header">
-                    <span>Posted by - @comment.UserUserName</span>
-                    @if (this.User.Identity.Name == comment.UserUserName)
-                    {
-                        <div>
-                            <button class="btn btn-lg btn-primary">Delete</button>
-                            <button class="btn btn-lg btn-primary">Edit</button>
+    @if (Model.Comments?.Count() > 0)
+    {
+        <section class="commentsSection">
+            <h2>Comments: @Model.Comments.Count()</h2>
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="modal fade"
+                     id="exampleModal"
+                     tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment</h1>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete your comment?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                                <a asp-controller="Comment"
+                                   asp-action="Delete"
+                                   asp-route-commentId=@comment.Id
+                                   asp-route-bookId=@Model.Id
+                                   type="button"
+                                   class="btn btn-danger">
+                                    Delete
+                                </a>
+                            </div>
                         </div>
-                    }
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-text">@Html.Raw(@comment.SanitizedContent)</p>
-                </div>
-            </article>
-        }
-    </section>
+                <article class="card">
+                    <div class="card-header">
+                        <span>Posted by - @comment.UserUserName</span>
+                        @if (this.User.Identity.Name == comment.UserUserName)
+                        {
+                            <div>
+                                <button class="btn btn-lg btn-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                    Delete
+                                </button>
+                                <button class="btn btn-lg btn-warning">Edit</button>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@Html.Raw(@comment.SanitizedContent)</p>
+                    </div>
+                </article>
+            }
+        </section>
+    }
 </section>
+
+
 
 @section Scripts {
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>

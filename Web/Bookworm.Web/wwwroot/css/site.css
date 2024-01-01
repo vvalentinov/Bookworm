@@ -322,10 +322,6 @@ a[class="privacy-link"] {
     color: var(--clr-white);
 }
 
-    .card .card-header:hover {
-        color: var(--clr-secondary);
-    }
-
 /*Radio Buttons and Checkboxes Styles*/
 input[type="checkbox"] {
     width: 1.5rem;

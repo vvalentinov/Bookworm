@@ -54,11 +54,14 @@
 
 .bookDetailsDescSection {
     margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
 }
 
     .bookDetailsDescSection .card {
         font-size: 1.2rem;
         border: solid 2px black;
+        width: 75%;
     }
 
         .bookDetailsDescSection .card .card-body {
@@ -66,7 +69,6 @@
         }
 
 .bookDetailsCommentsSection {
-    border: solid 2px black;
     padding: 2rem 0;
 }
 
