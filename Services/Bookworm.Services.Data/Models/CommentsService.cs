@@ -1,19 +1,21 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Microsoft.EntityFrameworkCore;
 
     public class CommentsService : ICommentsService
     {
-        private readonly IDeletableEntityRepository<Comment> commentRepository;
+        private readonly IRepository<Comment> commentRepository;
         private readonly IRepository<Vote> voteRepository;
 
         public CommentsService(
-            IDeletableEntityRepository<Comment> commentRepository,
+            IRepository<Comment> commentRepository,
             IRepository<Vote> voteRepository)
         {
             this.commentRepository = commentRepository;
@@ -38,20 +40,17 @@
 
         public async Task DeleteAsync(int commentId)
         {
-            var votes = this.voteRepository.All().Where(x => x.CommentId == commentId).ToList();
-            foreach (var vote in votes)
+            Comment comment = await this.commentRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == commentId);
+
+            if (comment == null)
             {
-                this.voteRepository.Delete(vote);
+                throw new InvalidOperationException("Comment with given id not found!");
             }
 
-            await this.voteRepository.SaveChangesAsync();
-
-            var comments = this.commentRepository.All().Where(x => x.Id == commentId).ToList();
-            foreach (var comment in comments)
-            {
-                this.commentRepository.Delete(comment);
-            }
-
+            // TODO: Delete comment's votes from the Votes table
+            this.commentRepository.Delete(comment);
             await this.commentRepository.SaveChangesAsync();
         }
 

@@ -6,6 +6,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
@@ -18,7 +19,7 @@
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
-        private readonly IDeletableEntityRepository<Comment> commentRepository;
+        private readonly IRepository<Comment> commentRepository;
         private readonly IRepository<Rating> ratingRepository;
         private readonly IRepository<Vote> voteRepository;
         private readonly ICategoriesService categoriesService;
@@ -30,7 +31,7 @@
             IRepository<AuthorBook> authorsBooksRepository,
             IDeletableEntityRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
-            IDeletableEntityRepository<Comment> commentRepository,
+            IRepository<Comment> commentRepository,
             IRepository<Rating> ratingRepository,
             IRepository<Vote> voteRepository,
             ICategoriesService categoriesService,

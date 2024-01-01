@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-[assembly: SuppressMessage("Microsoft.StyleCop.CSharp.OrderingRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Example justification.")]
-
-namespace Bookworm.Web
+﻿namespace Bookworm.Web
 {
     using System.Reflection;
 
@@ -31,28 +27,13 @@ namespace Bookworm.Web
                             .AddRoles<ApplicationRole>()
                             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.AddCors(o => o.AddPolicy("My Policy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-            }));
-
-            builder.Services.AddAuthentication()
-                .AddFacebook(options =>
-                {
-                    options.AppId = builder.Configuration["Facebook:AppId"];
-                    options.AppSecret = builder.Configuration["Facebook:AppSecret"];
-                });
-
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            builder.Services.AddControllersWithViews(
-                            options =>
+            builder.Services.AddControllersWithViews(options =>
                             {
                                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                             }).AddRazorRuntimeCompilation();
@@ -102,8 +83,7 @@ namespace Bookworm.Web
                 .UseCookiePolicy()
                 .UseRouting()
                 .UseAuthentication()
-                .UseAuthorization()
-                .UseCors("My Policy");
+                .UseAuthorization();
 
             app.MapControllerRoute(
                 name: "areaRoute",

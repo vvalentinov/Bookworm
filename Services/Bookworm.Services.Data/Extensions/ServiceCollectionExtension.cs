@@ -51,8 +51,7 @@
         {
             string connectionString = config.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(connectionString));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

@@ -25,15 +25,14 @@
                 {
                     Id = x.Id,
                     Name = x.Name,
-                })
-                .ToList();
+                }).ToList();
         }
 
         public string GetLanguageName(int languageId)
         {
             return this.languagesRepository
                 .AllAsNoTracking()
-                .First(l => l.Id == languageId)
+                .First(language => language.Id == languageId)
                 .Name;
         }
     }

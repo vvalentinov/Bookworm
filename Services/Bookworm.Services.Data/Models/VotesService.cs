@@ -5,6 +5,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts;
 
     public class VotesService : IVoteService
