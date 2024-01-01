@@ -4,6 +4,7 @@
     using System.ComponentModel.DataAnnotations.Schema;
 
     using Bookworm.Data.Common.Models;
+    using Bookworm.Data.Models.Enums;
 
     public class Vote : BaseModel<int>
     {

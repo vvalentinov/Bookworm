@@ -1,5 +1,4 @@
-﻿// ReSharper disable VirtualMemberCallInConstructor
-namespace Bookworm.Data.Models
+﻿namespace Bookworm.Data.Models
 {
     using System;
     using System.Collections.Generic;

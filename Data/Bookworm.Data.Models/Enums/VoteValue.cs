@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Data.Models
+﻿namespace Bookworm.Data.Models.Enums
 {
     public enum VoteValue
     {
