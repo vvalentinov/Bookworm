@@ -38,7 +38,8 @@
         {
             try
             {
-                await this.commentsService.DeleteAsync(commentId);
+                string userId = this.userManager.GetUserId(this.User);
+                await this.commentsService.DeleteAsync(commentId, userId);
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
             catch (InvalidOperationException exception)

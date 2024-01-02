@@ -1,6 +1,7 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Diphylleia&display=swap');
 
-@import "bookDetails.css";
+@import "./books/bookDetails.css";
+@import "books/bookUpload.css";
 
 :root {
     --clr-primary: #34495E;

@@ -15,7 +15,7 @@ addAuthorBtn.addEventListener('click', function () {
     inputElement.placeholder = 'Author\'s Name';
 
     let buttonElement = document.createElement('button');
-    buttonElement.className = 'btn btn-outline-danger';
+    buttonElement.className = 'btn btn-danger';
     buttonElement.type = 'button';
     buttonElement.id = 'deleteAuthorBtn';
     buttonElement.textContent = 'Remove';

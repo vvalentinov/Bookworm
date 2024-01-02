@@ -42,7 +42,7 @@
 
         [Display(Name = "Image File")]
         [Required(ErrorMessage = BookImageFileRequiredError)]
-        [ImageFileAllowedExtensionsAttribute(new string[] { ".jpg", ".jpeg", ".png" })]
+        [ImageFileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
         public IFormFile ImageFile { get; set; }
 
         [Display(Name = "Select Book Category")]

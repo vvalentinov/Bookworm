@@ -8,6 +8,6 @@
 
         string GetCommentUserId(int commentId);
 
-        Task DeleteAsync(int commentId);
+        Task DeleteAsync(int commentId, string userId);
     }
 }

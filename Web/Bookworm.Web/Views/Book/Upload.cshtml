@@ -7,96 +7,98 @@
 
 <partial name="PartialViews/_TitleCardPartial" />
 
-<form
-    method="post"
-    enctype="multipart/form-data"
-    class="col-8 mx-auto d-flex justify-content-center flex-column">
-    <div asp-validation-summary="All" class="small text-danger mt-3 fs-4"></div>
-    <div class="fs-4">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" type="text" class="form-control border border-2">
-        <span asp-validation-for="Title" class="small text-danger"></span>
-    </div>
-    <div class="d-flex justify-content-center gap-3">
-        <div class="mt-4 fs-4 w-50">
-            <label asp-for="LanguageId"></label>
-            <select
-                asp-for="LanguageId"
-                size="8"
-                aria-label="size 5 select example"
-                class="fs-5 form-select border border-2">
-                <vc:languages></vc:languages>
-            </select>
-            <span asp-validation-for="LanguageId" class="small text-danger"></span>
+<section class="uploadBookSection">
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="small text-danger"></div>
+        <div>
+            <label asp-for="Title"></label>
+            <input asp-for="Title" type="text" class="form-control">
+            <span asp-validation-for="Title" class="small text-danger"></span>
         </div>
-        <div class="mt-4 fs-4 w-50">
-            <label asp-for="CategoryId"></label>
-            <select
-                asp-for="CategoryId"
-                size="8"
-                aria-label="size 5 select example"
-                class="fs-5 form-select border border-2">
-                <vc:categories></vc:categories>
-            </select>
-            <span asp-validation-for="CategoryId" class="small text-danger"></span>
+        <div class="selectContainer">
+            <div class="mt-4">
+                <label asp-for="LanguageId"></label>
+                <select asp-for="LanguageId"
+                        size="8"
+                        aria-label="size 5 select example"
+                        class="fs-5 form-select">
+                    <vc:languages></vc:languages>
+                </select>
+                <span asp-validation-for="LanguageId" class="small text-danger"></span>
+            </div>
+            <div class="mt-4">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId"
+                        size="8"
+                        aria-label="size 5 select example"
+                        class="fs-5 form-select">
+                    <vc:categories></vc:categories>
+                </select>
+                <span asp-validation-for="CategoryId" class="small text-danger"></span>
+            </div>
         </div>
-    </div>
+        <div class="mt-4">
+            <label asp-for="PagesCount"></label>
+            <input asp-for="PagesCount" type="number" class="form-control">
+            <span asp-validation-for="PagesCount" class="small text-danger"></span>
+        </div>
+        <div class="mt-4">
+            <label asp-for="PublishedYear"></label>
+            <input asp-for="PublishedYear" type="number" class="form-control">
+            <span asp-validation-for="PublishedYear" class="small text-danger"></span>
+        </div>
+        <div class="mt-4">
+            <label asp-for="Publisher"></label>
+            <input asp-for="Publisher" type="text" class="form-control">
+            <span asp-validation-for="Publisher" class="small text-danger"></span>
+        </div>
+        <div class="mt-4">
+            <label asp-for="BookFile" class="form-label"></label>
+            <input asp-for="BookFile" type="file" class="form-control">
+            <span asp-validation-for="BookFile" class="small text-danger"></span>
+        </div>
+        <div class="mt-4">
+            <label asp-for="ImageFile" class="form-label"></label>
+            <input asp-for="ImageFile" type="file" class="form-control">
+            <span asp-validation-for="ImageFile" class="small text-danger"></span>
+        </div>
+        <div class="mt-4" id="authorsContainer" data-index="0">
+            <div id="alert-message"></div>
+            <button type="button"
+                    id="addAuthorBtn"
+                    class="btn button fs-5 w-100">
+                Add Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
+            </button>
+        </div>
+        <div class="mt-4">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"></textarea>
+            <span asp-validation-for="Description" class="small text-danger"></span>
+        </div>
+        <div class="text-center my-4">
+            <button type="submit" class="btn button fs-5">
+                <strong>Upload Book<i class="fas fa-upload icon ms-2"></i></strong>
+            </button>
+        </div>
+    </form>
+</section>
 
-    <div class="mt-4 fs-4">
-        <label asp-for="PagesCount"></label>
-        <input asp-for="PagesCount" type="number" class="form-control border border-2">
-        <span asp-validation-for="PagesCount" class="small text-danger"></span>
-    </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="PublishedYear"></label>
-        <input asp-for="PublishedYear" type="number" class="form-control border border-2">
-        <span asp-validation-for="PublishedYear" class="small text-danger"></span>
-    </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="Publisher"></label>
-        <input asp-for="Publisher" type="text" class="form-control border border-2">
-        <span asp-validation-for="Publisher" class="small text-danger"></span>
-    </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="BookFile" class="form-label"></label>
-        <input asp-for="BookFile" type="file" class="form-control border border-2">
-        <span asp-validation-for="BookFile" class="small text-danger"></span>
-    </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="ImageFile" class="form-label"></label>
-        <input asp-for="ImageFile" type="file" class="form-control border border-2">
-        <span asp-validation-for="ImageFile" class="small text-danger"></span>
-    </div>
-    <div class="mt-4" id="authorsContainer" data-index="0">
-        <div id="alert-message"></div>
-        <button
-            type="button"
-            id="addAuthorBtn"
-            class="btn button fs-5">
-            Add Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
-        </button>
-    </div>
-    <div class="mt-4 fs-4">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description"></textarea>
-        <span asp-validation-for="Description" class="small text-danger"></span>
-    </div>
-    <div class="text-center mt-4 mb-5">
-        <button
-            type="submit"
-            class="btn button fs-5">
-            <strong>Upload Book<i class="fas fa-upload icon ms-2"></i></strong>
-        </button>
-    </div>
-</form>
 
-@section Scripts{
+@section Scripts {
     <script src="~/js/authors.js"></script>
     <script src="~/lib/tinymce/tinymce.min.js"></script>
     <script>
         tinymce.init({
             selector: "textarea",
-            plugins: ["code", "image", "link", "lists", "preview", "searchreplace", "table", "wordcount"]
+            plugins: [
+                "code",
+                "image",
+                "link",
+                "lists",
+                "preview",
+                "searchreplace",
+                "table",
+                "wordcount"]
         });
     </script>
 }

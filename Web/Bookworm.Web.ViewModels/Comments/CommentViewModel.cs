@@ -22,8 +22,6 @@
 
         public string UserId { get; set; }
 
-        public string UserProfilePictureUrl { get; set; }
-
         public int UpVotesCount { get; set; }
 
         public int DownVotesCount { get; set; }

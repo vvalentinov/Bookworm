@@ -8,7 +8,6 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
@@ -19,16 +18,13 @@
     public class ValidateUploadedBookService : IValidateUploadedBookService
     {
         private readonly string[] permittedImageExtensions = { ".png", ".jpg", ".jpeg" };
-        private readonly IBlobService blobService;
         private readonly IRepository<Category> categoryRepository;
         private readonly IRepository<Language> languageRepository;
 
         public ValidateUploadedBookService(
-            IBlobService blobService,
             IRepository<Category> categoryRepository,
             IRepository<Language> languageRepository)
         {
-            this.blobService = blobService;
             this.categoryRepository = categoryRepository;
             this.languageRepository = languageRepository;
         }
@@ -81,6 +77,11 @@
             if (authors == null)
             {
                 throw new InvalidOperationException(BookMissingAuthorsError);
+            }
+
+            if (authors.Count() < 1 || authors.Count() > 5)
+            {
+                throw new InvalidOperationException("Authors must be between 1 and 5!");
             }
         }
     }

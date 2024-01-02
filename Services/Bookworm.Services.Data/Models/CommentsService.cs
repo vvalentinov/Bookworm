@@ -7,19 +7,26 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     public class CommentsService : ICommentsService
     {
         private readonly IRepository<Comment> commentRepository;
         private readonly IRepository<Vote> voteRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public CommentsService(
             IRepository<Comment> commentRepository,
-            IRepository<Vote> voteRepository)
+            IRepository<Vote> voteRepository,
+            IDeletableEntityRepository<ApplicationUser> userRepository,
+            UserManager<ApplicationUser> userManager)
         {
             this.commentRepository = commentRepository;
             this.voteRepository = voteRepository;
+            this.userRepository = userRepository;
+            this.userManager = userManager;
         }
 
         public async Task CreateAsync(
@@ -38,7 +45,7 @@
             await this.commentRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int commentId)
+        public async Task DeleteAsync(int commentId, string userId)
         {
             Comment comment = await this.commentRepository
                 .AllAsNoTracking()
@@ -49,7 +56,14 @@
                 throw new InvalidOperationException("Comment with given id not found!");
             }
 
-            // TODO: Delete comment's votes from the Votes table
+            ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
+            bool isAdmin = await this.userManager.IsInRoleAsync(user, "Administrator");
+
+            if (!isAdmin || comment.UserId != userId)
+            {
+                throw new InvalidOperationException("You have to be either the comment's author or an administrator to delete!");
+            }
+
             this.commentRepository.Delete(comment);
             await this.commentRepository.SaveChangesAsync();
         }

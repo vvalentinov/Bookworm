@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -9,6 +10,7 @@
     using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.EntityFrameworkCore;
@@ -54,7 +56,8 @@
         {
             Book book = await this.bookRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(book => book.Id == bookId);
+                .FirstOrDefaultAsync(book => book.Id == bookId) ??
+                throw new InvalidOperationException("No book with given id found!");
 
             string categoryName = await this.categoriesService.GetCategoryNameAsync(book.CategoryId);
 
@@ -107,28 +110,11 @@
             if (userId != null)
             {
                 List<CommentViewModel> comments = await this.commentRepository
-                .AllAsNoTracking()
-                .Where(comment => comment.BookId == bookId)
-                .Select(comment => new CommentViewModel()
-                {
-                    Id = comment.Id,
-                    UserId = comment.UserId,
-                    Content = comment.Content,
-                    CreatedOn = comment.CreatedOn,
-                    UserUserName = comment.User.UserName,
-                    DownVotesCount = this.voteRepository
-                                         .AllAsNoTracking()
-                                         .Where(vote => vote.CommentId == comment.Id && vote.Value == VoteValue.DownVote)
-                                         .Count(),
-                    UpVotesCount = this.voteRepository
-                                         .AllAsNoTracking()
-                                         .Where(vote => vote.CommentId == comment.Id && vote.Value == VoteValue.UpVote)
-                                         .Count(),
-                    UserVote = (int)this.voteRepository
-                                        .AllAsNoTracking()
-                                        .FirstOrDefault(v => v.UserId == userId && v.CommentId == comment.Id).Value,
-                })
-                .ToListAsync();
+                    .AllAsNoTracking()
+                    .Where(comment => comment.BookId == bookId)
+                    .OrderByDescending(comment => comment.CreatedOn)
+                    .To<CommentViewModel>()
+                    .ToListAsync();
 
                 model.Comments = comments;
 
