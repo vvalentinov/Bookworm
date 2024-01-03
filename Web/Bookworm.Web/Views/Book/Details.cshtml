@@ -94,21 +94,29 @@
                 <article class="card">
                     <div class="card-header">
                         <span>Posted by - @comment.UserUserName</span>
-                        @if (this.User.Identity.Name == comment.UserUserName)
+                        @if (
+                       this.User.Identity.Name == comment.UserUserName ||
+                       this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                         {
                             <div>
                                 <button class="btn btn-lg btn-danger modalBtn"
                                         data-model-id=@comment.Id
                                         data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">
+                                        data-bs-target="#deleteModal">
                                     Delete
                                 </button>
-                                <button class="btn btn-lg btn-warning">Edit</button>
+                                <button class="btn btn-lg btn-warning modalBtn"
+                                        onclick=editCommentFunc(this)
+                                        data-model-id=@comment.Id
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal">
+                                    Edit
+                                </button>
                             </div>
                         }
                     </div>
                     <div class="card-body">
-                        <p class="card-text">@Html.Raw(@comment.SanitizedContent)</p>
+                        @Html.Raw(@comment.SanitizedContent)
                     </div>
                 </article>
             }
@@ -116,8 +124,36 @@
     }
 </section>
 
+<div class="modal fade modal-lg"
+     id="editModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Comment</h1>
+            </div>
+            <form method="post" asp-controller="Comment" asp-action="Edit">
+                <input type="hidden" name="commentId" class="modelIdInput" value="" />
+                <div class="modal-body">
+                    <textarea name="content" class="form-control" rows="15"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade"
-     id="exampleModal"
+     id="deleteModal"
      tabindex="-1"
      aria-labelledby="exampleModalLabel"
      aria-hidden="true">
@@ -145,6 +181,7 @@
 
 @section Scripts {
     <script src="~/js/modal.js"></script>
+    <script src="~/js/editComment.js"></script>
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         tinymce.init({
