@@ -137,10 +137,11 @@
             <form method="post" asp-controller="Comment" asp-action="Edit">
                 <input type="hidden" name="commentId" class="modelIdInput" value="" />
                 <div class="modal-body">
-                    <textarea name="content" class="form-control" rows="15"></textarea>
+                    <input type="hidden" name="bookId" value=@Model.Id />
+                    <textarea name="content" rows="15"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+                    <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">
                         Edit
                     </button>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -186,7 +187,7 @@
     <script type="text/javascript">
         tinymce.init({
             selector: "textarea",
-            plugins: "image table link code wordcount lists preview searchreplace"
+            plugins: "table link code wordcount lists preview searchreplace"
         });
     </script>
 }

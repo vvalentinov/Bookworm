@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System;
+    using System.Net;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -28,9 +29,17 @@
         [Authorize]
         public async Task<IActionResult> Post([Bind(Prefix = "PostComment")] PostCommentInputModel model)
         {
-            string userId = this.userManager.GetUserId(this.User);
-            await this.commentsService.CreateAsync(userId, model.Content, model.BookId);
-            return this.RedirectToAction("Details", "Book", new { id = model.BookId });
+            try
+            {
+                string userId = this.userManager.GetUserId(this.User);
+                await this.commentsService.CreateAsync(userId, model.Content, model.BookId);
+                return this.RedirectToAction("Details", "Book", new { id = model.BookId });
+            }
+            catch (InvalidOperationException exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                return this.RedirectToAction("Details", "Book", new { id = model.BookId });
+            }
         }
 
         [Authorize]
@@ -40,6 +49,23 @@
             {
                 string userId = this.userManager.GetUserId(this.User);
                 await this.commentsService.DeleteAsync(commentId, userId);
+                return this.RedirectToAction("Details", "Book", new { id = bookId });
+            }
+            catch (InvalidOperationException exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                return this.RedirectToAction("Details", "Book", new { id = bookId });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Edit(int commentId, string content, string bookId)
+        {
+            try
+            {
+                string userId = this.userManager.GetUserId(this.User);
+                await this.commentsService.EditAsync(commentId, content, userId);
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
             catch (InvalidOperationException exception)
