@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.Controllers
+﻿namespace Bookworm.Web.Controllers.Api
 {
     using System.Threading.Tasks;
 
@@ -10,13 +10,13 @@
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
-    [Route("api/[controller]")]
-    public class VoteController : BaseController
+    [Route("[controller]")]
+    public class ApiVoteController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IVoteService voteService;
 
-        public VoteController(
+        public ApiVoteController(
             UserManager<ApplicationUser> userManager,
             IVoteService voteService)
         {
@@ -24,16 +24,15 @@
             this.voteService = voteService;
         }
 
+        [HttpPost(nameof(Post))]
         [Authorize]
-        [HttpPost]
         public async Task<ActionResult<VoteResponseModel>> Post(VoteInputModel input)
         {
-            string user = this.userManager.GetUserId(this.User);
+            string userId = this.userManager.GetUserId(this.User);
 
-            await this.voteService.VoteAsync(input.CommentId, user, input.IsUpVote);
-            var upVotes = this.voteService.GetUpVotesCount(input.CommentId);
-            var downVotes = this.voteService.GetDownVotesCount(input.CommentId);
-            return new VoteResponseModel { UpVotesCount = upVotes, DownVotesCount = downVotes, CommentId = input.CommentId };
+            int commentNetWorth = await this.voteService.VoteAsync(input.CommentId, userId, input.IsUpVote);
+
+            return new JsonResult(commentNetWorth);
         }
     }
 }

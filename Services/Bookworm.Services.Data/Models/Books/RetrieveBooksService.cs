@@ -152,9 +152,9 @@
                                 Title = x.Title,
                                 ImageUrl = x.ImageUrl,
                             })
+                            .OrderByDescending(x => x.Id)
                             .Skip((page - 1) * booksPerPage)
                             .Take(booksPerPage)
-                            .OrderByDescending(x => x.Id)
                             .ToListAsync(),
                 PageNumber = page,
                 BookCount = await this.bookRepository

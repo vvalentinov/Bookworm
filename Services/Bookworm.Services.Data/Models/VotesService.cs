@@ -17,28 +17,11 @@
             this.voteRepository = voteRepository;
         }
 
-        public int GetDownVotesCount(int commentId)
-        {
-            return this.voteRepository
-                .AllAsNoTracking()
-                .Where(x => x.Value == VoteValue.DownVote && x.CommentId == commentId)
-                .Count();
-        }
-
-        public int GetUpVotesCount(int commentId)
-        {
-            int count = this.voteRepository
-                .AllAsNoTracking()
-                .Where(x => x.Value == VoteValue.UpVote && x.CommentId == commentId)
-                .Count();
-            return count;
-        }
-
-        public async Task VoteAsync(int commentId, string userId, bool isUpVote)
+        public async Task<int> VoteAsync(int commentId, string userId, bool isUpVote)
         {
             Vote vote = this.voteRepository
                 .All()
-                .FirstOrDefault(x => x.UserId == userId && x.CommentId == commentId);
+                .FirstOrDefault(v => v.UserId == userId && v.CommentId == commentId);
 
             if (vote == null)
             {
@@ -57,6 +40,27 @@
             }
 
             await this.voteRepository.SaveChangesAsync();
+
+            int commentNetWorth = this.GetCommentNetWorth(commentId);
+
+            return commentNetWorth;
+        }
+
+        private int GetCommentNetWorth(int commentId)
+        {
+            int downVotesCount = this.voteRepository
+                .AllAsNoTracking()
+                .Where(v => v.Value == VoteValue.DownVote && v.CommentId == commentId)
+                .Count();
+
+            int upVotesCount = this.voteRepository
+                .AllAsNoTracking()
+                .Where(v => v.Value == VoteValue.UpVote && v.CommentId == commentId)
+                .Count();
+
+            int netWorth = upVotesCount - downVotesCount;
+
+            return netWorth;
         }
     }
 }

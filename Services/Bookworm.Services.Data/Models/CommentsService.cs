@@ -76,7 +76,7 @@
 
             bool isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
 
-            if (!isAdmin || comment.UserId != userId)
+            if (!isAdmin && comment.UserId != userId)
             {
                 throw new InvalidOperationException("You have to be either the comment's author or an administrator to edit it!");
             }
