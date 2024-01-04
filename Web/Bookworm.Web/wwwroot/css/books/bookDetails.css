@@ -112,3 +112,23 @@
             align-items: center;
             justify-content: space-between;
         }
+
+            .commentsSection .card .card-header .arrowsContainer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 2.5rem;
+                gap: 1rem;
+            }
+
+                .commentsSection .card .card-header .arrowsContainer i:hover {
+                    cursor: pointer;
+                }
+
+.upVoteArrow {
+    color: green;
+}
+
+.downVoteArrow {
+    color: red;
+}

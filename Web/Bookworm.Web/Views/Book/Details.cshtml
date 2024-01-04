@@ -1,8 +1,15 @@
 ﻿@model BookViewModel
+@using Bookworm.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
     this.ViewData["Title"] = Model.Title;
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <section class="bookDetailsInfoSection">
     <div>
@@ -94,25 +101,34 @@
                 <article class="card">
                     <div class="card-header">
                         <span>Posted by - @comment.UserUserName</span>
-                        @if (
-                       this.User.Identity.Name == comment.UserUserName ||
-                       this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                        @if (this.SignInManager.IsSignedIn(this.User))
                         {
-                            <div>
-                                <button class="btn btn-lg btn-danger modalBtn"
-                                        data-model-id=@comment.Id
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal">
-                                    Delete
-                                </button>
-                                <button class="btn btn-lg btn-warning modalBtn"
-                                        onclick=editCommentFunc(this)
-                                        data-model-id=@comment.Id
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editModal">
-                                    Edit
-                                </button>
-                            </div>
+                            @if (this.User.Identity.Name == comment.UserUserName || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                            {
+                                <div>
+                                    <button class="btn btn-lg btn-danger modalBtn"
+                                            data-model-id=@comment.Id
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal">
+                                        Delete
+                                    </button>
+                                    <button class="btn btn-lg btn-warning modalBtn"
+                                            onclick=editCommentFunc(this)
+                                            data-model-id=@comment.Id
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal">
+                                        Edit
+                                    </button>
+                                </div>
+                            }
+                            @if (this.User.Identity.Name != comment.UserUserName)
+                            {
+                                <div class="arrowsContainer">
+                                    <i data-model-id=@comment.Id class="fas fa-circle-up"></i>
+                                    <span>13</span>
+                                    <i data-model-id=@comment.Id class="fas fa-circle-down"></i>
+                                </div>
+                            }
                         }
                     </div>
                     <div class="card-body">
@@ -182,6 +198,7 @@
 
 @section Scripts {
     <script src="~/js/modal.js"></script>
+    <script src="~/js/vote.js"></script>
     <script src="~/js/editComment.js"></script>
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
     <script type="text/javascript">
