@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -100,10 +101,14 @@
             ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
             bool isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
 
-            if (!isAdmin || comment.UserId != userId)
+            if (!isAdmin && comment.UserId != userId)
             {
                 throw new InvalidOperationException("You have to be either the comment's author or an administrator to delete!");
             }
+
+            List<Vote> votes = await this.voteRepository.All().Where(v => v.CommentId == commentId).ToListAsync();
+            this.voteRepository.RemoveRange(votes);
+            await this.voteRepository.SaveChangesAsync();
 
             this.commentRepository.Delete(comment);
             await this.commentRepository.SaveChangesAsync();

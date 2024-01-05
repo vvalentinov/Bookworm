@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -126,7 +127,7 @@
             Mock<IDeletableEntityRepository<Publisher>> mockPublisherRepo = new Mock<IDeletableEntityRepository<Publisher>>();
             mockPublisherRepo.Setup(x => x.AllAsNoTracking()).Returns(this.publishers.AsQueryable());
 
-            Mock<IDeletableEntityRepository<Comment>> mockCommentRepo = new Mock<IDeletableEntityRepository<Comment>>();
+            Mock<IRepository<Comment>> mockCommentRepo = new Mock<IRepository<Comment>>();
             mockCommentRepo.Setup(x => x.AllAsNoTracking()).Returns(this.comments.AsQueryable());
             mockCommentRepo.Setup(x => x.All()).Returns(this.comments.AsQueryable());
 

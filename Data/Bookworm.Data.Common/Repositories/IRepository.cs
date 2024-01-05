@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Data.Common.Repositories
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -12,6 +13,8 @@
         IQueryable<TEntity> AllAsNoTracking();
 
         Task AddAsync(TEntity entity);
+
+        void RemoveRange(List<TEntity> entities);
 
         void Update(TEntity entity);
 
