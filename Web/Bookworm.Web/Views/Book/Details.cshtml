@@ -104,6 +104,32 @@
                         @if (this.SignInManager.IsSignedIn(this.User))
                         {
                             <div class="commentActionsContainer">
+                                @if (this.User.Identity.Name != comment.UserUserName)
+                                {
+                                    <div class="arrowsContainer">
+                                        @if (@comment.UserVoteValue == 1)
+                                        {
+                                            <i onclick=onUpArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-up greenUpArrow"></i>
+                                        }
+                                        else
+                                        {
+                                            <i onclick=onUpArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-up"></i>
+                                        }
+                                        <span>@comment.NetWorth</span>
+                                        @if (@comment.UserVoteValue == -1)
+                                        {
+                                            <i onclick=onDownArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-down redDownArrow"></i>
+                                        }
+                                        else
+                                        {
+                                            <i onclick=onDownArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-down"></i>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span>Score: @comment.NetWorth</span>
+                                }
                                 @if (this.User.Identity.Name == comment.UserUserName || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                                 {
                                     <button class="btn btn-lg btn-danger modalBtn"
@@ -119,28 +145,6 @@
                                             data-bs-target="#editModal">
                                         Edit
                                     </button>
-                                }
-                                @if (this.User.Identity.Name != comment.UserUserName)
-                                {
-                                    <div class="arrowsContainer">
-                                        @if (@comment.VoteValue == 1)
-                                        {
-                                            <i onclick=onUpArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-up greenUpArrow"></i>
-                                        }
-                                        else
-                                        {
-                                            <i onclick=onUpArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-up"></i>
-                                        }
-                                        <span>@comment.NetWorth</span>
-                                        @if (@comment.VoteValue == -1)
-                                        {
-                                            <i onclick=onDownArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-down redDownArrow"></i>
-                                        }
-                                        else
-                                        {
-                                            <i onclick=onDownArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-down"></i>
-                                        }
-                                    </div>
                                 }
                             </div>
                         }

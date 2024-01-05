@@ -7,7 +7,6 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Mapping;
@@ -119,6 +118,15 @@
 
             if (userId != null)
             {
+                foreach (var comment in comments)
+                {
+                    Vote vote = await this.voteRepository
+                        .AllAsNoTracking()
+                        .FirstOrDefaultAsync(v => v.UserId == userId && v.CommentId == comment.Id);
+
+                    comment.UserVoteValue = vote == null ? 0 : (int)vote.Value;
+                }
+
                 bool isFavorite = await this.favoriteBookRepository
                     .AllAsNoTracking()
                     .AnyAsync(x => x.BookId == bookId && x.UserId == userId);

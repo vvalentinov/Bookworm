@@ -1,14 +1,12 @@
 ﻿namespace Bookworm.Web.ViewModels.Comments
 {
     using System;
-    using System.Linq;
 
-    using AutoMapper;
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
     using Ganss.Xss;
 
-    public class CommentViewModel : IMapFrom<Comment>, IHaveCustomMappings
+    public class CommentViewModel : IMapFrom<Comment>
     {
         public int Id { get; set; }
 
@@ -24,14 +22,6 @@
 
         public string UserId { get; set; }
 
-        public int VoteValue { get; set; }
-
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Comment, CommentViewModel>()
-                .ForMember(x => x.VoteValue, opt =>
-                    opt.MapFrom(x =>
-                        x.Votes.FirstOrDefault() == null ? 0 : x.Votes.FirstOrDefault().Value));
-        }
+        public int UserVoteValue { get; set; }
     }
 }

@@ -26,7 +26,7 @@
 
         [HttpPost(nameof(Post))]
         [Authorize]
-        public async Task<ActionResult<VoteResponseModel>> Post(VoteInputModel input)
+        public async Task<JsonResult> Post(VoteInputModel input)
         {
             string userId = this.userManager.GetUserId(this.User);
 
