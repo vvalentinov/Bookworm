@@ -7,14 +7,17 @@
     using Bookworm.Data.Models;
     using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts;
+    using Microsoft.EntityFrameworkCore;
 
     public class VotesService : IVoteService
     {
         private readonly IRepository<Vote> voteRepository;
+        private readonly IRepository<Comment> commentRepository;
 
-        public VotesService(IRepository<Vote> voteRepository)
+        public VotesService(IRepository<Vote> voteRepository, IRepository<Comment> commentRepository)
         {
             this.voteRepository = voteRepository;
+            this.commentRepository = commentRepository;
         }
 
         public async Task<int> VoteAsync(int commentId, string userId, bool isUpVote)
@@ -42,6 +45,11 @@
             await this.voteRepository.SaveChangesAsync();
 
             int commentNetWorth = this.GetCommentNetWorth(commentId);
+
+            Comment comment = await this.commentRepository.All().FirstAsync(c => c.Id == commentId);
+            comment.NetWorth = commentNetWorth;
+            this.commentRepository.Update(comment);
+            await this.commentRepository.SaveChangesAsync();
 
             return commentNetWorth;
         }

@@ -105,7 +105,7 @@
                         {
                             @if (this.User.Identity.Name == comment.UserUserName || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                             {
-                                <div>
+                                <div class="d-flex">
                                     <button class="btn btn-lg btn-danger modalBtn"
                                             data-model-id=@comment.Id
                                             data-bs-toggle="modal"
@@ -119,13 +119,14 @@
                                             data-bs-target="#editModal">
                                         Edit
                                     </button>
+                                    
                                 </div>
                             }
                             @if (this.User.Identity.Name != comment.UserUserName)
                             {
                                 <div class="arrowsContainer">
                                     <i data-model-id=@comment.Id class="fas fa-circle-up"></i>
-                                    <span>13</span>
+                                    <span>@comment.NetWorth</span>
                                     <i data-model-id=@comment.Id class="fas fa-circle-down"></i>
                                 </div>
                             }

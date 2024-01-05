@@ -113,6 +113,7 @@
                     .AllAsNoTracking()
                     .Where(comment => comment.BookId == bookId)
                     .OrderByDescending(comment => comment.CreatedOn)
+                    .OrderByDescending(comment => comment.NetWorth)
                     .To<CommentViewModel>()
                     .ToListAsync();
 
