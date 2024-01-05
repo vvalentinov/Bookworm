@@ -1,8 +1,12 @@
-const upArrow = document.querySelector('.fas.fa-circle-up');
-const downArrow = document.querySelector('.fas.fa-circle-down');
+function onUpArrowClick(upArrow) {
+    const arrowContainer = upArrow.parentNode;
+    const spanEl = arrowContainer.children[1];
+    const downArrow = arrowContainer.children[2];
 
-upArrow.addEventListener('click', function () {
-    const commentId = this.getAttribute('data-model-id');
+    downArrow.style.color = 'white';
+    upArrow.style.color = 'green';
+
+    const commentId = upArrow.getAttribute('data-model-id');
 
     var token = document.getElementById("RequestVerificationToken").value;
 
@@ -20,15 +24,19 @@ upArrow.addEventListener('click', function () {
         body: JSON.stringify(input)
     })
         .then(response => response.json())
-        .then(data => {
-            const spanElement = document.querySelector('.arrowsContainer').children[1];
-            spanElement.textContent = data;
-        })
+        .then(data => spanEl.textContent = data)
         .catch(error => console.log(error));
-});
+};
 
-downArrow.addEventListener('click', function () {
-    const commentId = this.getAttribute('data-model-id');
+function onDownArrowClick(downArrow) {
+    const arrowContainer = downArrow.parentNode;
+    const spanEl = arrowContainer.children[1];
+    const upArrow = arrowContainer.children[0];
+
+    downArrow.style.color = 'red';
+    upArrow.style.color = 'white';
+
+    const commentId = downArrow.getAttribute('data-model-id');
 
     var token = document.getElementById("RequestVerificationToken").value;
 
@@ -46,9 +54,6 @@ downArrow.addEventListener('click', function () {
         body: JSON.stringify(input)
     })
         .then(response => response.json())
-        .then(data => {
-            const spanElement = document.querySelector('.arrowsContainer').children[1];
-            spanElement.textContent = data;
-        })
+        .then(data => spanEl.textContent = data)
         .catch(error => console.log(error));
-});
+};

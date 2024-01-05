@@ -107,9 +107,7 @@
                 RatingsCount = votesCount,
             };
 
-            if (userId != null)
-            {
-                List<CommentViewModel> comments = await this.commentRepository
+            List<CommentViewModel> comments = await this.commentRepository
                     .AllAsNoTracking()
                     .Where(comment => comment.BookId == bookId)
                     .OrderByDescending(comment => comment.CreatedOn)
@@ -117,8 +115,10 @@
                     .To<CommentViewModel>()
                     .ToListAsync();
 
-                model.Comments = comments;
+            model.Comments = comments;
 
+            if (userId != null)
+            {
                 bool isFavorite = await this.favoriteBookRepository
                     .AllAsNoTracking()
                     .AnyAsync(x => x.BookId == bookId && x.UserId == userId);
