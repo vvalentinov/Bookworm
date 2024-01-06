@@ -6,6 +6,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Microsoft.EntityFrameworkCore;
 
     public class RatingsService : IRatingsService
     {
@@ -16,38 +17,39 @@
             this.ratingRepository = ratingRepository;
         }
 
-        public double GetAverageVotes(string bookId)
+        public async Task<double> GetAverageRatingAsync(string bookId)
         {
-            return this.ratingRepository
+            return await this.ratingRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
-                .Average(x => x.Value);
+                .AverageAsync(x => x.Value);
         }
 
-        public int? GetUserVote(string bookId, string userId)
+        public async Task<int> GetUserRatingAsync(string bookId, string userId)
         {
-            return this.ratingRepository
+            Rating rating = await this.ratingRepository
                  .AllAsNoTracking()
-                 .FirstOrDefault(x => x.BookId == bookId && x.UserId == userId)
-                 .Value;
+                 .FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId);
+
+            return rating == null ? 0 : rating.Value;
         }
 
-        public int GetVotesCount(string bookId)
+        public async Task<int> GetRatingsCountAsync(string bookId)
         {
-            return this.ratingRepository
+            return await this.ratingRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
-                .Count();
+                .CountAsync();
         }
 
-        public async Task SetVoteAsync(
+        public async Task SetRatingAsync(
             string bookId,
             string userId,
             byte value)
         {
-            Rating rating = this.ratingRepository
+            Rating rating = await this.ratingRepository
                 .All()
-                .FirstOrDefault(x => x.BookId == bookId && x.UserId == userId);
+                .FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId);
 
             if (rating == null)
             {
@@ -55,12 +57,17 @@
                 {
                     BookId = bookId,
                     UserId = userId,
+                    Value = value,
                 };
 
                 await this.ratingRepository.AddAsync(rating);
             }
+            else
+            {
+                rating.Value = value;
+                this.ratingRepository.Update(rating);
+            }
 
-            rating.Value = value;
             await this.ratingRepository.SaveChangesAsync();
         }
     }

@@ -21,11 +21,11 @@
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
         private readonly IRepository<Comment> commentRepository;
-        private readonly IRepository<Rating> ratingRepository;
         private readonly IRepository<Vote> voteRepository;
+        private readonly IRepository<FavoriteBook> favoriteBookRepository;
         private readonly ICategoriesService categoriesService;
         private readonly ILanguagesService languagesService;
-        private readonly IRepository<FavoriteBook> favoriteBookRepository;
+        private readonly IRatingsService ratingsService;
 
         public RetrieveBooksService(
             IDeletableEntityRepository<Book> bookRepository,
@@ -33,22 +33,22 @@
             IDeletableEntityRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
             IRepository<Comment> commentRepository,
-            IRepository<Rating> ratingRepository,
             IRepository<Vote> voteRepository,
             ICategoriesService categoriesService,
             ILanguagesService languagesService,
-            IRepository<FavoriteBook> favoriteBookRepository)
+            IRepository<FavoriteBook> favoriteBookRepository,
+            IRatingsService ratingsService)
         {
             this.bookRepository = bookRepository;
             this.authorsBooksRepository = authorsBooksRepository;
             this.authorRepository = authorRepository;
             this.publishersRepository = publishersRepository;
             this.commentRepository = commentRepository;
-            this.ratingRepository = ratingRepository;
             this.voteRepository = voteRepository;
             this.categoriesService = categoriesService;
             this.languagesService = languagesService;
             this.favoriteBookRepository = favoriteBookRepository;
+            this.ratingsService = ratingsService;
         }
 
         public async Task<BookViewModel> GetBookWithIdAsync(string bookId, string userId = null)
@@ -80,12 +80,12 @@
 
             string language = this.languagesService.GetLanguageName(book.LanguageId);
 
-            double votesAvg = 0;
-            int votesCount = this.ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Count();
+            double ratingsAvg = 0;
+            int ratingsCount = await this.ratingsService.GetRatingsCountAsync(bookId);
 
-            if (votesCount > 0)
+            if (ratingsCount > 0)
             {
-                votesAvg = this.ratingRepository.AllAsNoTracking().Where(x => x.BookId == bookId).Average(x => x.Value);
+                ratingsAvg = await this.ratingsService.GetAverageRatingAsync(bookId);
             }
 
             BookViewModel model = new BookViewModel()
@@ -102,8 +102,8 @@
                 Authors = authors,
                 PublisherName = publisherName,
                 CategoryName = categoryName,
-                RatingsAvg = votesAvg,
-                RatingsCount = votesCount,
+                RatingsAvg = ratingsAvg,
+                RatingsCount = ratingsCount,
             };
 
             List<CommentViewModel> comments = await this.commentRepository
@@ -134,13 +134,10 @@
                 model.IsFavorite = isFavorite;
                 model.IsUserBook = book.UserId == userId;
 
-                Rating rating = await this.ratingRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(rating => rating.BookId == bookId && rating.UserId == userId);
-
-                if (rating != null)
+                int rating = await this.ratingsService.GetUserRatingAsync(bookId, userId);
+                if (rating != 0)
                 {
-                    model.UserRating = rating.Value;
+                    model.UserRating = rating;
                 }
             }
 
