@@ -41,13 +41,14 @@
 
 .bookDetailsActionsSection {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     gap: 3rem;
-    margin: 2rem 0;
+    padding: 2rem 0;
+    border: solid 2px black;
 }
 
-    .bookDetailsActionsSection a {
-        flex-basis: 50%;
+    .bookDetailsActionsSection a,
+    .bookDetailsActionsSection button {
         font-size: 1.4rem;
         border: solid 2px black;
     }
@@ -141,4 +142,46 @@
 
 .redDownArrow {
     color: red;
+}
+
+/*Rating*/
+.rating-wrapper {
+    align-self: center;
+    border-radius: 5rem;
+    display: inline-flex;
+    direction: rtl !important;
+    padding: 1.5rem 2.5rem;
+    margin-left: auto;
+    border: solid 2px #1abc9c;
+}
+
+    .rating-wrapper label {
+        color: #E1E6F6;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 3rem;
+        padding: 1rem .6rem;
+        transition: color 0.5s;
+    }
+
+    .rating-wrapper input {
+        height: 100%;
+        width: 100%;
+    }
+
+    .rating-wrapper input {
+        display: none;
+    }
+
+        .rating-wrapper label:hover,
+        .rating-wrapper label:hover ~ label,
+        .rating-wrapper input:checked ~ label {
+            color: #34AC9E;
+        }
+
+            .rating-wrapper label:hover,
+            .rating-wrapper label:hover ~ label,
+            .rating-wrapper input:checked ~ label {
+                color: #34AC9E;
+            }
 }

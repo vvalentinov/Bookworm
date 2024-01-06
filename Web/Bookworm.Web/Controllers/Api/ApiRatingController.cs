@@ -9,8 +9,8 @@
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
-    [Route("api/[controller]")]
-    public class ApiRatingController : BaseController
+    [Route("[controller]")]
+    public class ApiRatingController : ControllerBase
     {
         private readonly IRatingsService votesService;
 
@@ -19,7 +19,7 @@
             this.votesService = votesService;
         }
 
-        [HttpPost]
+        [HttpPost(nameof(Post))]
         [Authorize]
         public async Task<ActionResult<RatingResponseModel>> Post(RatingInputModel model)
         {

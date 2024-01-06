@@ -6,7 +6,7 @@
 
 @{
     this.ViewData["Title"] = Model.Title;
-    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
@@ -46,6 +46,10 @@
                 <span>/5.0</span>
                 <span>(Ratings count: <span>@Model.RatingsCount</span>)</span>
             </span>
+            @if (this.SignInManager.IsSignedIn(this.User))
+            {
+                <span>Your Rating: <span>@Model.RatingsAvg.ToString("f1")</span></span>
+            }
         </li>
         <li class="list-group-item">
             <dl>
@@ -59,14 +63,22 @@
     </ul>
 </section>
 
-<section class="bookDetailsActionsSection">
-    <a class="btn btn-lg button"
-       asp-controller="Book"
-       asp-action="Download"
-       asp-route-id="@Model.Id">
-        Download<i class="fas fa-download icon ms-2"></i>
-    </a>
-</section>
+@if (this.SignInManager.IsSignedIn(this.User))
+{
+    <section class="bookDetailsActionsSection">
+        <a class="btn btn-lg button"
+           asp-controller="Book"
+           asp-action="Download"
+           asp-route-id="@Model.Id">
+            Download<i class="fas fa-download icon ms-2"></i>
+        </a>
+        <button class="btn btn-lg button"
+                data-bs-toggle="modal"
+                data-bs-target="#ratingModal">
+            Rate Book<i class="fas fa-star icon ms-2"></i>
+        </button>
+    </section>
+}
 
 <section class="bookDetailsDescSection">
     <div class="card">
@@ -109,20 +121,28 @@
                                     <div class="arrowsContainer">
                                         @if (@comment.UserVoteValue == 1)
                                         {
-                                            <i onclick=onUpArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-up greenUpArrow"></i>
+                                            <i onclick=onUpArrowClick(this)
+                                               data-model-id=@comment.Id
+                                               class="fas fa-circle-up greenUpArrow"></i>
                                         }
                                         else
                                         {
-                                            <i onclick=onUpArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-up"></i>
+                                            <i onclick=onUpArrowClick(this)
+                                               data-model-id=@comment.Id
+                                               class="fas fa-circle-up"></i>
                                         }
                                         <span>@comment.NetWorth</span>
                                         @if (@comment.UserVoteValue == -1)
                                         {
-                                            <i onclick=onDownArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-down redDownArrow"></i>
+                                            <i onclick=onDownArrowClick(this)
+                                               data-model-id=@comment.Id
+                                               class="fas fa-circle-down redDownArrow"></i>
                                         }
                                         else
                                         {
-                                            <i onclick=onDownArrowClick(this) data-model-id=@comment.Id class="fas fa-circle-down"></i>
+                                            <i onclick=onDownArrowClick(this)
+                                               data-model-id=@comment.Id
+                                               class="fas fa-circle-down"></i>
                                         }
                                     </div>
                                 }
@@ -214,7 +234,66 @@
     </div>
 </div>
 
+<div class="modal fade"
+     id="ratingModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Rate Book</h1>
+            </div>
+            <div class="modal-body">
+                <div class="container-wrapper">
+                    <div class="container d-flex align-items-center justify-content-center">
+                        <div class="row justify-content-center">
+                            <!-- star rating -->
+                            <div class="rating-wrapper">
+                                <!-- star 5 -->
+                                <input type="radio" id="5-star-rating" name="star-rating" value="5">
+                                <label for="5-star-rating" class="star-rating">
+                                    <i class="fas fa-star d-inline-block"></i>
+                                </label>
+                                <!-- star 4 -->
+                                <input type="radio" id="4-star-rating" name="star-rating" value="4">
+                                <label for="4-star-rating" class="star-rating star">
+                                    <i class="fas fa-star d-inline-block"></i>
+                                </label>
+                                <!-- star 3 -->
+                                <input type="radio" id="3-star-rating" name="star-rating" value="3">
+                                <label for="3-star-rating" class="star-rating star">
+                                    <i class="fas fa-star d-inline-block"></i>
+                                </label>
+                                <!-- star 2 -->
+                                <input type="radio" id="2-star-rating" name="star-rating" value="2">
+                                <label for="2-star-rating" class="star-rating star">
+                                    <i class="fas fa-star d-inline-block"></i>
+                                </label>
+                                <!-- star 1 -->
+                                <input type="radio" id="1-star-rating" name="star-rating" value="1">
+                                <label for="1-star-rating" class="star-rating star">
+                                    <i class="fas fa-star d-inline-block"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button data-model-id="@Model.Id" id="rateBtn" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    Rate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+    <script src="~/js/rating.js"></script>
     <script src="~/js/modal.js"></script>
     <script src="~/js/vote.js"></script>
     <script src="~/js/editComment.js"></script>
