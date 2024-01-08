@@ -16,7 +16,9 @@
         private readonly IRatingsService ratingService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public ApiRatingController(IRatingsService ratingService, UserManager<ApplicationUser> userManager)
+        public ApiRatingController(
+            IRatingsService ratingService,
+            UserManager<ApplicationUser> userManager)
         {
             this.ratingService = ratingService;
             this.userManager = userManager;

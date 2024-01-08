@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    min-height: calc(100vh - 80px);
+    padding-top: 2rem;
 }
 
     .bookDetailsInfoSection div {
@@ -21,7 +21,7 @@
         flex-basis: 65%;
         border-radius: 15px;
         border: solid 2.5px black;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
 
         .bookDetailsInfoSection ul a {
@@ -44,7 +44,6 @@
     justify-content: space-evenly;
     gap: 3rem;
     padding: 2rem 0;
-    border: solid 2px black;
 }
 
     .bookDetailsActionsSection a,
@@ -184,4 +183,3 @@
             .rating-wrapper input:checked ~ label {
                 color: #34AC9E;
             }
-}

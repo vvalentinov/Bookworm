@@ -41,15 +41,17 @@
             <li class="list-group-item">Comments: 0</li>
         }
         <li class="list-group-item">
-            <span>
-                Average Score: <span>@Model.RatingsAvg.ToString("f1")</span>
-                <span>/5.0</span>
-                <span>(Ratings count: <span>@Model.RatingsCount</span>)</span>
-            </span>
-            @if (this.SignInManager.IsSignedIn(this.User))
-            {
-                <span>Your Rating: <span>@Model.RatingsAvg.ToString("f1")</span></span>
-            }
+            <div>
+                <p>Average Rating:
+                    <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
+                    <span>/5.0</span>
+                    <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
+                </p>
+                @if (this.SignInManager.IsSignedIn(this.User))
+                {
+                    <span>Your Rating: <span class="bookUserRating">@Model.RatingsAvg.ToString("f1")</span></span>
+                }
+            </div>
         </li>
         <li class="list-group-item">
             <dl>
@@ -72,11 +74,14 @@
            asp-route-id="@Model.Id">
             Download<i class="fas fa-download icon ms-2"></i>
         </a>
-        <button class="btn btn-lg button"
-                data-bs-toggle="modal"
-                data-bs-target="#ratingModal">
-            Rate Book<i class="fas fa-star icon ms-2"></i>
-        </button>
+        @if (Model.IsUserBook == false)
+        {
+            <button class="btn btn-lg button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#ratingModal">
+                Rate Book<i class="fas fa-star icon ms-2"></i>
+            </button>
+        }
     </section>
 }
 

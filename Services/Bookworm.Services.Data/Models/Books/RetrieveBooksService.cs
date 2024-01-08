@@ -104,6 +104,7 @@
                 CategoryName = categoryName,
                 RatingsAvg = ratingsAvg,
                 RatingsCount = ratingsCount,
+                IsUserBook = book.UserId == userId,
             };
 
             List<CommentViewModel> comments = await this.commentRepository

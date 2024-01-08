@@ -9,7 +9,12 @@ function getCheckedButton() {
 
 var rateButton = document.getElementById('rateBtn');
 rateButton.addEventListener('click', function () {
-    const checkedInputValue = getCheckedButton().value;
+    const checkedInput = getCheckedButton();
+    if (!checkedInput) {
+        return;
+    }
+
+    const checkedInputValue = checkedInput.value;
 
     const bookId = this.getAttribute('data-model-id');
     var token = document.getElementById("RequestVerificationToken").value;
@@ -28,6 +33,14 @@ rateButton.addEventListener('click', function () {
         body: JSON.stringify(model)
     })
         .then(res => res.json())
-        .then(res => console.log(res))
+        .then(res => {
+            const bookAvgRating = document.querySelector('.bookAvgRating');
+            const bookRatingsCount = document.querySelector('.bookRatingsCount');
+            const bookUserRating = document.querySelector('.bookUserRating');
+
+            bookAvgRating.textContent = res.averageVote.toFixed(1);
+            bookRatingsCount.textContent = res.votesCount;
+            bookUserRating.textContent = res.userVote.toFixed(1);
+        })
         .catch(err => console.log(err));
 });
