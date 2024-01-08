@@ -16,7 +16,7 @@
         <img class="img-fluid" src=@Model.ImageUrl alt=@Model.Title />
     </div>
     <ul class="list-group">
-        <li class="list-group-item"><strong>@Model.Title</strong></li>
+        <li class="list-group-item"><strong>@Model.Title</strong> - uploaded by @Model.Username</li>
         @if (Model.PublisherName != null)
         {
             <li class="list-group-item">Publisher: @Model.PublisherName</li>
@@ -41,17 +41,24 @@
             <li class="list-group-item">Comments: 0</li>
         }
         <li class="list-group-item">
-            <div>
-                <p>Average Rating:
-                    <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
-                    <span>/5.0</span>
-                    <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
-                </p>
-                @if (this.SignInManager.IsSignedIn(this.User))
-                {
-                    <span>Your Rating: <span class="bookUserRating">@Model.RatingsAvg.ToString("f1")</span></span>
-                }
-            </div>
+            <p>
+                Average Rating:
+                <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
+                <span>/5.0</span>
+                <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
+            </p>
+            @if (this.SignInManager.IsSignedIn(this.User) && this.Model.IsUserBook == false)
+            {
+                <span>
+                    Your rating:
+                    <span class="bookUserRating">
+                        @for (int i = 0; i < Model.UserRating; i++)
+                        {
+                            <i class="fas fa-star ratingStar"></i>
+                        }
+                    </span>
+                </span>
+            }
         </li>
         <li class="list-group-item">
             <dl>
@@ -81,6 +88,21 @@
                     data-bs-target="#ratingModal">
                 Rate Book<i class="fas fa-star icon ms-2"></i>
             </button>
+        }
+        else
+        {
+            <a class="btn btn-lg button"
+               asp-controller="Book"
+               asp-action="Download"
+               asp-route-id="@Model.Id">
+                Edit<i class="fas fa-user-pen icon ms-2"></i>
+            </a>
+            <a class="btn btn-lg button"
+               asp-controller="Book"
+               asp-action="Download"
+               asp-route-id="@Model.Id">
+                Delete<i class="fas fa-trash-can icon ms-2"></i>
+            </a>
         }
     </section>
 }

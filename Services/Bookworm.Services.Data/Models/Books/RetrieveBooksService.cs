@@ -20,6 +20,7 @@
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IDeletableEntityRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IRepository<Comment> commentRepository;
         private readonly IRepository<Vote> voteRepository;
         private readonly IRepository<FavoriteBook> favoriteBookRepository;
@@ -32,6 +33,7 @@
             IRepository<AuthorBook> authorsBooksRepository,
             IDeletableEntityRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
+            IDeletableEntityRepository<ApplicationUser> userRepository,
             IRepository<Comment> commentRepository,
             IRepository<Vote> voteRepository,
             ICategoriesService categoriesService,
@@ -43,6 +45,7 @@
             this.authorsBooksRepository = authorsBooksRepository;
             this.authorRepository = authorRepository;
             this.publishersRepository = publishersRepository;
+            this.userRepository = userRepository;
             this.commentRepository = commentRepository;
             this.voteRepository = voteRepository;
             this.categoriesService = categoriesService;
@@ -104,7 +107,6 @@
                 CategoryName = categoryName,
                 RatingsAvg = ratingsAvg,
                 RatingsCount = ratingsCount,
-                IsUserBook = book.UserId == userId,
             };
 
             List<CommentViewModel> comments = await this.commentRepository
@@ -119,6 +121,9 @@
 
             if (userId != null)
             {
+                ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
+                model.Username = user.UserName;
+
                 foreach (var comment in comments)
                 {
                     Vote vote = await this.voteRepository

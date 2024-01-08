@@ -37,10 +37,15 @@ rateButton.addEventListener('click', function () {
             const bookAvgRating = document.querySelector('.bookAvgRating');
             const bookRatingsCount = document.querySelector('.bookRatingsCount');
             const bookUserRating = document.querySelector('.bookUserRating');
+            bookUserRating.textContent = '';
 
             bookAvgRating.textContent = res.averageVote.toFixed(1);
             bookRatingsCount.textContent = res.votesCount;
-            bookUserRating.textContent = res.userVote.toFixed(1);
+            for (var i = 0; i < res.userVote; i++) {
+                const iconElement = document.createElement('i');
+                iconElement.className = 'fas fa-star ratingStar';
+                bookUserRating.appendChild(iconElement);
+            }
         })
         .catch(err => console.log(err));
 });

@@ -50,6 +50,7 @@
     .bookDetailsActionsSection button {
         font-size: 1.4rem;
         border: solid 2px black;
+        flex-basis: 50%;
     }
 
 .bookDetailsDescSection {
@@ -144,6 +145,10 @@
 }
 
 /*Rating*/
+.ratingStar {
+    color: #34AC9E;
+}
+
 .rating-wrapper {
     align-self: center;
     border-radius: 5rem;
