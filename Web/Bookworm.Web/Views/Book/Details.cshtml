@@ -41,12 +41,12 @@
             <li class="list-group-item">Comments: 0</li>
         }
         <li class="list-group-item">
-            <p>
-                Average Rating:
-                <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
-                <span>/5.0</span>
-                <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
-            </p>
+
+            Average Rating:
+            <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
+            <span>/5.0</span>
+            <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
+
             @if (this.SignInManager.IsSignedIn(this.User) && this.Model.IsUserBook == false)
             {
                 <span>
@@ -93,8 +93,8 @@
         {
             <a class="btn btn-lg button"
                asp-controller="Book"
-               asp-action="Download"
-               asp-route-id="@Model.Id">
+               asp-action="Edit"
+               asp-route-bookId="@Model.Id">
                 Edit<i class="fas fa-user-pen icon ms-2"></i>
             </a>
             <a class="btn btn-lg button"

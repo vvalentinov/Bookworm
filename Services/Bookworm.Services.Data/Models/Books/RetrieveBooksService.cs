@@ -10,7 +10,9 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Categories;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.EntityFrameworkCore;
 
@@ -121,7 +123,9 @@
 
             if (userId != null)
             {
-                ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
+                ApplicationUser user = await this.userRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == book.UserId);
                 model.Username = user.UserName;
 
                 foreach (var comment in comments)
@@ -146,6 +150,52 @@
                     model.UserRating = rating;
                 }
             }
+
+            return model;
+        }
+
+        public async Task<EditBookFormModel> GetEditBookAsync(string bookId)
+        {
+            Book book = await this.bookRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(book => book.Id == bookId) ??
+                throw new InvalidOperationException("No book with given id found!");
+
+            List<int> authorsIds = await this.authorsBooksRepository
+                .AllAsNoTracking()
+                .Where(x => x.BookId == bookId)
+                .Select(x => x.AuthorId)
+                .ToListAsync();
+
+            List<UploadAuthorViewModel> authors = await this.authorRepository
+                .AllAsNoTracking()
+                .Where(author => authorsIds.Contains(author.Id))
+                .To<UploadAuthorViewModel>()
+                .ToListAsync();
+
+            Publisher publisher = await this.publishersRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(publisher => publisher.Id == book.PublisherId);
+
+            string publisherName = publisher?.Name;
+
+            string language = this.languagesService.GetLanguageName(book.LanguageId);
+
+            EditBookFormModel model = new EditBookFormModel()
+            {
+                Id = book.Id,
+                Authors = authors,
+                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
+                Languages = this.languagesService.GetAllLanguages(),
+                CategoryId = book.CategoryId,
+                Description = book.Description,
+                LanguageId = book.LanguageId,
+                PagesCount = book.PagesCount,
+                PublishedYear = book.Year,
+                Publisher = publisherName,
+                Title = book.Title,
+                ImageUrl = book.ImageUrl,
+            };
 
             return model;
         }

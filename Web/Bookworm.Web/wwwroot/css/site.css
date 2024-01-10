@@ -2,6 +2,7 @@
 
 @import "./books/bookDetails.css";
 @import "books/bookUpload.css";
+@import "books/bookEdit.css";
 
 :root {
     --clr-primary: #34495E;

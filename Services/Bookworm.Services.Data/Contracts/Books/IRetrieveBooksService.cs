@@ -13,6 +13,8 @@
 
         Task<BookViewModel> GetBookWithIdAsync(string bookId, string userId = null);
 
+        Task<EditBookFormModel> GetEditBookAsync(string bookId);
+
         Task<IList<BookViewModel>> GetPopularBooksAsync(int count);
 
         Task<IList<BookViewModel>> GetRecentBooksAsync(int count);

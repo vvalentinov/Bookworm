@@ -19,7 +19,7 @@
 
     public class BookController : BaseController
     {
-        private readonly IRetrieveBooksService booksService;
+        private readonly IRetrieveBooksService retrieveBooksService;
         private readonly ICategoriesService categoriesService;
         private readonly IUploadBookService uploadBookService;
         private readonly UserManager<ApplicationUser> userManager;
@@ -30,7 +30,7 @@
         private readonly IValidateUploadedBookService validateBookService;
 
         public BookController(
-            IRetrieveBooksService booksService,
+            IRetrieveBooksService retrieveBooksService,
             ICategoriesService categoriesService,
             IUploadBookService uploadBookService,
             UserManager<ApplicationUser> userManager,
@@ -40,7 +40,7 @@
             IUpdateBookService updateBookService,
             IValidateUploadedBookService validateBookService)
         {
-            this.booksService = booksService;
+            this.retrieveBooksService = retrieveBooksService;
             this.categoriesService = categoriesService;
             this.uploadBookService = uploadBookService;
             this.userManager = userManager;
@@ -54,18 +54,8 @@
         [Authorize]
         public async Task<IActionResult> Edit(string bookId)
         {
-            var book = await this.booksService.GetBookWithIdAsync(bookId);
-            var model = new EditBookFormModel()
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Description = book.Description,
-                PagesCount = book.PagesCount,
-                PublishedYear = book.Year,
-                Publisher = book.PublisherName,
-                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
-                Languages = this.languagesService.GetAllLanguages(),
-            };
+            EditBookFormModel model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+
             return this.View(model);
         }
 
@@ -91,7 +81,7 @@
                          model.PagesCount,
                          model.PublishedYear,
                          model.Publisher,
-                         model.AuthorsNames.Select(x => x.Name));
+                         model.Authors.Select(x => x.Name));
             }
             catch (Exception ex)
             {
@@ -121,7 +111,7 @@
         {
             int categoryId = this.categoriesService.GetCategoryId(categoryName);
 
-            BookListingViewModel model = await this.booksService.GetBooksAsync(categoryId, page, 12);
+            BookListingViewModel model = await this.retrieveBooksService.GetBooksAsync(categoryId, page, 12);
             return this.View(model);
         }
 
@@ -129,14 +119,14 @@
         public async Task<IActionResult> UserBooks(int page = 1)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookListingViewModel books = await this.booksService.GetUserBooksAsync(user.Id, page, 12);
+            BookListingViewModel books = await this.retrieveBooksService.GetUserBooksAsync(user.Id, page, 12);
             return this.View(books);
         }
 
         public async Task<IActionResult> Details(string id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookViewModel bookViewModel = await this.booksService.GetBookWithIdAsync(id, user?.Id);
+            BookViewModel bookViewModel = await this.retrieveBooksService.GetBookWithIdAsync(id, user?.Id);
             return this.View(bookViewModel);
         }
 

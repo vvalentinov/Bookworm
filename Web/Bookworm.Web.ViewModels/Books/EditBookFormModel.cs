@@ -8,6 +8,7 @@
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Categories;
     using Bookworm.Web.ViewModels.Languages;
+    using Ganss.Xss;
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
@@ -24,6 +25,8 @@
         [StringLength(BookDescriptionMaxLength, MinimumLength = BookDescriptionMinLength, ErrorMessage = BookDescriptionLengthError)]
         public string Description { get; set; }
 
+        public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
+
         [StringLength(BookPublisherMaxLength, MinimumLength = BookPublisherMinLength, ErrorMessage = BookPublisherLengthError)]
         public string Publisher { get; set; }
 
@@ -34,11 +37,13 @@
         [PublishedYearValidationAttribute(BookPublishedYearMin, ErrorMessage = BookPublishedYearInvalidError)]
         public int PublishedYear { get; set; }
 
+        public string ImageUrl { get; set; }
+
         public int CategoryId { get; set; }
 
         public int LanguageId { get; set; }
 
-        public IEnumerable<AuthorViewModel> AuthorsNames { get; set; }
+        public IList<UploadAuthorViewModel> Authors { get; set; }
 
         public IEnumerable<LanguageViewModel> Languages { get; set; }
 

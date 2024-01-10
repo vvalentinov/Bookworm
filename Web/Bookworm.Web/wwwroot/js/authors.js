@@ -42,9 +42,6 @@ addAuthorBtn.addEventListener('click', function () {
     }
 });
 
-
-
-
 // Create and append alert message
 function alert() {
     let alertMessageContainer = document.getElementById('alert-message');
@@ -67,3 +64,19 @@ function alert() {
         alertMessage.remove();
     }, 5000);
 }
+
+function addClickEventToDeleteAuthorBtn() {
+    let authorsContainer = document.getElementById('authorsContainer');
+    let authorsCount = authorsContainer.childElementCount - 2;
+    const buttons = document.querySelectorAll('#deleteAuthorBtn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function handleClick(event) {
+            event.target.parentElement.remove();
+            if (authorsCount < 5) {
+                addAuthorBtn.disabled = false;
+            }
+        });
+    });
+}
+
+addClickEventToDeleteAuthorBtn();

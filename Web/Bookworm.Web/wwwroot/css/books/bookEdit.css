@@ -1,0 +1,20 @@
+﻿.editBookSection {
+    display: flex;
+    justify-content: center;
+}
+
+    .editBookSection form {
+        width: 80%;
+        border: solid 2px black;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 2rem 0;
+        font-size: 1.1rem;
+    }
+
+        .editBookSection form input,
+        .editBookSection form select,
+        .editBookSection form textarea {
+            font-size: 1.2rem;
+            border: solid 2px black;
+        }
