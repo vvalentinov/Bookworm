@@ -3,6 +3,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Web.ViewModels.Authors;
+
     public interface IUpdateBookService
     {
         Task DeleteBookAsync(string bookId);
@@ -22,6 +24,6 @@
             int pagesCount,
             int publishedYear,
             string publisherName,
-            IEnumerable<string> authors);
+            IEnumerable<UploadAuthorViewModel> authors);
     }
 }

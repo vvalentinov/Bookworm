@@ -15,8 +15,8 @@
 
     public class BlobService : IBlobService
     {
-        private readonly BlobServiceClient blobServiceClient;
         private readonly IConfiguration configuration;
+        private readonly BlobServiceClient blobServiceClient;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public BlobService(
@@ -93,7 +93,7 @@
 
             BlobClient blobClient = containerClient.GetBlobClient(uniqueName);
             byte[] fileBytes = GetFileBytes(file);
-            await using MemoryStream memoryStream = new (fileBytes);
+            await using MemoryStream memoryStream = new MemoryStream(fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
         }
 
@@ -109,7 +109,7 @@
         {
             byte[] fileBytes = null;
 
-            using (MemoryStream ms = new ())
+            using (MemoryStream ms = new MemoryStream())
             {
                 file.CopyTo(ms);
                 fileBytes = ms.ToArray();

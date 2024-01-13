@@ -60,23 +60,5 @@ function alert() {
     alertMessage.appendChild(alertMessageButton);
     alertMessageContainer.appendChild(alertMessage);
 
-    setTimeout(() => {
-        alertMessage.remove();
-    }, 5000);
+    setTimeout(() => alertMessage.remove(), 5000);
 }
-
-function addClickEventToDeleteAuthorBtn() {
-    let authorsContainer = document.getElementById('authorsContainer');
-    let authorsCount = authorsContainer.childElementCount - 2;
-    const buttons = document.querySelectorAll('#deleteAuthorBtn');
-    buttons.forEach(button => {
-        button.addEventListener('click', function handleClick(event) {
-            event.target.parentElement.remove();
-            if (authorsCount < 5) {
-                addAuthorBtn.disabled = false;
-            }
-        });
-    });
-}
-
-addClickEventToDeleteAuthorBtn();

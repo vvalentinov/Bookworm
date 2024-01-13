@@ -1,6 +1,6 @@
 ﻿namespace Bookworm.Common.Books
 {
-    public class BooksErrorMessagesConstants
+    public static class BooksErrorMessagesConstants
     {
         public const string BookTitleRequiredError = "Title field is required!";
         public const string BookTitleLengthError = "Title must be between 5 and 250 characters long!";

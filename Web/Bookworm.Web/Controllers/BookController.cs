@@ -81,16 +81,17 @@
                          model.PagesCount,
                          model.PublishedYear,
                          model.Publisher,
-                         model.Authors.Select(x => x.Name));
+                         model.Authors);
             }
             catch (Exception ex)
             {
-                this.ModelState.AddModelError(string.Empty, ex.Message);
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
                 model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
                 model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
 
+            this.TempData[MessageConstant.SuccessMessage] = "Successfully edited book!";
             return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
         }
 

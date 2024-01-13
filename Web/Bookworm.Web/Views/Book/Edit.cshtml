@@ -9,10 +9,7 @@
 
 <section class="editBookSection">
     <form method="post" enctype="multipart/form-data">
-        @* <div class="d-flex justify-content-center">
-        <img src="@Model.ImageUrl" />
-        </div> *@
-        @* <input type="hidden" asp-for="Id" value="@Model.Id"> *@
+        <input type="hidden" asp-for="@Model.Id" value="@Model.Id">
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div class="form-group">
@@ -64,20 +61,23 @@
             <button type="button"
                     id="addAuthorBtn"
                     class="btn button fs-5 w-100">
-                Add Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
+                Add Author
+                <i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
-            @foreach (var item in Model.Authors)
+
+            @for (int i = 0; i < Model.Authors.Count; i++)
             {
                 <div class="input-group mt-4">
-                    <input
-                        asp-for="@item"
-                        value="@item.Name"
-                        type="text"
-                        class="form-control"
-                        placeholder="Author's username"
-                        aria-label="Author's username"
-                        aria-describedby="button-addon2">
-                    <button class="btn btn-danger" type="button" id="deleteAuthorBtn">Remove</button>
+                    <input asp-for="@Model.Authors[i].Id" type="hidden" />
+                    <input asp-for="@Model.Authors[i].Name"
+                           type="text"
+                           class="form-control"
+                           placeholder="Author's username"
+                           aria-label="Author's username"
+                           aria-describedby="button-addon2">
+                    <button onclick="removeAuthor(event)" class="btn btn-danger" type="button">
+                        Remove
+                    </button>
                 </div>
             }
         </div>
@@ -100,6 +100,23 @@
 
 
 @section Scripts {
+    <script>
+        function removeAuthor(e) {
+            let authorsContainer = document.getElementById('authorsContainer');
+            let authorsCount = authorsContainer.childElementCount - 2;
+            event.target.parentElement.remove();
+
+            const hiddenIdInputs = authorsContainer.querySelectorAll('input[type="hidden"]');
+            hiddenIdInputs.forEach((input, index) => input.name = `Authors[${index}].Id`);
+            const authorsNameInputs = authorsContainer.querySelectorAll('input[type="text"]');
+            authorsNameInputs.forEach((input, index) => input.name = `Authors[${index}].Name`);
+
+            if (authorsCount < 5) {
+                const addAuthorBtn = document.getElementById('addAuthorBtn');
+                addAuthorBtn.disabled = false;
+            }
+        }
+    </script>
     <script src="~/js/authors.js"></script>
     <script src="~/lib/tinymce/tinymce.min.js"></script>
     <script>
