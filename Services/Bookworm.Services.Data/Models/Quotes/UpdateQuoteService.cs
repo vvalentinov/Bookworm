@@ -13,39 +13,28 @@
     public class UpdateQuoteService : IUpdateQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
-        private readonly IDeletableEntityRepository<UserPoints> userPointsRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
 
         public UpdateQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
-            IDeletableEntityRepository<UserPoints> userPointsRepository)
+            IDeletableEntityRepository<ApplicationUser> userRepository)
         {
             this.quoteRepository = quoteRepository;
-            this.userPointsRepository = userPointsRepository;
+            this.userRepository = userRepository;
         }
 
         public async Task ApproveQuoteAsync(int quoteId)
         {
-            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            Quote quote = await this.quoteRepository.All().FirstAsync(x => x.Id == quoteId);
             quote.IsApproved = true;
+            this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();
 
-            UserPoints userPoints = await this.userPointsRepository.All().FirstOrDefaultAsync(x => x.UserId == quote.UserId);
-            if (userPoints == null)
-            {
-                userPoints = new UserPoints()
-                {
-                    UserId = quote.UserId,
-                    Points = QuotePoints,
-                };
+            ApplicationUser user = await this.userRepository.All().FirstOrDefaultAsync(x => x.Id == quote.UserId);
+            user.Points += QuotePoints;
 
-                await this.userPointsRepository.AddAsync(userPoints);
-            }
-            else
-            {
-                userPoints.Points += QuotePoints;
-            }
-
-            await this.userPointsRepository.SaveChangesAsync();
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
         }
 
         public async Task DeleteQuoteAsync(int quoteId)
@@ -56,13 +45,13 @@
         public async Task SelfQuoteDeleteAsync(int quoteId, string userId)
         {
             await this.DeleteQuote(quoteId);
-            UserPoints userPoints = await this.userPointsRepository.All().FirstAsync(x => x.UserId == userId);
-            if (userPoints.Points > 0)
+            ApplicationUser user = await this.userRepository.All().FirstAsync(x => x.Id == userId);
+            if (user.Points > 0)
             {
-                userPoints.Points -= QuotePoints;
+                user.Points -= QuotePoints;
             }
 
-            await this.userPointsRepository.SaveChangesAsync();
+            await this.userRepository.SaveChangesAsync();
         }
 
         public async Task UndeleteQuoteAsync(int quoteId)
@@ -78,13 +67,13 @@
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
 
-            UserPoints userPoints = this.userPointsRepository.All().First(x => x.UserId == quote.UserId);
-            if (userPoints.Points > 0)
+            ApplicationUser user = this.userRepository.All().First(x => x.Id == quote.UserId);
+            if (user.Points > 0)
             {
-                userPoints.Points -= QuotePoints;
+                user.Points -= QuotePoints;
             }
 
-            await this.userPointsRepository.SaveChangesAsync();
+            await this.userRepository.SaveChangesAsync();
         }
 
         public async Task EditQuoteAsync(

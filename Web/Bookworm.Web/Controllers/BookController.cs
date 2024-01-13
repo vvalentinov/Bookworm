@@ -52,6 +52,57 @@
         }
 
         [Authorize]
+        public IActionResult Upload()
+        {
+            UploadBookViewModel model = new UploadBookViewModel();
+            return this.View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Upload(UploadBookViewModel model)
+        {
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(model);
+            }
+
+            try
+            {
+                await this.validateBookService.ValidateUploadedBookAsync(
+                    model.BookFile,
+                    model.ImageFile,
+                    model.Authors.Select(x => x.Name),
+                    model.CategoryId,
+                    model.LanguageId);
+            }
+            catch (InvalidOperationException exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                return this.View(model);
+            }
+
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+
+            await this.uploadBookService.UploadBookAsync(
+                model.Title,
+                model.Description,
+                model.LanguageId,
+                model.Publisher,
+                model.PagesCount,
+                model.PublishedYear,
+                model.BookFile,
+                model.ImageFile,
+                model.CategoryId,
+                model.Authors.Select(x => x.Name),
+                user.Id,
+                user.UserName);
+
+            this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
+            return this.RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
         public async Task<IActionResult> Edit(string bookId)
         {
             EditBookFormModel model = await this.retrieveBooksService.GetEditBookAsync(bookId);
@@ -129,57 +180,6 @@
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             BookViewModel bookViewModel = await this.retrieveBooksService.GetBookWithIdAsync(id, user?.Id);
             return this.View(bookViewModel);
-        }
-
-        [Authorize]
-        public IActionResult Upload()
-        {
-            UploadBookViewModel model = new UploadBookViewModel();
-            return this.View(model);
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Upload(UploadBookViewModel model)
-        {
-            if (this.ModelState.IsValid == false)
-            {
-                return this.View(model);
-            }
-
-            try
-            {
-                await this.validateBookService.ValidateUploadedBookAsync(
-                    model.BookFile,
-                    model.ImageFile,
-                    model.Authors.Select(x => x.Name),
-                    model.CategoryId,
-                    model.LanguageId);
-            }
-            catch (InvalidOperationException exception)
-            {
-                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
-                return this.View(model);
-            }
-
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            await this.uploadBookService.UploadBookAsync(
-                model.Title,
-                model.Description,
-                model.LanguageId,
-                model.Publisher,
-                model.PagesCount,
-                model.PublishedYear,
-                model.BookFile,
-                model.ImageFile,
-                model.CategoryId,
-                model.Authors.Select(x => x.Name),
-                user.Id,
-                user.UserName);
-
-            this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
-            return this.RedirectToAction("Index", "Home");
         }
 
         [Authorize]

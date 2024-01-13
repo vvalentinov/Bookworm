@@ -24,7 +24,7 @@
             if (file != null)
             {
                 string extension = Path.GetExtension(file.FileName);
-                if (extensions.Contains(extension.ToLower()) == false)
+                if (this.extensions.Contains(extension.ToLower()) == false)
                 {
                     return new ValidationResult(BookInvalidImageFileError);
                 }

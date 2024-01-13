@@ -17,7 +17,7 @@
     public class UpdateBookService : IUpdateBookService
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IDeletableEntityRepository<UserPoints> usersPointsRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Author> authorsRepository;
@@ -25,14 +25,14 @@
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
-            IDeletableEntityRepository<UserPoints> usersPointsRepository,
+            IDeletableEntityRepository<ApplicationUser> userRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
             IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Author> authorsRepository,
             IRepository<AuthorBook> authorsBooksRepository)
         {
             this.bookRepository = bookRepository;
-            this.usersPointsRepository = usersPointsRepository;
+            this.userRepository = userRepository;
             this.publishersRepository = publishersRepository;
             this.booksRepository = booksRepository;
             this.authorsRepository = authorsRepository;
@@ -45,22 +45,11 @@
             book.IsApproved = true;
             await this.bookRepository.SaveChangesAsync();
 
-            UserPoints user = await this.usersPointsRepository.All().FirstOrDefaultAsync(x => x.UserId == book.UserId);
+            ApplicationUser user = await this.userRepository.All().FirstOrDefaultAsync(x => x.Id == book.UserId);
+            user.Points += BookPoints;
 
-            if (user == null)
-            {
-                user = new UserPoints()
-                {
-                    UserId = book.UserId,
-                    Points = BookPoints,
-                };
-            }
-            else
-            {
-                user.Points += BookPoints;
-            }
-
-            await this.usersPointsRepository.SaveChangesAsync();
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
         }
 
         public async Task UnapproveBookAsync(string bookId)
@@ -69,13 +58,14 @@
             book.IsApproved = false;
             await this.bookRepository.SaveChangesAsync();
 
-            UserPoints userPoints = await this.usersPointsRepository.All().FirstAsync(x => x.UserId == book.UserId);
-            if (userPoints.Points > 0)
+            ApplicationUser user = await this.userRepository.All().FirstAsync(x => x.Id == book.UserId);
+            if (user.Points > 0)
             {
-                userPoints.Points -= BookPoints;
+                user.Points -= BookPoints;
             }
 
-            await this.usersPointsRepository.SaveChangesAsync();
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
         }
 
         public async Task DeleteBookAsync(string bookId)

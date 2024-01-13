@@ -33,6 +33,8 @@
 
         public DateTime? DeletedOn { get; set; }
 
+        public int Points { get; set; }
+
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 
         public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
