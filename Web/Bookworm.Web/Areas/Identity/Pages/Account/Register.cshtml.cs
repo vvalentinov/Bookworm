@@ -9,16 +9,13 @@
 
     using Bookworm.Common;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     [AllowAnonymous]
@@ -27,20 +24,17 @@
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<RegisterModel> logger;
-        private readonly IConfiguration configuration;
         private readonly IEmailSender emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IConfiguration configuration,
             IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
-            this.configuration = configuration;
             this.emailSender = emailSender;
         }
 
@@ -48,8 +42,6 @@
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
-
-        public string RegisterPictureUrl => this.configuration.GetValue<string>("LoginRegisterImageUrl");
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
