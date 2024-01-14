@@ -72,7 +72,7 @@
                 await this.validateBookService.ValidateUploadedBookAsync(
                     model.BookFile,
                     model.ImageFile,
-                    model.Authors.Select(x => x.Name),
+                    model.Authors,
                     model.CategoryId,
                     model.LanguageId);
             }
@@ -84,29 +84,36 @@
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
-            await this.uploadBookService.UploadBookAsync(
-                model.Title,
-                model.Description,
-                model.LanguageId,
-                model.Publisher,
-                model.PagesCount,
-                model.PublishedYear,
-                model.BookFile,
-                model.ImageFile,
-                model.CategoryId,
-                model.Authors.Select(x => x.Name),
-                user.Id,
-                user.UserName);
+            try
+            {
+                await this.uploadBookService.UploadBookAsync(
+                    model.Title,
+                    model.Description,
+                    model.LanguageId,
+                    model.Publisher,
+                    model.PagesCount,
+                    model.PublishedYear,
+                    model.BookFile,
+                    model.ImageFile,
+                    model.CategoryId,
+                    model.Authors,
+                    user.Id,
+                    user.UserName);
 
-            this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
-            return this.RedirectToAction("Index", "Home");
+                this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
+                return this.RedirectToAction("Index", "Home");
+            }
+            catch (Exception exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                return this.View(model);
+            }
         }
 
         [Authorize]
         public async Task<IActionResult> Edit(string bookId)
         {
             EditBookFormModel model = await this.retrieveBooksService.GetEditBookAsync(bookId);
-
             return this.View(model);
         }
 

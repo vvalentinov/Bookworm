@@ -9,6 +9,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Web.ViewModels.Authors;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
 
@@ -46,10 +47,16 @@
             IFormFile bookFile,
             IFormFile imageFile,
             int categoryId,
-            IEnumerable<string> authors,
+            IEnumerable<UploadAuthorViewModel> authors,
             string userId,
             string userName)
         {
+            bool bookWithName = await this.booksRepository.AllAsNoTracking().AnyAsync(x => x.Title == title);
+            if (bookWithName)
+            {
+                throw new InvalidOperationException("Book with given name already exist!");
+            }
+
             string uniqueBookFileName = $"{Path.GetFileNameWithoutExtension(bookFile.FileName)}{Guid.NewGuid()}{Path.GetExtension(bookFile.FileName)}";
             string uniqueBookImageName = $"{Path.GetFileNameWithoutExtension(imageFile.FileName)}{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
 
@@ -63,10 +70,10 @@
             {
                 Title = title,
                 LanguageId = languageId,
-                Description = description,
+                CategoryId = categoryId,
                 PagesCount = pagesCount,
                 Year = publishedYear,
-                CategoryId = categoryId,
+                Description = description,
                 UserId = userId,
                 FileUrl = bookFileBlobUrl,
                 ImageUrl = bookImageFileBlobUrl,
@@ -91,15 +98,15 @@
             await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
 
-            foreach (string authorName in authors)
+            foreach (UploadAuthorViewModel authorModel in authors)
             {
                 Author author = await this.authorRepository
                     .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name == authorName);
+                    .FirstOrDefaultAsync(x => x.Name == authorModel.Name);
 
                 if (author == null)
                 {
-                    author = new Author() { Name = authorName };
+                    author = new Author() { Name = authorModel.Name };
                     await this.authorRepository.AddAsync(author);
                     await this.authorRepository.SaveChangesAsync();
                 }

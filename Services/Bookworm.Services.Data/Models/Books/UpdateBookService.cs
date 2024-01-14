@@ -11,7 +11,6 @@
     using Bookworm.Web.ViewModels.Authors;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Authors.AuthorsDataConstants;
     using static Bookworm.Common.UsersPointsDataConstants;
 
     public class UpdateBookService : IUpdateBookService
@@ -41,11 +40,15 @@
 
         public async Task ApproveBookAsync(string bookId)
         {
-            Book book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
+            Book book = await this.bookRepository
+                .All()
+                .FirstAsync(x => x.Id == bookId);
             book.IsApproved = true;
             await this.bookRepository.SaveChangesAsync();
 
-            ApplicationUser user = await this.userRepository.All().FirstOrDefaultAsync(x => x.Id == book.UserId);
+            ApplicationUser user = await this.userRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == book.UserId);
             user.Points += BookPoints;
 
             this.userRepository.Update(user);
@@ -54,11 +57,15 @@
 
         public async Task UnapproveBookAsync(string bookId)
         {
-            Book book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
+            Book book = await this.bookRepository
+                .All()
+                .FirstAsync(x => x.Id == bookId);
             book.IsApproved = false;
             await this.bookRepository.SaveChangesAsync();
 
-            ApplicationUser user = await this.userRepository.All().FirstAsync(x => x.Id == book.UserId);
+            ApplicationUser user = await this.userRepository
+                .All()
+                .FirstAsync(x => x.Id == book.UserId);
             if (user.Points > 0)
             {
                 user.Points -= BookPoints;
@@ -70,14 +77,18 @@
 
         public async Task DeleteBookAsync(string bookId)
         {
-            Book book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
+            Book book = await this.bookRepository
+                .All()
+                .FirstAsync(x => x.Id == bookId);
             this.bookRepository.Delete(book);
             await this.bookRepository.SaveChangesAsync();
         }
 
         public async Task UndeleteBookAsync(string bookId)
         {
-            Book book = await this.bookRepository.AllWithDeleted().FirstAsync(x => x.Id == bookId);
+            Book book = await this.bookRepository
+                .AllWithDeleted()
+                .FirstAsync(x => x.Id == bookId);
             this.bookRepository.Undelete(book);
             await this.bookRepository.SaveChangesAsync();
         }
@@ -93,6 +104,16 @@
             string publisherName,
             IEnumerable<UploadAuthorViewModel> authors)
         {
+            bool hasDuplicates = authors
+                .Select(x => x.Name)
+                .GroupBy(author => author)
+                .Any(group => group.Count() > 1);
+
+            if (hasDuplicates)
+            {
+                throw new Exception("No author duplicates allowed!");
+            }
+
             Book book = await this.booksRepository
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == bookId) ??
@@ -128,37 +149,40 @@
 
             List<AuthorBook> authorBooks = await this.authorsBooksRepository
                 .All()
-                .Where(x => x.BookId == bookId)
+                .Where(x => x.BookId == book.Id)
                 .ToListAsync();
 
-            foreach (AuthorBook authorBook in authorBooks)
-            {
-                this.authorsBooksRepository.Delete(authorBook);
-            }
-
+            this.authorsBooksRepository.RemoveRange(authorBooks);
             await this.authorsBooksRepository.SaveChangesAsync();
 
-            foreach (UploadAuthorViewModel authorModel in authors)
+            foreach (UploadAuthorViewModel inputAuthor in authors)
             {
                 Author author = await this.authorsRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == authorModel.Id);
+                    .All()
+                    .FirstOrDefaultAsync(x => x.Name == inputAuthor.Name);
 
                 if (author == null)
                 {
-                    author = new Author() { Name = authorModel.Name };
-                    await this.authorsRepository.AddAsync(author);
+                    var newAuthor = new Author() { Name = inputAuthor.Name };
+                    await this.authorsRepository.AddAsync(newAuthor);
                     await this.authorsRepository.SaveChangesAsync();
 
-                    AuthorBook authorBook = new AuthorBook() { AuthorId = author.Id, BookId = book.Id };
+                    var authorBook = new AuthorBook() { AuthorId = newAuthor.Id, BookId = book.Id };
                     await this.authorsBooksRepository.AddAsync(authorBook);
                     await this.authorsBooksRepository.SaveChangesAsync();
                 }
                 else
                 {
-                    author.Name = authorModel.Name;
-                    this.authorsRepository.Update(author);
-                    await this.authorsRepository.SaveChangesAsync();
+                    bool authorBookExists = await this.authorsBooksRepository
+                        .AllAsNoTracking()
+                        .AnyAsync(x => x.AuthorId == author.Id && x.BookId == book.Id);
+
+                    if (authorBookExists == false)
+                    {
+                        var authorBook = new AuthorBook() { AuthorId = author.Id, BookId = book.Id };
+                        await this.authorsBooksRepository.AddAsync(authorBook);
+                        await this.authorsBooksRepository.SaveChangesAsync();
+                    }
                 }
             }
 

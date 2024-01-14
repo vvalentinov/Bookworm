@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Web.ViewModels.Authors;
     using Microsoft.AspNetCore.Http;
 
     public interface IUploadBookService
@@ -17,7 +18,7 @@
             IFormFile bookFile,
             IFormFile imageFile,
             int categoryId,
-            IEnumerable<string> authors,
+            IEnumerable<UploadAuthorViewModel> authors,
             string userId,
             string userName);
     }

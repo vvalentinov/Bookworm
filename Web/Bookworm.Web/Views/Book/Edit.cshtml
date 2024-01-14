@@ -65,7 +65,8 @@
                 <i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
 
-            @for (int i = 0; i < Model.Authors.Count; i++)
+            
+            @for (int i = 0; i < Model.Authors?.Count; i++)
             {
                 <div class="input-group mt-4">
                     <input asp-for="@Model.Authors[i].Id" type="hidden" />

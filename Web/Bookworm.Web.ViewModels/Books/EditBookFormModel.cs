@@ -43,6 +43,7 @@
 
         public int LanguageId { get; set; }
 
+        [NotEmptyCollection("authors")]
         public IList<UploadAuthorViewModel> Authors { get; set; }
 
         public IEnumerable<LanguageViewModel> Languages { get; set; }

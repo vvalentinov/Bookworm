@@ -19,7 +19,7 @@
                 return ValidationResult.Success;
             }
 
-            return new ValidationResult($"The {collectionName} collection is empty!");
+            return new ValidationResult($"The {this.collectionName} collection is empty!");
         }
     }
 }

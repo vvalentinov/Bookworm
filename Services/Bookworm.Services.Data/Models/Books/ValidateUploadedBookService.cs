@@ -9,6 +9,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Web.ViewModels.Authors;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +33,7 @@
         public async Task ValidateUploadedBookAsync(
             IFormFile bookFile,
             IFormFile imageFile,
-            IEnumerable<string> authors,
+            IEnumerable<UploadAuthorViewModel> authors,
             int categoryId,
             int languageId)
         {
@@ -51,7 +52,7 @@
                 throw new InvalidOperationException(BookPdfFileEmptyError);
             }
 
-            if (bookFile.Length > 50_000_000)
+            if (bookFile.Length > 15_000_000)
             {
                 throw new InvalidOperationException(BookInvalidPdfSizeError);
             }
@@ -79,9 +80,9 @@
                 throw new InvalidOperationException(BookMissingAuthorsError);
             }
 
-            if (authors.Count() < 1 || authors.Count() > 5)
+            if (authors.Count() > 5)
             {
-                throw new InvalidOperationException("Authors must be between 1 and 5!");
+                throw new InvalidOperationException("Authors count must be between 1 and 5!");
             }
         }
     }
