@@ -9,11 +9,12 @@
     using Bookworm.Web.ViewModels.Categories;
     using Bookworm.Web.ViewModels.Languages;
     using Ganss.Xss;
+    using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
-    public class EditBookFormModel
+    public class EditBookViewModel
     {
         public string Id { get; set; }
 
@@ -36,6 +37,14 @@
         [Display(Name = "Year")]
         [PublishedYearValidationAttribute(BookPublishedYearMin, ErrorMessage = BookPublishedYearInvalidError)]
         public int PublishedYear { get; set; }
+
+        [Display(Name = "Image File")]
+        [ImageFileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
+        public IFormFile ImageFile { get; set; }
+
+        [Display(Name = "Book PDF file")]
+        [BookFileAllowedExtensionAttribute(BookFileAllowedExtension)]
+        public IFormFile BookFile { get; set; }
 
         public string ImageUrl { get; set; }
 
