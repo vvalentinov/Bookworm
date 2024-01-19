@@ -31,5 +31,15 @@
 
             return source.ProjectTo<TDestination>(AutoMapperConfig.MapperInstance.ConfigurationProvider, parameters);
         }
+
+        public static TDestination To<TDestination>(this object source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            return AutoMapperConfig.MapperInstance.Map<TDestination>(source);
+        }
     }
 }

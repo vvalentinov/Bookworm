@@ -2,15 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -62,44 +61,17 @@
         [HttpPost]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
-            if (this.ModelState.IsValid == false)
+            if (!this.ModelState.IsValid)
             {
-                return this.View(model);
-            }
-
-            try
-            {
-                await this.validateBookService.ValidateUploadedBookAsync(
-                    model.BookFile,
-                    model.ImageFile,
-                    model.Authors,
-                    model.CategoryId,
-                    model.LanguageId);
-            }
-            catch (InvalidOperationException exception)
-            {
-                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
                 return this.View(model);
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            BookDto uploadBookDto = model.To<BookDto>();
 
             try
             {
-                await this.uploadBookService.UploadBookAsync(
-                    model.Title,
-                    model.Description,
-                    model.LanguageId,
-                    model.Publisher,
-                    model.PagesCount,
-                    model.PublishedYear,
-                    model.BookFile,
-                    model.ImageFile,
-                    model.CategoryId,
-                    model.Authors,
-                    user.Id,
-                    user.UserName);
-
+                await this.uploadBookService.UploadBookAsync(uploadBookDto, model.Authors, user.Id);
                 this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
@@ -113,44 +85,33 @@
         [Authorize]
         public async Task<IActionResult> Edit(string bookId)
         {
-            EditBookFormModel model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+            EditBookViewModel model = await this.retrieveBooksService.GetEditBookAsync(bookId);
             return this.View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Edit(EditBookFormModel model)
+        public async Task<IActionResult> Edit(EditBookViewModel model)
         {
-            if (this.ModelState.IsValid == false)
+            if (!this.ModelState.IsValid)
             {
-                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
-                model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
 
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            BookDto editBookDto = model.To<BookDto>();
+
             try
             {
-                await this.updateBookService.EditBookAsync(
-                         model.Id,
-                         model.Title,
-                         model.Description,
-                         model.CategoryId,
-                         model.LanguageId,
-                         model.PagesCount,
-                         model.PublishedYear,
-                         model.Publisher,
-                         model.Authors);
+                await this.updateBookService.EditBookAsync(editBookDto, model.Authors, user.Id);
+                this.TempData[MessageConstant.SuccessMessage] = "Successfully edited book!";
+                return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-                model.Categories = this.categoriesService.GetAll<CategoryViewModel>();
-                model.Languages = this.languagesService.GetAllLanguages();
                 return this.View(model);
             }
-
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully edited book!";
-            return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
         }
 
         public IActionResult Random()
@@ -169,7 +130,6 @@
         public async Task<IActionResult> All(string categoryName, int page = 1)
         {
             int categoryId = this.categoriesService.GetCategoryId(categoryName);
-
             BookListingViewModel model = await this.retrieveBooksService.GetBooksAsync(categoryId, page, 12);
             return this.View(model);
         }
