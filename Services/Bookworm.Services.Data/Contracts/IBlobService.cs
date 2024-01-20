@@ -9,19 +9,14 @@
 
     public interface IBlobService
     {
-        Task UploadBlobAsync(
-            IFormFile file,
-            string uniqueName,
-            string pathPrefix = null);
+        Task<string> UploadBlobAsync(IFormFile file, string pathPrefix = null);
 
         Task DeleteBlobAsync(string blobName);
-
-        BlobClient GetBlobClient(string blobUri);
 
         Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId);
 
         string GetBlobAbsoluteUri(string fileName);
 
-        Task<bool> CheckIfBlobExistsAsync(string fileName);
+        Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path);
     }
 }

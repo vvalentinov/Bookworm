@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Azure.Storage.Blobs;
@@ -11,7 +10,10 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.WindowsAzure.Storage.Auth;
+    using Microsoft.WindowsAzure.Storage.Blob;
 
     public class BlobService : IBlobService
     {
@@ -29,46 +31,26 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<bool> CheckIfBlobExistsAsync(string fileName)
-        {
-            string containerName = this.configuration.GetConnectionString("ContainerName");
-            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = containerClient.GetBlobClient(fileName);
-            if (await blobClient.ExistsAsync())
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public BlobClient GetBlobClient(string blobUri)
-        {
-            Uri uri = new (blobUri);
-            BlobClient client = new (uri);
-            return client;
-        }
-
         public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId)
         {
-            Book book = this.bookRepository
+            Book book = await this.bookRepository
                 .AllAsNoTracking()
-                .FirstOrDefault(x => x.Id == bookId);
+                .FirstOrDefaultAsync(x => x.Id == bookId);
 
             book.DownloadsCount++;
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            Uri uri = new (book.FileUrl);
+            Uri uri = new Uri(book.FileUrl);
 
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = new (uri);
+            BlobClient blobClient = new BlobClient(uri);
 
-            BlobProperties blobProperties = blobClient.GetProperties();
+            Azure.Storage.Blobs.Models.BlobProperties blobProperties = blobClient.GetProperties();
             string contentType = blobProperties.ContentType;
 
-            MemoryStream ms = new ();
+            MemoryStream ms = new MemoryStream();
             await blobClient.DownloadToAsync(ms);
             Stream blobStream = blobClient.OpenReadAsync().Result;
             return Tuple.Create(blobStream, contentType, blobClient.Name);
@@ -79,13 +61,14 @@
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(fileName);
-            return blobClient.Uri.AbsoluteUri;
+            return Uri.UnescapeDataString(blobClient.Uri.AbsoluteUri);
         }
 
-        public async Task UploadBlobAsync(IFormFile file, string uniqueName, string path = null)
+        public async Task<string> UploadBlobAsync(IFormFile file, string path = null)
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            string uniqueName = GenerateUniqueName(file);
             if (path != null)
             {
                 uniqueName = path + uniqueName;
@@ -95,6 +78,26 @@
             byte[] fileBytes = GetFileBytes(file);
             await using MemoryStream memoryStream = new MemoryStream(fileBytes);
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
+            return uniqueName;
+        }
+
+        public async Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path)
+        {
+            string containerName = this.configuration.GetConnectionString("ContainerName");
+
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+
+            byte[] fileBytes = GetFileBytes(file);
+
+            await using MemoryStream memoryStream = new MemoryStream(fileBytes);
+
+            await blobClient.UploadAsync(memoryStream, overwrite: true);
+
+            string uniqueName = GenerateUniqueName(file);
+
+            return await this.RenameBlob(uniqueName, blobName, path);
         }
 
         public async Task DeleteBlobAsync(string blobName)
@@ -102,7 +105,7 @@
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            await blobClient.DeleteIfExistsAsync();
+            await blobClient.DeleteIfExistsAsync(Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots);
         }
 
         private static byte[] GetFileBytes(IFormFile file)
@@ -116,6 +119,40 @@
             }
 
             return fileBytes;
+        }
+
+        private static string GenerateUniqueName(IFormFile file)
+        {
+            return $"{Path.GetFileNameWithoutExtension(file.FileName)}" +
+                   $"{Guid.NewGuid()}" +
+                   $"{Path.GetExtension(file.FileName)}";
+        }
+
+        private async Task<string> RenameBlob(string newFileName, string oldFileName, string path)
+        {
+            string accountName = this.configuration.GetConnectionString("AccountName");
+            string accountKey = this.configuration.GetConnectionString("AccountKey");
+            string containerName = this.configuration.GetConnectionString("ContainerName");
+
+            StorageCredentials cred = new StorageCredentials(accountName, accountKey);
+            Uri uri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}/");
+            CloudBlobContainer container = new CloudBlobContainer(uri, cred);
+
+            await container.CreateIfNotExistsAsync();
+
+            CloudBlockBlob blobCopy = container.GetBlockBlobReference($"{path}{newFileName}");
+
+            if (!await blobCopy.ExistsAsync())
+            {
+                CloudBlockBlob blob = container.GetBlockBlobReference(oldFileName);
+                if (await blob.ExistsAsync())
+                {
+                    await blobCopy.StartCopyAsync(blob);
+                    await blob.DeleteIfExistsAsync();
+                }
+            }
+
+            return Uri.UnescapeDataString(blobCopy.Uri.AbsoluteUri);
         }
     }
 }
