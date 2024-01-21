@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-
+    using System.Threading.Tasks;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Models;
@@ -52,9 +52,9 @@
         }
 
         [Fact]
-        public void GetAllCategoriesShouldWorkCorrectly()
+        public async Task GetAllCategoriesShouldWorkCorrectly()
         {
-            List<CategoryViewModel> categories = this.categoriesService.GetAll<CategoryViewModel>().ToList();
+            List<CategoryViewModel> categories = await this.categoriesService.GetAllAsync<CategoryViewModel>();
             Assert.Equal(18, categories.Count);
         }
 

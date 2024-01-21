@@ -1,6 +1,12 @@
 ﻿@model IEnumerable<LanguageViewModel>
 
+@{
+    var selectedLanguageId = ViewData["SelectedLanguageId"] as int?;
+}
+
 @foreach (var language in Model)
 {
-    <option value=@language.Id>@language.Name</option>
+    <option value=@language.Id selected="@(language.Id == selectedLanguageId)">
+        @language.Name
+    </option>
 }

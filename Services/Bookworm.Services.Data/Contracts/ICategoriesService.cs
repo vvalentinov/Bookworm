@@ -7,7 +7,7 @@
 
     public interface ICategoriesService
     {
-        IList<T> GetAll<T>();
+        Task<List<T>> GetAllAsync<T>();
 
         int GetCategoryId(string categoryName);
 

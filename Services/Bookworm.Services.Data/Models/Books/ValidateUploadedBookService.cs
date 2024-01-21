@@ -47,37 +47,54 @@
                 throw new InvalidOperationException("The given language doesn't exist!");
             }
 
-            if (bookFile == null || bookFile.Length == 0)
+            if (bookFile != null)
             {
-                throw new InvalidOperationException(BookPdfFileEmptyError);
+                if (bookFile.Length == 0)
+                {
+                    throw new InvalidOperationException(BookPdfFileEmptyError);
+                }
+
+                if (bookFile.Length > 15_000_000)
+                {
+                    throw new InvalidOperationException(BookInvalidPdfSizeError);
+                }
+
+                string bookFileExtension = Path.GetExtension(bookFile.FileName);
+
+                if (bookFileExtension != BookFileAllowedExtension)
+                {
+                    throw new InvalidOperationException(BookInvalidFileExtensionError);
+                }
             }
 
-            if (bookFile.Length > 15_000_000)
+            if (imageFile != null)
             {
-                throw new InvalidOperationException(BookInvalidPdfSizeError);
-            }
+                if (imageFile.Length == 0)
+                {
+                    throw new InvalidOperationException(BookImageFileEmptyError);
+                }
 
-            if (imageFile == null || imageFile.Length == 0)
-            {
-                throw new InvalidOperationException(BookImageFileEmptyError);
-            }
+                string bookImageExtension = Path.GetExtension(imageFile.FileName);
 
-            string bookFileExtension = Path.GetExtension(bookFile.FileName);
-            string bookImageExtension = Path.GetExtension(imageFile.FileName);
-
-            if (bookFileExtension != BookFileAllowedExtension)
-            {
-                throw new InvalidOperationException(BookInvalidFileExtensionError);
-            }
-
-            if (this.permittedImageExtensions.Contains(bookImageExtension) == false)
-            {
-                throw new InvalidOperationException(BookInvalidImageFileError);
+                if (this.permittedImageExtensions.Contains(bookImageExtension) == false)
+                {
+                    throw new InvalidOperationException(BookInvalidImageFileError);
+                }
             }
 
             if (authors == null)
             {
                 throw new InvalidOperationException(BookMissingAuthorsError);
+            }
+
+            bool hasDuplicates = authors
+                .Select(x => x.Name)
+                .GroupBy(author => author)
+                .Any(group => group.Count() > 1);
+
+            if (hasDuplicates)
+            {
+                throw new Exception("No author duplicates allowed!");
             }
 
             if (authors.Count() > 5)

@@ -12,7 +12,6 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Categories;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.EntityFrameworkCore;
 
@@ -83,7 +82,7 @@
 
             string publisherName = publisher?.Name;
 
-            string language = this.languagesService.GetLanguageName(book.LanguageId);
+            string language = await this.languagesService.GetLanguageNameAsync(book.LanguageId);
 
             double ratingsAvg = 0;
             int ratingsCount = await this.ratingsService.GetRatingsCountAsync(bookId);
@@ -154,7 +153,7 @@
             return model;
         }
 
-        public async Task<EditBookFormModel> GetEditBookAsync(string bookId)
+        public async Task<EditBookViewModel> GetEditBookAsync(string bookId)
         {
             Book book = await this.bookRepository
                 .AllAsNoTracking()
@@ -179,14 +178,12 @@
 
             string publisherName = publisher?.Name;
 
-            string language = this.languagesService.GetLanguageName(book.LanguageId);
+            string language = await this.languagesService.GetLanguageNameAsync(book.LanguageId);
 
-            EditBookFormModel model = new EditBookFormModel()
+            EditBookViewModel model = new EditBookViewModel()
             {
                 Id = book.Id,
                 Authors = authors,
-                Categories = this.categoriesService.GetAll<CategoryViewModel>(),
-                Languages = this.languagesService.GetAllLanguages(),
                 CategoryId = book.CategoryId,
                 Description = book.Description,
                 LanguageId = book.LanguageId,
@@ -194,7 +191,6 @@
                 PublishedYear = book.Year,
                 Publisher = publisherName,
                 Title = book.Title,
-                ImageUrl = book.ImageUrl,
             };
 
             return model;

@@ -1,13 +1,14 @@
 ﻿namespace Bookworm.Services.Data.Contracts
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Bookworm.Web.ViewModels.Languages;
 
     public interface ILanguagesService
     {
-        IEnumerable<LanguageViewModel> GetAllLanguages();
+        Task<List<LanguageViewModel>> GetAllAsync();
 
-        string GetLanguageName(int languageId);
+        Task<string> GetLanguageNameAsync(int languageId);
     }
 }

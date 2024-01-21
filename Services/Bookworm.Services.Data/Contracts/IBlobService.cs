@@ -4,7 +4,6 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    using Azure.Storage.Blobs;
     using Microsoft.AspNetCore.Http;
 
     public interface IBlobService

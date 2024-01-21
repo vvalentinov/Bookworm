@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Models;
@@ -53,9 +53,9 @@
         //}
 
         [Fact]
-        public void GetLanguageNameShouldWorkCorrectly()
+        public async Task GetLanguageNameShouldWorkCorrectly()
         {
-            string languageName = this.languagesService.GetLanguageName(1);
+            string languageName = await this.languagesService.GetLanguageNameAsync(1);
 
             Assert.Equal("Bulgarian", languageName);
         }

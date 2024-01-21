@@ -7,10 +7,12 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Authors;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.UsersPointsDataConstants;
 
     public class UpdateBookService : IUpdateBookService
@@ -18,24 +20,27 @@
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
-        private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IDeletableEntityRepository<Author> authorsRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
+        private readonly IBlobService blobService;
+        private readonly IValidateUploadedBookService validateUploadedBookService;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
-            IDeletableEntityRepository<Book> booksRepository,
             IDeletableEntityRepository<Author> authorsRepository,
-            IRepository<AuthorBook> authorsBooksRepository)
+            IRepository<AuthorBook> authorsBooksRepository,
+            IBlobService blobService,
+            IValidateUploadedBookService validateUploadedBookService)
         {
             this.bookRepository = bookRepository;
             this.userRepository = userRepository;
             this.publishersRepository = publishersRepository;
-            this.booksRepository = booksRepository;
             this.authorsRepository = authorsRepository;
             this.authorsBooksRepository = authorsBooksRepository;
+            this.blobService = blobService;
+            this.validateUploadedBookService = validateUploadedBookService;
         }
 
         public async Task ApproveBookAsync(string bookId)
@@ -94,45 +99,54 @@
         }
 
         public async Task EditBookAsync(
-            string bookId,
-            string title,
-            string description,
-            int categoryId,
-            int languageId,
-            int pagesCount,
-            int publishedYear,
-            string publisherName,
-            IEnumerable<UploadAuthorViewModel> authors)
+            BookDto editBookDto,
+            IEnumerable<UploadAuthorViewModel> authors,
+            string userId)
         {
-            bool hasDuplicates = authors
-                .Select(x => x.Name)
-                .GroupBy(author => author)
-                .Any(group => group.Count() > 1);
-
-            if (hasDuplicates)
-            {
-                throw new Exception("No author duplicates allowed!");
-            }
-
-            Book book = await this.booksRepository
+            Book book = await this.bookRepository
                 .All()
-                .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new Exception("No book with given id found!");
+                .FirstOrDefaultAsync(x => x.Id == editBookDto.Id) ??
+                throw new InvalidOperationException("No book with given id found!");
 
-            if (authors.Any() == false)
+            if (book.UserId != userId)
             {
-                throw new Exception("Authors count must be between one and five!");
+                throw new InvalidOperationException("You have to be the book's owner to edit it!");
             }
 
-            if (publisherName != null)
+            await this.validateUploadedBookService.ValidateUploadedBookAsync(
+                editBookDto.BookFile,
+                editBookDto.ImageFile,
+                authors,
+                editBookDto.CategoryId,
+                editBookDto.LanguageId);
+
+            if (editBookDto.BookFile != null)
+            {
+                string bookBlobName = book.FileUrl[book.FileUrl.IndexOf("Books") ..];
+                book.FileUrl = await this.blobService.ReplaceBlobAsync(
+                    editBookDto.BookFile,
+                    bookBlobName,
+                    BookFileUploadPath);
+            }
+
+            if (editBookDto.ImageFile != null)
+            {
+                string imageBlobName = book.ImageUrl[book.ImageUrl.IndexOf("BooksImages") ..];
+                book.ImageUrl = await this.blobService.ReplaceBlobAsync(
+                    editBookDto.ImageFile,
+                    imageBlobName,
+                    BookImageFileUploadPath);
+            }
+
+            if (editBookDto.Publisher != null)
             {
                 Publisher publisher = await this.publishersRepository
-                    .All()
-                    .FirstOrDefaultAsync(x => x.Name == publisherName);
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Name.ToLower() == editBookDto.Publisher.ToLower());
 
                 if (publisher == null)
                 {
-                    publisher = new Publisher() { Name = publisherName };
+                    publisher = new Publisher() { Name = editBookDto.Publisher };
                     await this.publishersRepository.AddAsync(publisher);
                     await this.publishersRepository.SaveChangesAsync();
                 }
@@ -140,54 +154,88 @@
                 book.PublisherId = publisher.Id;
             }
 
-            book.Title = title;
-            book.Description = description;
-            book.CategoryId = categoryId;
-            book.LanguageId = languageId;
-            book.PagesCount = pagesCount;
-            book.Year = publishedYear;
+            book.Title = editBookDto.Title;
+            book.Description = editBookDto.Description;
+            book.CategoryId = editBookDto.CategoryId;
+            book.LanguageId = editBookDto.LanguageId;
+            book.PagesCount = editBookDto.PagesCount;
+            book.Year = editBookDto.PublishedYear;
 
             List<AuthorBook> authorBooks = await this.authorsBooksRepository
-                .All()
+                .AllAsNoTracking()
                 .Where(x => x.BookId == book.Id)
                 .ToListAsync();
 
-            this.authorsBooksRepository.RemoveRange(authorBooks);
+            foreach (AuthorBook authorBook in authorBooks)
+            {
+                Author author = await this.authorsRepository
+                    .AllAsNoTracking()
+                    .FirstAsync(x => x.Id == authorBook.AuthorId);
+
+                bool authorBookIsValid = authors.Any(x =>
+                    x.Name.Trim().ToLower() == author.Name.ToLower());
+
+                if (!authorBookIsValid)
+                {
+                    this.authorsBooksRepository.Delete(authorBook);
+                }
+            }
+
             await this.authorsBooksRepository.SaveChangesAsync();
 
             foreach (UploadAuthorViewModel inputAuthor in authors)
             {
                 Author author = await this.authorsRepository
-                    .All()
-                    .FirstOrDefaultAsync(x => x.Name == inputAuthor.Name);
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x =>
+                        x.Name.ToLower() == inputAuthor.Name.Trim().ToLower());
 
                 if (author == null)
                 {
-                    var newAuthor = new Author() { Name = inputAuthor.Name };
-                    await this.authorsRepository.AddAsync(newAuthor);
+                    author = new Author() { Name = inputAuthor.Name.Trim() };
+                    await this.authorsRepository.AddAsync(author);
                     await this.authorsRepository.SaveChangesAsync();
 
-                    var authorBook = new AuthorBook() { AuthorId = newAuthor.Id, BookId = book.Id };
+                    AuthorBook authorBook = new AuthorBook()
+                    {
+                        AuthorId = author.Id,
+                        BookId = book.Id,
+                    };
                     await this.authorsBooksRepository.AddAsync(authorBook);
                     await this.authorsBooksRepository.SaveChangesAsync();
                 }
                 else
                 {
-                    bool authorBookExists = await this.authorsBooksRepository
+                    AuthorBook authorBook = await this.authorsBooksRepository
                         .AllAsNoTracking()
-                        .AnyAsync(x => x.AuthorId == author.Id && x.BookId == book.Id);
+                        .FirstOrDefaultAsync(x =>
+                            x.BookId == book.Id && x.AuthorId == author.Id);
 
-                    if (authorBookExists == false)
+                    if (authorBook == null)
                     {
-                        var authorBook = new AuthorBook() { AuthorId = author.Id, BookId = book.Id };
+                        authorBook = new AuthorBook()
+                        {
+                            AuthorId = author.Id,
+                            BookId = book.Id,
+                        };
                         await this.authorsBooksRepository.AddAsync(authorBook);
                         await this.authorsBooksRepository.SaveChangesAsync();
                     }
                 }
             }
 
-            this.booksRepository.Update(book);
-            await this.booksRepository.SaveChangesAsync();
+            book.IsApproved = false;
+            ApplicationUser user = await this.userRepository.All().FirstAsync(x => x.Id == userId);
+            if (user.Points > 0)
+            {
+                user.Points -= BookPoints;
+            }
+
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
+
+            this.bookRepository.Update(book);
+            await this.bookRepository.SaveChangesAsync();
         }
     }
 }

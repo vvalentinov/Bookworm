@@ -1,6 +1,12 @@
 ﻿@model IEnumerable<CategoryViewModel>
 
+@{
+    var selectedCategoryId = ViewData["SelectedCategoryId"] as int?;
+}
+
 @foreach (var category in Model)
 {
-    <option value=@category.Id>@category.Name</option>
+    <option value=@category.Id selected="@(category.Id == selectedCategoryId)">
+        @category.Name
+    </option>
 }

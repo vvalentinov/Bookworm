@@ -67,7 +67,9 @@
         public async Task<string> UploadBlobAsync(IFormFile file, string path = null)
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
+
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+
             string uniqueName = GenerateUniqueName(file);
             if (path != null)
             {
@@ -75,9 +77,13 @@
             }
 
             BlobClient blobClient = containerClient.GetBlobClient(uniqueName);
+
             byte[] fileBytes = GetFileBytes(file);
+
             await using MemoryStream memoryStream = new MemoryStream(fileBytes);
+
             await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
+
             return uniqueName;
         }
 

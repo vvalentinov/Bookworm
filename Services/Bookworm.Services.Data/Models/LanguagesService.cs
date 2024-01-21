@@ -1,12 +1,14 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Languages;
+    using Microsoft.EntityFrameworkCore;
 
     public class LanguagesService : ILanguagesService
     {
@@ -17,23 +19,21 @@
             this.languagesRepository = langugesRepository;
         }
 
-        public IEnumerable<LanguageViewModel> GetAllLanguages()
+        public async Task<List<LanguageViewModel>> GetAllAsync()
         {
-            return this.languagesRepository
+            return await this.languagesRepository
                 .AllAsNoTracking()
-                .Select(x => new LanguageViewModel()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                }).ToList();
+                .To<LanguageViewModel>()
+                .ToListAsync();
         }
 
-        public string GetLanguageName(int languageId)
+        public async Task<string> GetLanguageNameAsync(int languageId)
         {
-            return this.languagesRepository
+            Language language = await this.languagesRepository
                 .AllAsNoTracking()
-                .First(language => language.Id == languageId)
-                .Name;
+                .FirstAsync(language => language.Id == languageId);
+
+            return language.Name;
         }
     }
 }

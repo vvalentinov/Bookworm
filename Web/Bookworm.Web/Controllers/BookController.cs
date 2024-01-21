@@ -104,7 +104,7 @@
             try
             {
                 await this.updateBookService.EditBookAsync(editBookDto, model.Authors, user.Id);
-                this.TempData[MessageConstant.SuccessMessage] = "Successfully edited book!";
+                this.TempData[MessageConstant.SuccessMessage] = "Successfully edited book! When an admin approves your book, it will become visible on the site!";
                 return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
             }
             catch (Exception ex)

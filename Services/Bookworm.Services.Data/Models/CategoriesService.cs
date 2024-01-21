@@ -20,13 +20,13 @@
             this.categoriesRepository = categoriesRepository;
         }
 
-        public IList<T> GetAll<T>()
+        public async Task<List<T>> GetAllAsync<T>()
         {
-            return this.categoriesRepository
-            .AllAsNoTracking()
-            .OrderBy(x => x.Name)
-            .To<T>()
-            .ToList();
+            return await this.categoriesRepository
+                .AllAsNoTracking()
+                .OrderBy(x => x.Name)
+                .To<T>()
+                .ToListAsync();
         }
 
         public IEnumerable<SelectListItem> GetCategoriesAsSelectListItems()

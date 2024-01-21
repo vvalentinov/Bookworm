@@ -12,13 +12,12 @@
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
-    public class UploadBookViewModel : IMapFrom<Book>
+    public class UploadBookViewModel : IMapFrom<Book>, IMapTo<BookDto>
     {
         [Required(ErrorMessage = BookTitleRequiredError)]
         [StringLength(BookTitleMaxLength, MinimumLength = BookTitleMinLength, ErrorMessage = BookTitleLengthError)]
         public string Title { get; set; }
 
-        [Display(Name = nameof(Description))]
         [Required(ErrorMessage = BookDescriptionRequiredError)]
         [StringLength(BookDescriptionMaxLength, MinimumLength = BookDescriptionMinLength, ErrorMessage = BookDescriptionLengthError)]
         public string Description { get; set; }
@@ -53,7 +52,7 @@
         [Required(ErrorMessage = "You must select language!")]
         public int LanguageId { get; set; }
 
-        [NotEmptyCollection("authors")]
-        public IEnumerable<UploadAuthorViewModel> Authors { get; set; }
+        [NotEmptyCollection(nameof(Authors))]
+        public IList<UploadAuthorViewModel> Authors { get; set; }
     }
 }

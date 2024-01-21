@@ -3,23 +3,14 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Authors;
-    using Microsoft.AspNetCore.Http;
 
     public interface IUploadBookService
     {
         Task UploadBookAsync(
-            string title,
-            string description,
-            int languageId,
-            string publisher,
-            int pagesCount,
-            int publishedYear,
-            IFormFile bookFile,
-            IFormFile imageFile,
-            int categoryId,
+            BookDto uploadBookDto,
             IEnumerable<UploadAuthorViewModel> authors,
-            string userId,
-            string userName);
+            string userId);
     }
 }

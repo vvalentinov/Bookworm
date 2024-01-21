@@ -26,7 +26,7 @@
             string cachedTypes = await this.cache.GetStringAsync("categories");
             if (cachedTypes == null)
             {
-                var result = this.categoriesService.GetAll<CategoryViewModel>();
+                var result = await this.categoriesService.GetAllAsync<CategoryViewModel>();
                 cachedTypes = JsonSerializer.Serialize(result);
 
                 DistributedCacheEntryOptions cacheOptions = new DistributedCacheEntryOptions()
