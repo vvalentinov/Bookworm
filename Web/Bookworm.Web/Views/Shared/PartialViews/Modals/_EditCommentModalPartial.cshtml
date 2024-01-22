@@ -1,0 +1,28 @@
+﻿<div class="modal fade modal-lg"
+     id="editModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Comment</h1>
+            </div>
+            <form method="post" asp-controller="Comment" asp-action="Edit">
+                <input type="hidden" name="commentId" class="modelIdInput" value="" />
+                <div class="modal-body">
+                    <input type="hidden" name="bookId" value=@Model.Id />
+                    <textarea name="content" rows="15"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

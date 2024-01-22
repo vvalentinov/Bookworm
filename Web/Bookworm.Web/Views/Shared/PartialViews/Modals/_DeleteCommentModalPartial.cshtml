@@ -1,0 +1,26 @@
+﻿<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment</h1>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete your comment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <form method="post" asp-controller="Comment" asp-action="Delete">
+                    <input type="hidden" name="commentId" class="modelIdInput" value="" />
+                    <input type="hidden" name="bookId" value=@Model.Id />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
