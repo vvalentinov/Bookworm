@@ -51,6 +51,16 @@
             MapperInstance = new Mapper(new MapperConfiguration(config));
         }
 
+        public static TDestination To<TDestination>(this object source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            return MapperInstance.Map<TDestination>(source);
+        }
+
         private static IEnumerable<TypesMap> GetFromMaps(IEnumerable<Type> types)
         {
             var fromMaps = from t in types

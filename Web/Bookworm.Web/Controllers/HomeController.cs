@@ -25,7 +25,7 @@
 
         public async Task<IActionResult> Index()
         {
-            IndexViewModel model = new ()
+            IndexViewModel model = new IndexViewModel()
             {
                 RandomQuote = await this.retrieveQuotesService.GetRandomQuoteAsync<QuoteViewModel>(),
                 RecentBooks = await this.booksService.GetRecentBooksAsync(12),

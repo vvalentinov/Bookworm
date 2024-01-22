@@ -98,9 +98,8 @@
                 Edit<i class="fas fa-user-pen icon ms-2"></i>
             </a>
             <a class="btn btn-lg button"
-               asp-controller="Book"
-               asp-action="Download"
-               asp-route-id="@Model.Id">
+               data-bs-toggle="modal"
+               data-bs-target="#deleteBookModal">
                 Delete<i class="fas fa-trash-can icon ms-2"></i>
             </a>
         }
@@ -177,7 +176,8 @@
                                 {
                                     <span>Score: @comment.NetWorth</span>
                                 }
-                                @if (this.User.Identity.Name == comment.UserUserName || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                                @if (this.User.Identity.Name == comment.UserUserName ||
+                               this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                                 {
                                     <button class="btn btn-lg btn-danger modalBtn"
                                             data-model-id=@comment.Id
@@ -205,119 +205,10 @@
     }
 </section>
 
-<div class="modal fade modal-lg"
-     id="editModal"
-     tabindex="-1"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Comment</h1>
-            </div>
-            <form method="post" asp-controller="Comment" asp-action="Edit">
-                <input type="hidden" name="commentId" class="modelIdInput" value="" />
-                <div class="modal-body">
-                    <input type="hidden" name="bookId" value=@Model.Id />
-                    <textarea name="content" rows="15"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">
-                        Edit
-                    </button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade"
-     id="deleteModal"
-     tabindex="-1"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Comment</h1>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete your comment?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    Close
-                </button>
-                <form method="post" asp-controller="Comment" asp-action="Delete">
-                    <input type="hidden" name="commentId" class="modelIdInput" value="" />
-                    <input type="hidden" name="bookId" value=@Model.Id />
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade"
-     id="ratingModal"
-     tabindex="-1"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Rate Book</h1>
-            </div>
-            <div class="modal-body">
-                <div class="container-wrapper">
-                    <div class="container d-flex align-items-center justify-content-center">
-                        <div class="row justify-content-center">
-                            <!-- star rating -->
-                            <div class="rating-wrapper">
-                                <!-- star 5 -->
-                                <input type="radio" id="5-star-rating" name="star-rating" value="5">
-                                <label for="5-star-rating" class="star-rating">
-                                    <i class="fas fa-star d-inline-block"></i>
-                                </label>
-                                <!-- star 4 -->
-                                <input type="radio" id="4-star-rating" name="star-rating" value="4">
-                                <label for="4-star-rating" class="star-rating star">
-                                    <i class="fas fa-star d-inline-block"></i>
-                                </label>
-                                <!-- star 3 -->
-                                <input type="radio" id="3-star-rating" name="star-rating" value="3">
-                                <label for="3-star-rating" class="star-rating star">
-                                    <i class="fas fa-star d-inline-block"></i>
-                                </label>
-                                <!-- star 2 -->
-                                <input type="radio" id="2-star-rating" name="star-rating" value="2">
-                                <label for="2-star-rating" class="star-rating star">
-                                    <i class="fas fa-star d-inline-block"></i>
-                                </label>
-                                <!-- star 1 -->
-                                <input type="radio" id="1-star-rating" name="star-rating" value="1">
-                                <label for="1-star-rating" class="star-rating star">
-                                    <i class="fas fa-star d-inline-block"></i>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    Close
-                </button>
-                <button data-model-id="@Model.Id" id="rateBtn" type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    Rate
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("PartialViews/Modals/_DeleteBookModalPartial", Model.Id);
+@await Html.PartialAsync("PartialViews/Modals/_EditCommentModalPartial");
+@await Html.PartialAsync("PartialViews/Modals/_DeleteCommentModalPartial");
+@await Html.PartialAsync("PartialViews/Modals/_RateBookModalPartial");
 
 @section Scripts {
     <script src="~/js/rating.js"></script>

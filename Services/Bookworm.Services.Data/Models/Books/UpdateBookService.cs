@@ -10,9 +10,11 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Authors;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;
+    using static Bookworm.Common.GlobalConstants;
     using static Bookworm.Common.UsersPointsDataConstants;
 
     public class UpdateBookService : IUpdateBookService
@@ -20,19 +22,21 @@
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
-        private readonly IDeletableEntityRepository<Author> authorsRepository;
+        private readonly IRepository<Author> authorsRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IBlobService blobService;
         private readonly IValidateUploadedBookService validateUploadedBookService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
-            IDeletableEntityRepository<Author> authorsRepository,
+            IRepository<Author> authorsRepository,
             IRepository<AuthorBook> authorsBooksRepository,
             IBlobService blobService,
-            IValidateUploadedBookService validateUploadedBookService)
+            IValidateUploadedBookService validateUploadedBookService,
+            UserManager<ApplicationUser> userManager)
         {
             this.bookRepository = bookRepository;
             this.userRepository = userRepository;
@@ -41,6 +45,7 @@
             this.authorsBooksRepository = authorsBooksRepository;
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
+            this.userManager = userManager;
         }
 
         public async Task ApproveBookAsync(string bookId)
@@ -80,11 +85,38 @@
             await this.userRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteBookAsync(string bookId)
+        public async Task DeleteBookAsync(string bookId, string userId)
         {
             Book book = await this.bookRepository
                 .All()
-                .FirstAsync(x => x.Id == bookId);
+                .FirstAsync(x => x.Id == bookId) ??
+                throw new InvalidOperationException("No book with given id found!");
+
+            ApplicationUser user = await this.userRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == userId) ??
+                throw new InvalidOperationException("No user with given id found!");
+
+            bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+            if (book.UserId != user.Id && !isAdmin)
+            {
+                throw new InvalidOperationException("You have to be either the book's owner or an administrator to delete it!");
+            }
+
+            if (user.Points - BookPoints < 0)
+            {
+                user.Points = 0;
+            }
+            else
+            {
+                user.Points -= BookPoints;
+            }
+
+            book.IsApproved = false;
+
+            this.userRepository.Update(user);
+            await this.userRepository.SaveChangesAsync();
+
             this.bookRepository.Delete(book);
             await this.bookRepository.SaveChangesAsync();
         }
@@ -226,7 +258,11 @@
 
             book.IsApproved = false;
             ApplicationUser user = await this.userRepository.All().FirstAsync(x => x.Id == userId);
-            if (user.Points > 0)
+            if (user.Points - BookPoints < 0)
+            {
+                user.Points = 0;
+            }
+            else if (user.Points > 0)
             {
                 user.Points -= BookPoints;
             }

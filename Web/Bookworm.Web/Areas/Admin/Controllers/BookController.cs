@@ -10,6 +10,7 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Books;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -38,12 +39,14 @@
             this.userManager = userManager;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(string bookId)
         {
             try
             {
-                await this.updateBookService.DeleteBookAsync(bookId);
+                ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+                await this.updateBookService.DeleteBookAsync(bookId, user.Id);
                 this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted book!";
             }
             catch (Exception)

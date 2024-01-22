@@ -7,7 +7,7 @@
 
     using static Bookworm.Common.Authors.AuthorsDataConstants;
 
-    public class Author : BaseDeletableModel<int>
+    public class Author : BaseModel<int>
     {
         public Author()
         {

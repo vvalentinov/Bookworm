@@ -8,7 +8,7 @@
 
     public interface IUpdateBookService
     {
-        Task DeleteBookAsync(string bookId);
+        Task DeleteBookAsync(string bookId, string userId);
 
         Task ApproveBookAsync(string bookId);
 

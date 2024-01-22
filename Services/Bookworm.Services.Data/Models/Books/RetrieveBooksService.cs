@@ -19,7 +19,7 @@
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
-        private readonly IDeletableEntityRepository<Author> authorRepository;
+        private readonly IRepository<Author> authorRepository;
         private readonly IDeletableEntityRepository<Publisher> publishersRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IRepository<Comment> commentRepository;
@@ -32,7 +32,7 @@
         public RetrieveBooksService(
             IDeletableEntityRepository<Book> bookRepository,
             IRepository<AuthorBook> authorsBooksRepository,
-            IDeletableEntityRepository<Author> authorRepository,
+            IRepository<Author> authorRepository,
             IDeletableEntityRepository<Publisher> publishersRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             IRepository<Comment> commentRepository,

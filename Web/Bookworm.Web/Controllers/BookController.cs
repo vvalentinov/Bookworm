@@ -104,13 +104,32 @@
             try
             {
                 await this.updateBookService.EditBookAsync(editBookDto, model.Authors, user.Id);
-                this.TempData[MessageConstant.SuccessMessage] = "Successfully edited book! When an admin approves your book, it will become visible on the site!";
+                this.TempData[MessageConstant.SuccessMessage] = BookEditSuccess;
                 return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
                 return this.View(model);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Delete(string bookId)
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+
+            try
+            {
+                await this.updateBookService.DeleteBookAsync(bookId, user.Id);
+                this.TempData[MessageConstant.SuccessMessage] = BookDeleteSuccess;
+                return this.RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.Details), "Book", new { id = bookId });
             }
         }
 
