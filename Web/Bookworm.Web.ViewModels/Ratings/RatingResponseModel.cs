@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.ViewModels.Votes
+﻿namespace Bookworm.Web.ViewModels.Ratings
 {
     public class RatingResponseModel
     {

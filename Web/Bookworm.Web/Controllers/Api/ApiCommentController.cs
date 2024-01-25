@@ -1,7 +1,9 @@
 ﻿namespace Bookworm.Web.Controllers.Api
 {
+    using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Comments;
@@ -21,13 +23,20 @@
             this.userManager = userManager;
         }
 
-        [HttpGet(nameof(this.GetSortedByDateAsc))]
-        public async Task<SortedCommentsResponseModel> GetSortedByDateAsc()
+        [HttpGet(nameof(this.GetSortedComments))]
+        public async Task<SortedCommentsResponseModel> GetSortedComments(string criteria)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            SortedCommentsResponseModel responseModel = await this.commentsService.GetSortedCommentsByDateAscAsync(user);
-
-            return responseModel;
+            if (Enum.TryParse(criteria, out SortCommentsCriteria sortCriteria))
+            {
+                SortedCommentsResponseModel responseModel = await this.commentsService.GetSortedCommentsAsync(user, sortCriteria);
+                return responseModel;
+            }
+            else
+            {
+                SortedCommentsResponseModel responseModel = await this.commentsService.GetSortedCommentsAsync(user, SortCommentsCriteria.CreatedOnDesc);
+                return responseModel;
+            }
         }
     }
 }

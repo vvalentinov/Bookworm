@@ -16,7 +16,7 @@
         <img class="img-fluid" src=@Model.ImageUrl alt=@Model.Title />
     </div>
     <ul class="list-group">
-        <li class="list-group-item"><strong>@Model.Title</strong> - uploaded by @Model.Username</li>
+        <li class="list-group-item"><strong>@Model.Title</strong> - <span class="fst-italic">uploaded by @Model.Username</span></li>
         @if (Model.PublisherName != null)
         {
             <li class="list-group-item">Publisher: @Model.PublisherName</li>
@@ -126,7 +126,9 @@
                 <span asp-validation-for="PostComment.Content" class="text-danger"></span>
             </div>
             <div class="text-center mt-4">
-                <button type="submit" class="button btn btn-lg">Post Comment</button>
+                <button type="submit" class="button btn btn-lg">
+                    Post Comment<i class="fa-solid fa-comment ms-2"></i>
+                </button>
             </div>
         </form>
     </div>
@@ -134,92 +136,100 @@
     {
         <section class="commentsSection">
             <h2>Comments: @Model.Comments.Count()</h2>
-            @foreach (var comment in Model.Comments)
+            @if (Model.Comments.Count() > 1 && this.SignInManager.IsSignedIn(this.User))
             {
-                <article class="card">
-                    <div class="card-header">
-                        <span>Posted by - @comment.UserUserName</span>
-                        @if (this.SignInManager.IsSignedIn(this.User))
-                        {
-                            <div class="commentActionsContainer">
-                                @if (this.User.Identity.Name != comment.UserUserName)
-                                {
+                <div class="sortCommentsBtnsContainer">
+                    <div class="btn-group"
+                         role="group"
+                         aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="sortCommentsByDateAsc" autocomplete="off" onclick="getSortedCommentsByDateAsc()">
+                        <label class="btn border border-2" for="sortCommentsByDateAsc">Sort by date asc</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="sortCommentsByDateDesc" autocomplete="off" onclick="getSortedCommentsByDateDesc()" checked>
+                        <label class="btn border border-2" for="sortCommentsByDateDesc">Sort by date desc</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="sortCommentsByNetWorthDesc" autocomplete="off" onclick="getSortedCommentsByNetWorthDesc()">
+                        <label class="btn border border-2" for="sortCommentsByNetWorthDesc">Sort by net worth desc</label>
+                    </div>
+                </div>
+            }
+            <div class="commentsContainer">
+                @foreach (CommentViewModel comment in Model.Comments)
+                {
+                    <article class="card">
+                        <div class="card-header">
+                            <span>Posted by - @comment.UserUserName</span>
+                            @if (this.SignInManager.IsSignedIn(this.User))
+                            {
+                                <div class="commentActionsContainer">
                                     <div class="arrowsContainer">
-                                        @if (@comment.UserVoteValue == 1)
+                                        @if (!comment.IsCommentOwner)
                                         {
                                             <i onclick=onUpArrowClick(this)
                                                data-model-id=@comment.Id
-                                               class="fas fa-circle-up greenUpArrow"></i>
+                                               class="fas fa-circle-up hover @(comment.UserVoteValue == 1 ? "greenUpArrow" : "")">
+                                            </i>
+
+                                            <span>@comment.NetWorth</span>
+
+                                            <i onclick=onDownArrowClick(this)
+                                               data-model-id=@comment.Id
+                                               class="fas fa-circle-down hover @(comment.UserVoteValue == -1 ? "redDownArrow" : "")">
+                                            </i>
                                         }
                                         else
                                         {
-                                            <i onclick=onUpArrowClick(this)
-                                               data-model-id=@comment.Id
-                                               class="fas fa-circle-up"></i>
-                                        }
-                                        <span>@comment.NetWorth</span>
-                                        @if (@comment.UserVoteValue == -1)
-                                        {
-                                            <i onclick=onDownArrowClick(this)
-                                               data-model-id=@comment.Id
-                                               class="fas fa-circle-down redDownArrow"></i>
-                                        }
-                                        else
-                                        {
-                                            <i onclick=onDownArrowClick(this)
-                                               data-model-id=@comment.Id
-                                               class="fas fa-circle-down"></i>
+                                            <i class="fas fa-circle-up"></i>
+                                            <span>@comment.NetWorth</span>
+                                            <i class="fas fa-circle-down"></i>
                                         }
                                     </div>
-                                }
-                                else
-                                {
-                                    <span>Score: @comment.NetWorth</span>
-                                }
-                                @if (this.User.Identity.Name == comment.UserUserName ||
-                               this.User.IsInRole(GlobalConstants.AdministratorRoleName))
-                                {
-                                    <button class="btn btn-lg btn-danger modalBtn"
-                                            data-model-id=@comment.Id
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal">
-                                        Delete
-                                    </button>
-                                    <button class="btn btn-lg btn-warning modalBtn"
-                                            onclick=editCommentFunc(this)
-                                            data-model-id=@comment.Id
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal">
-                                        Edit
-                                    </button>
-                                }
-                            </div>
-                        }
-                    </div>
-                    <div class="card-body">
-                        @Html.Raw(@comment.SanitizedContent)
-                    </div>
-                </article>
-            }
+                                    @if (comment.IsCommentOwner || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                                    {
+                                        <button class="btn btn-lg btn-danger modalBtn"
+                                                data-model-id=@comment.Id
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                onclick="onDeleteCommentBtnClick(this)">
+                                            Delete
+                                        </button>
+                                        <button class="btn btn-lg btn-warning modalBtn"
+                                                onclick="onEditCommentBtnClick(this)"
+                                                data-model-id=@comment.Id
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal">
+                                            Edit
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <div class="card-body">
+                            @Html.Raw(@comment.SanitizedContent)
+                        </div>
+                    </article>
+                }
+            </div>
         </section>
     }
 </section>
 
-@await Html.PartialAsync("PartialViews/Modals/_DeleteBookModalPartial", Model.Id);
-@await Html.PartialAsync("PartialViews/Modals/_EditCommentModalPartial");
-@await Html.PartialAsync("PartialViews/Modals/_DeleteCommentModalPartial");
-@await Html.PartialAsync("PartialViews/Modals/_RateBookModalPartial");
+@await Html.PartialAsync("PartialViews/Modals/_DeleteBookModalPartial", Model.Id)
+@await Html.PartialAsync("PartialViews/Modals/_EditCommentModalPartial")
+@await Html.PartialAsync("PartialViews/Modals/_DeleteCommentModalPartial")
+@await Html.PartialAsync("PartialViews/Modals/_RateBookModalPartial")
 
 @section Scripts {
     <script src="~/js/rating.js"></script>
-    <script src="~/js/modal.js"></script>
     <script src="~/js/vote.js"></script>
-    <script src="~/js/editComment.js"></script>
+    <script src="~/js/comments.js"></script>
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         tinymce.init({
             selector: "textarea",
-            plugins: "table link code wordcount lists preview searchreplace"
+            placeholder: 'Type your comment here...',
+            plugins: "code wordcount lists preview searchreplace",
+            content_style: 'body { font-size: 14pt;}',
         });
     </script>
 }

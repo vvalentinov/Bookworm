@@ -4,7 +4,7 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Web.ViewModels.Votes;
+    using Bookworm.Web.ViewModels.Ratings;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -24,8 +24,8 @@
             this.userManager = userManager;
         }
 
-        [HttpPost(nameof(Post))]
         [Authorize]
+        [HttpPost(nameof(Post))]
         public async Task<ActionResult<RatingResponseModel>> Post(RatingInputModel model)
         {
             string userId = this.userManager.GetUserId(this.User);

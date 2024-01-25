@@ -42,12 +42,13 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(int commentId, string bookId)
+        public async Task<IActionResult> Delete(int deleteCommentId, string bookId)
         {
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
-                await this.commentsService.DeleteAsync(commentId, userId);
+                await this.commentsService.DeleteAsync(deleteCommentId, userId);
+                this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted comment!";
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
             catch (InvalidOperationException exception)
@@ -59,12 +60,12 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(int commentId, string content, string bookId)
+        public async Task<IActionResult> Edit(int editCommentId, string content, string bookId)
         {
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
-                await this.commentsService.EditAsync(commentId, content, userId);
+                await this.commentsService.EditAsync(editCommentId, content, userId);
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
             catch (InvalidOperationException exception)

@@ -57,7 +57,9 @@
 
             using (IServiceScope serviceScope = app.Services.CreateScope())
             {
-                ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                ApplicationDbContext dbContext = serviceScope
+                    .ServiceProvider
+                    .GetRequiredService<ApplicationDbContext>();
 
                 // dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder(builder.Configuration)

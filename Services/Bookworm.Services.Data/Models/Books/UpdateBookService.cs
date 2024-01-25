@@ -262,7 +262,7 @@
             {
                 user.Points = 0;
             }
-            else if (user.Points > 0)
+            else
             {
                 user.Points -= BookPoints;
             }

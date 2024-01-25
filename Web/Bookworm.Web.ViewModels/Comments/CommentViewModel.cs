@@ -23,5 +23,7 @@
         public string UserId { get; set; }
 
         public int UserVoteValue { get; set; }
+
+        public bool IsCommentOwner { get; set; }
     }
 }

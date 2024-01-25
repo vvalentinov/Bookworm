@@ -114,7 +114,6 @@
                     .AllAsNoTracking()
                     .Where(comment => comment.BookId == bookId)
                     .OrderByDescending(comment => comment.CreatedOn)
-                    .OrderByDescending(comment => comment.NetWorth)
                     .To<CommentViewModel>()
                     .ToListAsync();
 
@@ -124,16 +123,21 @@
             {
                 ApplicationUser user = await this.userRepository
                     .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == book.UserId);
+                    .FirstOrDefaultAsync(x => x.Id == userId) ??
+                    throw new InvalidOperationException("No user with given id found!");
+
                 model.Username = user.UserName;
 
-                foreach (var comment in comments)
+                foreach (CommentViewModel comment in comments)
                 {
                     Vote vote = await this.voteRepository
                         .AllAsNoTracking()
-                        .FirstOrDefaultAsync(v => v.UserId == userId && v.CommentId == comment.Id);
+                        .FirstOrDefaultAsync(v =>
+                            v.UserId == userId && v.CommentId == comment.Id);
 
                     comment.UserVoteValue = vote == null ? 0 : (int)vote.Value;
+
+                    comment.IsCommentOwner = comment.UserId == userId;
                 }
 
                 bool isFavorite = await this.favoriteBookRepository

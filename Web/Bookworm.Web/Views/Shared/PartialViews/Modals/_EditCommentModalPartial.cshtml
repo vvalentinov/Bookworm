@@ -9,16 +9,16 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Comment</h1>
             </div>
             <form method="post" asp-controller="Comment" asp-action="Edit">
-                <input type="hidden" name="commentId" class="modelIdInput" value="" />
+                <input type="hidden" name="editCommentId" class="modelIdInput" value="" />
                 <div class="modal-body">
                     <input type="hidden" name="bookId" value=@Model.Id />
-                    <textarea name="content" rows="15"></textarea>
+                    <textarea id="editCommentTextarea" name="content" rows="15"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger" data-bs-dismiss="modal">
-                        Edit
+                    <button type="submit" class="btn btn-danger px-5 fs-4" data-bs-dismiss="modal">
+                        Edit<i class="fa-solid fa-pen-to-square ms-2"></i>
                     </button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-primary px-5 fs-4" data-bs-dismiss="modal">
                         Close
                     </button>
                 </div>

@@ -6,11 +6,16 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common;
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Comments;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
+
+    using static Bookworm.Common.GlobalConstants;
 
     public class CommentsService : ICommentsService
     {
@@ -121,6 +126,65 @@
                 .FirstOrDefault(x => x.Id == commentId);
 
             return comment.UserId;
+        }
+
+        public async Task<SortedCommentsResponseModel> GetSortedCommentsAsync(
+            ApplicationUser user,
+            SortCommentsCriteria criteria)
+        {
+            List<CommentViewModel> comments = new List<CommentViewModel>();
+
+            switch (criteria)
+            {
+                case SortCommentsCriteria.CreatedOnAsc:
+                    comments = await this.commentRepository
+                        .AllAsNoTracking()
+                        .OrderBy(c => c.CreatedOn)
+                        .To<CommentViewModel>()
+                        .ToListAsync();
+                    break;
+                case SortCommentsCriteria.CreatedOnDesc:
+                    comments = await this.commentRepository
+                        .AllAsNoTracking()
+                        .OrderByDescending(c => c.CreatedOn)
+                        .To<CommentViewModel>()
+                        .ToListAsync();
+                    break;
+                case SortCommentsCriteria.NetWorthDesc:
+                    comments = await this.commentRepository
+                        .AllAsNoTracking()
+                        .OrderByDescending(c => c.NetWorth)
+                        .To<CommentViewModel>()
+                        .ToListAsync();
+                    break;
+            }
+
+            if (user != null)
+            {
+                foreach (CommentViewModel comment in comments)
+                {
+                    Vote vote = await this.voteRepository
+                            .AllAsNoTracking()
+                            .FirstOrDefaultAsync(v =>
+                                v.UserId == user.Id && v.CommentId == comment.Id);
+
+                    comment.UserVoteValue = vote == null ? 0 : (int)vote.Value;
+
+                    comment.IsCommentOwner = comment.UserId == user.Id;
+                }
+            }
+
+            bool isUserSignedIn = user != null;
+            bool isUserAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+
+            SortedCommentsResponseModel model = new SortedCommentsResponseModel()
+            {
+                Comments = comments,
+                IsUserSignedIn = isUserSignedIn,
+                IsUserAdmin = isUserAdmin,
+            };
+
+            return model;
         }
     }
 }
