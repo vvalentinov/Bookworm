@@ -41,24 +41,10 @@
             <li class="list-group-item">Comments: 0</li>
         }
         <li class="list-group-item">
-
             Average Rating:
             <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
             <span>/5.0</span>
             <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
-
-            @if (this.SignInManager.IsSignedIn(this.User) && this.Model.IsUserBook == false)
-            {
-                <span>
-                    Your rating:
-                    <span class="bookUserRating">
-                        @for (int i = 0; i < Model.UserRating; i++)
-                        {
-                            <i class="fas fa-star ratingStar"></i>
-                        }
-                    </span>
-                </span>
-            }
         </li>
         <li class="list-group-item">
             <dl>

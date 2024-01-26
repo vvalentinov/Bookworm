@@ -119,14 +119,18 @@
 
             model.Comments = comments;
 
+            ApplicationUser bookUser = await this.userRepository
+                .AllAsNoTracking()
+                .FirstAsync(x => x.Id == book.UserId);
+
+            model.Username = bookUser.UserName;
+
             if (userId != null)
             {
                 ApplicationUser user = await this.userRepository
                     .AllAsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id == userId) ??
                     throw new InvalidOperationException("No user with given id found!");
-
-                model.Username = user.UserName;
 
                 foreach (CommentViewModel comment in comments)
                 {
@@ -140,11 +144,10 @@
                     comment.IsCommentOwner = comment.UserId == userId;
                 }
 
-                bool isFavorite = await this.favoriteBookRepository
+                model.IsFavorite = await this.favoriteBookRepository
                     .AllAsNoTracking()
                     .AnyAsync(x => x.BookId == bookId && x.UserId == userId);
 
-                model.IsFavorite = isFavorite;
                 model.IsUserBook = book.UserId == userId;
 
                 int rating = await this.ratingsService.GetUserRatingAsync(bookId, userId);
