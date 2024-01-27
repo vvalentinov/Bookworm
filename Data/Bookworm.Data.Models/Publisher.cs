@@ -5,7 +5,10 @@
 
     using Bookworm.Data.Common.Models;
 
-    public class Publisher : BaseDeletableModel<int>
+    using static Bookworm.Common.Publishers.PublishersDataConstants;
+    using static Bookworm.Common.Publishers.PublishersErrorMessagesConstants;
+
+    public class Publisher : BaseModel<int>
     {
         public Publisher()
         {
@@ -13,6 +16,10 @@
         }
 
         [Required]
+        [StringLength(
+            PublisherNameMaxLength,
+            MinimumLength = PublisherNameMinLength,
+            ErrorMessage = PublisherNameLengthError)]
         public string Name { get; set; }
 
         public virtual ICollection<Book> Books { get; set; }

@@ -42,8 +42,6 @@
 
         public DbSet<QuoteLike> QuotesLikes { get; set; }
 
-        public DbSet<UserQuoteLike> UsersQuotesLikes { get; set; }
-
         public DbSet<Rating> Ratings { get; set; }
 
         public DbSet<Vote> Votes { get; set; }
@@ -77,7 +75,6 @@
             base.OnModelCreating(builder);
 
             // Apply query filters
-            //builder.Entity<AuthorBook>().HasQueryFilter(x => !x.Author.IsDeleted && !x.Book.IsDeleted);
             builder.Entity<QuoteLike>().HasQueryFilter(x => x.Quote.IsDeleted == false);
             builder.Entity<Vote>().HasQueryFilter(x => x.User.IsDeleted == false);
 

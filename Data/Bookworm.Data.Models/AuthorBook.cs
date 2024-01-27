@@ -4,7 +4,7 @@
 
     using Bookworm.Data.Common.Models;
 
-    public class AuthorBook : BaseModel<int>
+    public class AuthorBook : BaseDeletableModel<int>
     {
         [ForeignKey(nameof(Author))]
         public int AuthorId { get; set; }

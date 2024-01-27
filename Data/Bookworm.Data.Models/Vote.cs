@@ -8,6 +8,10 @@
 
     public class Vote : BaseModel<int>
     {
+        [Required]
+        public VoteValue Value { get; set; }
+
+        [Required]
         [ForeignKey(nameof(Comment))]
         public int CommentId { get; set; }
 
@@ -18,7 +22,5 @@
         public string UserId { get; set; }
 
         public virtual ApplicationUser User { get; set; }
-
-        public VoteValue Value { get; set; }
     }
 }

@@ -2,8 +2,8 @@
 {
     public static class QuotesErrorMessagesConstants
     {
-        public const string QuoteContentRequiredError = "Quote content field is required!";
-        public const string QuoteContentLengthError = "Quote content must be between 10 and 350 characters long!";
+        public const string QuoteContentRequiredError = "Quote content is required!";
+        public const string QuoteContentLengthError = "Quote content must be between 10 and 300 characters long!";
 
         public const string QuoteBookTitleRequiredError = "Quote book title field is required!";
         public const string QuoteBookTitleLengthError = "Quote book title field must be between 5 and 150 characters long!";

@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Bookworm.Common;
     using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
@@ -80,7 +79,7 @@
                 throw new InvalidOperationException("No user with given id found!");
             }
 
-            bool isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
+            bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
 
             if (!isAdmin && comment.UserId != userId)
             {
@@ -104,7 +103,7 @@
             }
 
             ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
-            bool isAdmin = await this.userManager.IsInRoleAsync(user, GlobalConstants.AdministratorRoleName);
+            bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
 
             if (!isAdmin && comment.UserId != userId)
             {

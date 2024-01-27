@@ -17,7 +17,9 @@
         private readonly ICommentsService commentsService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public ApiCommentController(ICommentsService commentsService, UserManager<ApplicationUser> userManager)
+        public ApiCommentController(
+            ICommentsService commentsService,
+            UserManager<ApplicationUser> userManager)
         {
             this.commentsService = commentsService;
             this.userManager = userManager;

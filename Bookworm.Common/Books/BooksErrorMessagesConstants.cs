@@ -2,11 +2,11 @@
 {
     public static class BooksErrorMessagesConstants
     {
-        public const string BookTitleRequiredError = "Title field is required!";
-        public const string BookTitleLengthError = "Title must be between 5 and 250 characters long!";
+        public const string BookTitleRequiredError = "Book title is required!";
+        public const string BookTitleLengthError = "Book title must be between 2 and 100 characters long!";
 
-        public const string BookDescriptionRequiredError = "Description field is required!";
-        public const string BookDescriptionLengthError = "Description must be between 40 and 3000 charcters long!";
+        public const string BookDescriptionRequiredError = "Book description is required!";
+        public const string BookDescriptionLengthError = "Book description must be between 20 and 3000 charcters long!";
 
         public const string BookPublisherLengthError = "Publisher must be between 2 and 100 characters long!";
 

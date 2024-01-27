@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.Books.BooksDataConstants;
+    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
     public class Book : BaseDeletableModel<string>
     {
@@ -21,19 +22,29 @@
         }
 
         [Required]
-        [MaxLength(BookTitleMaxLength)]
+        [StringLength(
+            BookTitleMaxLength,
+            MinimumLength = BookTitleMinLength,
+            ErrorMessage = BookTitleLengthError)]
         public string Title { get; set; }
 
         [Required]
-        [MaxLength(BookDescriptionMaxLength)]
+        [StringLength(
+            BookDescriptionMaxLength,
+            MinimumLength = BookDescriptionMinLength,
+            ErrorMessage = BookDescriptionLengthError)]
         public string Description { get; set; }
 
+        [Required]
         public int Year { get; set; }
 
+        [Required]
         public int PagesCount { get; set; }
 
+        [Required]
         public int DownloadsCount { get; set; }
 
+        [Required]
         public bool IsApproved { get; set; }
 
         [NotMapped]
@@ -48,11 +59,13 @@
         [Required]
         public string FileUrl { get; set; }
 
+        [Required]
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
         public virtual Category Category { get; set; }
 
+        [Required]
         [ForeignKey(nameof(Language))]
         public int LanguageId { get; set; }
 
@@ -63,6 +76,7 @@
 
         public virtual Publisher Publisher { get; set; }
 
+        [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
