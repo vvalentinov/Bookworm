@@ -24,6 +24,28 @@ body {
     padding-top: 5rem;
 }
 
+.topArrow {
+    position: fixed;
+    width: 65px;
+    height: 65px;
+    background: var(--clr-secondary);
+    bottom: 40px;
+    right: 50px;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px;
+    color: white;
+    font-size: 30px;
+    display: none;
+    border-radius: 50%;
+    border: solid 2px black;
+}
+
+    .topArrow:hover {
+        cursor: pointer;
+        color: black;
+    }
+
 .navbar {
     background-color: var(--clr-primary);
 }
