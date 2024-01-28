@@ -16,7 +16,7 @@
     public class UploadBookService : IUploadBookService
     {
         private readonly IDeletableEntityRepository<Book> booksRepository;
-        private readonly IDeletableEntityRepository<Publisher> publisherRepository;
+        private readonly IRepository<Publisher> publisherRepository;
         private readonly IRepository<Author> authorRepository;
         private readonly IRepository<AuthorBook> authorBookRepository;
         private readonly IBlobService blobService;
@@ -24,7 +24,7 @@
 
         public UploadBookService(
             IDeletableEntityRepository<Book> booksRepository,
-            IDeletableEntityRepository<Publisher> publisherRepository,
+            IRepository<Publisher> publisherRepository,
             IRepository<Author> authorRepository,
             IRepository<AuthorBook> authorBookRepository,
             IBlobService blobService,

@@ -9,85 +9,61 @@
 
     public class ManageQuoteLikesService : IManageQuoteLikesService
     {
-        private readonly IRepository<QuoteLike> quoteLikesRepository;
-        private readonly IDeletableEntityRepository<UserQuoteLike> usersQuotesLikesRepository;
+        private readonly IDeletableEntityRepository<QuoteLike> quoteLikesRepository;
 
-        public ManageQuoteLikesService(
-            IRepository<QuoteLike> quoteLikesRepository,
-            IDeletableEntityRepository<UserQuoteLike> usersQuotesLikesRepository)
+        public ManageQuoteLikesService(IDeletableEntityRepository<QuoteLike> quoteLikesRepository)
         {
             this.quoteLikesRepository = quoteLikesRepository;
-            this.usersQuotesLikesRepository = usersQuotesLikesRepository;
         }
 
         public async Task<int> LikeQuoteAsync(int quoteId, string userId)
         {
-            QuoteLike quote = await this.quoteLikesRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.QuoteId == quoteId);
+            QuoteLike quoteLike = await this.quoteLikesRepository
+                .AllAsNoTrackingWithDeleted()
+                .FirstOrDefaultAsync(ql => ql.QuoteId == quoteId && ql.UserId == userId);
 
-            if (quote == null)
+            if (quoteLike != null)
             {
-                quote = new QuoteLike()
-                {
-                    QuoteId = quoteId,
-                    Likes = 1,
-                };
-
-                await this.quoteLikesRepository.AddAsync(quote);
-                await this.quoteLikesRepository.SaveChangesAsync();
+                quoteLike.IsDeleted = false;
+                this.quoteLikesRepository.Update(quoteLike);
             }
             else
             {
-                quote.Likes++;
-            }
-
-            UserQuoteLike userQuoteLike = await this.usersQuotesLikesRepository
-                .AllWithDeleted()
-                .FirstOrDefaultAsync(x => x.QuoteId == quoteId && x.UserId == userId);
-
-            if (userQuoteLike == null)
-            {
-                userQuoteLike = new UserQuoteLike()
+                quoteLike = new QuoteLike()
                 {
+                    QuoteId = quoteId,
                     UserId = userId,
-                    QuoteId = quoteId,
                 };
 
-                await this.usersQuotesLikesRepository.AddAsync(userQuoteLike);
-                await this.usersQuotesLikesRepository.SaveChangesAsync();
-            }
-            else
-            {
-                userQuoteLike.IsDeleted = false;
+                await this.quoteLikesRepository.AddAsync(quoteLike);
             }
 
             await this.quoteLikesRepository.SaveChangesAsync();
 
-            return quote.Likes;
+            return await this.GetQuoteLikesCountAsync(quoteId);
         }
 
-        public async Task<int> DislikeQuoteAsync(
-            int quoteId,
-            string userId)
+        public async Task<int> DislikeQuoteAsync(int quoteId, string userId)
         {
             QuoteLike quoteLike = await this.quoteLikesRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.QuoteId == quoteId);
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(ql => ql.QuoteId == quoteId && ql.UserId == userId);
 
-            UserQuoteLike userQuoteLike = await this.usersQuotesLikesRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.QuoteId == quoteId && x.UserId == userId);
-
-            userQuoteLike.IsDeleted = true;
-
-            if (quoteLike.Likes > 0)
+            if (quoteLike != null)
             {
-                quoteLike.Likes--;
+                quoteLike.IsDeleted = true;
+                this.quoteLikesRepository.Update(quoteLike);
+                await this.quoteLikesRepository.SaveChangesAsync();
             }
 
-            await this.quoteLikesRepository.SaveChangesAsync();
-            return quoteLike.Likes;
+            return await this.GetQuoteLikesCountAsync(quoteId);
+        }
+
+        private async Task<int> GetQuoteLikesCountAsync(int quoteId)
+        {
+            return await this.quoteLikesRepository
+                .AllAsNoTracking()
+                .CountAsync(x => x.QuoteId == quoteId);
         }
     }
 }

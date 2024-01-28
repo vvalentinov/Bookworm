@@ -21,7 +21,7 @@
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly IDeletableEntityRepository<Publisher> publishersRepository;
+        private readonly IRepository<Publisher> publishersRepository;
         private readonly IRepository<Author> authorsRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IBlobService blobService;
@@ -31,7 +31,7 @@
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
-            IDeletableEntityRepository<Publisher> publishersRepository,
+            IRepository<Publisher> publishersRepository,
             IRepository<Author> authorsRepository,
             IRepository<AuthorBook> authorsBooksRepository,
             IBlobService blobService,

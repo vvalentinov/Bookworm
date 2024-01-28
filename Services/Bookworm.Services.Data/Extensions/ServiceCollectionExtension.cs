@@ -61,7 +61,6 @@
         private static void AddQuotesServices(IServiceCollection services)
         {
             services.AddTransient<ICheckIfQuoteExistsService, CheckIfQuoteExistsService>();
-            services.AddTransient<IGetQuoteTypeImgUrlService, GetQuoteTypeImgUrlService>();
             services.AddTransient<IManageQuoteLikesService, ManageQuoteLikesService>();
             services.AddTransient<IRetrieveQuotesService, RetrieveQuotesService>();
             services.AddTransient<ISearchQuoteService, SearchQuoteService>();

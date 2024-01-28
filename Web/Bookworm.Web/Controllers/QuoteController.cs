@@ -20,7 +20,6 @@
         private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
         private readonly IUploadQuoteService uploadQuoteService;
-        private readonly IGetQuoteTypeImgUrlService getQuoteTypeImgUrlService;
         private readonly ICheckIfQuoteExistsService checkIfQuoteExistsService;
 
         public QuoteController(
@@ -28,14 +27,12 @@
             IRetrieveQuotesService retrieveQuotesService,
             IUpdateQuoteService updateQuoteService,
             IUploadQuoteService uploadQuoteService,
-            IGetQuoteTypeImgUrlService getQuoteTypeImgUrlService,
             ICheckIfQuoteExistsService checkIfQuoteExistsService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
             this.updateQuoteService = updateQuoteService;
             this.uploadQuoteService = uploadQuoteService;
-            this.getQuoteTypeImgUrlService = getQuoteTypeImgUrlService;
             this.checkIfQuoteExistsService = checkIfQuoteExistsService;
         }
 
@@ -66,7 +63,7 @@
         public async Task<IActionResult> UserQuotes()
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            UserQuotesViewModel quotes = await this.retrieveQuotesService.GetUserQuotesAsync(user.Id);
+            UserQuotesViewModel quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync(user.Id);
             return this.View(quotes);
         }
 
@@ -90,13 +87,7 @@
         [Authorize]
         public IActionResult Upload()
         {
-            UploadQuoteViewModel model = new UploadQuoteViewModel()
-            {
-                MovieQuoteImgUrl = this.getQuoteTypeImgUrlService.GetMovieQuoteImageUrl(),
-                BookQuoteImgUrl = this.getQuoteTypeImgUrlService.GetBookQuoteImageUrl(),
-                GeneralQuoteImgUrl = this.getQuoteTypeImgUrlService.GetGeneralQuoteImageUrl(),
-            };
-
+            UploadQuoteViewModel model = new UploadQuoteViewModel();
             return this.View(model);
         }
 

@@ -33,7 +33,7 @@
                 <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body d-flex justify-content-center">
-                <img class="col-4" src="@Model.MovieQuoteImgUrl" />
+                <img class="col-4" src="~/images/movieQuote.jpg" />
                 <form method="post" asp-controller="Quote" asp-action="UploadMovieQuote" class="col-8 mx-auto d-flex justify-content-center flex-column ps-4">
                     <div class="form-group fs-4">
                         <label asp-for="@Model.MovieQuoteModel.Content">Content*</label>
@@ -63,7 +63,7 @@
                 <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body d-flex justify-content-center">
-                <img class="col-4" src="@Model.BookQuoteImgUrl" />
+                <img class="col-4" src="~/images/bookQuote.jpg" />
                 <form method="post" asp-controller="Quote" asp-action="UploadBookQuote" class="col-8 mx-auto d-flex justify-content-center flex-column ps-4">
                     <div class="form-group fs-4">
                         <label asp-for="@Model.BookQuoteModel.Content">Content*</label>
@@ -98,7 +98,7 @@
                 <button class="btn-modal-close" type="button" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body d-flex align-items-stretch">
-                <img class="col-4" src="@Model.GeneralQuoteImgUrl" />
+                <img class="col-4" src="~/images/generalQuote.jpg" />
                 <form method="post" asp-controller="Quote" asp-action="UploadGeneralQuote" class="col-8 mx-auto d-flex justify-content-center flex-column px-4">
                     <div class="form-group fs-4">
                         <label asp-for="GeneralQuoteModel.Content">Content*</label>

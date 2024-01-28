@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Authorization;
@@ -40,7 +40,8 @@
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 string userId = this.userManager.GetUserId(this.User);
-                List<QuoteViewModel> quotes = await this.retrieveQuotesService.GetQuotesByTypeAsync(userId, quoteType);
+                List<QuoteViewModel> quotes = await this.retrieveQuotesService
+                    .GetUserQuotesByTypeAsync<QuoteViewModel>(userId, quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -54,7 +55,8 @@
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotes = await this.retrieveQuotesService.GetQuotesByTypeAsync(null, quoteType);
+                List<QuoteViewModel> quotes = await this.retrieveQuotesService
+                    .GetAllQuotesByTypeAsync<QuoteViewModel>(quoteType);
                 return new JsonResult(quotes);
             }
             else
@@ -65,32 +67,36 @@
 
         [Authorize]
         [HttpGet(nameof(SearchUserQuotesByContent))]
-        public ActionResult SearchUserQuotesByContent(string content, string type)
+        public async Task<ActionResult> SearchUserQuotesByContent(string content, string type)
         {
             string userId = this.userManager.GetUserId(this.User);
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotesByType = this.searchQuoteService.SearchQuoteByContent(content, userId, quoteType);
+                List<QuoteViewModel> quotesByType = await this.searchQuoteService
+                    .SearchUserQuotesByContentAndTypeAsync<QuoteViewModel>(content, userId, quoteType);
                 return new JsonResult(quotesByType);
             }
             else
             {
-                List<QuoteViewModel> quotes = this.searchQuoteService.SearchQuoteByContent(content, userId);
+                List<QuoteViewModel> quotes = await this.searchQuoteService
+                    .SearchUserQuotesByContentAsync<QuoteViewModel>(content, userId);
                 return new JsonResult(quotes);
             }
         }
 
         [HttpGet(nameof(SearchAllQuotesByContent))]
-        public ActionResult SearchAllQuotesByContent(string content, string type)
+        public async Task<ActionResult> SearchAllQuotesByContent(string content, string type)
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
-                List<QuoteViewModel> quotesByType = this.searchQuoteService.SearchQuoteByContent(content, null, quoteType);
+                List<QuoteViewModel> quotesByType = await this.searchQuoteService
+                    .SearchQuotesByContentAndTypeAsync<QuoteViewModel>(content, quoteType);
                 return new JsonResult(quotesByType);
             }
             else
             {
-                List<QuoteViewModel> quotes = this.searchQuoteService.SearchQuoteByContent(content, null);
+                List<QuoteViewModel> quotes = await this.searchQuoteService
+                    .SearchQuotesByContentAsync<QuoteViewModel>(content);
                 return new JsonResult(quotes);
             }
         }

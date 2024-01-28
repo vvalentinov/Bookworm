@@ -11,6 +11,8 @@
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
+    using static Bookworm.Common.Publishers.PublishersDataConstants;
+    using static Bookworm.Common.Publishers.PublishersErrorMessagesConstants;
 
     public class UploadBookViewModel : IMapFrom<Book>, IMapTo<BookDto>
     {
@@ -23,7 +25,7 @@
         public string Description { get; set; }
 
         [Display(Name = "Publisher(optional)")]
-        [StringLength(BookPublisherMaxLength, MinimumLength = BookPublisherMinLength, ErrorMessage = BookPublisherLengthError)]
+        [StringLength(PublisherNameMaxLength, MinimumLength = PublisherNameMinLength, ErrorMessage = PublisherNameLengthError)]
         public string Publisher { get; set; }
 
         [Display(Name = "Number of pages")]

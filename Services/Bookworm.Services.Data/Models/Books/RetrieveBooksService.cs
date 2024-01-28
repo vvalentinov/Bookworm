@@ -20,7 +20,7 @@
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IRepository<Author> authorRepository;
-        private readonly IDeletableEntityRepository<Publisher> publishersRepository;
+        private readonly IRepository<Publisher> publishersRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly IRepository<Comment> commentRepository;
         private readonly IRepository<Vote> voteRepository;
@@ -33,7 +33,7 @@
             IDeletableEntityRepository<Book> bookRepository,
             IRepository<AuthorBook> authorsBooksRepository,
             IRepository<Author> authorRepository,
-            IDeletableEntityRepository<Publisher> publishersRepository,
+            IRepository<Publisher> publishersRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             IRepository<Comment> commentRepository,
             IRepository<Vote> voteRepository,

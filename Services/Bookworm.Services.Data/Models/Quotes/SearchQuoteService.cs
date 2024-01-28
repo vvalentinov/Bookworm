@@ -2,13 +2,14 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
-    using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
-    using Bookworm.Web.ViewModels.Quotes;
+    using Microsoft.EntityFrameworkCore;
 
     public class SearchQuoteService : ISearchQuoteService
     {
@@ -23,36 +24,134 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public List<QuoteViewModel> SearchQuoteByContent(
+        public async Task<List<T>> SearchUserQuotesByContentAndTypeAsync<T>(
             string content,
             string userId,
-            QuoteType? type = null)
+            QuoteType type)
         {
-            List<QuoteViewModel> quotes = this.quoteRepository
+            List<T> quotes = await this.quoteRepository
                 .AllAsNoTracking()
-                .Where(x => x.Content.ToLower().Contains(content.ToLower()) && (userId == null || x.UserId == userId))
-                .OrderByDescending(x => x.CreatedOn)
-                .To<QuoteViewModel>()
-                .ToList();
+                .Where(q => q.UserId == userId &&
+                       q.Content.ToLower() == content.ToLower() &&
+                       q.Type == type)
+                .To<T>()
+                .ToListAsync();
 
-            switch (type)
-            {
-                case QuoteType.ApprovedQuote:
-                    return quotes.Where(q => q.IsApproved).ToList();
-                case QuoteType.UnapprovedQuote:
-                    return quotes.Where(q => q.IsApproved == false).ToList();
-                case QuoteType.MovieQuote:
-                    return quotes.Where(q => q.MovieTitle != null).ToList();
-                case QuoteType.BookQuote:
-                    return quotes.Where(q => q.BookTitle != null).ToList();
-                case QuoteType.GeneralQuote:
-                    return quotes.Where(q => q.BookTitle == null && q.MovieTitle == null).ToList();
-                case QuoteType.LikedQuote:
-                    return quotes.Where(q => this.quoteLikesRepository
-                                             .AllAsNoTracking()
-                                             .Any(x => x.QuoteId == q.Id && x.Likes > 0)).ToList();
-                default: return quotes;
-            }
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchUserQuotesByContentAsync<T>(string content, string userId)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.UserId == userId && q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchQuotesByContentAndTypeAsync<T>(string content, QuoteType type)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.IsApproved && q.Content.ToLower() == content.ToLower() && q.Type == type)
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchQuotesByContentAsync<T>(string content)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.IsApproved && q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchUserLikedQuotesByContentAsync<T>(string content, string userId)
+        {
+            List<int> likedQuotesIds = await this.quoteLikesRepository
+                .AllAsNoTracking()
+                .Where(q => q.UserId == userId)
+                .Select(q => q.QuoteId)
+                .ToListAsync();
+
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => likedQuotesIds.Contains(q.Id) && q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchLikedQuotesByContentAsync<T>(string content)
+        {
+            List<int> likedQuotesIds = await this.quoteLikesRepository
+                .AllAsNoTracking()
+                .Select(q => q.QuoteId)
+                .ToListAsync();
+
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => likedQuotesIds.Contains(q.Id) && q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchUserApprovedQuotesByContentAsync<T>(string content, string userId)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.UserId == userId &&
+                            q.IsApproved &&
+                            q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchApprovedQuotesByContentAsync<T>(string content)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.IsApproved && q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchUserUnapprovedQuotesByContentAsync<T>(string content, string userId)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.UserId == userId &&
+                            q.IsApproved == false &&
+                            q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
+        }
+
+        public async Task<List<T>> SearchUnapprovedQuotesByContentAsync<T>(string content)
+        {
+            List<T> quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(q => q.IsApproved == false && q.Content.ToLower() == content.ToLower())
+                .To<T>()
+                .ToListAsync();
+
+            return quotes;
         }
     }
 }
