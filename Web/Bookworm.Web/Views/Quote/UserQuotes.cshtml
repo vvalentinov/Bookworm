@@ -1,4 +1,4 @@
-﻿@model UserQuotesViewModel
+﻿@model UserQuoteListingViewModel
 
 @{
     this.ViewData["Title"] = "My Quotes";
@@ -13,7 +13,9 @@
 }
 else
 {
-    <div class="btn-group d-flex justify-content-center my-5 mb-3" role="group" aria-label="Basic radio toggle button group">
+    <div class="btn-group d-flex justify-content-center my-5 mb-3"
+         role="group"
+         aria-label="Basic radio toggle button group">
         <input type="radio" class="btn-check" name="btnradio" id="approvedQuotesRadio" autocomplete="off">
         <label class="btn border border-2" for="approvedQuotesRadio">Show only approved quotes - @Model.ApprovedQuotesCount</label>
 
@@ -21,25 +23,20 @@ else
         <label class="btn border border-2" for="unapprovedQuotesRadio">Show only unapproved quotes - @Model.UnapprovedQuotesCount</label>
     </div>
 
-    <div class="btn-group d-flex justify-content-center mb-3" role="group" aria-label="Basic radio toggle button group">
-        <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="bookQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="bookQuotesRadio">Show only book quotes</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="generalQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="generalQuotesRadio">Show only general quotes</label>
-    </div>
-
-    <div class="btn-group d-flex justify-content-center mb-3" role="group" aria-label="Basic radio toggle button group">
-        <input type="radio" class="btn-check" name="btnradio" id="likedQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="likedQuotesRadio">Show only liked quotes</label>
-    </div>
+    <partial name="PartialViews/_QuotesTypeFilterPartial" />
 
     <div class="input-group">
-        <input type="text" class="form-control border border-2 border-black" id="searchQuotesInput" placeholder="Search quotes..." aria-label="Recipient's username" aria-describedby="button-addon2">
-        <button class="btn border border-2 border-black" type="button" id="searchQuotesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <input type="text"
+               class="form-control border border-2 border-black"
+               id="searchQuotesInput"
+               placeholder="Search quotes..."
+               aria-label="Recipient's username"
+               aria-describedby="button-addon2">
+        <button class="btn border border-2 border-black"
+                type="button"
+                id="searchQuotesBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
     </div>
 
     <div class="table-responsive my-3">
@@ -99,10 +96,21 @@ else
                             }
                         </td>
                         <td class="text-center align-middle">
-                            <a asp-area="" asp-controller="Quote" asp-action="Edit" asp-route-id="@Model.Quotes[i].Id" class="btn btn-outline-warning"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>
+                            <a asp-area=""
+                               asp-controller="Quote"
+                               asp-action="Edit"
+                               asp-route-id="@Model.Quotes[i].Id"
+                               class="btn btn-outline-warning">
+                                <i class="fa-solid fa-pen-to-square fa-xl"></i>
+                            </a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-outline-danger quoteBtn" data-quote-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#deleteQuoteModal"><i class="fa-solid fa-trash-can fa-xl"></i></a>
+                            <a class="btn btn-outline-danger modalBtn"
+                               data-model-id="@Model.Quotes[i].Id"
+                               data-bs-toggle="modal"
+                               data-bs-target="#deleteQuoteModal">
+                                <i class="fa-solid fa-trash-can fa-xl"></i>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -111,29 +119,10 @@ else
     </div>
 }
 
-<!-- Delete Quote Modal -->
-<div class="modal fade" id="deleteQuoteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete quote</h1>
-                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this quote?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                <form method="post" asp-controller="Quote" asp-action="Delete">
-                    <input type="hidden" name="quoteId" class="quoteIdInput" value="" />
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/Modals/_DeleteQuoteModalPartial" />
 
-@section Scripts{
-    <script src="~/js/quotes/quoteModal.js"></script>
+
+@section Scripts {
+    <script src="~/js/modal.js"></script>
     <script type="module" src="~/js/quotes/userQuotes.js" charset="UTF-8"></script>
 }

@@ -88,11 +88,11 @@ function radioAddEventListener() {
             switch (radioButtons[i].id) {
                 case 'approvedQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in approved quotes...';
-                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=ApprovedQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserApprovedQuotes', true);
                     break;
                 case 'unapprovedQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in unapproved quotes...';
-                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=UnapprovedQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserUnapprovedQuotes', true);
                     break;
                 case 'movieQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in movie quotes...';
@@ -108,7 +108,7 @@ function radioAddEventListener() {
                     break;
                 case 'likedQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in liked quotes...';
-                    xhr.open('GET', '/ApiQuote/GetUserQuotesByType?type=LikedQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetUserLikedQuotes', true);
                     break;
             }
             xhr.onload = function () {

@@ -13,7 +13,7 @@
 
         public int Likes { get; set; }
 
-        public bool HasBeenLiked { get; set; }
+        public bool IsLikedByUser { get; set; }
 
         public string Content { get; set; }
 

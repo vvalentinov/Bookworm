@@ -52,8 +52,4 @@
 		<ProjectReference Include="..\Bookworm.Web.Infrastructure\Bookworm.Web.Infrastructure.csproj" />
 		<ProjectReference Include="..\Bookworm.Web.ViewModels\Bookworm.Web.ViewModels.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Views\Comment\" />
-	</ItemGroup>
 </Project>

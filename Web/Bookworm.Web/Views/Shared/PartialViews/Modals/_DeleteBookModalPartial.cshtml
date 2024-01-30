@@ -16,7 +16,7 @@
                     Close
                 </button>
                 <form method="post" asp-controller="Book" asp-action="Delete">
-                    <input type="hidden" name="bookId" value=@Model />
+                    <input type="hidden" name="bookId" value=@Model.Id />
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>

@@ -2,23 +2,30 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    [Authorize]
+    using static Bookworm.Common.GlobalConstants;
+
+    [Authorize(Roles = AdministratorRoleName)]
     public class QuoteController : BaseController
     {
         private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public QuoteController(
             IRetrieveQuotesService retrieveQuotesService,
-            IUpdateQuoteService updateQuoteService)
+            IUpdateQuoteService updateQuoteService,
+            UserManager<ApplicationUser> userManager)
         {
             this.retrieveQuotesService = retrieveQuotesService;
             this.updateQuoteService = updateQuoteService;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> ApprovedQuotes()
@@ -42,7 +49,8 @@
         [HttpPost]
         public async Task<IActionResult> ApproveQuote(int quoteId)
         {
-            await this.updateQuoteService.ApproveQuoteAsync(quoteId);
+            string userId = this.userManager.GetUserId(this.User);
+            await this.updateQuoteService.ApproveQuoteAsync(quoteId, userId);
             return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
         }
 

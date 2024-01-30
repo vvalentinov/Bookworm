@@ -1,32 +1,20 @@
 ﻿@model QuoteListingViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
-    List<QuoteViewModel> quotes = this.Model.Quotes.ToList();
     this.ViewData["Title"] = "All Quotes";
-    this.ViewData["Count"] = quotes.Count;
+    this.ViewData["Count"] = Model.Quotes.Count;
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
 <partial name="PartialViews/_TitleCardPartial" />
-
-<div class="btn-group my-5 mb-3 d-flex justify-content-center"
-     role="group"
-     aria-label="Basic radio toggle button group">
-    <input type="radio" class="btn-check" name="btnradio" id="movieQuotesRadio" autocomplete="off">
-    <label class="btn border border-2" for="movieQuotesRadio">Show only movie quotes</label>
-
-    <input type="radio" class="btn-check" name="btnradio" id="bookQuotesRadio" autocomplete="off">
-    <label class="btn border border-2" for="bookQuotesRadio">Show only book quotes</label>
-
-    <input type="radio" class="btn-check" name="btnradio" id="otherQuotesRadio" autocomplete="off">
-    <label class="btn border border-2" for="otherQuotesRadio">Show only general quotes</label>
-
-    <input type="radio" class="btn-check" name="btnradio" id="likedQuotesRadio" autocomplete="off">
-    <label class="btn border border-2" for="likedQuotesRadio">Show only liked quotes</label>
-</div>
+<partial name="PartialViews/_QuotesTypeFilterPartial" />
 
 <div class="input-group mb-3">
     <input type="text"
-           class="form-control border border-2 border-black"
+           class="form-control border-2 border-black"
            id="searchQuotesInput"
            placeholder="Search quotes..."
            aria-label="Recipient's username"
@@ -38,66 +26,40 @@
     </button>
 </div>
 
-<div class="table-responsive mb-3">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center align-middle" scope="col">#</th>
-                <th class="text-center align-middle" scope="col">Content</th>
-                <th class="text-center align-middle" scope="col">Author</th>
-                <th class="text-center align-middle" scope="col">Movie</th>
-                <th class="text-center align-middle" scope="col">Book</th>
-                <th class="text-center align-middle" scope="col">Likes</th>
-            </tr>
-        </thead>
-        <tbody class="table-body">
-            @for (int i = 0; i <= Model.Quotes.Count() - 1; i++)
-            {
-                <tr>
-                    <th class="text-center align-middle" scope="row">@(i + 1)</th>
-                    <td class="align-middle">@Model.Quotes[i].Content</td>
-                    @if (@Model.Quotes[i].AuthorName != null)
+<div class="quotesContainer">
+    @foreach (var quote in Model.Quotes)
+    {
+        <div class="card">
+            <div class="card-header">
+                Quote <span><i class="fa-regular fa-thumbs-up"></i> (@quote.Likes)</span>
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote ">
+                    <p>@quote.Content</p>
+                    @if (quote.AuthorName != null)
                     {
-                        <td class="text-center align-middle">@Model.Quotes[i].AuthorName</td>
+                        <footer class="blockquote-footer text-end">
+                            @quote.AuthorName
+                        </footer>
                     }
-                    else
+                    @if (quote.BookTitle != null)
                     {
-                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        <footer class="blockquote-footer text-end">
+                            From the book: @quote.BookTitle
+                        </footer>
                     }
-                    @if (@Model.Quotes[i].MovieTitle != null)
+                    @if (quote.MovieTitle != null)
                     {
-                        <td class="text-center align-middle">@Model.Quotes[i].MovieTitle</td>
+                        <footer class="blockquote-footer text-end">
+                            From the movie: @quote.MovieTitle
+                        </footer>
                     }
-                    else
-                    {
-                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
-                    }
-                    @if (@Model.Quotes[i].BookTitle != null)
-                    {
-                        <td class="text-center align-middle">@Model.Quotes[i].BookTitle</td>
-                    }
-                    else
-                    {
-                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
-                    }
-                    <td class="text-center align-middle likes-container">
-                        @if (this.User.Identity.IsAuthenticated)
-                        {
-                            <i onclick="likeQuoteFunc(@Model.Quotes[i].Id, this)" class="@(Model.Quotes[i].HasBeenLiked ? "fa-solid" : "fa-regular") fa-thumbs-up fa-2xl likeQuote"></i>
-                        }
-                        else
-                        {
-                            <i class="fa-regular fa-thumbs-up fa-2xl"></i>
-                        }
-                        <span id="likesCount">(@Model.Quotes[i].Likes)</span>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                </blockquote>
+            </div>
+        </div>
+    }
 </div>
 
-<form method="post" id="antiForgeryForm"></form>
 @section Scripts {
     <script type="module" src="~/js/quotes/allQuotes.js"></script>
     <script src="~/js/quotes/likeQuote.js"></script>

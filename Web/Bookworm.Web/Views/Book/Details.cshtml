@@ -200,10 +200,10 @@
     }
 </section>
 
-@await Html.PartialAsync("PartialViews/Modals/_DeleteBookModalPartial", Model.Id)
-@await Html.PartialAsync("PartialViews/Modals/_EditCommentModalPartial")
-@await Html.PartialAsync("PartialViews/Modals/_DeleteCommentModalPartial")
-@await Html.PartialAsync("PartialViews/Modals/_RateBookModalPartial")
+<partial name="PartialViews/Modals/_DeleteBookModalPartial" />
+<partial name="PartialViews/Modals/_EditCommentModalPartial" />
+<partial name="PartialViews/Modals/_DeleteCommentModalPartial" />
+<partial name="PartialViews/Modals/_RateBookModalPartial" />
 
 @section Scripts {
     <script src="~/js/rating.js"></script>

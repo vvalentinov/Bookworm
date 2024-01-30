@@ -77,6 +77,7 @@
             // Apply query filters
             builder.Entity<QuoteLike>().HasQueryFilter(x => x.Quote.IsDeleted == false);
             builder.Entity<Vote>().HasQueryFilter(x => x.User.IsDeleted == false);
+            builder.Entity<Rating>().HasQueryFilter(x => x.Book.IsDeleted == false);
 
             this.ConfigureUserIdentityRelations(builder);
 

@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Web.Controllers
 {
+    using System;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -11,13 +12,13 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
     using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
 
     public class QuoteController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
+        private readonly IRetrieveUserQuotesService retrieveUserQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
         private readonly IUploadQuoteService uploadQuoteService;
         private readonly ICheckIfQuoteExistsService checkIfQuoteExistsService;
@@ -25,12 +26,14 @@
         public QuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
+            IRetrieveUserQuotesService retrieveUserQuotesService,
             IUpdateQuoteService updateQuoteService,
             IUploadQuoteService uploadQuoteService,
             ICheckIfQuoteExistsService checkIfQuoteExistsService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
+            this.retrieveUserQuotesService = retrieveUserQuotesService;
             this.updateQuoteService = updateQuoteService;
             this.uploadQuoteService = uploadQuoteService;
             this.checkIfQuoteExistsService = checkIfQuoteExistsService;
@@ -63,7 +66,7 @@
         public async Task<IActionResult> UserQuotes()
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            UserQuotesViewModel quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync(user.Id);
+            UserQuoteListingViewModel quotes = await this.retrieveUserQuotesService.GetAllUserQuotesAsync(user.Id);
             return this.View(quotes);
         }
 
@@ -100,22 +103,23 @@
                 return this.View(nameof(this.Upload));
             }
 
-            if (await this.checkIfQuoteExistsService.QuoteExistsAsync(generalQuoteModel.Content))
+            try
             {
-                this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
+                string userId = this.userManager.GetUserId(this.User);
+
+                await this.uploadQuoteService.UploadGeneralQuoteAsync(
+                    generalQuoteModel.Content.Trim(),
+                    generalQuoteModel.AuthorName.Trim(),
+                    userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
+                return this.RedirectToAction("Index", "Home");
+            }
+            catch (Exception exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
                 return this.View(nameof(this.Upload));
             }
-
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            await this.uploadQuoteService.UploadGeneralQuoteAsync(
-                generalQuoteModel.Content,
-                generalQuoteModel.AuthorName,
-                user.Id);
-
-            this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
-
-            return this.RedirectToAction("Index", "Home");
         }
 
         [Authorize]
@@ -127,22 +131,23 @@
                 return this.View(nameof(this.Upload));
             }
 
-            if (await this.checkIfQuoteExistsService.QuoteExistsAsync(movieQuoteModel.Content))
+            try
             {
-                this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
-                return this.RedirectToAction(nameof(this.Upload), "Quote");
+                string userId = this.userManager.GetUserId(this.User);
+
+                await this.uploadQuoteService.UploadMovieQuoteAsync(
+                    movieQuoteModel.Content,
+                    movieQuoteModel.MovieTitle,
+                    userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
+                return this.RedirectToAction("Index", "Home");
             }
-
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            await this.uploadQuoteService.UploadMovieQuoteAsync(
-                movieQuoteModel.Content,
-                movieQuoteModel.MovieTitle,
-                user.Id);
-
-            this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
-
-            return this.RedirectToAction("Index", "Home");
+            catch (Exception exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                return this.View(nameof(this.Upload));
+            }
         }
 
         [Authorize]
@@ -154,23 +159,24 @@
                 return this.View(nameof(this.Upload));
             }
 
-            if (await this.checkIfQuoteExistsService.QuoteExistsAsync(bookQuoteModel.Content))
+            try
             {
-                this.TempData[MessageConstant.ErrorMessage] = QuoteExistsError;
+                string userId = this.userManager.GetUserId(this.User);
+
+                await this.uploadQuoteService.UploadBookQuoteAsync(
+                    bookQuoteModel.Content,
+                    bookQuoteModel.BookTitle,
+                    bookQuoteModel.AuthorName,
+                    userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
+                return this.RedirectToAction("Index", "Home");
+            }
+            catch (Exception exception)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
                 return this.View(nameof(this.Upload));
             }
-
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            await this.uploadQuoteService.UploadBookQuoteAsync(
-                bookQuoteModel.Content,
-                bookQuoteModel.BookTitle,
-                bookQuoteModel.AuthorName,
-                user.Id);
-
-            this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
-
-            return this.RedirectToAction("Index", "Home");
         }
     }
 }

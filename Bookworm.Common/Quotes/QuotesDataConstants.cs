@@ -3,7 +3,7 @@
     public static class QuotesDataConstants
     {
         public const byte QuoteContentMinLength = 10;
-        public const int QuoteContentMaxLength = 300;
+        public const int QuoteContentMaxLength = 150;
 
         public const byte QuoteBookTitleMinLength = 5;
         public const byte QuoteBookTitleMaxLength = 150;

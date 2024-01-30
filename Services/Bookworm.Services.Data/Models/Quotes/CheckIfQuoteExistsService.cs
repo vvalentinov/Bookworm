@@ -18,7 +18,9 @@
 
         public async Task<bool> QuoteExistsAsync(string content)
         {
-            return await this.quoteRepository.AllAsNoTracking().AnyAsync(x => x.Content.ToLower().Contains(content.ToLower()));
+            return await this.quoteRepository
+                .AllAsNoTracking()
+                .AnyAsync(x => x.Content.ToLower().Contains(content.Trim().ToLower()));
         }
     }
 }

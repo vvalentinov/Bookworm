@@ -25,14 +25,5 @@
         Task<int> GetUnapprovedQuotesCountAsync();
 
         Task<List<T>> GetLikedQuotesAsync<T>();
-
-        // User Quotes
-        Task<UserQuotesViewModel> GetAllUserQuotesAsync(string userId);
-
-        Task<List<T>> GetUserQuotesByTypeAsync<T>(string userId, QuoteType type);
-
-        Task<List<T>> GetUserApprovedQuotesAsync<T>(string userId);
-
-        Task<List<T>> GetUserUnapprovedQuotesAsync<T>(string userId);
     }
 }

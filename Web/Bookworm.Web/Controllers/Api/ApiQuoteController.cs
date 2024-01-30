@@ -18,17 +18,20 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
+        private readonly IRetrieveUserQuotesService retrieveUserQuotesService;
         private readonly ISearchQuoteService searchQuoteService;
         private readonly IManageQuoteLikesService manageQuoteLikesService;
 
         public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
+            IRetrieveUserQuotesService retrieveUserQuotesService,
             ISearchQuoteService searchQuoteService,
             IManageQuoteLikesService manageQuoteLikesService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
+            this.retrieveUserQuotesService = retrieveUserQuotesService;
             this.searchQuoteService = searchQuoteService;
             this.manageQuoteLikesService = manageQuoteLikesService;
         }
@@ -40,7 +43,7 @@
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 string userId = this.userManager.GetUserId(this.User);
-                List<QuoteViewModel> quotes = await this.retrieveQuotesService
+                List<QuoteViewModel> quotes = await this.retrieveUserQuotesService
                     .GetUserQuotesByTypeAsync<QuoteViewModel>(userId, quoteType);
                 return new JsonResult(quotes);
             }
@@ -65,6 +68,14 @@
             }
         }
 
+        [HttpGet(nameof(GetLikedQuotes))]
+        public async Task<IActionResult> GetLikedQuotes()
+        {
+            List<QuoteViewModel> quotes = await this.retrieveQuotesService
+                    .GetLikedQuotesAsync<QuoteViewModel>();
+            return new JsonResult(quotes);
+        }
+
         [Authorize]
         [HttpGet(nameof(SearchUserQuotesByContent))]
         public async Task<ActionResult> SearchUserQuotesByContent(string content, string type)
@@ -82,6 +93,36 @@
                     .SearchUserQuotesByContentAsync<QuoteViewModel>(content, userId);
                 return new JsonResult(quotes);
             }
+        }
+
+        [Authorize]
+        [HttpGet(nameof(GetUserApprovedQuotes))]
+        public async Task<ActionResult> GetUserApprovedQuotes()
+        {
+            string userId = this.userManager.GetUserId(this.User);
+            List<QuoteViewModel> quotesByType = await this.retrieveUserQuotesService
+                    .GetUserApprovedQuotesAsync<QuoteViewModel>(userId);
+            return new JsonResult(quotesByType);
+        }
+
+        [Authorize]
+        [HttpGet(nameof(GetUserUnapprovedQuotes))]
+        public async Task<ActionResult> GetUserUnapprovedQuotes()
+        {
+            string userId = this.userManager.GetUserId(this.User);
+            List<QuoteViewModel> quotesByType = await this.retrieveUserQuotesService
+                    .GetUserUnapprovedQuotesAsync<QuoteViewModel>(userId);
+            return new JsonResult(quotesByType);
+        }
+
+        [Authorize]
+        [HttpGet(nameof(GetUserLikedQuotes))]
+        public async Task<ActionResult> GetUserLikedQuotes()
+        {
+            string userId = this.userManager.GetUserId(this.User);
+            List<QuoteViewModel> quotesByType = await this.retrieveUserQuotesService
+                    .GetUserLikedQuotesAsync<QuoteViewModel>(userId);
+            return new JsonResult(quotesByType);
         }
 
         [HttpGet(nameof(SearchAllQuotesByContent))]

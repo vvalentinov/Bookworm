@@ -95,7 +95,7 @@ function radioAddEventListener() {
                     break;
                 case 'likedQuotesRadio':
                     searchQuotesInput.placeholder = 'Search in liked quotes...';
-                    xhr.open('GET', '/ApiQuote/GetAllQuotesByType?type=LikedQuote', true);
+                    xhr.open('GET', '/ApiQuote/GetLikedQuotes', true);
                     break;
             }
             xhr.onload = function () {

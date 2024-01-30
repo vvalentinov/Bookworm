@@ -35,18 +35,15 @@
                 .OrderByDescending(x => x.Id)
                 .ToListAsync();
 
-            foreach (var quote in quotes)
+            foreach (QuoteViewModel quote in quotes)
             {
                 quote.Likes = await this.GetQuoteLikesAsync(quote.Id);
-                quote.HasBeenLiked = await this.quoteLikesRepository
+                quote.IsLikedByUser = await this.quoteLikesRepository
                                                 .AllAsNoTracking()
                                                 .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
             }
 
-            return new QuoteListingViewModel()
-            {
-                Quotes = quotes,
-            };
+            return new QuoteListingViewModel() { Quotes = quotes };
         }
 
         public async Task<QuoteListingViewModel> GetAllApprovedQuotesAsync()
@@ -75,12 +72,10 @@
 
         public async Task<int> GetUnapprovedQuotesCountAsync()
         {
-            int unapprovedQuotesCount = await this.quoteRepository
+            return await this.quoteRepository
                 .AllAsNoTracking()
                 .Where(quote => quote.IsApproved == false)
                 .CountAsync();
-
-            return unapprovedQuotesCount;
         }
 
         public async Task<QuoteListingViewModel> GetAllDeletedQuotesAsync()
@@ -147,59 +142,6 @@
                 .ToListAsync();
 
             return quotes;
-        }
-
-        public async Task<UserQuotesViewModel> GetAllUserQuotesAsync(string userId)
-        {
-            List<QuoteViewModel> quotes = await this.quoteRepository
-                                          .AllAsNoTrackingWithDeleted()
-                                          .Where(x => x.UserId == userId)
-                                          .OrderByDescending(x => x.CreatedOn)
-                                          .To<QuoteViewModel>()
-                                          .ToListAsync();
-
-            int approvedQuotesCount = quotes.Where(x => x.IsApproved).Count();
-            int unapprovedQuotesCount = quotes.Where(x => x.IsApproved == false).Count();
-
-            foreach (var quote in quotes)
-            {
-                quote.Likes = await this.GetQuoteLikesAsync(quote.Id);
-            }
-
-            return new UserQuotesViewModel()
-            {
-                Quotes = quotes,
-                ApprovedQuotesCount = approvedQuotesCount,
-                UnapprovedQuotesCount = unapprovedQuotesCount,
-            };
-        }
-
-        public async Task<List<T>> GetUserApprovedQuotesAsync<T>(string userId)
-        {
-            return await this.quoteRepository
-                  .AllAsNoTracking()
-                  .Where(q => q.IsApproved && q.UserId == userId)
-                  .To<T>()
-                  .ToListAsync();
-        }
-
-        public async Task<List<T>> GetUserUnapprovedQuotesAsync<T>(string userId)
-        {
-            return await this.quoteRepository
-                  .AllAsNoTracking()
-                  .Where(q => q.IsApproved == false && q.UserId == userId)
-                  .To<T>()
-                  .ToListAsync();
-        }
-
-        public async Task<List<T>> GetUserQuotesByTypeAsync<T>(string userId, QuoteType type)
-        {
-            return await this.quoteRepository
-                              .AllAsNoTracking()
-                              .Where(quote => quote.UserId == userId && quote.Type == type)
-                              .OrderByDescending(quote => quote.CreatedOn)
-                              .To<T>()
-                              .ToListAsync();
         }
 
         private async Task<int> GetQuoteLikesAsync(int quoteId)

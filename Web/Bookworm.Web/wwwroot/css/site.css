@@ -1,9 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Diphylleia&display=swap');
 
-@import "./books/bookDetails.css";
-@import "books/bookUpload.css";
-@import "books/bookEdit.css";
-
 :root {
     --clr-primary: #34495E;
     --clr-secondary: #1abc9c;
@@ -24,6 +20,59 @@ body {
     padding-top: 5rem;
 }
 
+.quotesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    border: solid 2px black;
+    border-radius: 15px;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+    .quotesContainer .card {
+        flex-basis: 32%;
+        border: solid 2px black;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .quotesContainer .card .card-header {
+            border-bottom: solid 2px black;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .quotesContainer .card .card-header span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.3rem;
+            }
+
+                .quotesContainer .card .card-header span i {
+                    font-size: 1.7rem;
+                }
+
+        .quotesContainer .card .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quotesContainer .card blockquote {
+            margin: 0 !important;
+        }
+
+            .quotesContainer .card blockquote p {
+                text-align: justify;
+                word-break: break-word !important;
+            }
+
+/*Top Arrow Button*/
 .topArrow {
     position: fixed;
     width: 65px;
@@ -46,6 +95,7 @@ body {
         color: black;
     }
 
+/*Navbar*/
 .navbar {
     background-color: var(--clr-primary);
 }
@@ -80,6 +130,7 @@ body {
     border: solid 3px var(--clr-secondary);
 }
 
+/*Modal*/
 .modal-header {
     background-color: var(--clr-primary);
 }
@@ -118,8 +169,8 @@ body {
 
 .modal .modal-header .btn-modal-close {
     color: red;
-    border: solid 2px red;
-    background: none;
+    font-size: 1.3rem;
+    cursor: pointer;
 }
 
 .homeBtnsSection {
@@ -175,6 +226,11 @@ body {
     .button:hover {
         background-color: var(--clr-primary);
         color: var(--clr-secondary);
+    }
+
+    .button:active {
+        background-color: var(--clr-primary) !important;
+        color: var(--clr-secondary) !important;
     }
 
 .btn-group label {
@@ -241,6 +297,282 @@ body {
 .checkIcon {
     color: var(--clr-secondary);
 }
+
+/*Book Upload*/
+.uploadBookSection {
+    display: flex;
+    justify-content: center;
+}
+
+    .uploadBookSection form {
+        width: 80%;
+        border: solid 2px black;
+        border-radius: 15px;
+        margin: 2rem 0;
+        padding: 1rem;
+        font-size: 1.2rem;
+    }
+
+        .uploadBookSection form div input,
+        .uploadBookSection form div select {
+            border: solid 2px black;
+        }
+
+        .uploadBookSection form div textarea {
+            font-size: 10rem;
+        }
+
+        .uploadBookSection form .selectContainer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+            .uploadBookSection form .selectContainer div {
+                width: 50%;
+            }
+
+
+/*Book Edit*/
+.editBookSection {
+    display: flex;
+    justify-content: center;
+}
+
+    .editBookSection form {
+        width: 80%;
+        border: solid 2px black;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 2rem 0;
+        font-size: 1.1rem;
+    }
+
+        .editBookSection form input,
+        .editBookSection form select,
+        .editBookSection form textarea {
+            font-size: 1.2rem;
+            border: solid 2px black;
+        }
+
+
+/*Book Details*/
+.bookDetailsInfoSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 2rem;
+}
+
+    .bookDetailsInfoSection div {
+        flex-basis: 35%;
+    }
+
+        .bookDetailsInfoSection div img {
+            border-radius: 15px;
+            border: solid 2.5px black;
+            height: 25rem;
+            width: 100%;
+        }
+
+    .bookDetailsInfoSection ul {
+        flex-basis: 65%;
+        border-radius: 15px;
+        border: solid 2.5px black;
+        font-size: 1.1rem;
+    }
+
+        .bookDetailsInfoSection ul a {
+            font-style: italic;
+        }
+
+.list-group .list-group-item {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+    word-wrap: break-word;
+}
+
+    .list-group .list-group-item a {
+        color: var(--clr-secondary);
+        text-decoration: none;
+    }
+
+.bookDetailsActionsSection {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 3rem;
+    padding: 2rem 0;
+}
+
+    .bookDetailsActionsSection a,
+    .bookDetailsActionsSection button {
+        font-size: 1.4rem;
+        border: solid 2px black;
+        flex-basis: 50%;
+    }
+
+.bookDetailsDescSection {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+    .bookDetailsDescSection .card {
+        font-size: 1.2rem;
+        border: solid 2px black;
+    }
+
+        .bookDetailsDescSection .card .card-body {
+            text-align: justify;
+        }
+
+.bookDetailsCommentsSection {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+    .bookDetailsCommentsSection h2 {
+        text-align: center;
+    }
+
+    .bookDetailsCommentsSection .formContainer {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+        .bookDetailsCommentsSection .formContainer .button {
+            border: solid 3px black;
+            padding: 0.5rem 2rem;
+        }
+
+        .bookDetailsCommentsSection .formContainer form {
+            border: solid 2px black;
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+        }
+
+.commentsSection {
+    padding: 2rem 1rem;
+    border: solid 2px black;
+    border-radius: 15px;
+}
+
+    .commentsSection .sortCommentsBtnsContainer {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+        .commentsSection .sortCommentsBtnsContainer .btn-group {
+            width: 70%;
+            border: solid 2px black;
+        }
+
+            .commentsSection .sortCommentsBtnsContainer .btn-group label {
+                font-weight: bold;
+                font-size: 1.3rem;
+                font-style: italic;
+            }
+
+    .commentsSection .commentsContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .commentsSection .commentActionsContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .commentsSection .card {
+        width: 70%;
+        border: solid 2px black;
+        font-size: 1.1rem;
+    }
+
+        .commentsSection .card .card-header {
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .commentsSection .card .card-header .arrowsContainer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .commentsSection .card .card-header .arrowsContainer i {
+                    font-size: 2.5rem;
+                }
+
+                .commentsSection .card .card-header .arrowsContainer .hover:hover {
+                    cursor: pointer;
+                }
+
+.greenUpArrow {
+    color: green;
+}
+
+.redDownArrow {
+    color: red;
+}
+
+/*Rating*/
+.ratingStar {
+    color: #34AC9E;
+}
+
+.rating-wrapper {
+    align-self: center;
+    border-radius: 5rem;
+    display: inline-flex;
+    direction: rtl !important;
+    padding: 1.5rem 2.5rem;
+    margin-left: auto;
+    border: solid 2px #1abc9c;
+}
+
+    .rating-wrapper label {
+        color: #E1E6F6;
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 3rem;
+        padding: 1rem .6rem;
+        transition: color 0.5s;
+    }
+
+    .rating-wrapper input {
+        height: 100%;
+        width: 100%;
+    }
+
+    .rating-wrapper input {
+        display: none;
+    }
+
+        .rating-wrapper label:hover,
+        .rating-wrapper label:hover ~ label,
+        .rating-wrapper input:checked ~ label {
+            color: #34AC9E;
+        }
+
+            .rating-wrapper label:hover,
+            .rating-wrapper label:hover ~ label,
+            .rating-wrapper input:checked ~ label {
+                color: #34AC9E;
+            }
+
+
 /*Pagination Styles*/
 .pagination > li > a {
     background-color: var(--clr-primary);
@@ -383,18 +715,54 @@ input[type="radio"] {
         outline: 0;
     }
 
-.quotesContainer {
+/*Upload Quote*/
+.uploadQuoteBtnsContainer {
     display: flex;
-    justify-content: space-evenly;
-    align-items: stretch;
-    gap: 1rem;
-    margin: 2rem 0;
+    justify-content: center;
+    gap: 2rem;
+    padding: 8rem 1rem;
 }
 
-    .quotesContainer .quoteCard {
-        width: 50%;
+    .uploadQuoteBtnsContainer button,
+    .uploadQuoteBtnsContainer button:hover {
+        flex-basis: 33.3%;
+        border: solid 3px var(--clr-secondary);
+        font-size: 1.4rem;
+        padding: 1.5rem 0;
+        text-transform: uppercase;
     }
 
+.uploadQuoteModalContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+    .uploadQuoteModalContainer img {
+        flex-basis: 20%;
+        height: 30rem;
+        width: 20rem;
+        border: solid 2px var(--clr-secondary);
+    }
+
+    .uploadQuoteModalContainer form {
+        flex-basis: 80%;
+    }
+
+        .uploadQuoteModalContainer form input,
+        .uploadQuoteModalContainer form textarea {
+            border: solid 2px black !important;
+        }
+
+    .uploadQuoteModalContainer button,
+    .uploadQuoteModalContainer button:hover {
+        border: solid 2px black;
+        padding: 0.7rem 4rem;
+        text-align: center;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+    }
 
 /*Responsive Design*/
 @media only screen and (max-width: 1000px) {
@@ -424,16 +792,6 @@ input[type="radio"] {
     .loginRegisterForm {
         flex-basis: 80%;
     }
-}
-
-@media only screen and (max-width: 500px) {
-    .quotesContainer {
-        flex-direction: column;
-    }
-
-        .quotesContainer .quoteCard {
-            width: 100%;
-        }
 }
 
 @media only screen and (max-width: 370px) {

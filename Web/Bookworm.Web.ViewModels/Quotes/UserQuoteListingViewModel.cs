@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class UserQuotesViewModel
+    public class UserQuoteListingViewModel
     {
         public List<QuoteViewModel> Quotes { get; set; }
 
