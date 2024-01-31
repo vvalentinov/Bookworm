@@ -9,6 +9,7 @@
     using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
 
     public class SearchQuoteService : ISearchQuoteService
@@ -51,24 +52,40 @@
             return quotes;
         }
 
-        public async Task<List<T>> SearchQuotesByContentAndTypeAsync<T>(string content, QuoteType type)
+        public async Task<List<QuoteViewModel>> SearchQuotesByContentAndTypeAsync(string content, QuoteType type, string userId)
         {
-            List<T> quotes = await this.quoteRepository
+            List<QuoteViewModel> quotes = await this.quoteRepository
                 .AllAsNoTracking()
-                .Where(q => q.IsApproved && q.Content.ToLower() == content.ToLower() && q.Type == type)
-                .To<T>()
+                .Where(q => q.IsApproved && q.Content.ToLower().Contains(content.ToLower()) && q.Type == type)
+                .To<QuoteViewModel>()
                 .ToListAsync();
+
+            foreach (QuoteViewModel quote in quotes)
+            {
+                quote.IsLikedByUser = await this.quoteLikesRepository
+                                                .AllAsNoTracking()
+                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
+                quote.IsUserQuoteCreator = quote.UserId == userId;
+            }
 
             return quotes;
         }
 
-        public async Task<List<T>> SearchQuotesByContentAsync<T>(string content)
+        public async Task<List<QuoteViewModel>> SearchQuotesByContentAsync(string content, string userId)
         {
-            List<T> quotes = await this.quoteRepository
+            List<QuoteViewModel> quotes = await this.quoteRepository
                 .AllAsNoTracking()
-                .Where(q => q.IsApproved && q.Content.ToLower() == content.ToLower())
-                .To<T>()
+                .Where(q => q.IsApproved && q.Content.ToLower().Contains(content.ToLower()))
+                .To<QuoteViewModel>()
                 .ToListAsync();
+
+            foreach (QuoteViewModel quote in quotes)
+            {
+                quote.IsLikedByUser = await this.quoteLikesRepository
+                                                .AllAsNoTracking()
+                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
+                quote.IsUserQuoteCreator = quote.UserId == userId;
+            }
 
             return quotes;
         }

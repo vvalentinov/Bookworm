@@ -6,6 +6,6 @@
     {
         Task<int> LikeQuoteAsync(int quoteId, string userId);
 
-        Task<int> DislikeQuoteAsync(int quoteId, string userId);
+        Task<int> UnlikeQuoteAsync(int quoteId, string userId);
     }
 }

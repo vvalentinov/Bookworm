@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models.Enums;
+    using Bookworm.Web.ViewModels.Quotes;
 
     public interface ISearchQuoteService
     {
@@ -14,9 +15,9 @@
 
         Task<List<T>> SearchUserQuotesByContentAsync<T>(string content, string userId);
 
-        Task<List<T>> SearchQuotesByContentAndTypeAsync<T>(string content, QuoteType type);
+        Task<List<QuoteViewModel>> SearchQuotesByContentAndTypeAsync(string content, QuoteType type, string userId);
 
-        Task<List<T>> SearchQuotesByContentAsync<T>(string content);
+        Task<List<QuoteViewModel>> SearchQuotesByContentAsync(string content, string userId);
 
         Task<List<T>> SearchUserLikedQuotesByContentAsync<T>(string content, string userId);
 

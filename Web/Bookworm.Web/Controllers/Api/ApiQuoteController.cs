@@ -12,6 +12,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ApiQuoteController : ControllerBase
@@ -36,7 +37,6 @@
             this.manageQuoteLikesService = manageQuoteLikesService;
         }
 
-        [Authorize]
         [HttpGet(nameof(GetUserQuotesByType))]
         public async Task<ActionResult> GetUserQuotesByType(string type)
         {
@@ -58,8 +58,9 @@
         {
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
+                string userId = this.userManager.GetUserId(this.User);
                 List<QuoteViewModel> quotes = await this.retrieveQuotesService
-                    .GetAllQuotesByTypeAsync<QuoteViewModel>(quoteType);
+                    .GetAllQuotesByTypeAsync(quoteType, userId);
                 return new JsonResult(quotes);
             }
             else
@@ -71,12 +72,12 @@
         [HttpGet(nameof(GetLikedQuotes))]
         public async Task<IActionResult> GetLikedQuotes()
         {
+            string userId = this.userManager.GetUserId(this.User);
             List<QuoteViewModel> quotes = await this.retrieveQuotesService
-                    .GetLikedQuotesAsync<QuoteViewModel>();
+                    .GetLikedQuotesAsync(userId);
             return new JsonResult(quotes);
         }
 
-        [Authorize]
         [HttpGet(nameof(SearchUserQuotesByContent))]
         public async Task<ActionResult> SearchUserQuotesByContent(string content, string type)
         {
@@ -95,7 +96,6 @@
             }
         }
 
-        [Authorize]
         [HttpGet(nameof(GetUserApprovedQuotes))]
         public async Task<ActionResult> GetUserApprovedQuotes()
         {
@@ -105,7 +105,6 @@
             return new JsonResult(quotesByType);
         }
 
-        [Authorize]
         [HttpGet(nameof(GetUserUnapprovedQuotes))]
         public async Task<ActionResult> GetUserUnapprovedQuotes()
         {
@@ -115,7 +114,6 @@
             return new JsonResult(quotesByType);
         }
 
-        [Authorize]
         [HttpGet(nameof(GetUserLikedQuotes))]
         public async Task<ActionResult> GetUserLikedQuotes()
         {
@@ -128,34 +126,35 @@
         [HttpGet(nameof(SearchAllQuotesByContent))]
         public async Task<ActionResult> SearchAllQuotesByContent(string content, string type)
         {
+            string userId = this.userManager.GetUserId(this.User);
             if (Enum.TryParse(type, out QuoteType quoteType))
             {
                 List<QuoteViewModel> quotesByType = await this.searchQuoteService
-                    .SearchQuotesByContentAndTypeAsync<QuoteViewModel>(content, quoteType);
+                    .SearchQuotesByContentAndTypeAsync(content, quoteType, userId);
                 return new JsonResult(quotesByType);
             }
             else
             {
                 List<QuoteViewModel> quotes = await this.searchQuoteService
-                    .SearchQuotesByContentAsync<QuoteViewModel>(content);
+                    .SearchQuotesByContentAsync(content, userId);
                 return new JsonResult(quotes);
             }
         }
 
-        [Authorize]
         [HttpPost(nameof(LikeQuote))]
         public async Task<int> LikeQuote(int quoteId)
         {
             string userId = this.userManager.GetUserId(this.User);
-            return await this.manageQuoteLikesService.LikeQuoteAsync(quoteId, userId);
+            int quoteLikes = await this.manageQuoteLikesService.LikeQuoteAsync(quoteId, userId);
+            return quoteLikes;
         }
 
-        [Authorize]
-        [HttpPost(nameof(DislikeQuote))]
-        public async Task<int> DislikeQuote(int quoteId)
+        [HttpDelete(nameof(UnlikeQuote))]
+        public async Task<int> UnlikeQuote(int quoteId)
         {
             string userId = this.userManager.GetUserId(this.User);
-            return await this.manageQuoteLikesService.DislikeQuoteAsync(quoteId, userId);
+            int quoteLikes = await this.manageQuoteLikesService.UnlikeQuoteAsync(quoteId, userId);
+            return quoteLikes;
         }
     }
 }

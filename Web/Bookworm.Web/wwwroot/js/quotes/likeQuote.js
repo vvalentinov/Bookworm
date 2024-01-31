@@ -1,40 +1,40 @@
-function likeQuoteFunc(quoteId, clickedIcon) {
-    var xhr = new XMLHttpRequest();
+function likeQuote(icon, quoteId, isUserQuoteCreator) {
+    if (isUserQuoteCreator == false) {
+        const tokenInput = document.getElementById('RequestVerificationToken');
+        const token = tokenInput.value;
 
-    let antiForgeryForm = document.getElementById('antiForgeryForm');
-    let token = antiForgeryForm.querySelector('input[name="__RequestVerificationToken"]').value;
-
-    if (clickedIcon.classList.contains('fa-solid')) {
-        xhr.open('POST', `/ApiQuote/DislikeQuote?quoteId=${quoteId}`, true);
-        xhr.setRequestHeader("X-CSRF-TOKEN", token);
-
-        xhr.onload = function () {
-            if (this.status == 200) {
-                let container = clickedIcon.closest('td');
-                let likesCountSpan = container.querySelector('#likesCount');
-                likesCountSpan.textContent = `(${this.response})`;
-                clickedIcon.classList.replace('fa-solid', 'fa-regular');
-            } else {
-                alert('error');
-            }
+        if (icon.classList.contains('fa-solid')) {
+            fetch(`/ApiQuote/UnlikeQuote?quoteId=${quoteId}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': token
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    icon.classList.replace('fa-solid', 'fa-regular');
+                    const iconParentEl = icon.parentElement;
+                    const span = iconParentEl.children[1];
+                    span.textContent = `(${res})`;
+                })
+                .catch(err => console.log(err));
+        } else {
+            fetch(`/ApiQuote/LikeQuote?quoteId=${quoteId}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    icon.classList.replace('fa-regular', 'fa-solid');
+                    const iconParentEl = icon.parentElement;
+                    const span = iconParentEl.children[1];
+                    span.textContent = `(${res})`;
+                })
+                .catch(err => console.log(err));
         }
-
-        xhr.send();
-    } else {
-        xhr.open('POST', `/ApiQuote/LikeQuote?quoteId=${quoteId}`, true);
-        xhr.setRequestHeader("X-CSRF-TOKEN", token);
-
-        xhr.onload = function () {
-            if (this.status == 200) {
-                let container = clickedIcon.closest('td');
-                let likesCountSpan = container.querySelector('#likesCount');
-                likesCountSpan.textContent = `(${this.response})`;
-                clickedIcon.classList.replace('fa-regular', 'fa-solid');
-            } else {
-                alert('error');
-            }
-        }
-
-        xhr.send();
     }
 }

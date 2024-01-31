@@ -14,7 +14,7 @@
 
 <div class="input-group mb-3">
     <input type="text"
-           class="form-control border-2 border-black"
+           class="form-control border-2 border-black fs-4"
            id="searchQuotesInput"
            placeholder="Search quotes..."
            aria-label="Recipient's username"
@@ -31,7 +31,15 @@
     {
         <div class="card">
             <div class="card-header">
-                Quote <span><i class="fa-regular fa-thumbs-up"></i> (@quote.Likes)</span>
+                Quote
+                <span>
+                    <i onclick="likeQuote(this, @quote.Id, @quote.IsUserQuoteCreator.ToString().ToLower())"
+                       class="@(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
+                        @(quote.IsUserQuoteCreator == false ? "likeQuote" : "")
+                        fa-thumbs-up">
+                    </i>
+                    <span class="quoteLikesCount">(@quote.Likes)</span>
+                </span>
             </div>
             <div class="card-body">
                 <blockquote class="blockquote ">
@@ -61,6 +69,6 @@
 </div>
 
 @section Scripts {
-    <script type="module" src="~/js/quotes/allQuotes.js"></script>
+    <script src="~/js/quotes/allQuotes.js"></script>
     <script src="~/js/quotes/likeQuote.js"></script>
 }

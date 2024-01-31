@@ -12,7 +12,7 @@
 
         Task<QuoteListingViewModel> GetAllQuotesAsync(string userId);
 
-        Task<List<T>> GetAllQuotesByTypeAsync<T>(QuoteType type);
+        Task<List<QuoteViewModel>> GetAllQuotesByTypeAsync(QuoteType type, string userId);
 
         Task<QuoteListingViewModel> GetAllApprovedQuotesAsync();
 
@@ -24,6 +24,6 @@
 
         Task<int> GetUnapprovedQuotesCountAsync();
 
-        Task<List<T>> GetLikedQuotesAsync<T>();
+        Task<List<QuoteViewModel>> GetLikedQuotesAsync(string userId);
     }
 }
