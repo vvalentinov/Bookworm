@@ -7,9 +7,7 @@ function likeQuote(icon, quoteId, isUserQuoteCreator) {
             fetch(`/ApiQuote/UnlikeQuote?quoteId=${quoteId}`,
                 {
                     method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
+                    headers: {'X-CSRF-TOKEN': token}
                 })
                 .then(res => res.json())
                 .then(res => {
@@ -18,14 +16,12 @@ function likeQuote(icon, quoteId, isUserQuoteCreator) {
                     const span = iconParentEl.children[1];
                     span.textContent = `(${res})`;
                 })
-                .catch(err => console.log(err));
+                .catch(err => console.log(err.message));
         } else {
             fetch(`/ApiQuote/LikeQuote?quoteId=${quoteId}`,
                 {
                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token
-                    }
+                    headers: {'X-CSRF-TOKEN': token}
                 })
                 .then(res => res.json())
                 .then(res => {
@@ -34,7 +30,7 @@ function likeQuote(icon, quoteId, isUserQuoteCreator) {
                     const span = iconParentEl.children[1];
                     span.textContent = `(${res})`;
                 })
-                .catch(err => console.log(err));
+                .catch(err => console.log(err.message));
         }
     }
 }

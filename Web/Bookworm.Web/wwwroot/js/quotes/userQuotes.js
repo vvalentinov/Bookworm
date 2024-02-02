@@ -82,7 +82,7 @@ radioAddEventListener();
 function radioAddEventListener() {
     const radioButtons = document.getElementsByName('btnradio');
     for (let i = 0; i < radioButtons.length; i++) {
-        radioButtons[i].addEventListener('change', function () {
+        radioButtons[i].addEventListener('click', function () {
             searchQuotesInput.value = '';
             var xhr = new XMLHttpRequest();
             switch (radioButtons[i].id) {
