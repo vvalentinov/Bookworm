@@ -25,115 +25,45 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<List<T>> SearchUserQuotesByContentAndTypeAsync<T>(
+        public async Task<List<QuoteViewModel>> SearchQuotesByContentAndTypeAsync(
             string content,
-            string userId,
-            QuoteType type)
+            QuoteType type,
+            string userId)
         {
-            List<T> quotes = await this.quoteRepository
+            var quotes = await this.quoteRepository
                 .AllAsNoTracking()
-                .Where(q => q.UserId == userId &&
-                       q.Content.ToLower() == content.ToLower() &&
+                .Where(q =>
+                       q.IsApproved &&
+                       q.Content.ToLower().Contains(content.ToLower()) &&
                        q.Type == type)
-                .To<T>()
-                .ToListAsync();
-
-            return quotes;
-        }
-
-        public async Task<List<T>> SearchUserQuotesByContentAsync<T>(string content, string userId)
-        {
-            List<T> quotes = await this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => q.UserId == userId && q.Content.ToLower() == content.ToLower())
-                .To<T>()
-                .ToListAsync();
-
-            return quotes;
-        }
-
-        public async Task<List<QuoteViewModel>> SearchQuotesByContentAndTypeAsync(string content, QuoteType type, string userId)
-        {
-            List<QuoteViewModel> quotes = await this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => q.IsApproved && q.Content.ToLower().Contains(content.ToLower()) && q.Type == type)
                 .To<QuoteViewModel>()
                 .ToListAsync();
 
-            foreach (QuoteViewModel quote in quotes)
-            {
-                quote.IsLikedByUser = await this.quoteLikesRepository
-                                                .AllAsNoTracking()
-                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
-                quote.IsUserQuoteCreator = quote.UserId == userId;
-            }
-
-            return quotes;
+            return await this.RetrieveQuoteUserStatusAsync(quotes, userId);
         }
 
         public async Task<List<QuoteViewModel>> SearchQuotesByContentAsync(string content, string userId)
         {
-            List<QuoteViewModel> quotes = await this.quoteRepository
+            var quotes = await this.quoteRepository
                 .AllAsNoTracking()
                 .Where(q => q.IsApproved && q.Content.ToLower().Contains(content.ToLower()))
                 .To<QuoteViewModel>()
                 .ToListAsync();
 
-            foreach (QuoteViewModel quote in quotes)
-            {
-                quote.IsLikedByUser = await this.quoteLikesRepository
-                                                .AllAsNoTracking()
-                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
-                quote.IsUserQuoteCreator = quote.UserId == userId;
-            }
-
-            return quotes;
+            return await this.RetrieveQuoteUserStatusAsync(quotes, userId);
         }
 
-        public async Task<List<T>> SearchUserLikedQuotesByContentAsync<T>(string content, string userId)
+        public async Task<List<QuoteViewModel>> SearchLikedQuotesByContentAsync(string content, string userId)
         {
-            List<int> likedQuotesIds = await this.quoteLikesRepository
+            var quotes = await this.quoteRepository
                 .AllAsNoTracking()
-                .Where(q => q.UserId == userId)
-                .Select(q => q.QuoteId)
+                .Where(q =>
+                       q.Likes > 0 &&
+                       q.Content.ToLower().Contains(content.ToLower()))
+                .To<QuoteViewModel>()
                 .ToListAsync();
 
-            List<T> quotes = await this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => likedQuotesIds.Contains(q.Id) && q.Content.ToLower() == content.ToLower())
-                .To<T>()
-                .ToListAsync();
-
-            return quotes;
-        }
-
-        public async Task<List<T>> SearchLikedQuotesByContentAsync<T>(string content)
-        {
-            List<int> likedQuotesIds = await this.quoteLikesRepository
-                .AllAsNoTracking()
-                .Select(q => q.QuoteId)
-                .ToListAsync();
-
-            List<T> quotes = await this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => likedQuotesIds.Contains(q.Id) && q.Content.ToLower() == content.ToLower())
-                .To<T>()
-                .ToListAsync();
-
-            return quotes;
-        }
-
-        public async Task<List<T>> SearchUserApprovedQuotesByContentAsync<T>(string content, string userId)
-        {
-            List<T> quotes = await this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => q.UserId == userId &&
-                            q.IsApproved &&
-                            q.Content.ToLower() == content.ToLower())
-                .To<T>()
-                .ToListAsync();
-
-            return quotes;
+            return await this.RetrieveQuoteUserStatusAsync(quotes, userId);
         }
 
         public async Task<List<T>> SearchApprovedQuotesByContentAsync<T>(string content)
@@ -147,19 +77,6 @@
             return quotes;
         }
 
-        public async Task<List<T>> SearchUserUnapprovedQuotesByContentAsync<T>(string content, string userId)
-        {
-            List<T> quotes = await this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => q.UserId == userId &&
-                            q.IsApproved == false &&
-                            q.Content.ToLower() == content.ToLower())
-                .To<T>()
-                .ToListAsync();
-
-            return quotes;
-        }
-
         public async Task<List<T>> SearchUnapprovedQuotesByContentAsync<T>(string content)
         {
             List<T> quotes = await this.quoteRepository
@@ -167,6 +84,21 @@
                 .Where(q => q.IsApproved == false && q.Content.ToLower() == content.ToLower())
                 .To<T>()
                 .ToListAsync();
+
+            return quotes;
+        }
+
+        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
+            List<QuoteViewModel> quotes,
+            string userId)
+        {
+            foreach (QuoteViewModel quote in quotes)
+            {
+                quote.IsLikedByUser = await this.quoteLikesRepository
+                                                .AllAsNoTracking()
+                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
+                quote.IsUserQuoteCreator = quote.UserId == userId;
+            }
 
             return quotes;
         }

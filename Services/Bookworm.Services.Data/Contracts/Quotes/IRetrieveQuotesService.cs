@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models.Enums;
+    using Bookworm.Common.Enums;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IRetrieveQuotesService
@@ -12,7 +12,11 @@
 
         Task<QuoteListingViewModel> GetAllQuotesAsync(string userId);
 
-        Task<List<QuoteViewModel>> GetAllQuotesByTypeAsync(QuoteType type, string userId);
+        Task<List<QuoteViewModel>> GetAllQuotesByTypeAsync(
+            string sortCriteria,
+            string userId,
+            string type,
+            string content);
 
         Task<QuoteListingViewModel> GetAllApprovedQuotesAsync();
 
@@ -24,6 +28,9 @@
 
         Task<int> GetUnapprovedQuotesCountAsync();
 
-        Task<List<QuoteViewModel>> GetLikedQuotesAsync(string userId);
+        Task<List<QuoteViewModel>> GetLikedQuotesAsync(
+            string userId,
+            string sortQuotesCriteria,
+            string content);
     }
 }

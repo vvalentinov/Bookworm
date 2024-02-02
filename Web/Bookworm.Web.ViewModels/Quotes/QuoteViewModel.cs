@@ -1,6 +1,9 @@
 ﻿namespace Bookworm.Web.ViewModels.Quotes
 {
+    using System;
+
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Mapping;
 
     public class QuoteViewModel : IMapFrom<Quote>
@@ -24,5 +27,9 @@
         public string BookTitle { get; set; }
 
         public string MovieTitle { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public QuoteType Type { get; set; }
     }
 }

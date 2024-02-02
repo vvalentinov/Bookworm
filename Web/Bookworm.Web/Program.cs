@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web
 {
     using System.Reflection;
+    using System.Threading.Tasks;
 
     using Bookworm.Data;
     using Bookworm.Data.Models;
@@ -49,6 +50,15 @@
                 options.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
                 options.SchemaName = "dbo";
                 options.TableName = "Cache";
+            });
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
             });
 
             WebApplication app = builder.Build();
