@@ -1,5 +1,8 @@
 ﻿@model QuoteListingViewModel
+@using Bookworm.Data.Models
+@using Microsoft.AspNetCore.Identity
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     this.ViewData["Title"] = "All Quotes";
@@ -10,21 +13,13 @@
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <partial name="PartialViews/_TitleCardPartial" />
-<partial name="PartialViews/_QuotesTypeFilterPartial" />
 
-<div class="input-group mb-3">
-    <input type="text"
-           class="form-control border-2 border-black fs-4"
-           id="searchQuotesInput"
-           placeholder="Search quotes..."
-           aria-label="Recipient's username"
-           aria-describedby="button-addon2">
-    <button class="btn border border-2 border-black"
-            type="button"
-            id="searchQuotesBtn">
-        <i class="fa-solid fa-magnifying-glass fa-xl"></i>
-    </button>
-</div>
+@if (this.SignInManager.IsSignedIn(this.User))
+{
+    <partial name="PartialViews/_QuotesTypeFilterPartial" />
+    <partial name="PartialViews/_QuotesSortingPartial"/>
+    <partial name="PartialViews/_QuotesSearchPartial"/>
+}
 
 <div class="quotesContainer">
     @foreach (var quote in Model.Quotes)
@@ -33,11 +28,18 @@
             <div class="card-header">
                 Quote
                 <span>
-                    <i onclick="likeQuote(this, @quote.Id, @quote.IsUserQuoteCreator.ToString().ToLower())"
-                       class="@(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
-                        @(quote.IsUserQuoteCreator == false ? "likeQuote" : "")
+                    @if (this.SignInManager.IsSignedIn(this.User))
+                    {
+                        <i onclick="likeQuote(this, @quote.Id, @quote.IsUserQuoteCreator.ToString().ToLower())"
+                           class="@(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
+                        @(quote.IsUserQuoteCreator == false && this.SignInManager.IsSignedIn(this.User) ? "likeQuote" : "")
                         fa-thumbs-up">
-                    </i>
+                        </i>
+                    }
+                    else
+                    {
+                        <i class="fa-regular fa-thumbs-up"></i>
+                    }
                     <span class="quoteLikesCount">(@quote.Likes)</span>
                 </span>
             </div>
