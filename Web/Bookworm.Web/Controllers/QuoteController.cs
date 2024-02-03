@@ -83,7 +83,7 @@
         public async Task<IActionResult> All()
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllQuotesAsync(user?.Id);
+            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllApprovedQuotesAsync(user?.Id);
             return this.View(quotes);
         }
 

@@ -3,14 +3,11 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Enums;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IRetrieveQuotesService
     {
         Task<QuoteViewModel> GetQuoteByIdAsync(int quoteId);
-
-        Task<QuoteListingViewModel> GetAllQuotesAsync(string userId);
 
         Task<List<QuoteViewModel>> GetAllQuotesByTypeAsync(
             string sortCriteria,
@@ -18,7 +15,7 @@
             string type,
             string content);
 
-        Task<QuoteListingViewModel> GetAllApprovedQuotesAsync();
+        Task<QuoteListingViewModel> GetAllApprovedQuotesAsync(string userId = null);
 
         Task<QuoteListingViewModel> GetAllUnapprovedQuotesAsync();
 

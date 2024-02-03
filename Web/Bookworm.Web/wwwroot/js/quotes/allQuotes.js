@@ -15,17 +15,18 @@ quoteTypeButtons.forEach(button => {
             const quoteType = getQuoteTypeFromId(button.id);
             const content = searchQuotesInput.value;
 
+            let searchText = getSearchTextFromQuoteType(quoteType);
+            let url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${content}`;
+
             if (quoteType == 'LikedQuote') {
-                fetch(`/ApiQuote/GetLikedQuotes?sortCriteria=${sortCriteria}&content=${content}`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, `Search in liked quotes...`))
-                    .catch(err => console.log(err));
-            } else {
-                fetch(`/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${content}`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, getSearchTextFromQuoteType(quoteType)))
-                    .catch(err => console.log(err));
+                url = `/ApiQuote/GetLikedQuotes?sortCriteria=${sortCriteria}&content=${content}`;
+                searchText = 'Search in liked quotes...';
             }
+
+            fetch(url)
+                .then(res => res.json())
+                .then(res => filterQuotes(res, searchText))
+                .catch(err => console.log(err));
         })
     }
 })
@@ -44,23 +45,22 @@ sortRadioButtons.forEach(button => {
             const content = searchQuotesInput.value;
             const sortCriteria = getQuoteSortCriteriaFromId(button.id);
 
-            if (quoteType == 'LikedQuote') {
-                fetch(`/ApiQuote/GetLikedQuotes?&sortCriteria=${sortCriteria}&content=${content}`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, 'Search in liked quotes...'))
-                    .catch(err => console.log(err));
-            } else {
-                let url = `/ApiQuote/GetQuotes?sortCriteria=${sortCriteria}&content=${content}`;
-                let searchText = 'Search quotes...';
-                if (quoteType) {
+            let url = `/ApiQuote/GetQuotes?sortCriteria=${sortCriteria}&content=${content}`;
+            let searchText = 'Search quotes...';
+
+            if (quoteType) {
+                if (quoteType == 'LikedQuote') {
+                    searchText = 'Search in liked quotes...';
+                    url = `/ApiQuote/GetLikedQuotes?&sortCriteria=${sortCriteria}&content=${content}`;
+                } else {
                     url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${content}`;
                     searchText = getSearchTextFromQuoteType(quoteType);
                 }
-                fetch(url)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, searchText))
-                    .catch(err => console.log(err));
             }
+            fetch(url)
+                .then(res => res.json())
+                .then(res => filterQuotes(res, searchText))
+                .catch(err => console.log(err));
         });
     }
 });
@@ -144,51 +144,36 @@ if (searchQuotesInput) {
     });
 }
 function searchQuotes() {
-    let searchValue = searchQuotesInput.value;
-    if (searchValue == '') {
-        return;
-    }
+    const searchValue = searchQuotesInput.value;
 
-    let checkedRadio = getCheckedRadio('btnradio');
+    const checkedQuoteTypeRadio = getCheckedRadio('btnradio');
+    const quoteType = getQuoteTypeFromId(checkedQuoteTypeRadio?.id);
 
-    if (checkedRadio != undefined) {
-        switch (checkedRadio.id) {
-            case 'movieQuotesRadio':
-                fetch(`/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=MovieQuote`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, searchValue))
-                    .catch(err => console.log(err));
-                break;
-            case 'bookQuotesRadio':
-                fetch(`/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=BookQuote`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, searchValue))
-                    .catch(err => console.log(err));
-                break;
-            case 'generalQuotesRadio':
-                fetch(`/ApiQuote/SearchAllQuotesByContent?content=${searchValue}&type=GeneralQuote`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, searchValue))
-                    .catch(err => console.log(err));
-                break;
-            case 'likedQuotesRadio':
-                fetch(`/ApiQuote/SearchLikedQuotesByContent?content=${searchValue}`)
-                    .then(res => res.json())
-                    .then(res => filterQuotes(res, searchValue))
-                    .catch(err => console.log(err));
-                break;
+    const sortCriteriaButton = getCheckedRadio('sortBtnRadio');
+    const sortCriteria = getQuoteSortCriteriaFromId(sortCriteriaButton.id);
+
+    let url = `/ApiQuote/GetQuotes?sortCriteria=${sortCriteria}&content=${searchValue}`;
+
+    let searchText = 'Search quotes...';
+
+    if (quoteType) {
+        if (quoteType == 'LikedQuote') {
+            url = `/ApiQuote/GetLikedQuotes?sortCriteria=${sortCriteria}&content=${searchValue}`;
+            searchText = 'Search in liked quotes...';
+        } else {
+            url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${searchValue}`;
+            searchText = getSearchTextFromQuoteType(quoteType);
         }
-    } else {
-        fetch(`/ApiQuote/SearchAllQuotesByContent?content=${searchValue}`)
-            .then(res => res.json())
-            .then(res => filterQuotes(res, searchValue))
-            .catch(err => console.log(err));
     }
+
+    fetch(url)
+        .then(res => res.json())
+        .then(res => filterQuotes(res, searchText))
+        .catch(err => console.log(err.message));
 }
 
 // Helper functions
 const getCheckedRadio = (name) => [...document.getElementsByName(name)].find(button => button.checked);
-
 function getQuoteTypeFromId(id) {
     switch (id) {
         case 'movie-quotes':

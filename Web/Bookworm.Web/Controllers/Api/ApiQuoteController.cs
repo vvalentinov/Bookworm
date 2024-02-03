@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -51,7 +50,7 @@
                     type,
                     content);
 
-                return new JsonResult(quotes);
+                return new JsonResult(quotes) { StatusCode = 200 };
             }
             catch (Exception ex)
             {
@@ -71,38 +70,12 @@
                     sortCriteria,
                     content);
 
-                return new JsonResult(quotes);
+                return new JsonResult(quotes) { StatusCode = 200 };
             }
             catch (Exception ex)
             {
                 return this.BadRequest(ex.Message);
             }
-        }
-
-        [HttpGet(nameof(SearchAllQuotesByContent))]
-        public async Task<JsonResult> SearchAllQuotesByContent(string content, string type)
-        {
-            string userId = this.userManager.GetUserId(this.User);
-            if (Enum.TryParse(type, out QuoteType quoteType))
-            {
-                var quotesByType = await this.searchQuoteService.SearchQuotesByContentAndTypeAsync(
-                    content,
-                    quoteType,
-                    userId);
-                return new JsonResult(quotesByType);
-            }
-            else
-            {
-                var quotes = await this.searchQuoteService.SearchQuotesByContentAsync(content, userId);
-                return new JsonResult(quotes);
-            }
-        }
-
-        [HttpGet(nameof(SearchLikedQuotesByContent))]
-        public async Task<JsonResult> SearchLikedQuotesByContent(string content)
-        {
-            string userId = this.userManager.GetUserId(this.User);
-            return new JsonResult(await this.searchQuoteService.SearchLikedQuotesByContentAsync(content, userId));
         }
 
         [HttpPost(nameof(LikeQuote))]
