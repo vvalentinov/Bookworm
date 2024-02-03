@@ -1,4 +1,5 @@
 ﻿@model QuoteListingViewModel
+
 @using Bookworm.Data.Models
 @using Microsoft.AspNetCore.Identity
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
@@ -17,8 +18,8 @@
 @if (this.SignInManager.IsSignedIn(this.User))
 {
     <partial name="PartialViews/_QuotesTypeFilterPartial" />
-    <partial name="PartialViews/_QuotesSortingPartial"/>
-    <partial name="PartialViews/_QuotesSearchPartial"/>
+    <partial name="PartialViews/_QuotesSortingPartial" />
+    <partial name="PartialViews/_QuotesSearchPartial" />
 }
 
 <div class="quotesContainer">
@@ -69,6 +70,8 @@
         </div>
     }
 </div>
+
+<partial name="PartialViews/_QuotesPagingPartial" model="@Model" />
 
 @section Scripts {
     <script src="~/js/quotes/allQuotes.js"></script>

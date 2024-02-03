@@ -574,7 +574,7 @@ body {
 
 
 /*Pagination Styles*/
-.pagination > li > a {
+/*.pagination > li > a {
     background-color: var(--clr-primary);
     color: var(--clr-white);
 }
@@ -591,7 +591,7 @@ body {
 .pagination > .active > span:focus {
     background-color: var(--clr-secondary);
     border: solid 2px var(--clr-black);
-}
+}*/
 
 /*Table Styles*/
 .table tr td,

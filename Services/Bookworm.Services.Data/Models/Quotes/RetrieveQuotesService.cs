@@ -14,6 +14,8 @@
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Quotes.QuotesDataConstants;
+
     public class RetrieveQuotesService : IRetrieveQuotesService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
@@ -27,22 +29,35 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<QuoteListingViewModel> GetAllApprovedQuotesAsync(string userId = null)
+        public async Task<QuoteListingViewModel> GetAllApprovedQuotesAsync(
+            string userId = null,
+            int? page = null,
+            int? itemsPerPage = null)
         {
-            var quotes = await this.quoteRepository
-              .AllAsNoTracking()
-              .Where(x => x.IsApproved)
-              .OrderByDescending(x => x.CreatedOn)
-              .To<QuoteViewModel>()
-              .ToListAsync();
+            var quotesQuery = this.quoteRepository
+                .AllAsNoTracking()
+                .Where(x => x.IsApproved)
+                .OrderByDescending(x => x.CreatedOn)
+                .To<QuoteViewModel>();
 
-            if (userId != null)
+            if (page.HasValue && itemsPerPage.HasValue)
             {
-                return new QuoteListingViewModel { Quotes = await this.RetrieveQuoteUserStatusAsync(quotes, userId) };
+                var quotes = await quotesQuery
+                    .Skip((page.Value - 1) * itemsPerPage.Value)
+                    .Take(itemsPerPage.Value)
+                    .ToListAsync();
+
+                return new QuoteListingViewModel
+                {
+                    Quotes = userId != null ? await this.RetrieveQuoteUserStatusAsync(quotes, userId) : quotes,
+                    PageNumber = page ?? 1,
+                    ItemsPerPage = itemsPerPage ?? QuotesPerPage,
+                    RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(),
+                };
             }
             else
             {
-                return new QuoteListingViewModel { Quotes = quotes };
+                return new QuoteListingViewModel { Quotes = await quotesQuery.ToListAsync() };
             }
         }
 
@@ -149,13 +164,16 @@
                 userId);
         }
 
-        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(List<QuoteViewModel> quotes, string userId)
+        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
+            List<QuoteViewModel> quotes,
+            string userId)
         {
             foreach (QuoteViewModel quote in quotes)
             {
                 quote.IsLikedByUser = await this.quoteLikesRepository
                                                 .AllAsNoTracking()
                                                 .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
+
                 quote.IsUserQuoteCreator = quote.UserId == userId;
             }
 
@@ -198,9 +216,7 @@
                     break;
             }
 
-            var quotes = await quotesQuery.ToListAsync();
-
-            return await this.RetrieveQuoteUserStatusAsync(quotes, userId);
+            return await this.RetrieveQuoteUserStatusAsync(await quotesQuery.ToListAsync(), userId);
         }
     }
 }

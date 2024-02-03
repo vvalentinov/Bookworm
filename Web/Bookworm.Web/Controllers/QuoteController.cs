@@ -12,6 +12,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
 
     public class QuoteController : BaseController
@@ -80,10 +81,20 @@
             return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
         }
 
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int id = 1)
         {
+            if (id <= 0)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
+                return this.RedirectToAction(nameof(this.All));
+            }
+
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllApprovedQuotesAsync(user?.Id);
+            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllApprovedQuotesAsync(
+                user?.Id,
+                id,
+                QuotesPerPage);
+
             return this.View(quotes);
         }
 

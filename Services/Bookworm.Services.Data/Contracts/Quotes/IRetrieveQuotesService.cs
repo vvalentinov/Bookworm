@@ -15,7 +15,10 @@
             string type,
             string content);
 
-        Task<QuoteListingViewModel> GetAllApprovedQuotesAsync(string userId = null);
+        Task<QuoteListingViewModel> GetAllApprovedQuotesAsync(
+            string userId = null,
+            int? page = null,
+            int? itemsPerPage = null);
 
         Task<QuoteListingViewModel> GetAllUnapprovedQuotesAsync();
 

@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class QuoteListingViewModel
+    public class QuoteListingViewModel : PagingViewModel
     {
         public List<QuoteViewModel> Quotes { get; set; }
     }

@@ -35,7 +35,7 @@
         {
             await this.CheckIfQuoteAndUserExist(userId, content);
 
-            Quote quote = new Quote()
+            var quote = new Quote
             {
                 Content = content,
                 BookTitle = bookTitle,
@@ -55,7 +55,7 @@
         {
             await this.CheckIfQuoteAndUserExist(userId, content);
 
-            Quote quote = new Quote()
+            var quote = new Quote
             {
                 Content = content,
                 AuthorName = authorName,
@@ -74,7 +74,7 @@
         {
             await this.CheckIfQuoteAndUserExist(userId, content);
 
-            Quote quote = new Quote()
+            var quote = new Quote
             {
                 Content = content,
                 MovieTitle = movieTitle,

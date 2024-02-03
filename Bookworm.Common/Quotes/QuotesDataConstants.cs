@@ -13,5 +13,7 @@
 
         public const byte QuoteAuthorNameMinLength = 5;
         public const byte QuoteAuthorNameMaxLength = 50;
+
+        public const byte QuotesPerPage = 6;
     }
 }
