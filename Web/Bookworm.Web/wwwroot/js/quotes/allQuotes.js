@@ -137,27 +137,7 @@ const sortRadioButtons = [
 sortRadioButtons.forEach(button => {
     if (button) {
         button.addEventListener('click', function () {
-            const checkedQuoteTypeRadio = getCheckedRadio('btnradio');
-            const quoteType = getQuoteTypeFromId(checkedQuoteTypeRadio?.id);
-            const content = searchQuotesInput.value;
-            const sortCriteria = getQuoteSortCriteriaFromId(button.id);
-
-            let url = `/ApiQuote/GetQuotes?sortCriteria=${sortCriteria}&content=${content}`;
-            let searchText = 'Search quotes...';
-
-            if (quoteType) {
-                if (quoteType == 'LikedQuote') {
-                    searchText = 'Search in liked quotes...';
-                    url = `/ApiQuote/GetLikedQuotes?&sortCriteria=${sortCriteria}&content=${content}`;
-                } else {
-                    url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${content}`;
-                    searchText = getSearchTextFromQuoteType(quoteType);
-                }
-            }
-            fetch(url)
-                .then(res => res.json())
-                .then(res => filterQuotes(res, searchText))
-                .catch(err => console.log(err));
+            fetchForQuotes(constructUrl(1), getSearchTextFromQuoteTypeId(getCheckedRadio('btnradio')?.id));
         });
     }
 });
@@ -241,32 +221,7 @@ if (searchQuotesInput) {
     });
 }
 function searchQuotes() {
-    const searchValue = searchQuotesInput.value;
-
-    const checkedQuoteTypeRadio = getCheckedRadio('btnradio');
-    const quoteType = getQuoteTypeFromId(checkedQuoteTypeRadio?.id);
-
-    const sortCriteriaButton = getCheckedRadio('sortBtnRadio');
-    const sortCriteria = getQuoteSortCriteriaFromId(sortCriteriaButton.id);
-
-    let url = `/ApiQuote/GetQuotes?sortCriteria=${sortCriteria}&content=${searchValue}`;
-
-    let searchText = 'Search quotes...';
-
-    if (quoteType) {
-        if (quoteType == 'LikedQuote') {
-            url = `/ApiQuote/GetLikedQuotes?sortCriteria=${sortCriteria}&content=${searchValue}`;
-            searchText = 'Search in liked quotes...';
-        } else {
-            url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${searchValue}`;
-            searchText = getSearchTextFromQuoteTypeId(checkedQuoteTypeRadio.id);
-        }
-    }
-
-    fetch(url)
-        .then(res => res.json())
-        .then(res => filterQuotes(res, searchText))
-        .catch(err => console.log(err.message));
+    fetchForQuotes(constructUrl(1), getSearchTextFromQuoteTypeId(getCheckedRadio('btnradio')?.id));
 }
 
 // Helper functions
@@ -298,24 +253,32 @@ function getQuoteSortCriteriaFromId(id) {
     }
 }
 function getSearchTextFromQuoteTypeId(id) {
-    switch (id) {
-        case 'movie-quotes':
-            return 'Search in movie quotes...';
-        case 'book-quotes':
-            return 'Search in book quotes...';
-        case 'general-quotes':
-            return 'Search in general quotes...';
-        default:
-            return 'Search in liked quotes...';
+    if (id) {
+        switch (id) {
+            case 'movie-quotes':
+                return 'Search in movie quotes...';
+            case 'book-quotes':
+                return 'Search in book quotes...';
+            case 'general-quotes':
+                return 'Search in general quotes...';
+            case 'liked-quotes':
+                return 'Search in liked quotes...';
+        }
+    } else {
+        return 'Search in quotes...';
     }
 }
 
 function constructUrlParams(page) {
     const searchContent = searchQuotesInput.value;
-    const quoteType = getQuoteTypeFromId(getCheckedRadio('btnradio').id);
+    const quoteType = getQuoteTypeFromId(getCheckedRadio('btnradio')?.id);
     const sortCriteria = getQuoteSortCriteriaFromId(getCheckedRadio('sortBtnRadio').id);
 
-    return `type=${quoteType}&sortCriteria=${sortCriteria}&content=${searchContent}&page=${page}`;
+    if (quoteType) {
+        return `type=${quoteType}&sortCriteria=${sortCriteria}&content=${searchContent}&page=${page}`;
+    } else {
+        return `sortCriteria=${sortCriteria}&content=${searchContent}&page=${page}`;
+    }
 }
 
 const constructUrl = (page) => `/ApiQuote/GetQuotes?${constructUrlParams(page)}`;

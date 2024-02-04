@@ -165,9 +165,10 @@
             string userId,
             int page)
         {
+            bool isValidQuoteType = Enum.TryParse(type, out ApiQuoteType quoteType);
+
             if (type != null)
             {
-                bool isValidQuoteType = Enum.TryParse(type, out ApiQuoteType quoteType);
                 if (isValidQuoteType == false)
                 {
                     throw new InvalidOperationException("Invalid quote type!");
@@ -185,7 +186,35 @@
 
             if (string.IsNullOrWhiteSpace(content) == false)
             {
-                quotesQuery = quotesQuery.Where(q => q.Content.ToLower().Contains(content.ToLower()));
+                content = content.Trim().ToLower();
+                switch (quoteType)
+                {
+                    case ApiQuoteType.BookQuote:
+                        quotesQuery = quotesQuery.Where(q => (
+                            q.Content.ToLower().Contains(content) ||
+                            q.BookTitle.ToLower().Contains(content) ||
+                            q.AuthorName.ToLower().Contains(content)) &&
+                            q.Type == QuoteType.BookQuote);
+                        break;
+                    case ApiQuoteType.MovieQuote:
+                        quotesQuery = quotesQuery.Where(q => (
+                            q.Content.ToLower().Contains(content) ||
+                            q.MovieTitle.ToLower().Contains(content)) &&
+                            q.Type == QuoteType.MovieQuote);
+                        break;
+                    case ApiQuoteType.GeneralQuote:
+                        quotesQuery = quotesQuery.Where(q => (
+                            q.Content.ToLower().Contains(content) ||
+                            q.AuthorName.ToLower().Contains(content)) &&
+                            q.Type == QuoteType.GeneralQuote);
+                        break;
+                    case ApiQuoteType.LikedQuote:
+                        quotesQuery = quotesQuery.Where(q => q.Content.ToLower().Contains(content) && q.Likes > 0);
+                        break;
+                    default:
+                        quotesQuery = quotesQuery.Where(q => q.Content.ToLower().Contains(content));
+                        break;
+                }
             }
 
             switch (sortQuotesCriteria)
@@ -201,7 +230,7 @@
                     break;
             }
 
-            var allFilteredQuotes = await quotesQuery.ToListAsync();
+            var totalCount = await quotesQuery.CountAsync();
 
             quotesQuery = quotesQuery.Skip((page - 1) * QuotesPerPage).Take(QuotesPerPage);
 
@@ -212,7 +241,7 @@
                 Quotes = quotes,
                 ItemsPerPage = QuotesPerPage,
                 PageNumber = page,
-                RecordsCount = allFilteredQuotes.Count,
+                RecordsCount = totalCount,
             };
         }
     }
