@@ -1,36 +1,30 @@
 ﻿namespace Bookworm.Services.Data.Contracts.Quotes
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IRetrieveQuotesService
     {
-        Task<QuoteViewModel> GetQuoteByIdAsync(int quoteId);
+        Task<QuoteViewModel> GetByIdAsync(int quoteId);
 
-        Task<List<QuoteViewModel>> GetAllQuotesByTypeAsync(
+        Task<QuoteListingViewModel> GetAllByTypeAsync(
             string sortCriteria,
             string userId,
             string type,
-            string content);
+            string content,
+            int page);
 
-        Task<QuoteListingViewModel> GetAllApprovedQuotesAsync(
+        Task<QuoteListingViewModel> GetAllApprovedAsync(
             string userId = null,
-            int? page = null,
-            int? itemsPerPage = null);
+            int? page = null);
 
-        Task<QuoteListingViewModel> GetAllUnapprovedQuotesAsync();
+        Task<QuoteListingViewModel> GetAllUnapprovedAsync();
 
-        Task<QuoteListingViewModel> GetAllDeletedQuotesAsync();
+        Task<QuoteListingViewModel> GetAllDeletedAsync();
 
-        Task<T> GetRandomQuoteAsync<T>();
+        Task<T> GetRandomAsync<T>();
 
-        Task<int> GetUnapprovedQuotesCountAsync();
-
-        Task<List<QuoteViewModel>> GetLikedQuotesAsync(
-            string userId,
-            string sortQuotesCriteria,
-            string content);
+        Task<int> GetUnapprovedCountAsync();
     }
 }

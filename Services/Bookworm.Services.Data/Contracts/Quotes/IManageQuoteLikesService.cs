@@ -4,8 +4,8 @@
 
     public interface IManageQuoteLikesService
     {
-        Task<int> LikeQuoteAsync(int quoteId, string userId);
+        Task<int> LikeAsync(int quoteId, string userId);
 
-        Task<int> UnlikeQuoteAsync(int quoteId, string userId);
+        Task<int> UnlikeAsync(int quoteId, string userId);
     }
 }

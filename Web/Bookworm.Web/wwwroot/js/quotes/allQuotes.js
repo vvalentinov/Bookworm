@@ -10,26 +10,123 @@ const quoteTypeButtons = [
 quoteTypeButtons.forEach(button => {
     if (button) {
         button.addEventListener('click', function () {
-            const sortRadioButton = getCheckedRadio('sortBtnRadio');
-            const sortCriteria = getQuoteSortCriteriaFromId(sortRadioButton.id);
-            const quoteType = getQuoteTypeFromId(button.id);
-            const content = searchQuotesInput.value;
-
-            let searchText = getSearchTextFromQuoteType(quoteType);
-            let url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${content}`;
-
-            if (quoteType == 'LikedQuote') {
-                url = `/ApiQuote/GetLikedQuotes?sortCriteria=${sortCriteria}&content=${content}`;
-                searchText = 'Search in liked quotes...';
-            }
-
-            fetch(url)
-                .then(res => res.json())
-                .then(res => filterQuotes(res, searchText))
-                .catch(err => console.log(err));
+            const searchText = getSearchTextFromQuoteTypeId(button.id);
+            const url = constructUrl(1);
+            fetchForQuotes(url, searchText);
         })
     }
 })
+
+function updatePagination(model, searchText) {
+    const navigation = document.getElementById('quotesPagination');
+    navigation.children[0]?.remove();
+
+    if (model.pagesCount > 1) {
+
+
+        const ulElement = document.createElement('ul');
+        ulElement.className = 'pagination justify-content-center';
+
+        const previousLiEl = document.createElement('li');
+        let previousLiElClass;
+        if (!model.hasPreviousPage) {
+            previousLiElClass = 'page-item disabled';
+        } else {
+            previousLiElClass = 'page-item';
+            previousLiEl.style.cursor = 'pointer';
+        }
+        previousLiEl.className = previousLiElClass;
+        const previousLiAnchorEl = document.createElement('a');
+        previousLiAnchorEl.className = 'page-link';
+        previousLiAnchorEl.textContent = 'Previous';
+        if (model.hasPreviousPage) {
+            previousLiAnchorEl.addEventListener('click', () => fetchForQuotes(constructUrl(model.previousPageNumber), searchText));
+        }
+        previousLiEl.appendChild(previousLiAnchorEl);
+        ulElement.appendChild(previousLiEl);
+
+        for (var i = model.pageNumber - 4; i < model.pageNumber; i++) {
+            if (i > 0) {
+                let page = i;
+                const liElement = document.createElement('li');
+                liElement.className = 'page-item';
+                liElement.style.cursor = 'pointer';
+
+                const anchorEl = document.createElement('a');
+                anchorEl.className = 'page-link';
+                anchorEl.textContent = `${i}`;
+                anchorEl.addEventListener('click', function () {
+                    fetchForQuotes(constructUrl(page), searchText);
+                });
+
+                liElement.appendChild(anchorEl);
+                ulElement.appendChild(liElement);
+            }
+        }
+
+        const currPageLiEl = document.createElement('li');
+        currPageLiEl.className = 'page-item active';
+        currPageLiEl.setAttribute('aria-current', 'page');
+
+        const currPageSpanEl = document.createElement('span');
+        currPageSpanEl.className = 'page-link';
+        currPageSpanEl.textContent = `${model.pageNumber}`;
+
+        const currPageInnerSpanEl = document.createElement('span');
+        currPageInnerSpanEl.className = 'sr-only';
+        currPageInnerSpanEl.textContent = '(current)';
+
+        currPageSpanEl.appendChild(currPageInnerSpanEl);
+        currPageLiEl.appendChild(currPageSpanEl);
+        ulElement.appendChild(currPageLiEl);
+
+        for (var i = model.pageNumber + 1; i <= model.pageNumber + 4; i++) {
+            if (i <= model.pagesCount) {
+                let page = i;
+                const liElement = document.createElement('li');
+                liElement.className = 'page-item';
+                liElement.style.cursor = 'pointer';
+
+                const anchorElement = document.createElement('a');
+                anchorElement.className = 'page-link';
+                anchorElement.textContent = `${i}`;
+                anchorElement.addEventListener('click', () => fetchForQuotes(constructUrl(page), searchText));
+
+                liElement.appendChild(anchorElement);
+                ulElement.appendChild(liElement);
+            }
+        }
+
+        const nextPageLiEl = document.createElement('li');
+        let nextPageLiClassName;
+        if (model.hasNextPage == false) {
+            nextPageLiClassName = 'page-item disabled';
+        } else {
+            nextPageLiClassName = 'page-item';
+            nextPageLiEl.style.cursor = 'pointer';
+        }
+        nextPageLiEl.className = nextPageLiClassName;
+
+        const nextPageAnchorEl = document.createElement('a');
+        nextPageAnchorEl.className = 'page-link';
+        nextPageAnchorEl.textContent = 'Next';
+        if (model.hasNextPage) {
+            nextPageAnchorEl.addEventListener('click', () => fetchForQuotes(constructUrl(model.nextPageNumber), searchText));
+        }
+        nextPageLiEl.appendChild(nextPageAnchorEl);
+        ulElement.appendChild(nextPageLiEl);
+        navigation.appendChild(ulElement);
+    }
+}
+
+const fetchForQuotes = (url, searchText) => {
+    fetch(url)
+        .then(res => res.json())
+        .then(res => {
+            filterQuotes(res.quotes, searchText);
+            updatePagination(res, searchText);
+        }).catch(err => console.log(err));
+};
 
 const sortRadioButtons = [
     document.getElementById('newest-to-oldest'),
@@ -162,7 +259,7 @@ function searchQuotes() {
             searchText = 'Search in liked quotes...';
         } else {
             url = `/ApiQuote/GetQuotes?type=${quoteType}&sortCriteria=${sortCriteria}&content=${searchValue}`;
-            searchText = getSearchTextFromQuoteType(quoteType);
+            searchText = getSearchTextFromQuoteTypeId(checkedQuoteTypeRadio.id);
         }
     }
 
@@ -200,13 +297,25 @@ function getQuoteSortCriteriaFromId(id) {
             return null;
     }
 }
-function getSearchTextFromQuoteType(type) {
-    switch (type) {
-        case 'MovieQuote':
+function getSearchTextFromQuoteTypeId(id) {
+    switch (id) {
+        case 'movie-quotes':
             return 'Search in movie quotes...';
-        case 'BookQuote':
+        case 'book-quotes':
             return 'Search in book quotes...';
-        case 'GeneralQuote':
+        case 'general-quotes':
             return 'Search in general quotes...';
+        default:
+            return 'Search in liked quotes...';
     }
 }
+
+function constructUrlParams(page) {
+    const searchContent = searchQuotesInput.value;
+    const quoteType = getQuoteTypeFromId(getCheckedRadio('btnradio').id);
+    const sortCriteria = getQuoteSortCriteriaFromId(getCheckedRadio('sortBtnRadio').id);
+
+    return `type=${quoteType}&sortCriteria=${sortCriteria}&content=${searchContent}&page=${page}`;
+}
+
+const constructUrl = (page) => `/ApiQuote/GetQuotes?${constructUrlParams(page)}`;

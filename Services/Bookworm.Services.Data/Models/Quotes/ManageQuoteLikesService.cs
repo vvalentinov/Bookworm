@@ -20,7 +20,7 @@
             this.quoteRepository = quoteRepository;
         }
 
-        public async Task<int> LikeQuoteAsync(int quoteId, string userId)
+        public async Task<int> LikeAsync(int quoteId, string userId)
         {
             Quote quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId);
             quote.Likes++;
@@ -52,7 +52,7 @@
             return await this.GetQuoteLikesCountAsync(quoteId);
         }
 
-        public async Task<int> UnlikeQuoteAsync(int quoteId, string userId)
+        public async Task<int> UnlikeAsync(int quoteId, string userId)
         {
             Quote quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId);
             if (quote.Likes - 1 < 0)

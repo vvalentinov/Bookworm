@@ -7,7 +7,7 @@
 
 @{
     this.ViewData["Title"] = "All Quotes";
-    this.ViewData["Count"] = Model.Quotes.Count;
+    this.ViewData["Count"] = Model.RecordsCount;
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 

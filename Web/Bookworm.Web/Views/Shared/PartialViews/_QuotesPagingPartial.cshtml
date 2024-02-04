@@ -1,6 +1,6 @@
 ﻿@model PagingViewModel
 
-<nav aria-label="...">
+<nav id="quotesPagination" aria-label="...">
     <ul class="pagination justify-content-center">
         <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
             <a class="page-link" asp-action="All" asp-route-id="@Model.PreviousPageNumber">

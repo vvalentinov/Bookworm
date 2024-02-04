@@ -38,39 +38,21 @@
         public async Task<IActionResult> GetQuotes(
             string type,
             string sortCriteria,
-            string content)
+            string content,
+            int page = 1)
         {
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
 
-                var quotes = await this.retrieveQuotesService.GetAllQuotesByTypeAsync(
+                var quotesModel = await this.retrieveQuotesService.GetAllByTypeAsync(
                     sortCriteria,
                     userId,
                     type,
-                    content);
+                    content,
+                    page);
 
-                return new JsonResult(quotes) { StatusCode = 200 };
-            }
-            catch (Exception ex)
-            {
-                return this.BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet(nameof(GetLikedQuotes))]
-        public async Task<IActionResult> GetLikedQuotes(string sortCriteria, string content)
-        {
-            try
-            {
-                string userId = this.userManager.GetUserId(this.User);
-
-                var quotes = await this.retrieveQuotesService.GetLikedQuotesAsync(
-                    userId,
-                    sortCriteria,
-                    content);
-
-                return new JsonResult(quotes) { StatusCode = 200 };
+                return new JsonResult(quotesModel) { StatusCode = 200 };
             }
             catch (Exception ex)
             {
@@ -82,14 +64,14 @@
         public async Task<int> LikeQuote(int quoteId)
         {
             string userId = this.userManager.GetUserId(this.User);
-            return await this.manageQuoteLikesService.LikeQuoteAsync(quoteId, userId);
+            return await this.manageQuoteLikesService.LikeAsync(quoteId, userId);
         }
 
         [HttpDelete(nameof(UnlikeQuote))]
         public async Task<int> UnlikeQuote(int quoteId)
         {
             string userId = this.userManager.GetUserId(this.User);
-            return await this.manageQuoteLikesService.UnlikeQuoteAsync(quoteId, userId);
+            return await this.manageQuoteLikesService.UnlikeAsync(quoteId, userId);
         }
     }
 }
