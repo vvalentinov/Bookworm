@@ -27,7 +27,7 @@
         {
             IndexViewModel model = new IndexViewModel()
             {
-                RandomQuote = await this.retrieveQuotesService.GetRandomQuoteAsync<QuoteViewModel>(),
+                RandomQuote = await this.retrieveQuotesService.GetRandomAsync<QuoteViewModel>(),
                 RecentBooks = await this.booksService.GetRecentBooksAsync(12),
                 PopularBooks = await this.booksService.GetPopularBooksAsync(12),
             };

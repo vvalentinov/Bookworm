@@ -22,7 +22,7 @@
         public async Task<IActionResult> Index()
         {
             int unapprovedBooksCount = await this.booksService.GetUnapprovedBooksCountAsync();
-            int unapprovedQuotesCount = await this.retrieveQuotesService.GetUnapprovedQuotesCountAsync();
+            int unapprovedQuotesCount = await this.retrieveQuotesService.GetUnapprovedCountAsync();
 
             this.ViewData["BooksCount"] = unapprovedBooksCount;
             this.ViewData["QuotesCount"] = unapprovedQuotesCount;

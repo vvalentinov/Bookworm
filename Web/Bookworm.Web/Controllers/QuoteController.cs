@@ -12,7 +12,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
 
     public class QuoteController : BaseController
@@ -22,28 +21,25 @@
         private readonly IRetrieveUserQuotesService retrieveUserQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
         private readonly IUploadQuoteService uploadQuoteService;
-        private readonly ICheckIfQuoteExistsService checkIfQuoteExistsService;
 
         public QuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
             IRetrieveUserQuotesService retrieveUserQuotesService,
             IUpdateQuoteService updateQuoteService,
-            IUploadQuoteService uploadQuoteService,
-            ICheckIfQuoteExistsService checkIfQuoteExistsService)
+            IUploadQuoteService uploadQuoteService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
             this.retrieveUserQuotesService = retrieveUserQuotesService;
             this.updateQuoteService = updateQuoteService;
             this.uploadQuoteService = uploadQuoteService;
-            this.checkIfQuoteExistsService = checkIfQuoteExistsService;
         }
 
         [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            QuoteViewModel quote = await this.retrieveQuotesService.GetQuoteByIdAsync(id);
+            QuoteViewModel quote = await this.retrieveQuotesService.GetByIdAsync(id);
             return this.View(quote);
         }
 
@@ -90,10 +86,7 @@
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllApprovedQuotesAsync(
-                user?.Id,
-                id,
-                QuotesPerPage);
+            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllApprovedAsync(user?.Id, id);
 
             return this.View(quotes);
         }

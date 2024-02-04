@@ -30,19 +30,19 @@
 
         public async Task<IActionResult> ApprovedQuotes()
         {
-            QuoteListingViewModel approvedQuotes = await this.retrieveQuotesService.GetAllApprovedQuotesAsync();
+            QuoteListingViewModel approvedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync();
             return this.View(approvedQuotes);
         }
 
         public async Task<IActionResult> UnapprovedQuotes()
         {
-            QuoteListingViewModel unapprovedQuotes = await this.retrieveQuotesService.GetAllUnapprovedQuotesAsync();
+            QuoteListingViewModel unapprovedQuotes = await this.retrieveQuotesService.GetAllUnapprovedAsync();
             return this.View(unapprovedQuotes);
         }
 
         public async Task<IActionResult> DeletedQuotes()
         {
-            QuoteListingViewModel deletedQuotes = await this.retrieveQuotesService.GetAllDeletedQuotesAsync();
+            QuoteListingViewModel deletedQuotes = await this.retrieveQuotesService.GetAllDeletedAsync();
             return this.View(deletedQuotes);
         }
 

@@ -15,16 +15,13 @@
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly ICheckIfQuoteExistsService checkIfQuoteExistsService;
 
         public UploadQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository,
-            ICheckIfQuoteExistsService checkIfQuoteExistsService)
+            IDeletableEntityRepository<ApplicationUser> userRepository)
         {
             this.quoteRepository = quoteRepository;
             this.userRepository = userRepository;
-            this.checkIfQuoteExistsService = checkIfQuoteExistsService;
         }
 
         public async Task UploadBookQuoteAsync(
@@ -94,7 +91,10 @@
                 throw new InvalidOperationException("No username with given id found!");
             }
 
-            bool quoteExist = await this.checkIfQuoteExistsService.QuoteExistsAsync(quoteContent);
+            bool quoteExist = await this.quoteRepository
+                .AllAsNoTracking()
+                .AnyAsync(x => x.Content.ToLower().Contains(quoteContent.Trim().ToLower()));
+
             if (quoteExist)
             {
                 throw new InvalidOperationException(QuoteExistsError);
