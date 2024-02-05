@@ -3,7 +3,7 @@ export function updateQuotesTable(quotes) {
     tableElementContainer.children[0].remove();
 
     const tableElement = document.createElement('table');
-    tableElement.className = 'table table-bordered table-hover';
+    tableElement.className = 'table table-bordered table-hover fs-5';
 
     const tableHeadEl = document.createElement('thead');
     const tableHeadRowEl = document.createElement('tr');

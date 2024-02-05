@@ -137,8 +137,12 @@
                 .To<QuoteViewModel>()
                 .ToListAsync();
 
-            var approvedQuotesCount = quotes.Count(x => x.IsApproved);
-            var unapprovedQuotesCount = quotes.Count(x => !x.IsApproved);
+            var approvedQuotesCount = await this.quoteRepository
+                .AllAsNoTracking()
+                .CountAsync(q => q.UserId == userId && q.IsApproved);
+            var unapprovedQuotesCount = await this.quoteRepository
+                .AllAsNoTracking()
+                .CountAsync(q => q.UserId == userId && !q.IsApproved);
 
             return new T
             {

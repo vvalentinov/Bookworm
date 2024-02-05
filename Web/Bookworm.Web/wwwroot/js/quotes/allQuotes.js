@@ -1,5 +1,7 @@
 import { fetchForQuotes } from './fetchForQuotes.js';
 
+const addClickEventToButtons = (buttons) => buttons.forEach(button => button.addEventListener('click', () => fetchForQuotes()));
+
 const quoteTypeButtons = [
     document.getElementById('movie-quotes'),
     document.getElementById('book-quotes'),
@@ -7,23 +9,20 @@ const quoteTypeButtons = [
     document.getElementById('liked-quotes')
 ];
 
-quoteTypeButtons.forEach(button => {
-    if (button) {
-        button.addEventListener('click', () => fetchForQuotes());
-    }
-})
-
 const sortRadioButtons = [
     document.getElementById('newest-to-oldest'),
     document.getElementById('oldest-to-newest'),
     document.getElementById('likes-count-desc')
 ];
 
-sortRadioButtons.forEach(button => {
-    if (button) {
-        button.addEventListener('click', () => fetchForQuotes());
-    }
-});
+const quoteStatusButtons = [
+    document.getElementById('approvedQuotesRadio'),
+    document.getElementById('unapprovedQuotesRadio')
+];
+
+addClickEventToButtons(quoteTypeButtons);
+addClickEventToButtons(sortRadioButtons);
+addClickEventToButtons(quoteStatusButtons);
 
 const searchQuotesInput = document.getElementById('searchQuotesInput');
 const searchQuotesButton = document.getElementById('searchQuotesBtn');
