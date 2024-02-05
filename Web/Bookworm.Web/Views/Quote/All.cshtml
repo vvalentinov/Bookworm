@@ -8,6 +8,9 @@
 @{
     this.ViewData["Title"] = "All Quotes";
     this.ViewData["Count"] = Model.RecordsCount;
+    this.ViewData["IsUserQuotes"] = false;
+    this.ViewData["PaginationControllerName"] = "Quote";
+    this.ViewData["PaginationActionName"] = "All";
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
@@ -17,9 +20,9 @@
 
 @if (this.SignInManager.IsSignedIn(this.User))
 {
-    <partial name="PartialViews/_QuotesTypeFilterPartial" />
-    <partial name="PartialViews/_QuotesSortingPartial" />
-    <partial name="PartialViews/_QuotesSearchPartial" />
+    <partial name="PartialViews/Quotes/_QuotesTypeFilterPartial" />
+    <partial name="PartialViews/Quotes/_QuotesSortingPartial" />
+    <partial name="PartialViews/Quotes/_QuotesSearchPartial" />
 }
 
 <div class="quotesContainer">
@@ -71,9 +74,9 @@
     }
 </div>
 
-<partial name="PartialViews/_QuotesPagingPartial" model="@Model" />
+<partial name="PartialViews/_PaginationPartial" model="@Model" />
 
 @section Scripts {
-    <script src="~/js/quotes/allQuotes.js"></script>
+    <script type="module" src="~/js/quotes/allQuotes.js"></script>
     <script src="~/js/quotes/likeQuote.js"></script>
 }

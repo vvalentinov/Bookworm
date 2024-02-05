@@ -1,9 +1,17 @@
 ﻿@model PagingViewModel
 
-<nav id="quotesPagination" aria-label="...">
+@{
+    var controllerName = this.ViewData["PaginationControllerName"];
+    var actionName = this.ViewData["PaginationActionName"];
+}
+
+<nav id="pagination" aria-label="...">
     <ul class="pagination justify-content-center">
         <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-            <a class="page-link" asp-action="All" asp-route-id="@Model.PreviousPageNumber">
+            <a class="page-link"
+               asp-controller=@controllerName
+               asp-action=@actionName
+               asp-route-id="@Model.PreviousPageNumber">
                 Previous
             </a>
         </li>
@@ -12,7 +20,10 @@
             if (i > 0)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="All" asp-route-id="@i">
+                    <a class="page-link"
+                       asp-controller=@controllerName
+                       asp-action=@actionName
+                       asp-route-id="@i">
                         @i
                     </a>
                 </li>
@@ -29,14 +40,20 @@
             if (i <= Model.PagesCount)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-action="All" asp-route-id="@i">
+                    <a class="page-link"
+                       asp-controller=@controllerName
+                       asp-action=@actionName
+                       asp-route-id="@i">
                         @i
                     </a>
                 </li>
             }
         }
         <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-            <a class="page-link" asp-action="All" asp-route-id="@Model.NextPageNumber">
+            <a class="page-link"
+               asp-controller=@controllerName
+               asp-action=@actionName
+               asp-route-id="@Model.NextPageNumber">
                 Next
             </a>
         </li>

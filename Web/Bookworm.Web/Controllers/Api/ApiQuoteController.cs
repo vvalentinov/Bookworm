@@ -5,6 +5,7 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -16,41 +17,36 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
-        private readonly IRetrieveUserQuotesService retrieveUserQuotesService;
         private readonly ISearchQuoteService searchQuoteService;
         private readonly IManageQuoteLikesService manageQuoteLikesService;
 
         public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
-            IRetrieveUserQuotesService retrieveUserQuotesService,
             ISearchQuoteService searchQuoteService,
             IManageQuoteLikesService manageQuoteLikesService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
-            this.retrieveUserQuotesService = retrieveUserQuotesService;
             this.searchQuoteService = searchQuoteService;
             this.manageQuoteLikesService = manageQuoteLikesService;
         }
 
         [HttpGet(nameof(GetQuotes))]
-        public async Task<IActionResult> GetQuotes(
-            string type,
-            string sortCriteria,
-            string content,
-            int page = 1)
+        public async Task<IActionResult> GetQuotes([FromQuery]GetQuotesRequestModel model)
         {
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
 
-                var quotesModel = await this.retrieveQuotesService.GetAllByTypeAsync(
-                    sortCriteria,
+                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync<QuoteListingViewModel>(
+                    model.SortCriteria,
                     userId,
-                    type,
-                    content,
-                    page);
+                    model.Type,
+                    model.Content,
+                    model.Page,
+                    model.QuoteStatus,
+                    model.IsForUserQuotes);
 
                 return new JsonResult(quotesModel) { StatusCode = 200 };
             }

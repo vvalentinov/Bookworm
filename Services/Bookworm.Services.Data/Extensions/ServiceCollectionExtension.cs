@@ -62,7 +62,6 @@
         {
             services.AddTransient<IManageQuoteLikesService, ManageQuoteLikesService>();
             services.AddTransient<IRetrieveQuotesService, RetrieveQuotesService>();
-            services.AddTransient<IRetrieveUserQuotesService, RetrieveUserQuotesService>();
             services.AddTransient<ISearchQuoteService, SearchQuoteService>();
             services.AddTransient<IUpdateQuoteService, UpdateQuoteService>();
             services.AddTransient<IUploadQuoteService, UploadQuoteService>();

@@ -3,6 +3,9 @@
 @{
     this.ViewData["Title"] = "My Quotes";
     this.ViewData["Count"] = @Model.Quotes.Count;
+    this.ViewData["IsUserQuotes"] = true;
+    this.ViewData["PaginationControllerName"] = "Quote";
+    this.ViewData["PaginationActionName"] = "UserQuotes";
 }
 
 <partial name="PartialViews/_TitleCardPartial" />
@@ -13,38 +16,15 @@
 }
 else
 {
-    <div class="btn-group d-flex justify-content-center my-5 mb-3"
-         role="group"
-         aria-label="Basic radio toggle button group">
-        <input type="radio" class="btn-check" name="btnradio" id="approvedQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="approvedQuotesRadio">Show only approved quotes - @Model.ApprovedQuotesCount</label>
-
-        <input type="radio" class="btn-check" name="btnradio" id="unapprovedQuotesRadio" autocomplete="off">
-        <label class="btn border border-2" for="unapprovedQuotesRadio">Show only unapproved quotes - @Model.UnapprovedQuotesCount</label>
-    </div>
-
-    <partial name="PartialViews/_QuotesTypeFilterPartial" />
-    <partial name="PartialViews/_QuotesSearchPartial" />
-
-    @* <div class="input-group">
-        <input type="text"
-               class="form-control border border-2 border-black"
-               id="searchQuotesInput"
-               placeholder="Search quotes..."
-               aria-label="Recipient's username"
-               aria-describedby="button-addon2">
-        <button class="btn border border-2 border-black"
-                type="button"
-                id="searchQuotesBtn">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div> *@
+    <partial name="PartialViews/Quotes/_QuotesStatusFilterPartial" />
+    <partial name="PartialViews/Quotes/_QuotesTypeFilterPartial" />
+    <partial name="PartialViews/Quotes/_QuotesSortingPartial" />
+    <partial name="PartialViews/Quotes/_QuotesSearchPartial" />
 
     <div class="table-responsive my-3">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th class="text-center align-middle" scope="col">#</th>
                     <th class="text-center align-middle" scope="col">Content</th>
                     <th class="text-center align-middle" scope="col">Author</th>
                     <th class="text-center align-middle" scope="col">Movie</th>
@@ -59,7 +39,6 @@ else
                 @for (int i = 0; i <= Model.Quotes.Count() - 1; i++)
                 {
                     <tr>
-                        <th class="text-center align-middle" scope="row">@(i + 1)</th>
                         <td class="align-middle">@Model.Quotes[i].Content</td>
                         @if (@Model.Quotes[i].AuthorName != null)
                         {
@@ -120,10 +99,10 @@ else
     </div>
 }
 
+<partial name="PartialViews/_PaginationPartial"/>
 <partial name="PartialViews/Modals/_DeleteQuoteModalPartial" />
-
 
 @section Scripts {
     <script src="~/js/modal.js"></script>
-    <script type="module" src="~/js/quotes/userQuotes.js" charset="UTF-8"></script>
+    <script type="module" src="~/js/quotes/allQuotes.js"></script>
 }

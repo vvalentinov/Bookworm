@@ -1,12 +1,10 @@
-﻿namespace Bookworm.Web.ViewModels.Quotes
+﻿namespace Bookworm.Web.ViewModels.Quotes.Contracts
 {
     using System;
 
-    using Bookworm.Data.Models;
     using Bookworm.Data.Models.Enums;
-    using Bookworm.Services.Mapping;
 
-    public class QuoteViewModel : IMapFrom<Quote>
+    public interface IQuoteViewModel
     {
         public int Id { get; set; }
 

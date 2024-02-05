@@ -9,7 +9,7 @@
     using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
-    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.Models;
     using Microsoft.EntityFrameworkCore;
 
     public class SearchQuoteService : ISearchQuoteService

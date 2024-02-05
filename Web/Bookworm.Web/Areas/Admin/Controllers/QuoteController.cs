@@ -4,7 +4,7 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -30,19 +30,19 @@
 
         public async Task<IActionResult> ApprovedQuotes()
         {
-            QuoteListingViewModel approvedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync();
+            var approvedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync<QuoteListingViewModel>();
             return this.View(approvedQuotes);
         }
 
         public async Task<IActionResult> UnapprovedQuotes()
         {
-            QuoteListingViewModel unapprovedQuotes = await this.retrieveQuotesService.GetAllUnapprovedAsync();
+            var unapprovedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync<QuoteListingViewModel>();
             return this.View(unapprovedQuotes);
         }
 
         public async Task<IActionResult> DeletedQuotes()
         {
-            QuoteListingViewModel deletedQuotes = await this.retrieveQuotesService.GetAllDeletedAsync();
+            var deletedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync<QuoteListingViewModel>();
             return this.View(deletedQuotes);
         }
 

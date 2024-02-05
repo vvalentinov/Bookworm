@@ -11,7 +11,8 @@
     using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
-    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.Contracts;
+    using Bookworm.Web.ViewModels.Quotes.Models;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Quotes.QuotesDataConstants;
@@ -29,9 +30,10 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<QuoteListingViewModel> GetAllApprovedAsync(
+        public async Task<T> GetAllApprovedAsync<T>(
             string userId = null,
             int? page = null)
+            where T : BaseQuoteListingViewModel, new()
         {
             var quotesQuery = this.quoteRepository
                 .AllAsNoTracking()
@@ -46,7 +48,7 @@
                     .Take(QuotesPerPage)
                     .ToListAsync();
 
-                return new QuoteListingViewModel
+                return new T
                 {
                     Quotes = userId != null ? await this.RetrieveQuoteUserStatusAsync(quotes, userId) : quotes,
                     PageNumber = page ?? 1,
@@ -56,11 +58,12 @@
             }
             else
             {
-                return new QuoteListingViewModel { Quotes = await quotesQuery.ToListAsync() };
+                return new T { Quotes = await quotesQuery.ToListAsync() };
             }
         }
 
-        public async Task<QuoteListingViewModel> GetAllUnapprovedAsync()
+        public async Task<T> GetAllUnapprovedAsync<T>()
+            where T : BaseQuoteListingViewModel, new()
         {
             var quotes = await this.quoteRepository
               .AllAsNoTracking()
@@ -69,7 +72,7 @@
               .To<QuoteViewModel>()
               .ToListAsync();
 
-            return new QuoteListingViewModel { Quotes = quotes };
+            return new T { Quotes = quotes };
         }
 
         public async Task<int> GetUnapprovedCountAsync() =>
@@ -78,7 +81,8 @@
                 .Where(quote => quote.IsApproved == false)
                 .CountAsync();
 
-        public async Task<QuoteListingViewModel> GetAllDeletedAsync()
+        public async Task<T> GetAllDeletedAsync<T>()
+            where T : BaseQuoteListingViewModel, new()
         {
             var quotes = await this.quoteRepository
                 .AllAsNoTrackingWithDeleted()
@@ -87,16 +91,22 @@
                 .To<QuoteViewModel>()
                 .ToListAsync();
 
-            return new QuoteListingViewModel { Quotes = quotes };
+            return new T { Quotes = quotes };
         }
 
-        public async Task<QuoteViewModel> GetByIdAsync(int quoteId)
+        public async Task<T> GetByIdAsync<T>(int quoteId)
+            where T : IQuoteViewModel, new()
         {
             var quote = await this.quoteRepository
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == quoteId);
 
-            return new QuoteViewModel
+            if (quote == null)
+            {
+                throw new InvalidOperationException("No quote with given id found!");
+            }
+
+            return new T
             {
                 Id = quoteId,
                 Content = quote.Content,
@@ -106,20 +116,50 @@
             };
         }
 
-        public async Task<T> GetRandomAsync<T>() =>
-            await this.quoteRepository
+        public async Task<T> GetRandomAsync<T>()
+            where T : IQuoteViewModel =>
+                await this.quoteRepository
                         .AllAsNoTracking()
                         .Where(x => x.IsApproved)
                         .OrderBy(x => Guid.NewGuid())
                         .To<T>()
                         .FirstOrDefaultAsync();
 
-        public async Task<QuoteListingViewModel> GetAllByTypeAsync(
+        public async Task<T> GetAllUserQuotesAsync<T>(string userId, int page)
+            where T : UserQuoteListingViewModel, new()
+        {
+            var quotes = await this.quoteRepository
+                .AllAsNoTracking()
+                .Where(x => x.UserId == userId)
+                .OrderByDescending(x => x.CreatedOn)
+                .Skip((page - 1) * QuotesPerPage)
+                .Take(QuotesPerPage)
+                .To<QuoteViewModel>()
+                .ToListAsync();
+
+            var approvedQuotesCount = quotes.Count(x => x.IsApproved);
+            var unapprovedQuotesCount = quotes.Count(x => !x.IsApproved);
+
+            return new T
+            {
+                Quotes = quotes,
+                ApprovedQuotesCount = approvedQuotesCount,
+                UnapprovedQuotesCount = unapprovedQuotesCount,
+                ItemsPerPage = QuotesPerPage,
+                PageNumber = page,
+                RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(x => x.UserId == userId),
+            };
+        }
+
+        public async Task<T> GetAllByCriteriaAsync<T>(
             string sortCriteria,
             string userId,
             string type,
             string content,
-            int page)
+            int page,
+            string quoteStatus,
+            bool isForUserQuotes)
+            where T : BaseQuoteListingViewModel, new()
         {
             bool isValidSortCriteria = Enum.TryParse(sortCriteria, out SortQuotesCriteria sortQuotesCriteria);
             if (isValidSortCriteria == false)
@@ -127,44 +167,36 @@
                 throw new InvalidOperationException("Invalid sort quote criteria!");
             }
 
-            var quotesQuery = this.quoteRepository
-                .AllAsNoTracking()
-                .Where(q => q.IsApproved)
-                .To<QuoteViewModel>();
+            var quotesQuery = this.quoteRepository.AllAsNoTracking().To<QuoteViewModel>();
 
-            return await this.RetrieveQuotesFromQueryAsync(
-                quotesQuery,
-                type,
-                sortQuotesCriteria,
-                content,
-                userId,
-                page);
-        }
-
-        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
-            List<QuoteViewModel> quotes,
-            string userId)
-        {
-            foreach (QuoteViewModel quote in quotes)
+            if (isForUserQuotes)
             {
-                quote.IsLikedByUser = await this.quoteLikesRepository
-                                                .AllAsNoTracking()
-                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
-
-                quote.IsUserQuoteCreator = quote.UserId == userId;
+                quotesQuery = quotesQuery.Where(q => q.UserId == userId);
+            }
+            else
+            {
+                quotesQuery = quotesQuery.Where(q => q.IsApproved);
             }
 
-            return quotes;
-        }
+            if (isForUserQuotes && quoteStatus != null)
+            {
+                bool isValidStatus = Enum.TryParse(quoteStatus, out ApiQuoteStatus apiQuoteStatus);
+                if (isValidStatus == false)
+                {
+                    throw new InvalidOperationException("Invalid quote status!");
+                }
 
-        private async Task<QuoteListingViewModel> RetrieveQuotesFromQueryAsync(
-            IQueryable<QuoteViewModel> quotesQuery,
-            string type,
-            SortQuotesCriteria sortQuotesCriteria,
-            string content,
-            string userId,
-            int page)
-        {
+                switch (apiQuoteStatus)
+                {
+                    case ApiQuoteStatus.Approved:
+                        quotesQuery = quotesQuery.Where(q => q.IsApproved);
+                        break;
+                    case ApiQuoteStatus.Unapproved:
+                        quotesQuery = quotesQuery.Where(q => q.IsApproved == false);
+                        break;
+                }
+            }
+
             bool isValidQuoteType = Enum.TryParse(type, out ApiQuoteType quoteType);
 
             if (type != null)
@@ -174,13 +206,20 @@
                     throw new InvalidOperationException("Invalid quote type!");
                 }
 
-                if (quoteType == ApiQuoteType.LikedQuote)
+                switch (quoteType)
                 {
-                    quotesQuery = quotesQuery.Where(q => q.Likes > 0);
-                }
-                else
-                {
-                    quotesQuery = quotesQuery.Where(q => q.Type == (QuoteType)quoteType);
+                    case ApiQuoteType.BookQuote:
+                        quotesQuery = quotesQuery.Where(q => q.Type == QuoteType.BookQuote);
+                        break;
+                    case ApiQuoteType.MovieQuote:
+                        quotesQuery = quotesQuery.Where(q => q.Type == QuoteType.MovieQuote);
+                        break;
+                    case ApiQuoteType.GeneralQuote:
+                        quotesQuery = quotesQuery.Where(q => q.Type == QuoteType.GeneralQuote);
+                        break;
+                    case ApiQuoteType.LikedQuote:
+                        quotesQuery = quotesQuery.Where(q => q.Likes > 0);
+                        break;
                 }
             }
 
@@ -212,7 +251,11 @@
                         quotesQuery = quotesQuery.Where(q => q.Content.ToLower().Contains(content) && q.Likes > 0);
                         break;
                     default:
-                        quotesQuery = quotesQuery.Where(q => q.Content.ToLower().Contains(content));
+                        quotesQuery = quotesQuery.Where(q =>
+                        q.Content.ToLower().Contains(content) ||
+                        q.AuthorName.ToLower().Contains(content) ||
+                        q.MovieTitle.ToLower().Contains(content) ||
+                        q.BookTitle.ToLower().Contains(content));
                         break;
                 }
             }
@@ -236,13 +279,29 @@
 
             var quotes = await this.RetrieveQuoteUserStatusAsync(await quotesQuery.ToListAsync(), userId);
 
-            return new QuoteListingViewModel
+            return new T
             {
                 Quotes = quotes,
                 ItemsPerPage = QuotesPerPage,
                 PageNumber = page,
                 RecordsCount = totalCount,
             };
+        }
+
+        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
+            List<QuoteViewModel> quotes,
+            string userId)
+        {
+            foreach (var quote in quotes)
+            {
+                quote.IsLikedByUser = await this.quoteLikesRepository
+                                                .AllAsNoTracking()
+                                                .AnyAsync(ql => ql.QuoteId == quote.Id && ql.UserId == userId);
+
+                quote.IsUserQuoteCreator = quote.UserId == userId;
+            }
+
+            return quotes;
         }
     }
 }

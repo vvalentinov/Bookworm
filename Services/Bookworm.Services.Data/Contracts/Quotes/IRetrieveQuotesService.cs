@@ -2,29 +2,41 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.Contracts;
+    using Bookworm.Web.ViewModels.Quotes.Models;
 
     public interface IRetrieveQuotesService
     {
-        Task<QuoteViewModel> GetByIdAsync(int quoteId);
+        Task<T> GetByIdAsync<T>(int quoteId)
+            where T : IQuoteViewModel, new();
 
-        Task<QuoteListingViewModel> GetAllByTypeAsync(
+        Task<T> GetAllByCriteriaAsync<T>(
             string sortCriteria,
             string userId,
             string type,
             string content,
-            int page);
+            int page,
+            string quoteStatus,
+            bool isForUserQuotes)
+            where T : BaseQuoteListingViewModel, new();
 
-        Task<QuoteListingViewModel> GetAllApprovedAsync(
+        Task<T> GetAllApprovedAsync<T>(
             string userId = null,
-            int? page = null);
+            int? page = null)
+            where T : BaseQuoteListingViewModel, new();
 
-        Task<QuoteListingViewModel> GetAllUnapprovedAsync();
+        Task<T> GetAllUnapprovedAsync<T>()
+            where T : BaseQuoteListingViewModel, new();
 
-        Task<QuoteListingViewModel> GetAllDeletedAsync();
+        Task<T> GetAllDeletedAsync<T>()
+            where T : BaseQuoteListingViewModel, new();
 
-        Task<T> GetRandomAsync<T>();
+        Task<T> GetRandomAsync<T>()
+            where T : IQuoteViewModel;
 
         Task<int> GetUnapprovedCountAsync();
+
+        Task<T> GetAllUserQuotesAsync<T>(string userId, int page)
+            where T : UserQuoteListingViewModel, new();
     }
 }

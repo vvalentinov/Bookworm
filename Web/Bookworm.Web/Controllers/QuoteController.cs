@@ -6,8 +6,9 @@
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels;
+    using Bookworm.Web.ViewModels.Quotes.Contracts;
+    using Bookworm.Web.ViewModels.Quotes.Models;
+    using Bookworm.Web.ViewModels.Quotes.Models.UploadQuoteViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -18,20 +19,17 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
-        private readonly IRetrieveUserQuotesService retrieveUserQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
         private readonly IUploadQuoteService uploadQuoteService;
 
         public QuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
-            IRetrieveUserQuotesService retrieveUserQuotesService,
             IUpdateQuoteService updateQuoteService,
             IUploadQuoteService uploadQuoteService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
-            this.retrieveUserQuotesService = retrieveUserQuotesService;
             this.updateQuoteService = updateQuoteService;
             this.uploadQuoteService = uploadQuoteService;
         }
@@ -39,13 +37,13 @@
         [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            QuoteViewModel quote = await this.retrieveQuotesService.GetByIdAsync(id);
+            var quote = await this.retrieveQuotesService.GetByIdAsync<QuoteViewModel>(id);
             return this.View(quote);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Edit(QuoteViewModel quote)
+        public async Task<IActionResult> Edit(IQuoteViewModel quote)
         {
             await this.updateQuoteService.EditQuoteAsync(
                 quote.Id,
@@ -60,10 +58,17 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> UserQuotes()
+        public async Task<IActionResult> UserQuotes(int id = 1)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            UserQuoteListingViewModel quotes = await this.retrieveUserQuotesService.GetAllUserQuotesAsync(user.Id);
+            if (id <= 0)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
+                return this.RedirectToAction(nameof(this.UserQuotes), new { id = 1 });
+            }
+
+            var userId = this.userManager.GetUserId(this.User);
+            var quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync<UserQuoteListingViewModel>(userId, id);
+
             return this.View(quotes);
         }
 
@@ -82,11 +87,11 @@
             if (id <= 0)
             {
                 this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
-                return this.RedirectToAction(nameof(this.All));
+                return this.RedirectToAction(nameof(this.All), new { id = 1 });
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            QuoteListingViewModel quotes = await this.retrieveQuotesService.GetAllApprovedAsync(user?.Id, id);
+            var userId = this.userManager.GetUserId(this.User);
+            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync<QuoteListingViewModel>(userId, id);
 
             return this.View(quotes);
         }

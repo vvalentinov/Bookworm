@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels
+﻿namespace Bookworm.Web.ViewModels.Quotes.Models.UploadQuoteViewModels
 {
     using System.ComponentModel.DataAnnotations;
 

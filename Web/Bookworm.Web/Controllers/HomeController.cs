@@ -7,7 +7,7 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels;
     using Bookworm.Web.ViewModels.Home;
-    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.Models;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController
