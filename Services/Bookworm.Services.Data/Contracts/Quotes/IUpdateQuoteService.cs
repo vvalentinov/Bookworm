@@ -14,11 +14,9 @@
 
         Task UnapproveQuoteAsync(int quoteId);
 
-        Task EditQuoteAsync(
+        Task EditGeneralQuoteAsync(
             int quoteId,
             string content,
-            string authorName,
-            string bookTitle,
-            string movieTitle);
+            string authorName);
     }
 }

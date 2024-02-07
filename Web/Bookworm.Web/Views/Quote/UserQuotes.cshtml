@@ -2,7 +2,7 @@
 
 @{
     this.ViewData["Title"] = "My Quotes";
-    this.ViewData["Count"] = @Model.Quotes.Count;
+    this.ViewData["Count"] = @Model.RecordsCount;
     this.ViewData["IsUserQuotes"] = true;
     this.ViewData["PaginationControllerName"] = "Quote";
     this.ViewData["PaginationActionName"] = "UserQuotes";
@@ -99,7 +99,7 @@ else
     </div>
 }
 
-<partial name="PartialViews/_PaginationPartial"/>
+<partial name="PartialViews/_PaginationPartial" />
 <partial name="PartialViews/Modals/_DeleteQuoteModalPartial" />
 
 @section Scripts {

@@ -6,6 +6,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Identity;
@@ -99,18 +100,23 @@
             await this.userRepository.SaveChangesAsync();
         }
 
-        public async Task EditQuoteAsync(
+        public async Task EditGeneralQuoteAsync(
             int quoteId,
             string content,
-            string authorName,
-            string bookTitle,
-            string movieTitle)
+            string authorName)
         {
-            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            var quote = await this.quoteRepository
+                .All()
+                .FirstOrDefaultAsync(q => q.Id == quoteId) ??
+                throw new InvalidOperationException("No quote with given id found!");
+
+            if (quote.Type != QuoteType.GeneralQuote)
+            {
+                throw new InvalidOperationException("Invalid quote type!");
+            }
+
             quote.Content = content;
             quote.AuthorName = authorName;
-            quote.BookTitle = bookTitle;
-            quote.MovieTitle = movieTitle;
 
             this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();

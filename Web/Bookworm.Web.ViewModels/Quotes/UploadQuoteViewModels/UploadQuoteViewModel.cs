@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.ViewModels.Quotes.Models.UploadQuoteViewModels
+﻿namespace Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels
 {
     public class UploadQuoteViewModel
     {

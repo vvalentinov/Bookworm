@@ -1,6 +1,6 @@
-﻿namespace Bookworm.Web.ViewModels.Quotes.Models
+﻿namespace Bookworm.Web.ViewModels.Quotes
 {
-    public class GetQuotesRequestModel
+    public class GetQuotesApiRequestModel
     {
         public string Type { get; set; }
 

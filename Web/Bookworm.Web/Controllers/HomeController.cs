@@ -7,7 +7,6 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels;
     using Bookworm.Web.ViewModels.Home;
-    using Bookworm.Web.ViewModels.Quotes.Models;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController
@@ -27,7 +26,7 @@
         {
             IndexViewModel model = new IndexViewModel()
             {
-                RandomQuote = await this.retrieveQuotesService.GetRandomAsync<QuoteViewModel>(),
+                RandomQuote = await this.retrieveQuotesService.GetRandomAsync(),
                 RecentBooks = await this.booksService.GetRecentBooksAsync(12),
                 PopularBooks = await this.booksService.GetPopularBooksAsync(12),
             };

@@ -6,9 +6,8 @@
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.Contracts;
-    using Bookworm.Web.ViewModels.Quotes.Models;
-    using Bookworm.Web.ViewModels.Quotes.Models.UploadQuoteViewModels;
+    using Bookworm.Web.ViewModels.Quotes.EditQuoteViewModels;
+    using Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -37,24 +36,54 @@
         [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            var quote = await this.retrieveQuotesService.GetByIdAsync<QuoteViewModel>(id);
-            return this.View(quote);
+            try
+            {
+                string userId = this.userManager.GetUserId(this.User);
+                var (editQuoteViewModel, actionName) = await this.retrieveQuotesService.GetQuoteForEditAsync(id, userId);
+                this.ViewData["ActionName"] = actionName;
+                return this.View(editQuoteViewModel);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction("Index", "Home");
+            }
         }
 
-        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Edit(IQuoteViewModel quote)
+        [Authorize]
+        public async Task<IActionResult> EditGeneralQuote(EditGeneralQuoteViewModel editGeneralQuoteViewModel)
         {
-            await this.updateQuoteService.EditQuoteAsync(
-                quote.Id,
-                quote.Content,
-                quote.AuthorName,
-                quote.BookTitle,
-                quote.MovieTitle);
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(editGeneralQuoteViewModel);
+            }
 
-            this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
+            return null;
+        }
 
-            return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditBookQuote(EditBookQuoteViewModel editBookQuoteViewModel)
+        {
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(editBookQuoteViewModel);
+            }
+
+            return null;
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditMovieQuote(EditMovieQuoteViewModel editMovieQuoteViewModel)
+        {
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(editMovieQuoteViewModel);
+            }
+
+            return null;
         }
 
         [Authorize]
@@ -67,7 +96,7 @@
             }
 
             var userId = this.userManager.GetUserId(this.User);
-            var quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync<UserQuoteListingViewModel>(userId, id);
+            var quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync(userId, id);
 
             return this.View(quotes);
         }
@@ -91,7 +120,7 @@
             }
 
             var userId = this.userManager.GetUserId(this.User);
-            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync<QuoteListingViewModel>(userId, id);
+            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync(userId, id);
 
             return this.View(quotes);
         }

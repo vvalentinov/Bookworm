@@ -1,50 +1,69 @@
-﻿@model QuoteViewModel
+﻿@model BaseEditQuoteViewModel
 
 @{
-    ViewData["Title"] = "Edit Quote";
+    this.ViewData["Title"] = "Edit Quote";
+    this.ViewData["Icon-Class"] = "fas fa-pen icon ms-3";
+    var action = this.ViewData["ActionName"];
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card animate__animated animate__jackInTheBox">
-        <div class="card-body">
-            <h3>@this.ViewData["Title"]<i class="fas fa-pen icon ms-3"></i></h3>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial"/>
 
-<form method="post" class="col-6 mx-auto d-flex justify-content-center flex-column mt-3 mb-5">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <input type="hidden" asp-for="Id">
-    <div class="form-group justify-content-center">
-        <label asp-for="Content"><strong>Content*</strong></label>
-        <textarea asp-for="Content" class="form-control border border-2 fs-5" rows="6"></textarea>
-        <span asp-validation-for="Content" class="small text-danger"></span>
-    </div>
-    @if (Model.AuthorName != null)
+<form method="post"
+      asp-controller="Quote"
+      asp-action=@action
+      class="col-6 mx-auto d-flex justify-content-center flex-column mt-3 mb-5">
+
+    @if (Model is EditGeneralQuoteViewModel editGeneralQuoteViewModel)
     {
+        <input type="hidden" asp-for="@editGeneralQuoteViewModel.Id">
+        <div class="form-group justify-content-center">
+            <label asp-for="@editGeneralQuoteViewModel.Content"><strong>Content*</strong></label>
+            <textarea asp-for="@editGeneralQuoteViewModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+            <span asp-validation-for="@editGeneralQuoteViewModel.Content" class="text-danger"></span>
+        </div>
         <div class="form-group my-3">
-            <label asp-for="AuthorName"><strong>Author's Name*</strong></label>
-            <input value="@Model.AuthorName" asp-for="AuthorName" type="text" class="form-control border border-2 fs-5">
-            <span asp-validation-for="AuthorName" class="small text-danger"></span>
+            <label asp-for="@editGeneralQuoteViewModel.AuthorName"><strong>Author's Name*</strong></label>
+            <input value="@editGeneralQuoteViewModel.AuthorName" asp-for="@editGeneralQuoteViewModel.AuthorName" type="text" class="form-control border border-2 fs-5">
+            <span asp-validation-for="@editGeneralQuoteViewModel.AuthorName" class="text-danger"></span>
         </div>
     }
-    @if (Model.BookTitle != null)
+    else if (Model is EditBookQuoteViewModel editBookQuoteViewModel)
     {
+        <input type="hidden" asp-for="@editBookQuoteViewModel.Id">
+        <div class="form-group justify-content-center">
+            <label asp-for="@editBookQuoteViewModel.Content"><strong>Content*</strong></label>
+            <textarea asp-for="@editBookQuoteViewModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+            <span asp-validation-for="@editBookQuoteViewModel.Content" class="text-danger"></span>
+        </div>
         <div class="form-group my-3">
-            <label asp-for="BookTitle"><strong>Book Title*</strong></label>
-            <input asp-for="BookTitle" value="@Model.BookTitle" type="text" class="form-control border border-2 fs-5">
-            <span asp-validation-for="BookTitle" class="small text-danger"></span>
+            <label asp-for="@editBookQuoteViewModel.BookTitle"><strong>Book Title*</strong></label>
+            <input asp-for="@editBookQuoteViewModel.BookTitle" value="@editBookQuoteViewModel.BookTitle" type="text" class="form-control border border-2 fs-5">
+            <span asp-validation-for="@editBookQuoteViewModel.BookTitle" class="text-danger"></span>
+        </div>
+        <div class="form-group my-3">
+            <label asp-for="@editBookQuoteViewModel.AuthorName"><strong>Author's Name*</strong></label>
+            <input value="@editBookQuoteViewModel.AuthorName" asp-for="@editBookQuoteViewModel.AuthorName" type="text" class="form-control border border-2 fs-5">
+            <span asp-validation-for="@editBookQuoteViewModel.AuthorName" class="text-danger"></span>
         </div>
     }
-    @if (Model.MovieTitle != null)
+    else if (Model is EditMovieQuoteViewModel editMovieQuoteViewModel)
     {
+        <input type="hidden" asp-for="@editMovieQuoteViewModel.Id">
+        <div class="form-group justify-content-center">
+            <label asp-for="@editMovieQuoteViewModel.Content"><strong>Content*</strong></label>
+            <textarea asp-for="@editMovieQuoteViewModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+            <span asp-validation-for="@editMovieQuoteViewModel.Content" class="text-danger"></span>
+        </div>
         <div class="form-group my-3">
-            <label asp-for="MovieTitle"><strong>Movie Title*</strong></label>
-            <input asp-for="MovieTitle" value="@Model.MovieTitle" type="text" class="form-control border border-2 fs-5">
-            <span asp-validation-for="MovieTitle" class="small text-danger"></span>
+            <label asp-for="@editMovieQuoteViewModel.MovieTitle"><strong>Movie Title*</strong></label>
+            <input asp-for="@editMovieQuoteViewModel.MovieTitle" value="@editMovieQuoteViewModel.MovieTitle" type="text" class="form-control border border-2 fs-5">
+            <span asp-validation-for="@editMovieQuoteViewModel.MovieTitle" class="text-danger"></span>
         </div>
     }
+
     <div class="text-center mt-3">
-        <button type="submit" class="btn button text-center form-button fs-5 px-5"><strong>Edit</strong></button>
+        <button type="submit" class="btn button text-center form-button fs-5 px-5">
+            <strong>Edit</strong>
+        </button>
     </div>
 </form>

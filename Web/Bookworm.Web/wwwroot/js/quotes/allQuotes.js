@@ -1,6 +1,10 @@
 import { fetchForQuotes } from './fetchForQuotes.js';
 
-const addClickEventToButtons = (buttons) => buttons.forEach(button => button.addEventListener('click', () => fetchForQuotes()));
+const addClickEventToButtons = (buttons) => buttons.forEach(button => {
+    if (button) {
+        button.addEventListener('click', () => fetchForQuotes());
+    }
+});
 
 const quoteTypeButtons = [
     document.getElementById('movie-quotes'),

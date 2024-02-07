@@ -3,6 +3,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
+    using Azure.Storage.Blobs;
     using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Seeding;
@@ -42,6 +43,8 @@
             builder.Services.AddRazorPages();
 
             builder.Services.AddSingleton(builder.Configuration);
+
+            builder.Services.AddScoped(x => new BlobServiceClient(builder.Configuration["ConnectionStrings:StorageConnection"]));
 
             builder.Services.AddApplicationServices(builder.Configuration);
 

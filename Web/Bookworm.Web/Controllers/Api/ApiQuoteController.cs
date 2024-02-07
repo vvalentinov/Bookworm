@@ -5,7 +5,8 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.Models;
+    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -33,13 +34,13 @@
         }
 
         [HttpGet(nameof(GetQuotes))]
-        public async Task<IActionResult> GetQuotes([FromQuery]GetQuotesRequestModel model)
+        public async Task<IActionResult> GetQuotes([FromQuery]GetQuotesApiRequestModel model)
         {
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
 
-                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync<QuoteListingViewModel>(
+                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync(
                     model.SortCriteria,
                     userId,
                     model.Type,

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
 
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Quotes.Models;
+    using Bookworm.Web.ViewModels.Quotes;
 
     public class IndexViewModel
     {

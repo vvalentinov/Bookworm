@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models.Enums;
-    using Bookworm.Web.ViewModels.Quotes.Models;
+    using Bookworm.Web.ViewModels.Quotes;
 
     public interface ISearchQuoteService
     {

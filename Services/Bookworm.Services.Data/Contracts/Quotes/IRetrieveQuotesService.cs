@@ -2,41 +2,37 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Web.ViewModels.Quotes.Contracts;
-    using Bookworm.Web.ViewModels.Quotes.Models;
+    using Bookworm.Web.ViewModels.Quotes;
+    using Bookworm.Web.ViewModels.Quotes.EditQuoteViewModels;
+    using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
 
     public interface IRetrieveQuotesService
     {
-        Task<T> GetByIdAsync<T>(int quoteId)
-            where T : IQuoteViewModel, new();
+        Task<QuoteViewModel> GetByIdAsync(int quoteId);
 
-        Task<T> GetAllByCriteriaAsync<T>(
+        Task<QuoteListingViewModel> GetAllByCriteriaAsync(
             string sortCriteria,
             string userId,
             string type,
             string content,
             int page,
             string quoteStatus,
-            bool isForUserQuotes)
-            where T : BaseQuoteListingViewModel, new();
+            bool isForUserQuotes);
 
-        Task<T> GetAllApprovedAsync<T>(
+        Task<QuoteListingViewModel> GetAllApprovedAsync(
             string userId = null,
-            int? page = null)
-            where T : BaseQuoteListingViewModel, new();
+            int? page = null);
 
-        Task<T> GetAllUnapprovedAsync<T>()
-            where T : BaseQuoteListingViewModel, new();
+        Task<QuoteListingViewModel> GetAllUnapprovedAsync();
 
-        Task<T> GetAllDeletedAsync<T>()
-            where T : BaseQuoteListingViewModel, new();
+        Task<QuoteListingViewModel> GetAllDeletedAsync();
 
-        Task<T> GetRandomAsync<T>()
-            where T : IQuoteViewModel;
+        Task<QuoteViewModel> GetRandomAsync();
 
         Task<int> GetUnapprovedCountAsync();
 
-        Task<T> GetAllUserQuotesAsync<T>(string userId, int page)
-            where T : UserQuoteListingViewModel, new();
+        Task<UserQuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
+
+        Task<(BaseEditQuoteViewModel editQuoteViewModel, string actionName)> GetQuoteForEditAsync(int id, string userId);
     }
 }
