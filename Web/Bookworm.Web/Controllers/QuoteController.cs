@@ -1,12 +1,15 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.EditQuoteViewModels;
+    using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Quotes;
     using Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -33,107 +36,15 @@
             this.uploadQuoteService = uploadQuoteService;
         }
 
-        [Authorize]
-        public async Task<IActionResult> Edit(int id)
-        {
-            try
-            {
-                string userId = this.userManager.GetUserId(this.User);
-                var (editQuoteViewModel, actionName) = await this.retrieveQuotesService.GetQuoteForEditAsync(id, userId);
-                this.ViewData["ActionName"] = actionName;
-                return this.View(editQuoteViewModel);
-            }
-            catch (Exception ex)
-            {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-                return this.RedirectToAction("Index", "Home");
-            }
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> EditGeneralQuote(EditGeneralQuoteViewModel editGeneralQuoteViewModel)
-        {
-            if (this.ModelState.IsValid == false)
-            {
-                return this.View(editGeneralQuoteViewModel);
-            }
-
-            return null;
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> EditBookQuote(EditBookQuoteViewModel editBookQuoteViewModel)
-        {
-            if (this.ModelState.IsValid == false)
-            {
-                return this.View(editBookQuoteViewModel);
-            }
-
-            return null;
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> EditMovieQuote(EditMovieQuoteViewModel editMovieQuoteViewModel)
-        {
-            if (this.ModelState.IsValid == false)
-            {
-                return this.View(editMovieQuoteViewModel);
-            }
-
-            return null;
-        }
-
-        [Authorize]
-        public async Task<IActionResult> UserQuotes(int id = 1)
-        {
-            if (id <= 0)
-            {
-                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
-                return this.RedirectToAction(nameof(this.UserQuotes), new { id = 1 });
-            }
-
-            var userId = this.userManager.GetUserId(this.User);
-            var quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync(userId, id);
-
-            return this.View(quotes);
-        }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Delete(int quoteId)
-        {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            await this.updateQuoteService.SelfQuoteDeleteAsync(quoteId, user.Id);
-            this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
-            return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
-        }
-
-        public async Task<IActionResult> All(int id = 1)
-        {
-            if (id <= 0)
-            {
-                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
-                return this.RedirectToAction(nameof(this.All), new { id = 1 });
-            }
-
-            var userId = this.userManager.GetUserId(this.User);
-            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync(userId, id);
-
-            return this.View(quotes);
-        }
-
+        [HttpGet]
         [Authorize]
         public IActionResult Upload()
         {
-            UploadQuoteViewModel model = new UploadQuoteViewModel();
-            return this.View(model);
+            return this.View(new UploadQuoteViewModel());
         }
 
-        [Authorize]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UploadGeneralQuote(UploadGeneralQuoteViewModel generalQuoteModel)
         {
             if (this.ModelState.IsValid == false)
@@ -215,6 +126,94 @@
                 this.TempData[MessageConstant.ErrorMessage] = exception.Message;
                 return this.View(nameof(this.Upload));
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+
+                var model = await this.retrieveQuotesService.GetQuoteForEditAsync(id, userId);
+
+                return this.View(model);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+
+                return this.RedirectToAction(nameof(this.UserQuotes));
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Edit(QuoteInputModel model)
+        {
+            var userId = this.userManager.GetUserId(this.User);
+
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+            }
+
+            try
+            {
+                var quoteDto = model.To<QuoteDto>();
+
+                await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
+                return this.RedirectToAction(nameof(this.UserQuotes));
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> UserQuotes(int id = 1)
+        {
+            if (id <= 0)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
+                return this.RedirectToAction(nameof(this.UserQuotes), new { id = 1 });
+            }
+
+            var userId = this.userManager.GetUserId(this.User);
+            var quotes = await this.retrieveQuotesService.GetAllUserQuotesAsync(userId, id);
+
+            return this.View(quotes);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Delete(int quoteId)
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            await this.updateQuoteService.SelfQuoteDeleteAsync(quoteId, user.Id);
+            this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
+            return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> All(int id = 1)
+        {
+            if (id <= 0)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
+                return this.RedirectToAction(nameof(this.All), new { id = 1 });
+            }
+
+            var userId = this.userManager.GetUserId(this.User);
+            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync(userId, id);
+
+            return this.View(quotes);
         }
     }
 }

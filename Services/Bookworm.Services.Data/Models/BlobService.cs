@@ -12,8 +12,6 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.WindowsAzure.Storage.Auth;
-    using Microsoft.WindowsAzure.Storage.Blob;
 
     public class BlobService : IBlobService
     {
@@ -47,7 +45,7 @@
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = new BlobClient(uri);
 
-            Azure.Storage.Blobs.Models.BlobProperties blobProperties = blobClient.GetProperties();
+            BlobProperties blobProperties = blobClient.GetProperties();
             string contentType = blobProperties.ContentType;
 
             MemoryStream ms = new MemoryStream();
@@ -103,7 +101,9 @@
 
             string uniqueName = GenerateUniqueName(file);
 
-            return await this.RenameBlob(uniqueName, blobName, path);
+            return uniqueName;
+
+            //return await this.RenameBlob(uniqueName, blobName, path);
         }
 
         public async Task DeleteBlobAsync(string blobName)
@@ -134,31 +134,31 @@
                    $"{Path.GetExtension(file.FileName)}";
         }
 
-        private async Task<string> RenameBlob(string newFileName, string oldFileName, string path)
-        {
-            string accountName = this.configuration.GetConnectionString("AccountName");
-            string accountKey = this.configuration.GetConnectionString("AccountKey");
-            string containerName = this.configuration.GetConnectionString("ContainerName");
+        //private async Task<string> RenameBlob(string newFileName, string oldFileName, string path)
+        //{
+        //    string accountName = this.configuration.GetConnectionString("AccountName");
+        //    string accountKey = this.configuration.GetConnectionString("AccountKey");
+        //    string containerName = this.configuration.GetConnectionString("ContainerName");
 
-            StorageCredentials cred = new StorageCredentials(accountName, accountKey);
-            Uri uri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}/");
-            CloudBlobContainer container = new CloudBlobContainer(uri, cred);
+        //    var cred = new StorageCredentials(accountName, accountKey);
+        //    Uri uri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}/");
+        //    var container = new CloudBlobContainer(uri, cred);
 
-            await container.CreateIfNotExistsAsync();
+        //    await container.CreateIfNotExistsAsync();
 
-            CloudBlockBlob blobCopy = container.GetBlockBlobReference($"{path}{newFileName}");
+        //    var blobCopy = container.GetBlockBlobReference($"{path}{newFileName}");
 
-            if (!await blobCopy.ExistsAsync())
-            {
-                CloudBlockBlob blob = container.GetBlockBlobReference(oldFileName);
-                if (await blob.ExistsAsync())
-                {
-                    await blobCopy.StartCopyAsync(blob);
-                    await blob.DeleteIfExistsAsync();
-                }
-            }
+        //    if (!await blobCopy.ExistsAsync())
+        //    {
+        //        var blob = container.GetBlockBlobReference(oldFileName);
+        //        if (await blob.ExistsAsync())
+        //        {
+        //            await blobCopy.StartCopyAsync(blob);
+        //            await blob.DeleteIfExistsAsync();
+        //        }
+        //    }
 
-            return Uri.UnescapeDataString(blobCopy.Uri.AbsoluteUri);
-        }
+        //    return Uri.UnescapeDataString(blobCopy.Uri.AbsoluteUri);
+        //}
     }
 }

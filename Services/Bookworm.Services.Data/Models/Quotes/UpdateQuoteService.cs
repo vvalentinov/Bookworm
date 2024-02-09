@@ -6,6 +6,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.DTOs;
     using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Messaging;
@@ -100,25 +101,61 @@
             await this.userRepository.SaveChangesAsync();
         }
 
-        public async Task EditGeneralQuoteAsync(
-            int quoteId,
-            string content,
-            string authorName)
+        public async Task EditQuoteAsync(QuoteDto quote, string userId)
         {
-            var quote = await this.quoteRepository
+            var dbQuote = await this.quoteRepository
                 .All()
-                .FirstOrDefaultAsync(q => q.Id == quoteId) ??
+                .FirstOrDefaultAsync(q => q.Id == quote.Id) ??
                 throw new InvalidOperationException("No quote with given id found!");
 
-            if (quote.Type != QuoteType.GeneralQuote)
+            if (dbQuote.UserId != userId)
+            {
+                throw new InvalidOperationException("You have to be the quote's creator to edit it!");
+            }
+
+            if (quote == null || dbQuote.Type != quote.Type)
             {
                 throw new InvalidOperationException("Invalid quote type!");
             }
 
-            quote.Content = content;
-            quote.AuthorName = authorName;
+            switch (quote.Type)
+            {
+                case QuoteType.BookQuote:
+                    dbQuote.AuthorName = quote.AuthorName;
+                    dbQuote.BookTitle = quote.BookTitle;
+                    break;
+                case QuoteType.MovieQuote:
+                    dbQuote.MovieTitle = quote.MovieTitle;
+                    break;
+                case QuoteType.GeneralQuote:
+                    dbQuote.AuthorName = quote.AuthorName;
+                    break;
+            }
 
-            this.quoteRepository.Update(quote);
+            dbQuote.Content = quote.Content;
+
+            if (dbQuote.IsApproved)
+            {
+                var user = await this.userRepository
+                    .AllAsNoTracking()
+                    .FirstAsync(x => x.Id == userId);
+
+                if (user.Points - QuotePoints < 0)
+                {
+                    user.Points = 0;
+                }
+                else
+                {
+                    user.Points -= QuotePoints;
+                }
+
+                this.userRepository.Update(user);
+                await this.userRepository.SaveChangesAsync();
+            }
+
+            dbQuote.IsApproved = false;
+
+            this.quoteRepository.Update(dbQuote);
             await this.quoteRepository.SaveChangesAsync();
         }
 

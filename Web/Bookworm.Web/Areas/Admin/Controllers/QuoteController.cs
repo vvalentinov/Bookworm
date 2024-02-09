@@ -35,13 +35,13 @@
 
         public async Task<IActionResult> UnapprovedQuotes()
         {
-            var unapprovedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync();
+            var unapprovedQuotes = await this.retrieveQuotesService.GetAllUnapprovedAsync();
             return this.View(unapprovedQuotes);
         }
 
         public async Task<IActionResult> DeletedQuotes()
         {
-            var deletedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync();
+            var deletedQuotes = await this.retrieveQuotesService.GetAllDeletedAsync();
             return this.View(deletedQuotes);
         }
 

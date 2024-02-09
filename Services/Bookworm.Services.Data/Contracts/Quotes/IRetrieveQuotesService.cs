@@ -2,8 +2,8 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models.Enums;
     using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.EditQuoteViewModels;
     using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
 
     public interface IRetrieveQuotesService
@@ -33,6 +33,6 @@
 
         Task<UserQuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
 
-        Task<(BaseEditQuoteViewModel editQuoteViewModel, string actionName)> GetQuoteForEditAsync(int id, string userId);
+        Task<QuoteInputModel> GetQuoteForEditAsync(int id, string userId);
     }
 }

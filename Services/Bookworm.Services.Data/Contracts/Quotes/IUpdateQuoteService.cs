@@ -2,6 +2,9 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models.DTOs;
+    using Bookworm.Data.Models.Enums;
+
     public interface IUpdateQuoteService
     {
         Task ApproveQuoteAsync(int quoteId, string userId);
@@ -14,9 +17,6 @@
 
         Task UnapproveQuoteAsync(int quoteId);
 
-        Task EditGeneralQuoteAsync(
-            int quoteId,
-            string content,
-            string authorName);
+        Task EditQuoteAsync(QuoteDto quote, string userId);
     }
 }

@@ -12,7 +12,6 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.EditQuoteViewModels;
     using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
     using Microsoft.EntityFrameworkCore;
 
@@ -245,10 +244,10 @@
                         break;
                     default:
                         quotesQuery = quotesQuery.Where(q =>
-                        q.Content.ToLower().Contains(content) ||
-                        q.AuthorName.ToLower().Contains(content) ||
-                        q.MovieTitle.ToLower().Contains(content) ||
-                        q.BookTitle.ToLower().Contains(content));
+                            q.Content.ToLower().Contains(content) ||
+                            q.AuthorName.ToLower().Contains(content) ||
+                            q.MovieTitle.ToLower().Contains(content) ||
+                            q.BookTitle.ToLower().Contains(content));
                         break;
                 }
             }
@@ -281,7 +280,7 @@
             };
         }
 
-        public async Task<(BaseEditQuoteViewModel editQuoteViewModel, string actionName)> GetQuoteForEditAsync(int id, string userId)
+        public async Task<QuoteInputModel> GetQuoteForEditAsync(int id, string userId)
         {
             var quote = await this.quoteRepository
                 .AllAsNoTracking()
@@ -293,17 +292,7 @@
                 throw new InvalidOperationException("You have to be the quote's creator to edit it!");
             }
 
-            switch (quote.Type)
-            {
-                case QuoteType.BookQuote:
-                    return (quote.To<EditBookQuoteViewModel>(), "EditBookQuote");
-                case QuoteType.MovieQuote:
-                    return (quote.To<EditMovieQuoteViewModel>(), "EditMovieQuote");
-                case QuoteType.GeneralQuote:
-                    return (quote.To<EditGeneralQuoteViewModel>(), "EditGeneralQuote");
-                default:
-                    throw new InvalidOperationException("Invalid quote type!");
-            }
+            return quote.To<QuoteInputModel>();
         }
 
         private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
