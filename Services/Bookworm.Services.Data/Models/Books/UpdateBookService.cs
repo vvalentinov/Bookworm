@@ -15,7 +15,7 @@
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.GlobalConstants;
-    using static Bookworm.Common.UsersPointsDataConstants;
+    using static Bookworm.Common.PointsDataConstants;
 
     public class UpdateBookService : IUpdateBookService
     {

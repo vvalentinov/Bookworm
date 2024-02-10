@@ -33,7 +33,7 @@
             </div>
             <div class="modal-body uploadQuoteModalContainer">
                 <img class="col-4" src="~/images/movieQuote.jpg" />
-                <form method="post" asp-controller="Quote" asp-action="UploadMovieQuote">
+                <form method="post" asp-controller="Quote" asp-action="Upload">
                     <div class="form-group fs-4">
                         <label asp-for="@Model.MovieQuoteModel.Content">Content*</label>
                         <textarea asp-for="@Model.MovieQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
@@ -65,7 +65,7 @@
             </div>
             <div class="modal-body uploadQuoteModalContainer">
                 <img class="img-fluid" src="~/images/bookQuote.jpg" />
-                <form method="post" asp-controller="Quote" asp-action="UploadBookQuote">
+                <form method="post" asp-controller="Quote" asp-action="Upload">
                     <div class="form-group">
                         <label asp-for="@Model.BookQuoteModel.Content">Content*</label>
                         <textarea asp-for="@Model.BookQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
@@ -102,16 +102,17 @@
             </div>
             <div class="modal-body uploadQuoteModalContainer">
                 <img class="col-4" src="~/images/generalQuote.jpg" />
-                <form method="post" asp-controller="Quote" asp-action="UploadGeneralQuote">
+                <form method="post" asp-controller="Quote" asp-action="Upload">
+                    <input type="hidden" value="@QuoteType.GeneralQuote" />
                     <div class="form-group fs-4">
-                        <label asp-for="GeneralQuoteModel.Content">Content*</label>
-                        <textarea asp-for="GeneralQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
-                        <span asp-validation-for="GeneralQuoteModel.Content" class="small text-danger"></span>
+                        <label asp-for="@Model.GeneralQuoteModel.Content">Content*</label>
+                        <textarea asp-for="@Model.GeneralQuoteModel.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
+                        <span asp-validation-for="@Model.GeneralQuoteModel.Content" class="small text-danger"></span>
                     </div>
                     <div class="form-group mt-4 fs-4">
-                        <label asp-for="GeneralQuoteModel.AuthorName">Author's Name*</label>
-                        <input asp-for="GeneralQuoteModel.AuthorName" type="text" class="form-control border border-2 fs-5">
-                        <span asp-validation-for="GeneralQuoteModel.AuthorName" class="small text-danger"></span>
+                        <label asp-for="@Model.GeneralQuoteModel.AuthorName">Author's Name*</label>
+                        <input asp-for="@Model.GeneralQuoteModel.AuthorName" type="text" class="form-control border border-2 fs-5">
+                        <span asp-validation-for="@Model.GeneralQuoteModel.AuthorName" class="small text-danger"></span>
                     </div>
                     <div class="text-center mt-4 mb-5">
                         <button type="submit" class="btn button form-button">

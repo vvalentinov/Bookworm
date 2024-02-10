@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Web.ViewModels.Quotes;
     using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
 
@@ -33,6 +32,6 @@
 
         Task<UserQuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
 
-        Task<QuoteInputModel> GetQuoteForEditAsync(int id, string userId);
+        Task<EditQuoteViewModel> GetQuoteForEditAsync(int id, string userId);
     }
 }

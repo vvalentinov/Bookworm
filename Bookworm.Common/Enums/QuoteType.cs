@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Data.Models.Enums
+﻿namespace Bookworm.Common.Enums
 {
     public enum QuoteType
     {

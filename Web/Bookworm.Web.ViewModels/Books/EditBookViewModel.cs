@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    using Bookworm.Common.Books;
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.Infrastructure.Attributes;

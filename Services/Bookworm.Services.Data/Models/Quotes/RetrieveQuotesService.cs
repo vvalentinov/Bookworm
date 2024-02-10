@@ -8,7 +8,6 @@
     using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
@@ -280,10 +279,11 @@
             };
         }
 
-        public async Task<QuoteInputModel> GetQuoteForEditAsync(int id, string userId)
+        public async Task<EditQuoteViewModel> GetQuoteForEditAsync(int id, string userId)
         {
             var quote = await this.quoteRepository
                 .AllAsNoTracking()
+                .To<EditQuoteViewModel>()
                 .FirstOrDefaultAsync(q => q.Id == id) ??
                 throw new InvalidOperationException("No quote with given id found!");
 
@@ -292,7 +292,7 @@
                 throw new InvalidOperationException("You have to be the quote's creator to edit it!");
             }
 
-            return quote.To<QuoteInputModel>();
+            return quote;
         }
 
         private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(

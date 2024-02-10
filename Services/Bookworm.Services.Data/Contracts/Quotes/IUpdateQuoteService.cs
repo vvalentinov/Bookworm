@@ -2,8 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models.DTOs;
-    using Bookworm.Data.Models.Enums;
+    using Bookworm.Data.Models;
 
     public interface IUpdateQuoteService
     {

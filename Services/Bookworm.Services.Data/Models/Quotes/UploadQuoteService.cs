@@ -3,9 +3,9 @@
     using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.EntityFrameworkCore;
 

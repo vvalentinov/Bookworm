@@ -2,8 +2,8 @@
 {
     using System;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Mapping;
 
     public class QuoteViewModel : IMapFrom<Quote>

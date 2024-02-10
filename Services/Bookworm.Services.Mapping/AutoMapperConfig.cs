@@ -6,7 +6,6 @@
     using System.Reflection;
 
     using AutoMapper;
-    using AutoMapper.Configuration;
 
     public static class AutoMapperConfig
     {
@@ -48,17 +47,8 @@
                         map.CreateMappings(configuration);
                     }
                 });
+
             MapperInstance = new Mapper(new MapperConfiguration(config));
-        }
-
-        public static TDestination To<TDestination>(this object source)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            return MapperInstance.Map<TDestination>(source);
         }
 
         private static IEnumerable<TypesMap> GetFromMaps(IEnumerable<Type> types)

@@ -2,15 +2,15 @@
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Bookworm.Common.Enums;
+    using Bookworm.Common.Quotes;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.DTOs;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Mapping;
 
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
-    public class QuoteInputModel : IMapFrom<Quote>, IMapTo<QuoteDto>
+    public class EditQuoteViewModel : IMapFrom<Quote>, IMapTo<QuoteDto>
     {
         public int Id { get; set; }
 
@@ -27,6 +27,8 @@
 
         public string MovieTitle { get; set; }
 
-        public QuoteType? Type { get; set; }
+        public QuoteType Type { get; set; }
+
+        public string UserId { get; set; }
     }
 }

@@ -4,34 +4,36 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.DTOs;
-    using Bookworm.Data.Models.Enums;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.GlobalConstants;
-    using static Bookworm.Common.UsersPointsDataConstants;
+    using static Bookworm.Common.PointsDataConstants;
 
     public class UpdateQuoteService : IUpdateQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IValidateQuoteService validateQuoteService;
         private readonly IEmailSender emailSender;
 
         public UpdateQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             UserManager<ApplicationUser> userManager,
+            IValidateQuoteService validateQuoteService,
             IEmailSender emailSender)
         {
             this.quoteRepository = quoteRepository;
             this.userRepository = userRepository;
             this.userManager = userManager;
+            this.validateQuoteService = validateQuoteService;
             this.emailSender = emailSender;
         }
 
@@ -113,7 +115,7 @@
                 throw new InvalidOperationException("You have to be the quote's creator to edit it!");
             }
 
-            if (quote == null || dbQuote.Type != quote.Type)
+            if (dbQuote.Type != quote.Type)
             {
                 throw new InvalidOperationException("Invalid quote type!");
             }
@@ -121,13 +123,16 @@
             switch (quote.Type)
             {
                 case QuoteType.BookQuote:
+                    this.validateQuoteService.ValidateBookQuote(quote.Content, quote.BookTitle, quote.AuthorName);
                     dbQuote.AuthorName = quote.AuthorName;
                     dbQuote.BookTitle = quote.BookTitle;
                     break;
                 case QuoteType.MovieQuote:
+                    this.validateQuoteService.ValidateMovieQuote(quote.Content, quote.MovieTitle);
                     dbQuote.MovieTitle = quote.MovieTitle;
                     break;
                 case QuoteType.GeneralQuote:
+                    this.validateQuoteService.ValidateGeneralQuote(quote.Content, quote.AuthorName);
                     dbQuote.AuthorName = quote.AuthorName;
                     break;
             }

@@ -20,4 +20,8 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Services\Bookworm.Services.Mapping\Bookworm.Services.Mapping.csproj" />
+	</ItemGroup>
+
 </Project>

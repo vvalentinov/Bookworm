@@ -3,17 +3,14 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models.Enums;
+    using Bookworm.Common.Enums;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface ISearchQuoteService
     {
         Task<List<QuoteViewModel>> SearchQuotesByContentAsync(string content, string userId);
 
-        Task<List<QuoteViewModel>> SearchQuotesByContentAndTypeAsync(
-            string content,
-            QuoteType type,
-            string userId);
+        Task<List<QuoteViewModel>> SearchQuotesByContentAndTypeAsync(string content, QuoteType type, string userId);
 
         Task<List<QuoteViewModel>> SearchLikedQuotesByContentAsync(string content, string userId);
 

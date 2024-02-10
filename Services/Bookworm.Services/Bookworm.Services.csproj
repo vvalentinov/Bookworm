@@ -20,8 +20,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Web\Bookworm.Web.ViewModels\Bookworm.Web.ViewModels.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -57,8 +57,8 @@
             return this.View(model);
         }
 
-        [Authorize]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
             if (!this.ModelState.IsValid)
@@ -66,8 +66,9 @@
                 return this.View(model);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookDto uploadBookDto = model.To<BookDto>();
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            var uploadBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
 
             try
             {
@@ -99,7 +100,8 @@
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookDto editBookDto = model.To<BookDto>();
+
+            var editBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
 
             try
             {

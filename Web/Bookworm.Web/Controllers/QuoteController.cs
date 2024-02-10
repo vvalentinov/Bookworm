@@ -6,7 +6,6 @@
 
     using Bookworm.Common;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
@@ -150,18 +149,24 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(QuoteInputModel model)
+        public async Task<IActionResult> Edit(EditQuoteViewModel model)
         {
             var userId = this.userManager.GetUserId(this.User);
 
             if (this.ModelState.IsValid == false)
             {
-                return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+                string firstErrorMessage = this.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Where(e => !string.IsNullOrEmpty(e.ErrorMessage))
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault();
+                this.TempData[MessageConstant.ErrorMessage] = firstErrorMessage;
+                return this.View(model);
             }
 
             try
             {
-                var quoteDto = model.To<QuoteDto>();
+                var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
 
                 await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
 
@@ -171,7 +176,7 @@
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-                return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+                return this.View(model);
             }
         }
 

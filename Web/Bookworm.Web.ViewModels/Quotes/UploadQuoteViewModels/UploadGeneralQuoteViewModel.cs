@@ -2,15 +2,14 @@
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Bookworm.Data.Models;
+    using Bookworm.Services.Mapping;
+
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
-    public class UploadGeneralQuoteViewModel
+    public class UploadGeneralQuoteViewModel : BaseUploadQuoteViewModel, IMapTo<QuoteDto>
     {
-        [Required(ErrorMessage = QuoteContentRequiredError)]
-        [StringLength(QuoteContentMaxLength, MinimumLength = QuoteContentMinLength, ErrorMessage = QuoteContentLengthError)]
-        public string Content { get; set; }
-
         [Required(ErrorMessage = QuoteAuthorNameRequiredError)]
         [StringLength(QuoteAuthorNameMaxLength, MinimumLength = QuoteAuthorNameMinLength, ErrorMessage = QuoteAuthorNameLengthError)]
         public string AuthorName { get; set; }

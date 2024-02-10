@@ -5,12 +5,8 @@
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
-    public class UploadBookQuoteViewModel
+    public class UploadBookQuoteViewModel : BaseUploadQuoteViewModel
     {
-        [Required(ErrorMessage = QuoteContentRequiredError)]
-        [StringLength(QuoteContentMaxLength, MinimumLength = QuoteContentMinLength, ErrorMessage = QuoteContentLengthError)]
-        public string Content { get; set; }
-
         [Required(ErrorMessage = QuoteBookTitleRequiredError)]
         [StringLength(QuoteBookTitleMaxLength, MinimumLength = QuoteBookTitleMinLength, ErrorMessage = QuoteBookTitleLengthError)]
         public string BookTitle { get; set; }

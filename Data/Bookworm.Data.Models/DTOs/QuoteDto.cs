@@ -1,6 +1,6 @@
-﻿namespace Bookworm.Data.Models.DTOs
+﻿namespace Bookworm.Data.Models
 {
-    using Bookworm.Data.Models.Enums;
+    using Bookworm.Common.Enums;
 
     public class QuoteDto
     {
