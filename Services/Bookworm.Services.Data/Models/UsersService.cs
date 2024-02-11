@@ -90,5 +90,27 @@
                     UploadedQuotes = this.quoteRepository.AllAsNoTracking().Where(q => q.UserId == x.Id && q.IsApproved == true).Count(),
                 }).ToList();
         }
+
+        public async Task ReduceUserPointsAsync(ApplicationUser user, byte points)
+        {
+            if (user.Points - points < 0)
+            {
+                user.Points = 0;
+            }
+            else
+            {
+                user.Points -= points;
+            }
+
+            this.usersRepository.Update(user);
+            await this.usersRepository.SaveChangesAsync();
+        }
+
+        public async Task IncreaseUserPointsAsync(ApplicationUser user, byte points)
+        {
+            user.Points += points;
+            this.usersRepository.Update(user);
+            await this.usersRepository.SaveChangesAsync();
+        }
     }
 }

@@ -85,12 +85,13 @@ else
                             </a>
                         </td>
                         <td class="text-center align-middle">
-                            <a class="btn btn-outline-danger modalBtn"
-                               data-model-id="@Model.Quotes[i].Id"
-                               data-bs-toggle="modal"
-                               data-bs-target="#deleteQuoteModal">
+                            <button onclick="onDeleteBtnClick(@Model.Quotes[i].Id)"
+                                    class="btn btn-outline-danger modalBtn"
+                                    data-model-id="@Model.Quotes[i].Id"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteQuoteModal">
                                 <i class="fa-solid fa-trash-can fa-xl"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 }
@@ -103,6 +104,8 @@ else
 <partial name="PartialViews/Modals/_DeleteQuoteModalPartial" />
 
 @section Scripts {
-    <script src="~/js/modal.js"></script>
     <script type="module" src="~/js/quotes/allQuotes.js"></script>
+    <script>
+        const onDeleteBtnClick = (id) => document.querySelector('.quoteIdInput').value = id;
+    </script>
 }

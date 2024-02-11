@@ -1,6 +1,9 @@
 ﻿namespace Bookworm.Web.ViewModels.Quotes
 {
-    public class GetQuotesApiRequestModel
+    using Bookworm.Data.Models.DTOs;
+    using Bookworm.Services.Mapping;
+
+    public class GetQuotesApiRequestModel : IMapTo<GetQuotesApiDto>
     {
         public string Type { get; set; }
 

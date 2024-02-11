@@ -6,13 +6,13 @@
 }
 
 <nav id="pagination" aria-label="...">
-    <ul class="pagination justify-content-center">
+    <ul class="pagination pagination-lg justify-content-center">
         <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
             <a class="page-link"
                asp-controller=@controllerName
                asp-action=@actionName
                asp-route-id="@Model.PreviousPageNumber">
-                Previous
+                <i class="fa fa-angles-left"></i>
             </a>
         </li>
         @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
@@ -54,7 +54,7 @@
                asp-controller=@controllerName
                asp-action=@actionName
                asp-route-id="@Model.NextPageNumber">
-                Next
+                <i class="fa fa-angles-right"></i>
             </a>
         </li>
     </ul>

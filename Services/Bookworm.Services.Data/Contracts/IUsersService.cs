@@ -17,5 +17,9 @@
         Task EditUser(string userId, string username);
 
         IEnumerable<UserStatisticsViewModel> GetUsersStatistics();
+
+        Task ReduceUserPointsAsync(ApplicationUser user, byte points);
+
+        Task IncreaseUserPointsAsync(ApplicationUser user, byte points);
     }
 }

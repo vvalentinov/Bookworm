@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
     using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
 
@@ -9,18 +10,9 @@
     {
         Task<QuoteViewModel> GetByIdAsync(int quoteId);
 
-        Task<QuoteListingViewModel> GetAllByCriteriaAsync(
-            string sortCriteria,
-            string userId,
-            string type,
-            string content,
-            int page,
-            string quoteStatus,
-            bool isForUserQuotes);
+        Task<QuoteListingViewModel> GetAllByCriteriaAsync(GetQuotesApiDto getQuotesApiDto, string userId);
 
-        Task<QuoteListingViewModel> GetAllApprovedAsync(
-            string userId = null,
-            int? page = null);
+        Task<QuoteListingViewModel> GetAllApprovedAsync(string userId = null, int? page = null);
 
         Task<QuoteListingViewModel> GetAllUnapprovedAsync();
 
@@ -32,6 +24,6 @@
 
         Task<UserQuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
 
-        Task<EditQuoteViewModel> GetQuoteForEditAsync(int id, string userId);
+        Task<EditQuoteInputModel> GetQuoteForEditAsync(int id, string userId);
     }
 }

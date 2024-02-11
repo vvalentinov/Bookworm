@@ -4,7 +4,9 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
+    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -39,14 +41,9 @@
             {
                 string userId = this.userManager.GetUserId(this.User);
 
-                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync(
-                    model.SortCriteria,
-                    userId,
-                    model.Type,
-                    model.Content,
-                    model.Page,
-                    model.QuoteStatus,
-                    model.IsForUserQuotes);
+                var quotesApiDto = AutoMapperConfig.MapperInstance.Map<GetQuotesApiDto>(model);
+
+                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync(quotesApiDto, userId);
 
                 return new JsonResult(quotesModel) { StatusCode = 200 };
             }

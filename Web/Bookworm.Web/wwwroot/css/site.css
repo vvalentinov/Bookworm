@@ -574,13 +574,17 @@ body {
 
 
 /*Pagination Styles*/
-/*.pagination > li > a {
+.pagination .page-item a {
+    border: solid 2px black;
+}
+.pagination > li > a {
     background-color: var(--clr-primary);
     color: var(--clr-white);
 }
 
     .pagination > li > a:focus,
     .pagination > li > a:hover,
+    .pagination > li > a:active,
     .pagination > li > span:focus,
     .pagination > li > span:hover {
         color: var(--clr-black);
@@ -591,7 +595,7 @@ body {
 .pagination > .active > span:focus {
     background-color: var(--clr-secondary);
     border: solid 2px var(--clr-black);
-}*/
+}
 
 /*Table Styles*/
 .table tr td,
@@ -764,6 +768,42 @@ input[type="radio"] {
         text-transform: uppercase;
     }
 
+/*Edit Quote*/
+.editQuoteContainer {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+    .editQuoteContainer .editQuoteForm {
+        width: 70%;
+        padding: 2rem;
+        border: solid 3px var(--clr-secondary);
+        border-radius: 15px;
+        background-color: var(--clr-primary);
+        color: white;
+        font-size: 1.4rem;
+    }
+
+        .editQuoteContainer .editQuoteForm input,
+        .editQuoteContainer .editQuoteForm textarea,
+        .editQuoteContainer .editQuoteForm button {
+            font-size: 1.4rem;
+            border: solid 2.5px var(--clr-secondary);
+        }
+
+        .editQuoteContainer .editQuoteForm .editQuoteFormBtnContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+            .editQuoteContainer .editQuoteForm .editQuoteFormBtnContainer button {
+                width: 30%;
+                font-size: 2rem;
+                background-color: var(--clr-secondary);
+                border: solid 2px black;
+            }
+
 /*Responsive Design*/
 @media only screen and (max-width: 1000px) {
     .loginRegisterFormContainer .imageContainer {
@@ -777,6 +817,14 @@ input[type="radio"] {
     .loginRegisterForm {
         width: 100%;
     }
+
+    .editQuoteContainer .editQuoteForm {
+        width: 100%;
+    }
+
+        .editQuoteContainer .editQuoteForm .editQuoteFormBtnContainer button {
+            width: 100%;
+        }
 }
 
 @media only screen and (max-width: 950px) {

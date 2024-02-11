@@ -94,17 +94,18 @@ export function updateQuotesTable(quotes) {
         const deleteTdEl = document.createElement('td');
         deleteTdEl.className = 'text-center align-middle';
 
-        const deleteAnchorEl = document.createElement('a');
-        deleteAnchorEl.className = 'btn btn-outline-danger modalBtn';
-        deleteAnchorEl.setAttribute('data-model-id', currQuote.id);
-        deleteAnchorEl.setAttribute('data-bs-toggle', 'modal');
-        deleteAnchorEl.setAttribute('data-bs-target', '#deleteQuoteModal');
+        const deleteBtnEl = document.createElement('button');
+        deleteBtnEl.className = 'btn btn-outline-danger modalBtn';
+        deleteBtnEl.setAttribute('onclick', `onDeleteBtnClick(${currQuote.id})`);
+        deleteBtnEl.setAttribute('data-model-id', currQuote.id);
+        deleteBtnEl.setAttribute('data-bs-toggle', 'modal');
+        deleteBtnEl.setAttribute('data-bs-target', '#deleteQuoteModal');
 
-        const deleteIEl = document.createElement('i');
-        deleteIEl.className = 'fa-solid fa-trash-can fa-xl';
+        const deleteIconEl = document.createElement('i');
+        deleteIconEl.className = 'fa-solid fa-trash-can fa-xl';
 
-        deleteAnchorEl.appendChild(deleteIEl);
-        deleteTdEl.appendChild(deleteAnchorEl);
+        deleteBtnEl.appendChild(deleteIconEl);
+        deleteTdEl.appendChild(deleteBtnEl);
         trEl.appendChild(deleteTdEl);
         tBodyEl.appendChild(trEl);
     }

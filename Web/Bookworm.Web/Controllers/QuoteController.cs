@@ -1,7 +1,6 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -149,18 +148,12 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(EditQuoteViewModel model)
+        public async Task<IActionResult> Edit(EditQuoteInputModel model)
         {
             var userId = this.userManager.GetUserId(this.User);
 
             if (this.ModelState.IsValid == false)
             {
-                string firstErrorMessage = this.ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Where(e => !string.IsNullOrEmpty(e.ErrorMessage))
-                    .Select(e => e.ErrorMessage)
-                    .FirstOrDefault();
-                this.TempData[MessageConstant.ErrorMessage] = firstErrorMessage;
                 return this.View(model);
             }
 
@@ -176,7 +169,7 @@
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-                return this.View(model);
+                return this.RedirectToAction(nameof(this.Edit), new { id = model.Id });
             }
         }
 
@@ -200,10 +193,20 @@
         [Authorize]
         public async Task<IActionResult> Delete(int quoteId)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            await this.updateQuoteService.SelfQuoteDeleteAsync(quoteId, user.Id);
-            this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
-            return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+
+                await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
+                return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
+            }
         }
 
         [HttpGet]

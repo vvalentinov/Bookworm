@@ -1,7 +1,9 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
+    using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Authorization;
@@ -9,6 +11,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     using static Bookworm.Common.GlobalConstants;
+    using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
 
     [Authorize(Roles = AdministratorRoleName)]
     public class QuoteController : BaseController
@@ -56,8 +59,20 @@
         [HttpPost]
         public async Task<IActionResult> Delete(int quoteId)
         {
-            await this.updateQuoteService.DeleteQuoteAsync(quoteId);
-            return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+
+                await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
+                return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+            }
         }
 
         [HttpPost]

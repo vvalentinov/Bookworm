@@ -8,9 +8,7 @@
     {
         Task ApproveQuoteAsync(int quoteId, string userId);
 
-        Task DeleteQuoteAsync(int quoteId);
-
-        Task SelfQuoteDeleteAsync(int quoteId, string userId);
+        Task DeleteQuoteAsync(int quoteId, string userId);
 
         Task UndeleteQuoteAsync(int quoteId);
 

@@ -6,7 +6,7 @@ export function updatePagination(model) {
 
     if (model.pagesCount > 1) {
         const ulElement = document.createElement('ul');
-        ulElement.className = 'pagination justify-content-center';
+        ulElement.className = 'pagination pagination-lg justify-content-center';
 
         const previousLiEl = document.createElement('li');
         let previousLiElClass;
@@ -19,7 +19,10 @@ export function updatePagination(model) {
         previousLiEl.className = previousLiElClass;
         const previousLiAnchorEl = document.createElement('a');
         previousLiAnchorEl.className = 'page-link';
-        previousLiAnchorEl.textContent = 'Previous';
+        const previousIconEl = document.createElement('i');
+        previousIconEl.className = 'fa fa-angles-left';
+        previousLiAnchorEl.appendChild(previousIconEl);
+        //previousLiAnchorEl.textContent = 'Previous';
         if (model.hasPreviousPage) {
             previousLiAnchorEl.addEventListener('click', () => fetchForQuotes(model.previousPageNumber));
         }
@@ -90,7 +93,10 @@ export function updatePagination(model) {
 
         const nextPageAnchorEl = document.createElement('a');
         nextPageAnchorEl.className = 'page-link';
-        nextPageAnchorEl.textContent = 'Next';
+        const nextIconEl = document.createElement('i');
+        nextIconEl.className = 'fa fa-angles-right';
+        nextPageAnchorEl.appendChild(nextIconEl);
+        //nextPageAnchorEl.textContent = 'Next';
         if (model.hasNextPage) {
             nextPageAnchorEl.addEventListener('click', () => fetchForQuotes(model.nextPageNumber))
         }

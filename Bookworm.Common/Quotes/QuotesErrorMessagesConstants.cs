@@ -15,5 +15,11 @@
         public const string QuoteAuthorNameLengthError = "Quote author name field must be between 5 and 50 characters long!";
 
         public const string QuoteExistsError = "This quote already exist! Try again!";
+
+        public const string QuoteWrongIdError = "No quote with given id found!";
+
+        public const string QuoteEditError = "You have to be the quote's creator to edit it!";
+
+        public const string QuoteDeleteError = "You have to be either the quote's creator or an admin to delete it!";
     }
 }

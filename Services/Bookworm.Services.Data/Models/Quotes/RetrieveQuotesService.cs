@@ -8,6 +8,7 @@
     using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
@@ -143,16 +144,9 @@
             };
         }
 
-        public async Task<QuoteListingViewModel> GetAllByCriteriaAsync(
-            string sortCriteria,
-            string userId,
-            string type,
-            string content,
-            int page,
-            string quoteStatus,
-            bool isForUserQuotes)
+        public async Task<QuoteListingViewModel> GetAllByCriteriaAsync(GetQuotesApiDto getQuotesApiDto, string userId)
         {
-            bool isValidSortCriteria = Enum.TryParse(sortCriteria, out SortQuotesCriteria sortQuotesCriteria);
+            bool isValidSortCriteria = Enum.TryParse(getQuotesApiDto.SortCriteria, out SortQuotesCriteria sortQuotesCriteria);
             if (isValidSortCriteria == false)
             {
                 throw new InvalidOperationException("Invalid sort quote criteria!");
@@ -160,7 +154,7 @@
 
             var quotesQuery = this.quoteRepository.AllAsNoTracking().To<QuoteViewModel>();
 
-            if (isForUserQuotes)
+            if (getQuotesApiDto.IsForUserQuotes)
             {
                 quotesQuery = quotesQuery.Where(q => q.UserId == userId);
             }
@@ -169,9 +163,9 @@
                 quotesQuery = quotesQuery.Where(q => q.IsApproved);
             }
 
-            if (isForUserQuotes && quoteStatus != null)
+            if (getQuotesApiDto.IsForUserQuotes && getQuotesApiDto.QuoteStatus != null)
             {
-                bool isValidStatus = Enum.TryParse(quoteStatus, out ApiQuoteStatus apiQuoteStatus);
+                bool isValidStatus = Enum.TryParse(getQuotesApiDto.QuoteStatus, out ApiQuoteStatus apiQuoteStatus);
                 if (isValidStatus == false)
                 {
                     throw new InvalidOperationException("Invalid quote status!");
@@ -188,9 +182,9 @@
                 }
             }
 
-            bool isValidQuoteType = Enum.TryParse(type, out ApiQuoteType quoteType);
+            bool isValidQuoteType = Enum.TryParse(getQuotesApiDto.Type, out ApiQuoteType quoteType);
 
-            if (type != null)
+            if (getQuotesApiDto.Type != null)
             {
                 if (isValidQuoteType == false)
                 {
@@ -214,32 +208,26 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(content) == false)
+            if (string.IsNullOrWhiteSpace(getQuotesApiDto.Content) == false)
             {
-                content = content.Trim().ToLower();
+                string content = getQuotesApiDto.Content.Trim().ToLower();
                 switch (quoteType)
                 {
                     case ApiQuoteType.BookQuote:
-                        quotesQuery = quotesQuery.Where(q => (
+                        quotesQuery = quotesQuery.Where(q =>
                             q.Content.ToLower().Contains(content) ||
                             q.BookTitle.ToLower().Contains(content) ||
-                            q.AuthorName.ToLower().Contains(content)) &&
-                            q.Type == QuoteType.BookQuote);
+                            q.AuthorName.ToLower().Contains(content));
                         break;
                     case ApiQuoteType.MovieQuote:
-                        quotesQuery = quotesQuery.Where(q => (
+                        quotesQuery = quotesQuery.Where(q =>
                             q.Content.ToLower().Contains(content) ||
-                            q.MovieTitle.ToLower().Contains(content)) &&
-                            q.Type == QuoteType.MovieQuote);
+                            q.MovieTitle.ToLower().Contains(content));
                         break;
                     case ApiQuoteType.GeneralQuote:
-                        quotesQuery = quotesQuery.Where(q => (
+                        quotesQuery = quotesQuery.Where(q =>
                             q.Content.ToLower().Contains(content) ||
-                            q.AuthorName.ToLower().Contains(content)) &&
-                            q.Type == QuoteType.GeneralQuote);
-                        break;
-                    case ApiQuoteType.LikedQuote:
-                        quotesQuery = quotesQuery.Where(q => q.Content.ToLower().Contains(content) && q.Likes > 0);
+                            q.AuthorName.ToLower().Contains(content));
                         break;
                     default:
                         quotesQuery = quotesQuery.Where(q =>
@@ -266,7 +254,7 @@
 
             var totalCount = await quotesQuery.CountAsync();
 
-            quotesQuery = quotesQuery.Skip((page - 1) * QuotesPerPage).Take(QuotesPerPage);
+            quotesQuery = quotesQuery.Skip((getQuotesApiDto.Page - 1) * QuotesPerPage).Take(QuotesPerPage);
 
             var quotes = await this.RetrieveQuoteUserStatusAsync(await quotesQuery.ToListAsync(), userId);
 
@@ -274,17 +262,14 @@
             {
                 Quotes = quotes,
                 ItemsPerPage = QuotesPerPage,
-                PageNumber = page,
+                PageNumber = getQuotesApiDto.Page,
                 RecordsCount = totalCount,
             };
         }
 
-        public async Task<EditQuoteViewModel> GetQuoteForEditAsync(int id, string userId)
+        public async Task<EditQuoteInputModel> GetQuoteForEditAsync(int id, string userId)
         {
-            var quote = await this.quoteRepository
-                .AllAsNoTracking()
-                .To<EditQuoteViewModel>()
-                .FirstOrDefaultAsync(q => q.Id == id) ??
+            var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == id) ??
                 throw new InvalidOperationException("No quote with given id found!");
 
             if (quote.UserId != userId)
@@ -292,7 +277,9 @@
                 throw new InvalidOperationException("You have to be the quote's creator to edit it!");
             }
 
-            return quote;
+            var quoteViewModel = AutoMapperConfig.MapperInstance.Map<EditQuoteInputModel>(quote);
+
+            return quoteViewModel;
         }
 
         private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
