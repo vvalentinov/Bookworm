@@ -21,7 +21,7 @@ export const fetchForQuotes = (page) => {
         .then(res => res.json())
         .then(res => {
             if (isForUserRecords === "true") {
-                updateQuotesTable(res.quotes);
+                updateQuotesTable(res.quotes, res.pageNumber);
             } else {
                 filterQuotes(res.quotes, searchText);
             }

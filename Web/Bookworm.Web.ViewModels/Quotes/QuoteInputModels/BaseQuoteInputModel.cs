@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.ViewModels.Quotes
+﻿namespace Bookworm.Web.ViewModels.Quotes.QuoteInputModels
 {
     using System.ComponentModel.DataAnnotations;
 
@@ -8,20 +8,12 @@
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
-    public class EditQuoteInputModel : IMapFrom<Quote>, IMapTo<QuoteDto>
+    public abstract class BaseQuoteInputModel : IMapTo<QuoteDto>, IMapFrom<Quote>
     {
         public int Id { get; set; }
 
         [Required(ErrorMessage = QuoteContentRequiredError)]
         [StringLength(QuoteContentMaxLength, MinimumLength = QuoteContentMinLength, ErrorMessage = QuoteContentLengthError)]
         public string Content { get; set; }
-
-        public string AuthorName { get; set; }
-
-        public string BookTitle { get; set; }
-
-        public string MovieTitle { get; set; }
-
-        public string Type { get; set; }
     }
 }

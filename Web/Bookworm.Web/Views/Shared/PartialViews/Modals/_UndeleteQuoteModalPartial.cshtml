@@ -1,0 +1,23 @@
+﻿<div class="modal fade"
+     id="undeleteQuoteModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Undelete quote</h1>
+            </div>
+            <div class="modal-body">
+                <strong>Are you sure you want to undelete this quote?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Undelete">
+                    <input type="hidden" name="quoteId" class="deletedQuoteIdInput" value="" />
+                    <button type="submit" class="btn btn-danger">Undelete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

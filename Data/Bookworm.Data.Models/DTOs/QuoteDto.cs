@@ -1,5 +1,7 @@
 ﻿namespace Bookworm.Data.Models
 {
+    using Bookworm.Common.Enums;
+
     public class QuoteDto
     {
         public int Id { get; set; }
@@ -12,6 +14,6 @@
 
         public string MovieTitle { get; set; }
 
-        public string Type { get; set; }
+        public QuoteType Type { get; set; }
     }
 }

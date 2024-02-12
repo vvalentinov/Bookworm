@@ -22,7 +22,6 @@
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IValidateQuoteService validateQuoteService;
         private readonly IUsersService usersService;
         private readonly IEmailSender emailSender;
 
@@ -30,14 +29,12 @@
             IDeletableEntityRepository<Quote> quoteRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
             UserManager<ApplicationUser> userManager,
-            IValidateQuoteService validateQuoteService,
             IUsersService usersService,
             IEmailSender emailSender)
         {
             this.quoteRepository = quoteRepository;
             this.userRepository = userRepository;
             this.userManager = userManager;
-            this.validateQuoteService = validateQuoteService;
             this.usersService = usersService;
             this.emailSender = emailSender;
         }
@@ -125,26 +122,21 @@
                 throw new InvalidOperationException("You have to be the quote's creator to edit it!");
             }
 
-            bool isValidType = Enum.TryParse(quoteDto.Type, out QuoteType type);
-
-            if (isValidType == false || quote.Type != type)
+            if (quote.Type != quoteDto.Type)
             {
                 throw new InvalidOperationException("Invalid quote type!");
             }
 
-            switch (type)
+            switch (quoteDto.Type)
             {
                 case QuoteType.BookQuote:
-                    this.validateQuoteService.ValidateBookQuote(quoteDto.Content, quoteDto.BookTitle, quoteDto.AuthorName);
                     quote.AuthorName = quoteDto.AuthorName;
                     quote.BookTitle = quoteDto.BookTitle;
                     break;
                 case QuoteType.MovieQuote:
-                    this.validateQuoteService.ValidateMovieQuote(quoteDto.Content, quoteDto.MovieTitle);
                     quote.MovieTitle = quoteDto.MovieTitle;
                     break;
                 case QuoteType.GeneralQuote:
-                    this.validateQuoteService.ValidateGeneralQuote(quoteDto.Content, quoteDto.AuthorName);
                     quote.AuthorName = quoteDto.AuthorName;
                     break;
             }

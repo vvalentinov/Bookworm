@@ -4,93 +4,12 @@
     ViewData["Title"] = "Deleted Quotes";
 }
 
-@if (Model.Quotes.Count == 0)
-{
-    <h3 class="text-center pt-5 display-3">There are no deleted quotes!</h3>
-}
-else
-{
-    <h3 class="text-center pt-5">Manage deleted quotes!</h3>
-    <table class="table table-striped table-dark table-bordered table-responsive" id="dataTable">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Quote</th>
-                <th class="text-center" scope="col">Author</th>
-                <th class="text-center" scope="col">Book</th>
-                <th class="text-center" scope="col">Movie</th>
-                <th class="text-center" scope="col">Undelete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i <= Model.Quotes.Count() - 1; i++)
-            {
-                <tr>
-                    <th scope="row" class="text-center align-middle">@(i + 1)</th>
-                    <td class="align-middle">@Model.Quotes[i].Content</td>
-                    @if (Model.Quotes[i].AuthorName != null)
-                    {
-                        <td class="text-center align-middle">@Model.Quotes[i].AuthorName</td>
-                    }
-                    else
-                    {
-                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
-                    }
-                    @if (Model.Quotes[i].BookTitle != null)
-                    {
-                        <td class="text-center align-middle">@Model.Quotes[i].BookTitle</td>
-                    }
-                    else
-                    {
-                        <td class="text-center  align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
-                    }
-                    @if (Model.Quotes[i].MovieTitle != null)
-                    {
-                        <td class="text-center  align-middle">@Model.Quotes[i].MovieTitle</td>
-                    }
-                    else
-                    {
-                        <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
-                    }
-                    <td class="text-center align-middle">
-                        <button class="btn btn-danger modalBtn" data-model-id="@Model.Quotes[i].Id" data-bs-toggle="modal" data-bs-target="#undeleteQuoteModal">
-                            <i class="fa-solid fa-trash-can-arrow-up fa-xl px-2"></i>
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<partial name="PartialViews/_AdminQuotesPartial" />
 
-<!-- Undelete Quote Modal -->
-<div
-    class="modal fade"
-    id="undeleteQuoteModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Undelete quote</h1>
-            </div>
-            <div class="modal-body">
-                <strong>Are you sure you want to undelete this quote?</strong>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Undelete">
-                    <input type="hidden" name="quoteId" class="modelIdInput" value="" />
-                    <button type="submit" class="btn btn-danger">Undelete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/Modals/_UndeleteQuoteModalPartial" />
 
 @section Scripts {
     <script src="~/js/modal.js"></script>
-    <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
     <script src="~/js/datatable.js"></script>
+    <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
 }

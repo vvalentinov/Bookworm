@@ -200,9 +200,14 @@ body {
     background-color: #dc3545;
 }
 
+.toast-header{
+    font-size: 1.3rem;
+}
+
 .toast-body {
     background-color: var(--clr-primary);
     color: var(--clr-white);
+    font-size: 1.3rem;
 }
 
 #quoteImg {

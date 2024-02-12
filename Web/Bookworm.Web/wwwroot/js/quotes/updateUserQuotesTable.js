@@ -1,4 +1,4 @@
-export function updateQuotesTable(quotes) {
+export function updateQuotesTable(quotes, pageNumber) {
     const tableElementContainer = document.getElementsByClassName('table-responsive')[0];
     tableElementContainer.children[0].remove();
 
@@ -7,7 +7,7 @@ export function updateQuotesTable(quotes) {
 
     const tableHeadEl = document.createElement('thead');
     const tableHeadRowEl = document.createElement('tr');
-    const columnNames = ['Content', 'Author', 'Movie', 'Book', 'Likes', 'Is Approved', 'Edit', 'Delete'];
+    const columnNames = ['#', 'Content', 'Author', 'Movie', 'Book', 'Likes', 'Is Approved', 'Edit', 'Delete'];
     columnNames.forEach(columnName => generateColumnHeader(columnName));
     function generateColumnHeader(columnName) {
         const thEl = document.createElement('th');
@@ -24,6 +24,10 @@ export function updateQuotesTable(quotes) {
     for (var i = 0; i < quotes.length; i++) {
         const currQuote = quotes[i];
         const trEl = document.createElement('tr');
+
+        const currNumber = (pageNumber - 1) * 6 + i + 1;
+        const numberTdEl = createElement('td', 'align-middle', `${currNumber}`);
+        trEl.appendChild(numberTdEl);
 
         const contentTdEl = createElement('td', 'align-middle', currQuote.content);
         trEl.appendChild(contentTdEl);
@@ -117,6 +121,5 @@ function createElement(type, className, content) {
     const element = document.createElement(type);
     element.className = className;
     element.textContent = content;
-
     return element;
 }

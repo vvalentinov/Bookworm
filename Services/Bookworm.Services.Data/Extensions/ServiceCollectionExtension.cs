@@ -33,7 +33,6 @@
             services.AddTransient<ISearchQuoteService, SearchQuoteService>();
             services.AddTransient<IUpdateQuoteService, UpdateQuoteService>();
             services.AddTransient<IUploadQuoteService, UploadQuoteService>();
-            services.AddTransient<IValidateQuoteService, ValidateQuoteService>();
 
             services.AddTransient<IValidateUploadedBookService, ValidateUploadedBookService>();
             services.AddTransient<IRetrieveBooksService, RetrieveBooksService>();

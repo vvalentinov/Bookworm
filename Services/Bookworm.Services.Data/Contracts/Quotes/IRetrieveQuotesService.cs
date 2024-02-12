@@ -5,6 +5,7 @@
     using Bookworm.Data.Models.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
     using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
+    using Bookworm.Web.ViewModels.Quotes.QuoteInputModels;
 
     public interface IRetrieveQuotesService
     {
@@ -22,8 +23,8 @@
 
         Task<int> GetUnapprovedCountAsync();
 
-        Task<UserQuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
+        Task<QuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
 
-        Task<EditQuoteInputModel> GetQuoteForEditAsync(int id, string userId);
+        Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId);
     }
 }

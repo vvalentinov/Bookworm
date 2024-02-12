@@ -1,11 +1,11 @@
-﻿namespace Bookworm.Web.ViewModels.Quotes.UploadQuoteViewModels
+﻿namespace Bookworm.Web.ViewModels.Quotes.QuoteInputModels
 {
     using System.ComponentModel.DataAnnotations;
 
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
-    public class UploadBookQuoteViewModel : BaseUploadQuoteViewModel
+    public class BookQuoteInputModel : BaseQuoteInputModel
     {
         [Required(ErrorMessage = QuoteBookTitleRequiredError)]
         [StringLength(QuoteBookTitleMaxLength, MinimumLength = QuoteBookTitleMinLength, ErrorMessage = QuoteBookTitleLengthError)]

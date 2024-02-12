@@ -32,7 +32,7 @@ const searchQuotesInput = document.getElementById('searchQuotesInput');
 const searchQuotesButton = document.getElementById('searchQuotesBtn');
 
 if (searchQuotesButton) {
-    searchQuotesButton.addEventListener('click', fetchForQuotes);
+    searchQuotesButton.addEventListener('click', () => fetchForQuotes());
 }
 
 if (searchQuotesInput) {

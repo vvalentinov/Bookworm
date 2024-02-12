@@ -1,4 +1,6 @@
-﻿@model UserQuoteListingViewModel
+﻿@using static Bookworm.Common.Quotes.QuotesDataConstants;
+
+@model QuoteListingViewModel
 
 @{
     this.ViewData["Title"] = "My Quotes";
@@ -25,6 +27,7 @@ else
         <table class="table table-bordered table-hover fs-5">
             <thead>
                 <tr>
+                    <th class="text-center align-middle" scope="col">#</th>
                     <th class="text-center align-middle" scope="col">Content</th>
                     <th class="text-center align-middle" scope="col">Author</th>
                     <th class="text-center align-middle" scope="col">Movie</th>
@@ -39,6 +42,7 @@ else
                 @for (int i = 0; i <= Model.Quotes.Count() - 1; i++)
                 {
                     <tr>
+                        <td class="align-middle text-center">@((Model.PageNumber - 1) * QuotesPerPage + (i + 1))</td>
                         <td class="align-middle">@Model.Quotes[i].Content</td>
                         @if (@Model.Quotes[i].AuthorName != null)
                         {
@@ -85,9 +89,8 @@ else
                             </a>
                         </td>
                         <td class="text-center align-middle">
-                            <button onclick="onDeleteBtnClick(@Model.Quotes[i].Id)"
+                            <button onclick="onModalBtnClick(@Model.Quotes[i].Id, 'deleteQuoteIdInput')"
                                     class="btn btn-outline-danger modalBtn"
-                                    data-model-id="@Model.Quotes[i].Id"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteQuoteModal">
                                 <i class="fa-solid fa-trash-can fa-xl"></i>
@@ -104,8 +107,6 @@ else
 <partial name="PartialViews/Modals/_DeleteQuoteModalPartial" />
 
 @section Scripts {
+    <script src="~/js/modal.js"></script>
     <script type="module" src="~/js/quotes/allQuotes.js"></script>
-    <script>
-        const onDeleteBtnClick = (id) => document.querySelector('.quoteIdInput').value = id;
-    </script>
 }

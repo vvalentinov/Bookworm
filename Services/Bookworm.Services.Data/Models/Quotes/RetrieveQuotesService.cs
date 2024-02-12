@@ -13,8 +13,10 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
     using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
+    using Bookworm.Web.ViewModels.Quotes.QuoteInputModels;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Quotes.QuotesActionsNamesConstants;
     using static Bookworm.Common.Quotes.QuotesDataConstants;
 
     public class RetrieveQuotesService : IRetrieveQuotesService
@@ -114,7 +116,7 @@
                         .To<QuoteViewModel>()
                         .FirstOrDefaultAsync();
 
-        public async Task<UserQuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page)
+        public async Task<QuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page)
         {
             var quotes = await this.quoteRepository
                 .AllAsNoTracking()
@@ -125,19 +127,9 @@
                 .To<QuoteViewModel>()
                 .ToListAsync();
 
-            var approvedQuotesCount = await this.quoteRepository
-                .AllAsNoTracking()
-                .CountAsync(q => q.UserId == userId && q.IsApproved);
-
-            var unapprovedQuotesCount = await this.quoteRepository
-                .AllAsNoTracking()
-                .CountAsync(q => q.UserId == userId && !q.IsApproved);
-
-            return new UserQuoteListingViewModel
+            return new QuoteListingViewModel
             {
                 Quotes = quotes,
-                ApprovedQuotesCount = approvedQuotesCount,
-                UnapprovedQuotesCount = unapprovedQuotesCount,
                 ItemsPerPage = QuotesPerPage,
                 PageNumber = page,
                 RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(x => x.UserId == userId),
@@ -267,7 +259,7 @@
             };
         }
 
-        public async Task<EditQuoteInputModel> GetQuoteForEditAsync(int id, string userId)
+        public async Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId)
         {
             var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == id) ??
                 throw new InvalidOperationException("No quote with given id found!");
@@ -277,9 +269,16 @@
                 throw new InvalidOperationException("You have to be the quote's creator to edit it!");
             }
 
-            var quoteViewModel = AutoMapperConfig.MapperInstance.Map<EditQuoteInputModel>(quote);
-
-            return quoteViewModel;
+            switch (quote.Type)
+            {
+                case QuoteType.BookQuote:
+                    return (AutoMapperConfig.MapperInstance.Map<BookQuoteInputModel>(quote), EditBookQuoteAction);
+                case QuoteType.MovieQuote:
+                    return (AutoMapperConfig.MapperInstance.Map<MovieQuoteInputModel>(quote), EditMovieQuoteAction);
+                case QuoteType.GeneralQuote:
+                    return (AutoMapperConfig.MapperInstance.Map<GeneralQuoteInputModel>(quote), EditGeneralQuoteAction);
+                default: throw new InvalidOperationException("Invalid quote type!");
+            }
         }
 
         private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
