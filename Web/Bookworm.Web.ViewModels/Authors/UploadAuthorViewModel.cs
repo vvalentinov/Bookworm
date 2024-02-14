@@ -13,10 +13,7 @@
         public int Id { get; set; }
 
         [Required(ErrorMessage = RequiredAuthorNameError)]
-        [StringLength(
-            AuthorNameMaxLength,
-            MinimumLength = AuthorNameMinLength,
-            ErrorMessage = AuthorNameLengthError)]
+        [StringLength(AuthorNameMaxLength, MinimumLength = AuthorNameMinLength, ErrorMessage = AuthorNameLengthError)]
         public string Name { get; set; }
     }
 }

@@ -8,7 +8,7 @@ export function filterQuotes(quotes, searchedText) {
     if (quotes.length == 0) {
         const pEl = document.createElement('p');
         pEl.textContent = 'No quotes found!';
-        pEl.className = 'text-center fs-3';
+        pEl.className = 'text-center fs-2 text-white align-middle';
         quotesContainerEl.appendChild(pEl);
     } else {
         quotes.forEach(quote => {

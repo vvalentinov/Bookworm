@@ -50,10 +50,11 @@
             this.validateBookService = validateBookService;
         }
 
+        [HttpGet]
         [Authorize]
         public IActionResult Upload()
         {
-            UploadBookViewModel model = new UploadBookViewModel();
+            var model = new UploadBookViewModel();
             return this.View(model);
         }
 
@@ -66,19 +67,22 @@
                 return this.View(model);
             }
 
-            var user = await this.userManager.GetUserAsync(this.User);
+            var userId = this.userManager.GetUserId(this.User);
 
             var uploadBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
 
             try
             {
-                await this.uploadBookService.UploadBookAsync(uploadBookDto, model.Authors, user.Id);
+                await this.uploadBookService.UploadBookAsync(uploadBookDto, model.Authors, userId);
+
                 this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
+
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception exception)
             {
                 this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+
                 return this.View(model);
             }
         }

@@ -1,17 +1,13 @@
 ﻿@page
 @model LoginModel
 
-@{
-    this.ViewData["Title"] = "Log in";
-    this.ViewData["Message"] = "Log in to your Account";
-}
-
 <div class="loginRegisterContainer my-5">
     <img
         src="~/images/login.jpg"
         class="loginRegisterImg rounded-4 img-fluid animate__animated animate__fadeInLeft animate__faster"
         alt="Books Image..." />
     <div class="loginRegisterForm animate__animated animate__fadeInRight animate__faster">
+        <h5 class="text-center text-uppercase fs-2">Login</h5>
         <partial name="PartialViews/_CustomDividerPartial" />
         <form id="account" method="post">
             <div class="form-floating">

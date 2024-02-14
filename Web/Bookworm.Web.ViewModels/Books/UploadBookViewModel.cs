@@ -55,6 +55,6 @@
         public int LanguageId { get; set; }
 
         [NotEmptyCollection(nameof(Authors))]
-        public IList<UploadAuthorViewModel> Authors { get; set; }
+        public ICollection<UploadAuthorViewModel> Authors { get; set; }
     }
 }

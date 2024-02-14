@@ -50,15 +50,12 @@
 
         public async Task ApproveBookAsync(string bookId)
         {
-            Book book = await this.bookRepository
-                .All()
-                .FirstAsync(x => x.Id == bookId);
+            var book = await this.bookRepository.All().FirstAsync(x => x.Id == bookId);
             book.IsApproved = true;
+            this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            ApplicationUser user = await this.userRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.Id == book.UserId);
+            var user = await this.userRepository.All().FirstOrDefaultAsync(x => x.Id == book.UserId);
             user.Points += BookPoints;
 
             this.userRepository.Update(user);
@@ -215,12 +212,11 @@
 
             await this.authorsBooksRepository.SaveChangesAsync();
 
-            foreach (UploadAuthorViewModel inputAuthor in authors)
+            foreach (var inputAuthor in authors)
             {
-                Author author = await this.authorsRepository
+                var author = await this.authorsRepository
                     .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x =>
-                        x.Name.ToLower() == inputAuthor.Name.Trim().ToLower());
+                    .FirstOrDefaultAsync(x => x.Name.ToLower() == inputAuthor.Name.Trim().ToLower());
 
                 if (author == null)
                 {
@@ -240,8 +236,7 @@
                 {
                     AuthorBook authorBook = await this.authorsBooksRepository
                         .AllAsNoTracking()
-                        .FirstOrDefaultAsync(x =>
-                            x.BookId == book.Id && x.AuthorId == author.Id);
+                        .FirstOrDefaultAsync(x => x.BookId == book.Id && x.AuthorId == author.Id);
 
                     if (authorBook == null)
                     {

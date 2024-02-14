@@ -4,9 +4,30 @@
     ViewData["Title"] = "Approved Quotes";
 }
 
-<partial name="PartialViews/_AdminQuotesPartial" />
+<partial name="PartialViews/Quotes/_QuotesTablePartial" />
 
-<partial name="PartialViews/Modals/_UnapproveQuoteModalPartial" />
+<div class="modal fade"
+     id="unapproveQuoteModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Unapprove quote</h3>
+            </div>
+            <div class="modal-body text-center">
+                Are you sure you want to unapprove this quote?
+            </div>
+            <div class="modal-footer">
+                <form method="post" asp-area="admin" asp-controller="Quote" asp-action="Unapprove">
+                    <input type="hidden" name="quoteId" class="approvedQuoteIdInput" value="" />
+                    <button type="submit" class="btn btn-danger btn-lg border-2 border-dark px-5">Unapprove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/js/modal.js"></script>

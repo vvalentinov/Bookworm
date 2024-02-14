@@ -9,6 +9,7 @@
 <div class="loginRegisterContainer my-5">
     <img src="~/images/register.jpg" class="loginRegisterImg rounded-4 img-fluid animate__animated animate__fadeInLeft animate__faster" alt="Books Image...">
     <div class="loginRegisterForm animate__animated animate__fadeInRight animate__faster">
+        <h5 class="text-center text-uppercase fs-2">Register</h5>
         <partial name="PartialViews/_CustomDividerPartial" />
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger"></div>

@@ -16,7 +16,9 @@
         <img class="img-fluid" src=@Model.ImageUrl alt=@Model.Title />
     </div>
     <ul class="list-group">
-        <li class="list-group-item"><strong>@Model.Title</strong> - <span class="fst-italic">uploaded by @Model.Username</span></li>
+        <li class="list-group-item">
+            <strong>@Model.Title</strong> - <span class="fst-italic">uploaded by @Model.Username</span>
+        </li>
         @if (Model.PublisherName != null)
         {
             <li class="list-group-item">Publisher: @Model.PublisherName</li>

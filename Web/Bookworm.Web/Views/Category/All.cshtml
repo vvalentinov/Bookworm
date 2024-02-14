@@ -2,12 +2,11 @@
 
 @{
     this.ViewData["Title"] = "Categories";
-    this.ViewData["Is-Categories"] = true;
-    this.ViewData["Message"] = "Categories";
 }
 
 <div class="mt-5">
-    <partial name="PartialViews/_CustomDividerPartial"/>
+    <h5 class="text-center text-uppercase fs-2">Categories</h5>
+    <partial name="PartialViews/_CustomDividerPartial" />
 </div>
 
 
@@ -16,21 +15,30 @@
     {
         <div class="row">
             <div class="col-md-4 my-3">
-                <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i].Name">
+                <a class="category-link"
+                   asp-controller="Book"
+                   asp-action="All"
+                   asp-route-categoryName="@Model[i].Name">
                     <div class="card bg-dark text-light h-100">
                         <img src="@Model[i].ImageUrl" alt="Book" height="300">
                     </div>
                 </a>
             </div>
             <div class="col-md-4 my-3">
-                <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i + 1].Name">
+                <a class="category-link"
+                   asp-controller="Book"
+                   asp-action="All"
+                   asp-route-categoryName="@Model[i + 1].Name">
                     <div class="card bg-dark text-light h-100">
                         <img src="@Model[i + 1].ImageUrl" alt="Book" height="300">
                     </div>
                 </a>
             </div>
             <div class="col-md-4 my-3">
-                <a class="category-link" asp-controller="Book" asp-action="All" asp-route-categoryName="@Model[i + 2].Name">
+                <a class="category-link"
+                   asp-controller="Book"
+                   asp-action="All"
+                   asp-route-categoryName="@Model[i + 2].Name">
                     <div class="card bg-dark text-light h-100">
                         <img src="@Model[i + 2].ImageUrl" alt="Book" height="300">
                     </div>

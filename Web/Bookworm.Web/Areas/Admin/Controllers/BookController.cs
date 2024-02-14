@@ -14,6 +14,9 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.GlobalConstants;
+
+    [Authorize(Roles = AdministratorRoleName)]
     public class BookController : BaseController
     {
         private readonly IRetrieveBooksService retrieveBooksService;
@@ -39,7 +42,6 @@
             this.userManager = userManager;
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(string bookId)
         {
@@ -57,24 +59,28 @@
             return this.RedirectToAction("Index", "Home", new { area = " " });
         }
 
+        [HttpGet]
         public async Task<IActionResult> UnapprovedBooks()
         {
             List<BookViewModel> books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
             return this.View(books);
         }
 
+        [HttpGet]
         public async Task<IActionResult> DeletedBooks()
         {
             List<BookViewModel> books = await this.retrieveBooksService.GetDeletedBooksAsync();
             return this.View(books);
         }
 
+        [HttpGet]
         public async Task<IActionResult> ApprovedBooks()
         {
             List<BookViewModel> approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
             return this.View(approvedBooks);
         }
 
+        [HttpGet]
         public async Task<IActionResult> CurrentBook(string bookId)
         {
             BookViewModel book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);

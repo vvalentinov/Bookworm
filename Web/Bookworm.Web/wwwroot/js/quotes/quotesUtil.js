@@ -1,7 +1,6 @@
 export function getCheckedRadioBtn(name) {
     return [...document.getElementsByName(name)].find(button => button.checked);
 }
-
 export function getQuoteTypeFromId(id) {
     switch (id) {
         case 'movie-quotes':
@@ -54,7 +53,6 @@ export function getSearchTextFromQuoteTypeId(id) {
         return 'Search in quotes...';
     }
 }
-
 export function constructUrlParams(page, isForUserQuotes) {
     const searchContent = searchQuotesInput.value;
     const quoteType = getQuoteTypeFromId(getCheckedRadioBtn('btnradio')?.id);

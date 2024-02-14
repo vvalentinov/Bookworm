@@ -1,0 +1,201 @@
+﻿@using static Bookworm.Common.Quotes.QuotesDataConstants;
+
+@{
+    string title = ViewData["Title"] as string;
+}
+
+@if (Model.Quotes.Count == 0)
+{
+    if (title == "My Quotes")
+    {
+        <h3 class="text-center mt-5 display-3">You haven't uploaded any quotes!</h3>
+    }
+    else
+    {
+        <h3 class="text-center pt-5 display-3">
+            @if (title == "Approved Quotes")
+            {
+                <text>There are no approved quotes!</text>
+            }
+            else if (title == "Unapproved Quotes")
+            {
+                <text>There are no unapproved quotes!</text>
+            }
+            else if (title == "Deleted Quotes")
+            {
+                <text>There are no deleted quotes!</text>
+            }
+        </h3>
+    }
+}
+else
+{
+    if (title == "My Quotes")
+    {
+        <partial name="PartialViews/Quotes/_QuotesButtonsPartial" />
+    }
+    else
+    {
+        <h3 class="text-center pt-5 display-4">
+            @if (title == "Approved Quotes")
+            {
+                <text>Manage approved quotes!</text>
+            }
+            else if (title == "Unapproved Quotes")
+            {
+                <text>Manage unapproved quotes!</text>
+            }
+            else if (title == "Deleted Quotes")
+            {
+                <text>Manage deleted quotes!</text>
+            }
+        </h3>
+    }
+    <div class="tableContainer">
+        <table class="table table-hover table-dark table-bordered table-responsive fs-5" id="dataTable">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle" scope="col">#</th>
+                    <th class="text-center align-middle" scope="col">Content</th>
+                    <th class="text-center align-middle" scope="col">Author</th>
+                    <th class="text-center align-middle" scope="col">Movie</th>
+                    <th class="text-center align-middle" scope="col">Book</th>
+                    @if (title == "Approved Quotes")
+                    {
+                        <th class="text-center" scope="col">Unapprove</th>
+                    }
+                    else if (title == "Unapproved Quotes")
+                    {
+                        <th class="text-center" scope="col">Approve</th>
+                        <th class="text-center" scope="col">Delete</th>
+                    }
+                    else if (title == "Deleted Quotes")
+                    {
+                        <th class="text-center" scope="col">Undelete</th>
+                    }
+                    else if (title == "My Quotes")
+                    {
+                        <th class="text-center align-middle" scope="col">Likes</th>
+                        <th class="text-center align-middle" scope="col">Approved</th>
+                        <th class="text-center align-middle" scope="col">Edit</th>
+                        <th class="text-center align-middle" scope="col">Delete</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i <= Model.Quotes.Count - 1; i++)
+                {
+                    <tr>
+                        @if (title == "My Quotes")
+                        {
+                            <td class="text-center align-middle">@((Model.PageNumber - 1) * QuotesPerPage + (i + 1))</td>
+                        }
+                        else
+                        {
+                            <td scope="row" class="text-center align-middle">@(i + 1)</td>
+                        }
+
+                        <td class="align-middle">@Model.Quotes[i].Content</td>
+                        @if (Model.Quotes[i].AuthorName != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].AuthorName</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        }
+                        @if (Model.Quotes[i].MovieTitle != null)
+                        {
+                            <td class="text-center  align-middle">@Model.Quotes[i].MovieTitle</td>
+                        }
+                        else
+                        {
+                            <td class="text-center align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        }
+                        @if (Model.Quotes[i].BookTitle != null)
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].BookTitle</td>
+                        }
+                        else
+                        {
+                            <td class="text-center  align-middle"><i class="fa-solid fa-minus fa-xl"></i></td>
+                        }
+
+                        @if (title == "My Quotes")
+                        {
+                            <td class="text-center align-middle">@Model.Quotes[i].Likes</td>
+                            <td class="text-center align-middle">
+                                @if (Model.Quotes[i].IsApproved)
+                                {
+                                    <i class="fa-solid fa-circle-check fa-xl checkIcon"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-regular fa-circle-xmark fa-xl x-icon"></i>
+                                }
+                            </td>
+                            <td class="text-center align-middle">
+                                <a asp-area=""
+                                   asp-controller="Quote"
+                                   asp-action="Edit"
+                                   asp-route-id="@Model.Quotes[i].Id"
+                                   class="btn btn-outline-warning">
+                                    <i class="fa-solid fa-pen-to-square fa-xl"></i>
+                                </a>
+                            </td>
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick(@Model.Quotes[i].Id, 'deleteQuoteIdInput')"
+                                        class="btn btn-outline-danger modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteQuoteModal">
+                                    <i class="fa-solid fa-trash-can fa-xl"></i>
+                                </button>
+                            </td>
+                        }
+                        else if (title == "Approved Quotes")
+                        {
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick(@Model.Quotes[i].Id, 'approvedQuoteIdInput')"
+                                        class="btn btn-danger modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#unapproveQuoteModal">
+                                    <i class="fa-solid fa-circle-xmark fa-xl"></i>
+                                </button>
+                            </td>
+                        }
+                        else if (title == "Unapproved Quotes")
+                        {
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick(@Model.Quotes[i].Id, 'approveQuoteIdInput')"
+                                        class="btn btn-success modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#approveQuoteModal">
+                                    <i class="fa-solid fa-circle-check fa-xl px-2"></i>
+                                </button>
+                            </td>
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick(@Model.Quotes[i].Id, 'deleteQuoteIdInput')"
+                                        class="btn btn-danger modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteQuoteModal">
+                                    <i class="fa-solid fa-trash-can fa-xl px-2"></i>
+                                </button>
+                            </td>
+                        }
+                        else if (title == "Deleted Quotes")
+                        {
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick(@Model.Quotes[i].Id, 'deletedQuoteIdInput')"
+                                        class="btn btn-danger modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#undeleteQuoteModal">
+                                    <i class="fa-solid fa-trash-can-arrow-up fa-xl px-2"></i>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

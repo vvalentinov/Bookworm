@@ -4,6 +4,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using Azure.Storage;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using Bookworm.Data.Common.Repositories;
@@ -101,9 +102,7 @@
 
             string uniqueName = GenerateUniqueName(file);
 
-            return uniqueName;
-
-            //return await this.RenameBlob(uniqueName, blobName, path);
+            return await this.RenameBlob(uniqueName, blobName, path);
         }
 
         public async Task DeleteBlobAsync(string blobName)
@@ -111,14 +110,14 @@
             string containerName = this.configuration.GetConnectionString("ContainerName");
             BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            await blobClient.DeleteIfExistsAsync(Azure.Storage.Blobs.Models.DeleteSnapshotsOption.IncludeSnapshots);
+            await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
         }
 
         private static byte[] GetFileBytes(IFormFile file)
         {
             byte[] fileBytes = null;
 
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 file.CopyTo(ms);
                 fileBytes = ms.ToArray();
@@ -134,31 +133,34 @@
                    $"{Path.GetExtension(file.FileName)}";
         }
 
-        //private async Task<string> RenameBlob(string newFileName, string oldFileName, string path)
-        //{
-        //    string accountName = this.configuration.GetConnectionString("AccountName");
-        //    string accountKey = this.configuration.GetConnectionString("AccountKey");
-        //    string containerName = this.configuration.GetConnectionString("ContainerName");
+        private async Task<string> RenameBlob(string newFileName, string oldFileName, string path)
+        {
+            string accountName = this.configuration.GetConnectionString("AccountName");
+            string accountKey = this.configuration.GetConnectionString("AccountKey");
+            string containerName = this.configuration.GetConnectionString("ContainerName");
 
-        //    var cred = new StorageCredentials(accountName, accountKey);
-        //    Uri uri = new Uri($"https://{accountName}.blob.core.windows.net/{containerName}/");
-        //    var container = new CloudBlobContainer(uri, cred);
+            var serviceUri = new Uri($"https://{accountName}.blob.core.windows.net");
+            var credential = new StorageSharedKeyCredential(accountName, accountKey);
 
-        //    await container.CreateIfNotExistsAsync();
+            var blobServiceClient = new BlobServiceClient(serviceUri, credential);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
-        //    var blobCopy = container.GetBlockBlobReference($"{path}{newFileName}");
+            await blobContainerClient.CreateIfNotExistsAsync();
 
-        //    if (!await blobCopy.ExistsAsync())
-        //    {
-        //        var blob = container.GetBlockBlobReference(oldFileName);
-        //        if (await blob.ExistsAsync())
-        //        {
-        //            await blobCopy.StartCopyAsync(blob);
-        //            await blob.DeleteIfExistsAsync();
-        //        }
-        //    }
+            var blobCopyClient = blobContainerClient.GetBlobClient($"{path}{newFileName}");
 
-        //    return Uri.UnescapeDataString(blobCopy.Uri.AbsoluteUri);
-        //}
+            if (!await blobCopyClient.ExistsAsync())
+            {
+                var blobClient = blobContainerClient.GetBlobClient(oldFileName);
+
+                if (await blobClient.ExistsAsync())
+                {
+                    await blobCopyClient.StartCopyFromUriAsync(blobClient.Uri);
+                    await blobClient.DeleteIfExistsAsync();
+                }
+            }
+
+            return Uri.UnescapeDataString(blobCopyClient.Uri.AbsoluteUri);
+        }
     }
 }

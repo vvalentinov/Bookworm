@@ -5,7 +5,10 @@ import { getCheckedRadioBtn, constructUrl, getSearchTextFromQuoteTypeId } from '
 
 
 export const fetchForQuotes = (page) => {
-    const isForUserRecords = document.getElementById('isForUserQuotes')?.value;
+    let isForUserRecords = document.getElementById('isForUserQuotes')?.value;
+    if (!isForUserRecords) {
+        isForUserRecords = false;
+    }
 
     let url;
     if (page) {
@@ -21,7 +24,7 @@ export const fetchForQuotes = (page) => {
         .then(res => res.json())
         .then(res => {
             if (isForUserRecords === "true") {
-                updateQuotesTable(res.quotes, res.pageNumber);
+                updateQuotesTable(res.quotes, res.pageNumber, searchText);
             } else {
                 filterQuotes(res.quotes, searchText);
             }

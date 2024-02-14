@@ -10,7 +10,7 @@
     {
         Task UploadBookAsync(
             BookDto uploadBookDto,
-            IEnumerable<UploadAuthorViewModel> authors,
+            ICollection<UploadAuthorViewModel> authors,
             string userId);
     }
 }

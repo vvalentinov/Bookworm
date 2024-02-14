@@ -148,8 +148,8 @@
             }
         }
 
-        [HttpPost(Name = EditGeneralQuoteAction)]
         [Authorize]
+        [HttpPost(Name = EditGeneralQuoteAction)]
         public async Task<IActionResult> EditGeneralQuote(GeneralQuoteInputModel generalQuoteInputModel)
         {
             if (this.ModelState.IsValid == false)
@@ -177,8 +177,8 @@
             }
         }
 
-        [HttpPost(Name = EditBookQuoteAction)]
         [Authorize]
+        [HttpPost(Name = EditBookQuoteAction)]
         public async Task<IActionResult> EditBookQuote(BookQuoteInputModel bookQuoteInputModel)
         {
             if (this.ModelState.IsValid == false)
@@ -205,8 +205,8 @@
             }
         }
 
-        [HttpPost(Name = EditMovieQuoteAction)]
         [Authorize]
+        [HttpPost(Name = EditMovieQuoteAction)]
         public async Task<IActionResult> EditMovieQuote(MovieQuoteInputModel movieQuoteInputModel)
         {
             if (this.ModelState.IsValid == false)

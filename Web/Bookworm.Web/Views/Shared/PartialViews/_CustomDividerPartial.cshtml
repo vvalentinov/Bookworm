@@ -1,10 +1,4 @@
-﻿@{
-    string title = ViewData["Message"].ToString();
-    bool isCategoriesPage = ViewData.ContainsKey("Is-Categories");
-}
-
-<h5 class="@(isCategoriesPage ? "text-center text-uppercase fs-2" : "text-center fs-3")">@title</h5>
-<div class="divider-custom">
+﻿<div class="divider-custom">
     <div class="divider-custom-line"></div>
     <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
     <div class="divider-custom-line"></div>

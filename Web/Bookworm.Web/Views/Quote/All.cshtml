@@ -8,7 +8,6 @@
 @{
     this.ViewData["Title"] = "All Quotes";
     this.ViewData["Count"] = Model.RecordsCount;
-    this.ViewData["IsUserQuotes"] = false;
     this.ViewData["PaginationControllerName"] = "Quote";
     this.ViewData["PaginationActionName"] = "All";
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
@@ -20,9 +19,7 @@
 
 @if (this.SignInManager.IsSignedIn(this.User))
 {
-    <partial name="PartialViews/Quotes/_QuotesTypeFilterPartial" />
-    <partial name="PartialViews/Quotes/_QuotesSortingPartial" />
-    <partial name="PartialViews/Quotes/_QuotesSearchPartial" />
+    <partial name="PartialViews/Quotes/_QuotesButtonsPartial" />
 }
 
 <div class="quotesContainer">
