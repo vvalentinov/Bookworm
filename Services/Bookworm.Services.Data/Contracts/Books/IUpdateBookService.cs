@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Authors;
+    using Bookworm.Web.ViewModels.DTOs;
 
     public interface IUpdateBookService
     {

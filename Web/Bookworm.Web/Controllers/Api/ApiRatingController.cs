@@ -9,9 +9,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    [ApiController]
-    [Route("[controller]")]
-    public class ApiRatingController : ControllerBase
+    public class ApiRatingController : BaseApiController
     {
         private readonly IRatingsService ratingService;
         private readonly UserManager<ApplicationUser> userManager;

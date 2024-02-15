@@ -1,14 +1,13 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Web.ViewModels.Authors;
+    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;
@@ -38,10 +37,7 @@
             this.validateUploadedBookService = validateUploadedBookService;
         }
 
-        public async Task UploadBookAsync(
-            BookDto uploadBookDto,
-            ICollection<UploadAuthorViewModel> authors,
-            string userId)
+        public async Task UploadBookAsync(BookDto uploadBookDto)
         {
             bool bookWithTitleExist = await this.booksRepository
                 .AllAsNoTracking()
@@ -55,26 +51,19 @@
             await this.validateUploadedBookService.ValidateUploadedBookAsync(
                 uploadBookDto.BookFile,
                 uploadBookDto.ImageFile,
-                authors,
+                uploadBookDto.Authors,
                 uploadBookDto.CategoryId,
                 uploadBookDto.LanguageId);
 
-            string bookBlobName = await this.blobService.UploadBlobAsync(
-                uploadBookDto.BookFile,
-                BookFileUploadPath);
-            string imageBlobName = await this.blobService.UploadBlobAsync(
-                uploadBookDto.ImageFile,
-                BookImageFileUploadPath);
-
-            string bookFileBlobUrl = this.blobService.GetBlobAbsoluteUri(bookBlobName);
-            string bookImageFileBlobUrl = this.blobService.GetBlobAbsoluteUri(imageBlobName);
+            string bookBlobUrl = await this.blobService.UploadBlobAsync(uploadBookDto.BookFile, BookFileUploadPath);
+            string imageBlobUrl = await this.blobService.UploadBlobAsync(uploadBookDto.ImageFile, BookImageFileUploadPath);
 
             var book = new Book
             {
-                UserId = userId,
-                FileUrl = bookFileBlobUrl,
+                UserId = uploadBookDto.BookCreatorId,
+                FileUrl = bookBlobUrl,
                 Title = uploadBookDto.Title.Trim(),
-                ImageUrl = bookImageFileBlobUrl,
+                ImageUrl = imageBlobUrl,
                 Year = uploadBookDto.PublishedYear,
                 LanguageId = uploadBookDto.LanguageId,
                 CategoryId = uploadBookDto.CategoryId,
@@ -101,7 +90,7 @@
             await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
 
-            foreach (var authorModel in authors)
+            foreach (var authorModel in uploadBookDto.Authors)
             {
                 var author = await this.authorRepository
                     .AllAsNoTracking()

@@ -2,11 +2,12 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using Bookworm.Common.Books;
+
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.Infrastructure.Attributes;
     using Bookworm.Web.ViewModels.Authors;
+    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.Books.BooksDataConstants;

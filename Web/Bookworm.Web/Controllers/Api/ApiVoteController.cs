@@ -9,9 +9,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    [ApiController]
-    [Route("[controller]")]
-    public class ApiVoteController : ControllerBase
+    public class ApiVoteController : BaseApiController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IVoteService voteService;
@@ -24,8 +22,8 @@
             this.voteService = voteService;
         }
 
-        [HttpPost(nameof(Post))]
         [Authorize]
+        [HttpPost(nameof(Post))]
         public async Task<JsonResult> Post(VoteInputModel input)
         {
             string userId = this.userManager.GetUserId(this.User);

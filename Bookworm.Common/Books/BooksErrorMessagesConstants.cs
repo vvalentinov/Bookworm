@@ -3,14 +3,14 @@
     public static class BooksErrorMessagesConstants
     {
         public const string BookTitleRequiredError = "Book title is required!";
-        public const string BookTitleLengthError = "Book title must be between 2 and 100 characters long!";
+        public const string BookTitleLengthError = "Book title must be between {2} and {1} characters long!";
 
         public const string BookDescriptionRequiredError = "Book description is required!";
-        public const string BookDescriptionLengthError = "Book description must be between 20 and 3000 charcters long!";
+        public const string BookDescriptionLengthError = "Book description must be between {2} and {1} charcters long!";
 
-        public const string BookPublisherLengthError = "Publisher must be between 2 and 100 characters long!";
+        public const string BookPublisherLengthError = "Publisher must be between {2} and {1} characters long!";
 
-        public const string BookPagesCountRangeError = "The number of pages must be between 5 and 3000!";
+        public const string BookPagesCountRangeError = "The number of pages must be between {1} and {2}!";
 
         public const string BookPublishedYearInvalidError = "Invalid year value!";
 

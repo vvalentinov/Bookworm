@@ -52,4 +52,8 @@
 		<ProjectReference Include="..\Bookworm.Web.Infrastructure\Bookworm.Web.Infrastructure.csproj" />
 		<ProjectReference Include="..\Bookworm.Web.ViewModels\Bookworm.Web.ViewModels.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\lib\admin-lte\dist\css\" />
+	</ItemGroup>
 </Project>

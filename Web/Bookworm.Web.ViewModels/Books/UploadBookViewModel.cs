@@ -7,6 +7,7 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.Infrastructure.Attributes;
     using Bookworm.Web.ViewModels.Authors;
+    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Http;
 
     using static Bookworm.Common.Books.BooksDataConstants;
@@ -17,19 +18,31 @@
     public class UploadBookViewModel : IMapFrom<Book>, IMapTo<BookDto>
     {
         [Required(ErrorMessage = BookTitleRequiredError)]
-        [StringLength(BookTitleMaxLength, MinimumLength = BookTitleMinLength, ErrorMessage = BookTitleLengthError)]
+        [StringLength(
+            BookTitleMaxLength,
+            MinimumLength = BookTitleMinLength,
+            ErrorMessage = BookTitleLengthError)]
         public string Title { get; set; }
 
         [Required(ErrorMessage = BookDescriptionRequiredError)]
-        [StringLength(BookDescriptionMaxLength, MinimumLength = BookDescriptionMinLength, ErrorMessage = BookDescriptionLengthError)]
+        [StringLength(
+            BookDescriptionMaxLength,
+            MinimumLength = BookDescriptionMinLength,
+            ErrorMessage = BookDescriptionLengthError)]
         public string Description { get; set; }
 
         [Display(Name = "Publisher(optional)")]
-        [StringLength(PublisherNameMaxLength, MinimumLength = PublisherNameMinLength, ErrorMessage = PublisherNameLengthError)]
+        [StringLength(
+            PublisherNameMaxLength,
+            MinimumLength = PublisherNameMinLength,
+            ErrorMessage = PublisherNameLengthError)]
         public string Publisher { get; set; }
 
         [Display(Name = "Number of pages")]
-        [Range(BookPagesCountMin, BookPagesCountMax, ErrorMessage = BookPagesCountRangeError)]
+        [Range(
+            BookPagesCountMin,
+            BookPagesCountMax,
+            ErrorMessage = BookPagesCountRangeError)]
         public int PagesCount { get; set; }
 
         [Display(Name = "Year")]

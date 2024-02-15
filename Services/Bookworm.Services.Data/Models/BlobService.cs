@@ -36,9 +36,12 @@
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == bookId);
 
-            book.DownloadsCount++;
-            this.bookRepository.Update(book);
-            await this.bookRepository.SaveChangesAsync();
+            if (book.IsApproved)
+            {
+                book.DownloadsCount++;
+                this.bookRepository.Update(book);
+                await this.bookRepository.SaveChangesAsync();
+            }
 
             Uri uri = new Uri(book.FileUrl);
 
@@ -55,54 +58,64 @@
             return Tuple.Create(blobStream, contentType, blobClient.Name);
         }
 
-        public string GetBlobAbsoluteUri(string fileName)
-        {
-            string containerName = this.configuration.GetConnectionString("ContainerName");
-            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = containerClient.GetBlobClient(fileName);
-            return Uri.UnescapeDataString(blobClient.Uri.AbsoluteUri);
-        }
-
-        public async Task<string> UploadBlobAsync(IFormFile file, string path = null)
+        public async Task<string> UploadBlobAsync(IFormFile file, string path)
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
 
-            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
 
-            string uniqueName = GenerateUniqueName(file);
-            if (path != null)
+            string uniqueName = GenerateUniqueName(file, path);
+
+            var blobClient = containerClient.GetBlobClient(uniqueName);
+
+            using (var stream = file.OpenReadStream())
             {
-                uniqueName = path + uniqueName;
+                await blobClient.UploadAsync(stream, true);
             }
 
-            BlobClient blobClient = containerClient.GetBlobClient(uniqueName);
-
-            byte[] fileBytes = GetFileBytes(file);
-
-            await using MemoryStream memoryStream = new MemoryStream(fileBytes);
-
-            await blobClient.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = file.ContentType });
-
-            return uniqueName;
+            return Uri.UnescapeDataString(blobClient.Uri.AbsoluteUri);
         }
 
         public async Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path)
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
 
-            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
 
-            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            var oldBlobClient = containerClient.GetBlobClient(blobName);
 
-            byte[] fileBytes = GetFileBytes(file);
+            using (var stream = file.OpenReadStream())
+            {
+                await oldBlobClient.UploadAsync(stream, true);
+            }
 
-            await using MemoryStream memoryStream = new MemoryStream(fileBytes);
+            string uniqueName = GenerateUniqueName(file, path);
 
-            await blobClient.UploadAsync(memoryStream, overwrite: true);
+            string accountName = this.configuration.GetConnectionString("AccountName");
+            string accountKey = this.configuration.GetConnectionString("AccountKey");
 
-            string uniqueName = GenerateUniqueName(file);
+            var serviceUri = new Uri($"https://{accountName}.blob.core.windows.net");
+            var credential = new StorageSharedKeyCredential(accountName, accountKey);
 
-            return await this.RenameBlob(uniqueName, blobName, path);
+            var blobServiceClient = new BlobServiceClient(serviceUri, credential);
+            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            await blobContainerClient.CreateIfNotExistsAsync();
+
+            var blobCopyClient = blobContainerClient.GetBlobClient($"{path}{uniqueName}");
+
+            if (!await blobCopyClient.ExistsAsync())
+            {
+                var newBlobClient = blobContainerClient.GetBlobClient(blobName);
+
+                if (await newBlobClient.ExistsAsync())
+                {
+                    await blobCopyClient.StartCopyFromUriAsync(newBlobClient.Uri);
+                    await newBlobClient.DeleteIfExistsAsync();
+                }
+            }
+
+            return Uri.UnescapeDataString(blobCopyClient.Uri.AbsoluteUri);
         }
 
         public async Task DeleteBlobAsync(string blobName)
@@ -113,54 +126,7 @@
             await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
         }
 
-        private static byte[] GetFileBytes(IFormFile file)
-        {
-            byte[] fileBytes = null;
-
-            using (var ms = new MemoryStream())
-            {
-                file.CopyTo(ms);
-                fileBytes = ms.ToArray();
-            }
-
-            return fileBytes;
-        }
-
-        private static string GenerateUniqueName(IFormFile file)
-        {
-            return $"{Path.GetFileNameWithoutExtension(file.FileName)}" +
-                   $"{Guid.NewGuid()}" +
-                   $"{Path.GetExtension(file.FileName)}";
-        }
-
-        private async Task<string> RenameBlob(string newFileName, string oldFileName, string path)
-        {
-            string accountName = this.configuration.GetConnectionString("AccountName");
-            string accountKey = this.configuration.GetConnectionString("AccountKey");
-            string containerName = this.configuration.GetConnectionString("ContainerName");
-
-            var serviceUri = new Uri($"https://{accountName}.blob.core.windows.net");
-            var credential = new StorageSharedKeyCredential(accountName, accountKey);
-
-            var blobServiceClient = new BlobServiceClient(serviceUri, credential);
-            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-            await blobContainerClient.CreateIfNotExistsAsync();
-
-            var blobCopyClient = blobContainerClient.GetBlobClient($"{path}{newFileName}");
-
-            if (!await blobCopyClient.ExistsAsync())
-            {
-                var blobClient = blobContainerClient.GetBlobClient(oldFileName);
-
-                if (await blobClient.ExistsAsync())
-                {
-                    await blobCopyClient.StartCopyFromUriAsync(blobClient.Uri);
-                    await blobClient.DeleteIfExistsAsync();
-                }
-            }
-
-            return Uri.UnescapeDataString(blobCopyClient.Uri.AbsoluteUri);
-        }
+        private static string GenerateUniqueName(IFormFile file, string path)
+         => $"{path}{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
     }
 }

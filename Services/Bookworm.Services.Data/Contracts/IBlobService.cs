@@ -14,8 +14,6 @@
 
         Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId);
 
-        string GetBlobAbsoluteUri(string fileName);
-
         Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path);
     }
 }

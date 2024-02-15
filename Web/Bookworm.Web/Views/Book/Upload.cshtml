@@ -8,11 +8,15 @@
 <partial name="PartialViews/_TitleCardPartial" />
 
 <section class="uploadBookSection">
-    <form method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="All" class="small text-danger"></div>
+    <form asp-controller="Book"
+          asp-action="Upload"
+          id="uploadBookForm"
+          method="post"
+          enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div>
             <label asp-for="Title"></label>
-            <input asp-for="Title" type="text" class="form-control">
+            <input asp-for="Title" type="text" class="form-control fs-5">
             <span asp-validation-for="Title" class="small text-danger"></span>
         </div>
         <div class="selectContainer">
@@ -39,31 +43,30 @@
         </div>
         <div class="mt-4">
             <label asp-for="PagesCount"></label>
-            <input asp-for="PagesCount" type="number" class="form-control">
+            <input asp-for="PagesCount" type="number" class="form-control fs-5">
             <span asp-validation-for="PagesCount" class="small text-danger"></span>
         </div>
         <div class="mt-4">
             <label asp-for="PublishedYear"></label>
-            <input asp-for="PublishedYear" type="number" class="form-control">
+            <input asp-for="PublishedYear" type="number" class="form-control fs-5">
             <span asp-validation-for="PublishedYear" class="small text-danger"></span>
         </div>
         <div class="mt-4">
             <label asp-for="Publisher"></label>
-            <input asp-for="Publisher" type="text" class="form-control">
+            <input asp-for="Publisher" type="text" class="form-control fs-5">
             <span asp-validation-for="Publisher" class="small text-danger"></span>
         </div>
         <div class="mt-4">
             <label asp-for="BookFile" class="form-label"></label>
-            <input asp-for="BookFile" type="file" class="form-control">
+            <input asp-for="BookFile" type="file" class="form-control fs-5">
             <span asp-validation-for="BookFile" class="small text-danger"></span>
         </div>
         <div class="mt-4">
             <label asp-for="ImageFile" class="form-label"></label>
-            <input asp-for="ImageFile" type="file" class="form-control">
+            <input asp-for="ImageFile" type="file" class="form-control fs-5">
             <span asp-validation-for="ImageFile" class="small text-danger"></span>
         </div>
         <div class="mt-4" id="authorsContainer" data-index="0">
-            <div id="alert-message"></div>
             <button type="button"
                     id="addAuthorBtn"
                     class="btn button fs-5 w-100">
@@ -76,7 +79,7 @@
             <span asp-validation-for="Description" class="small text-danger"></span>
         </div>
         <div class="text-center my-4">
-            <button type="submit" class="btn button fs-5">
+            <button type="submit" class="btn fs-5">
                 <strong>Upload Book<i class="fas fa-upload icon ms-2"></i></strong>
             </button>
         </div>
@@ -90,15 +93,9 @@
     <script>
         tinymce.init({
             selector: "textarea",
-            plugins: [
-                "code",
-                "image",
-                "link",
-                "lists",
-                "preview",
-                "searchreplace",
-                "table",
-                "wordcount"]
+            placeholder: 'Type book description here...',
+            plugins: "code wordcount lists preview searchreplace",
+            content_style: 'body { font-size: 14pt;}',
         });
     </script>
 }

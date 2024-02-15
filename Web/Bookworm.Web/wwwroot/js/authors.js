@@ -1,64 +1,56 @@
-﻿
-const addAuthorBtn = document.getElementById('addAuthorBtn');
-addAuthorBtn.addEventListener('click', function () {
+﻿document.getElementById('addAuthorBtn').addEventListener('click', function () {
+    var form = document.getElementById("uploadBookForm");
+
     let authorsContainer = document.getElementById('authorsContainer');
-    let authorsCount = authorsContainer.childElementCount - 2;
+    let authorsCount = authorsContainer.childElementCount - 1;
 
     //Create and append author
     let authorContainer = document.createElement('div');
-    authorContainer.className = 'input-group mt-4 animate__animated animate__zoomIn';
+
+    let inputGroupEl = document.createElement('div');
+    inputGroupEl.className = 'input-group mt-4 animate__animated animate__zoomIn';
 
     let inputElement = document.createElement('input');
+    inputElement.setAttribute('data-val', 'true');
+    inputElement.setAttribute('data-val-length-max', '50');
+    inputElement.setAttribute('data-val-length-min', '2');
+    inputElement.setAttribute('data-val-length', 'Author name must be between 2 and 50 characters!');
+    inputElement.setAttribute('data-val-required', 'Author\'s name is required.');
     inputElement.name = `Authors[${authorsCount}].Name`;
     inputElement.type = 'text';
-    inputElement.className = 'form-control border border-2';
+    inputElement.className = 'form-control border-2 border-dark fs-5';
     inputElement.placeholder = 'Author\'s Name';
 
+    let spanElement = document.createElement('span');
+    spanElement.setAttribute('data-valmsg-for', `Authors[${authorsCount}].Name`);
+    spanElement.setAttribute('data-valmsg-replace', 'true');
+    spanElement.className = 'small text-danger field-validation-valid';
+
     let buttonElement = document.createElement('button');
-    buttonElement.className = 'btn btn-danger';
+    buttonElement.className = 'btn btn-danger border-2 border-dark';
     buttonElement.type = 'button';
     buttonElement.id = 'deleteAuthorBtn';
     buttonElement.textContent = 'Remove';
     buttonElement.addEventListener('click', function handleClick(event) {
-        event.target.parentElement.remove();
+        event.target.parentElement.parentElement.remove();
         if (authorsCount < 5) {
             addAuthorBtn.disabled = false;
         }
     });
 
-    authorContainer.appendChild(inputElement);
-    authorContainer.appendChild(buttonElement);
+    inputGroupEl.appendChild(inputElement);
+    inputGroupEl.appendChild(buttonElement);
+
+    authorContainer.appendChild(inputGroupEl);
+    authorContainer.appendChild(spanElement);
 
     authorsContainer.appendChild(authorContainer);
+
+    $(form).removeData("validator").removeData("unobtrusiveValidation");
+    $.validator.unobtrusive.parse(form);
+
     if (authorsCount == 4) {
         addAuthorBtn.disabled = true;
-
-        let alertEl = document.getElementsByClassName('alert')[0];
-        if (alertEl == undefined) {
-            alert();
-        }
-
         return;
     }
 });
-
-// Create and append alert message
-function alert() {
-    let alertMessageContainer = document.getElementById('alert-message');
-    let alertMessage = document.createElement('div');
-
-    alertMessage.className = 'alert alert-info alert-dismissible fade show animate__animated animate__pulse';
-    alertMessage.role = 'alert';
-    alertMessage.textContent = 'You can only add 5 authors!';
-
-    let alertMessageButton = document.createElement('button');
-    alertMessageButton.type = 'button';
-    alertMessageButton.className = 'btn-close';
-    alertMessageButton.setAttribute('data-bs-dismiss', 'alert');
-    alertMessageButton.setAttribute('aria-label', 'Close');
-
-    alertMessage.appendChild(alertMessageButton);
-    alertMessageContainer.appendChild(alertMessage);
-
-    setTimeout(() => alertMessage.remove(), 5000);
-}

@@ -13,9 +13,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
-    [ApiController]
-    [Route("[controller]")]
-    public class ApiQuoteController : ControllerBase
+    public class ApiQuoteController : BaseApiController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;

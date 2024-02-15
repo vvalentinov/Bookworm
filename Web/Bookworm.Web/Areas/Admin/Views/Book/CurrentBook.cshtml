@@ -4,7 +4,7 @@
     this.ViewData["Title"] = $"{Model.Title}";
 }
 
-<div class="mt-5 row-gap no-gutters">
+<div class="bookContainer">
     <img class="w-25 rounded-3" src=@Model.ImageUrl alt=@Model.Title />
     <ul class="list-group w-75 fs-5">
         <li class="list-group-item"><strong>@Model.Title</strong></li>
@@ -32,39 +32,13 @@
         </li>
     </ul>
 </div>
-@* <div class="mt-5 row no-gutters justify-content-center">
-    <a class="btn btn-danger modalBtn" data-model-id="@Model.Id" data-bs-toggle="modal" data-bs-target="#approveBookModal">
-        Approve
-    </a>
-</div> *@
-<div class="card border-secondary my-5">
+
+<div class="card border-secondary">
     <h5 class="card-header">Book Description</h5>
     <div class="card-body">
         <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
     </div>
 </div>
-
-<!-- Approve Book Modal -->
-@* <div class="modal fade" id="approveBookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Approve Book</h1>
-                <button type="button" class="btn-modal-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-x"></i></button>
-            </div>
-            <div class="modal-body">
-                <strong>Are you sure you want to approve this book?</strong>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                <form method="post" asp-area="admin" asp-controller="Book" asp-action="ApproveBook">
-                    <input type="hidden" name="bookId" class="modelIdInput" value="" />
-                    <button type="submit" class="btn btn-danger">Approve</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div> *@
 
 @section Scripts{
     <script src="~/js/modal.js"></script>

@@ -10,6 +10,7 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -54,8 +55,7 @@
         [Authorize]
         public IActionResult Upload()
         {
-            var model = new UploadBookViewModel();
-            return this.View(model);
+            return this.View(new UploadBookViewModel());
         }
 
         [HttpPost]
@@ -67,13 +67,12 @@
                 return this.View(model);
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-
             var uploadBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
+            uploadBookDto.BookCreatorId = this.userManager.GetUserId(this.User);
 
             try
             {
-                await this.uploadBookService.UploadBookAsync(uploadBookDto, model.Authors, userId);
+                await this.uploadBookService.UploadBookAsync(uploadBookDto);
 
                 this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
 

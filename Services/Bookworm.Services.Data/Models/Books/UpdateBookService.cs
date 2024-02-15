@@ -10,6 +10,7 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Authors;
+    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 

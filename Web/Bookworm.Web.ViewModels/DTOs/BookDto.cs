@@ -1,5 +1,8 @@
-﻿namespace Bookworm.Data.Models
+﻿namespace Bookworm.Web.ViewModels.DTOs
 {
+    using System.Collections.Generic;
+
+    using Bookworm.Web.ViewModels.Authors;
     using Microsoft.AspNetCore.Http;
 
     public class BookDto
@@ -23,5 +26,9 @@
         public int CategoryId { get; set; }
 
         public int LanguageId { get; set; }
+
+        public ICollection<UploadAuthorViewModel> Authors { get; set; }
+
+        public string BookCreatorId { get; set; }
     }
 }
