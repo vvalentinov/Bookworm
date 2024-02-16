@@ -18,5 +18,7 @@
         public const string BookFileUploadPath = "Books/";
 
         public const string BookImageFileUploadPath = "BooksImages/";
+
+        public const byte BooksCountOnHomePage = 8;
     }
 }

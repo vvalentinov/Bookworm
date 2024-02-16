@@ -11,13 +11,13 @@
 
         Task<BookListingViewModel> GetUserBooksAsync(string userId, int page, int booksPerPage);
 
-        Task<BookViewModel> GetBookWithIdAsync(string bookId, string userId = null);
+        Task<BookViewModel> GetBookDetails(string bookId, string userId);
 
         Task<EditBookViewModel> GetEditBookAsync(string bookId);
 
-        Task<IList<BookViewModel>> GetPopularBooksAsync(int count);
+        Task<List<BookViewModel>> GetPopularBooksAsync();
 
-        Task<IList<BookViewModel>> GetRecentBooksAsync(int count);
+        Task<List<BookViewModel>> GetRecentBooksAsync();
 
         Task<List<BookViewModel>> GetUnapprovedBooksAsync();
 

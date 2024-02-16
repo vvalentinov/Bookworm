@@ -168,8 +168,10 @@
 
         public async Task<IActionResult> Details(string id)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookViewModel bookViewModel = await this.retrieveBooksService.GetBookWithIdAsync(id, user?.Id);
+            string userId = this.userManager.GetUserId(this.User);
+
+            var bookViewModel = await this.retrieveBooksService.GetBookDetails(id, userId);
+
             return this.View(bookViewModel);
         }
 

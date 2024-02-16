@@ -1,0 +1,133 @@
+﻿@{
+    string title = ViewData["Title"] as string;
+}
+
+@if (Model.Count == 0)
+{
+    <h2 class="text-center pt-5">
+        @if (title == "Approved Books")
+        {
+            <text>There are no approved books yet!</text>
+        }
+        else if (title == "Unapproved Books")
+        {
+            <text>There are no books waiting to be approved!</text>
+        }
+        else if (title == "Deleted Books")
+        {
+            <text>There are no deleted books!</text>
+        }
+    </h2>
+}
+else
+{
+    <h3 class="text-center pt-5 display-4">
+        @if (title == "Approved Books")
+        {
+            <text>Manage Approved Books</text>
+        }
+        else if (title == "Unapproved Books")
+        {
+            <text>Manage Unapproved Books</text>
+        }
+        else if (title == "Deleted Books")
+        {
+            <text>Manage Deleted Books</text>
+        }
+    </h3>
+    <div class="my-5">
+        <table class="table table-dark table-bordered table-hover" id="dataTable">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Book</th>
+                    @if (title == "Approved Books")
+                    {
+                        <th class="text-center" scope="col">Unapprove</th>
+                        <th class="text-center" scope="col">View</th>
+                    }
+                    else if (title == "Unapproved Books")
+                    {
+                        <th class="text-center" scope="col">Approve</th>
+                        <th class="text-center" scope="col">Delete</th>
+                        <th class="text-center" scope="col">View</th>
+                    }
+                    else if (title == "Deleted Books")
+                    {
+                        <th class="text-center" scope="col">Undelete</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i <= Model.Count - 1; i++)
+                {
+                    <tr>
+                        <th scope="row" class="text-center align-middle">@(i + 1)</th>
+                        <td class="align-middle">@Model[i].Title</td>
+                        @if (title == "Approved Books")
+                        {
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick('@Model[i].Id', 'unapproveBookIdInput')"
+                                        class="btn btn-danger modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#unapproveBookModal">
+                                    <i class="fa-solid fa-circle-xmark fa-xl px-2"></i>
+                                </button>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a target="_blank"
+                                   asp-area=""
+                                   asp-controller="Book"
+                                   asp-action="Details"
+                                   asp-route-id="@Model[i].Id"
+                                   class="btn btn-success">
+                                    <i class="fa-solid fa-book fa-xl px-2"></i>
+                                </a>
+                            </td>
+                        }
+                        else if (title == "Unapproved Books")
+                        {
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick('@Model[i].Id', 'approveBookIdInput')"
+                                        class="btn btn-success modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#approveBookModal">
+                                    <i class="fa-solid fa-circle-check fa-xl px-2"></i>
+                                </button>
+                            </td>
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick('@Model[i].Id', 'deleteBookIdInput')"
+                                        class="btn btn-danger modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteBookModal">
+                                    <i class="fa-solid fa-trash-can fa-xl px-2"></i>
+                                </button>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a target="_blank"
+                                   asp-area=""
+                                   asp-controller="Book"
+                                   asp-action="Details"
+                                   asp-route-id="@Model[i].Id"
+                                   class="btn btn-success">
+                                    <i class="fa-solid fa-book fa-xl px-2"></i>
+                                </a>
+                            </td>
+                        }
+                        else if (title == "Deleted Books")
+                        {
+                            <td class="text-center align-middle">
+                                <button onclick="onModalBtnClick('@Model[i].Id', 'undeleteBookIdInput')"
+                                        class="btn btn-success modalBtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#undeleteBookModal">
+                                    <i class="fa-solid fa-circle-check fa-xl px-2"></i>
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

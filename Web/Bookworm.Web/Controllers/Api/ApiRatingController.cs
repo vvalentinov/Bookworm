@@ -33,7 +33,7 @@
             int userVote = await this.ratingService.GetUserRatingAsync(model.BookId, userId);
             int votesCount = await this.ratingService.GetRatingsCountAsync(model.BookId);
 
-            return new RatingResponseModel()
+            return new RatingResponseModel
             {
                 AverageVote = avgVotes,
                 UserVote = userVote,

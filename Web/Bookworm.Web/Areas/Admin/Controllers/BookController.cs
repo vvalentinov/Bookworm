@@ -80,13 +80,6 @@
             return this.View(approvedBooks);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CurrentBook(string bookId)
-        {
-            BookViewModel book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
-            return this.View(book);
-        }
-
         [HttpPost]
         public async Task<IActionResult> ApproveBook(string bookId)
         {

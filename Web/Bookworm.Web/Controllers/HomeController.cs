@@ -24,11 +24,11 @@
 
         public async Task<IActionResult> Index()
         {
-            var model = new IndexViewModel()
+            var model = new IndexViewModel
             {
                 RandomQuote = await this.retrieveQuotesService.GetRandomAsync(),
-                RecentBooks = await this.booksService.GetRecentBooksAsync(12),
-                PopularBooks = await this.booksService.GetPopularBooksAsync(12),
+                RecentBooks = await this.booksService.GetRecentBooksAsync(),
+                PopularBooks = await this.booksService.GetPopularBooksAsync(),
             };
 
             return this.View(model);

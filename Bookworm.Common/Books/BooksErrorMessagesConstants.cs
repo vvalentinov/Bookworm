@@ -15,20 +15,15 @@
         public const string BookPublishedYearInvalidError = "Invalid year value!";
 
         public const string BookFileRequiredError = "PDF file is required!";
-
         public const string BookImageFileRequiredError = "Image file is required!";
-
         public const string BookPdfFileEmptyError = "PDF file is empty!";
         public const string BookInvalidPdfSizeError = "Book PDF file must not exceed 15 MB!";
-
         public const string BookImageFileEmptyError = "Book image file is empty!";
-
         public const string BookInvalidFileExtensionError = "Invalid book file extension. Allowed extension: .pdf!";
         public const string BookInvalidImageFileError = "Invalid image file extension. Allowed extensions: .jpg, .jpeg, .png!";
 
         public const string BookMissingAuthorsError = "You must add at least one author!";
 
-        public const string ChangeBookFileNameError = "Try changing the PDF file name!";
-        public const string ChangeImageFileNameError = "Try changing the image file name!";
+        public const string BookWrongIdError = "No book with given id found!";
     }
 }

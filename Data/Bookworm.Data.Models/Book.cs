@@ -80,12 +80,12 @@
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public ICollection<Rating> Ratings { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
-        public virtual ICollection<AuthorBook> AuthorsBooks { get; set; }
+        public ICollection<AuthorBook> AuthorsBooks { get; set; }
     }
 }
