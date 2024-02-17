@@ -8,18 +8,11 @@ namespace Bookworm.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "DownloadsCount",
-                table: "AspNetUsers",
-                newName: "Points");
+            migrationBuilder.AddColumn<int>(name: "Points", table: "AspNetUsers", nullable: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Points",
-                table: "AspNetUsers",
-                newName: "DownloadsCount");
         }
     }
 }
