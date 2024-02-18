@@ -13,11 +13,11 @@
 
     public class DeleteBookServiceTests
     {
-        //private readonly IList<Book> books;
-        //private readonly DeleteBookService service;
+        // private readonly IList<Book> books;
+        // private readonly DeleteBookService service;
 
-        //public DeleteBookServiceTests()
-        //{
+        // public DeleteBookServiceTests()
+        // {
         //    this.books = new List<Book>()
         //    {
         //        new Book()
@@ -38,24 +38,24 @@
         //        },
         //    };
 
-        //    Mock<IBlobService> mockBlobService = new Mock<IBlobService>();
+        // Mock<IBlobService> mockBlobService = new Mock<IBlobService>();
 
-        //    Mock<IDeletableEntityRepository<Book>> mockBookRepo = new Mock<IDeletableEntityRepository<Book>>();
+        // Mock<IDeletableEntityRepository<Book>> mockBookRepo = new Mock<IDeletableEntityRepository<Book>>();
         //    mockBookRepo.Setup(x => x.All()).Returns(this.books.AsQueryable());
         //    mockBookRepo.Setup(x => x.Delete(It.IsAny<Book>()))
         //        .Callback((Book book) => this.books.Remove(book));
 
-        //    this.service = new DeleteBookService(mockBookRepo.Object, mockBlobService.Object);
-        //}
+        // this.service = new DeleteBookService(mockBookRepo.Object, mockBlobService.Object);
+        // }
 
-        //[Fact]
-        //public async Task DeleteBookShouldWorkCorrectly()
-        //{
+        // [Fact]
+        // public async Task DeleteBookShouldWorkCorrectly()
+        // {
         //    await this.service.DeleteBookAsync("77e6fd96-e081-441b-a349-1e6f00e8a5ca");
 
-        //    Book book = this.books.FirstOrDefault(x => x.Id == "77e6fd96-e081-441b-a349-1e6f00e8a5ca");
+        // Book book = this.books.FirstOrDefault(x => x.Id == "77e6fd96-e081-441b-a349-1e6f00e8a5ca");
         //    Assert.Single(this.books);
         //    Assert.Null(book);
-        //}
+        // }
     }
 }

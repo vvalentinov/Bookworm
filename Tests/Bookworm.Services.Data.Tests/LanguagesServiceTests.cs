@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Models;
@@ -43,15 +44,14 @@
             this.languagesService = new LanguagesService(mockLanguagesRepo.Object);
         }
 
-        //[Fact]
-        //public void LanguagesCountShouldBeCorrect()
-        //{
+        // [Fact]
+        // public void LanguagesCountShouldBeCorrect()
+        // {
         //    IEnumerable<SelectListItem> languages = this.languagesService.GetAllLanguages();
 
-        //    Assert.Equal(3, languages.Count());
+        // Assert.Equal(3, languages.Count());
         //    Assert.IsType<List<SelectListItem>>(languages);
-        //}
-
+        // }
         [Fact]
         public async Task GetLanguageNameShouldWorkCorrectly()
         {

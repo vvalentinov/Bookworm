@@ -1,10 +1,10 @@
-﻿//namespace Bookworm.Services.Data.Tests
-//{
+﻿// namespace Bookworm.Services.Data.Tests
+// {
 //    using System.Collections.Generic;
 //    using System.Linq;
 //    using System.Threading.Tasks;
 
-//    using Bookworm.Data.Common.Repositories;
+// using Bookworm.Data.Common.Repositories;
 //    using Bookworm.Data.Models;
 //    using Bookworm.Services.Data.Contracts;
 //    using Bookworm.Services.Data.Models.Books;
@@ -12,7 +12,7 @@
 //    using Moq;
 //    using Xunit;
 
-//    public class BookServiceTests
+// public class BookServiceTests
 //    {
 //        private readonly IList<Book> books;
 //        private readonly IList<AuthorBook> authorBooks;
@@ -23,9 +23,9 @@
 //        private readonly IList<Vote> votes;
 //        private readonly IList<FavoriteBook> favoriteBooks;
 
-//        private readonly RetrieveBooksService booksService;
+// private readonly RetrieveBooksService booksService;
 
-//        public BookServiceTests()
+// public BookServiceTests()
 //        {
 //            this.authorBooks = new List<AuthorBook>()
 //            {
@@ -36,7 +36,7 @@
 //                },
 //            };
 
-//            this.authors = new List<Author>()
+// this.authors = new List<Author>()
 //            {
 //                new Author()
 //                {
@@ -45,7 +45,7 @@
 //                },
 //            };
 
-//            this.publishers = new List<Publisher>()
+// this.publishers = new List<Publisher>()
 //            {
 //                new Publisher()
 //                {
@@ -54,7 +54,7 @@
 //                },
 //            };
 
-//            this.comments = new List<Comment>();
+// this.comments = new List<Comment>();
 //            this.ratings = new List<Rating>()
 //            {
 //                new Rating()
@@ -65,7 +65,7 @@
 //            };
 //            this.votes = new List<Vote>();
 
-//            this.favoriteBooks = new List<FavoriteBook>()
+// this.favoriteBooks = new List<FavoriteBook>()
 //            {
 //                new FavoriteBook()
 //                {
@@ -74,7 +74,7 @@
 //                },
 //            };
 
-//            this.books = new List<Book>()
+// this.books = new List<Book>()
 //            {
 //                new Book()
 //                {
@@ -118,37 +118,37 @@
 //                },
 //            };
 
-//            Mock<IRepository<AuthorBook>> mockAuthorBookRepo = new Mock<IRepository<AuthorBook>>();
+// Mock<IRepository<AuthorBook>> mockAuthorBookRepo = new Mock<IRepository<AuthorBook>>();
 //            mockAuthorBookRepo.Setup(x => x.AllAsNoTracking()).Returns(this.authorBooks.AsQueryable());
 
-//            Mock<IDeletableEntityRepository<Author>> mockAuthorRepo = new Mock<IDeletableEntityRepository<Author>>();
+// Mock<IDeletableEntityRepository<Author>> mockAuthorRepo = new Mock<IDeletableEntityRepository<Author>>();
 //            mockAuthorRepo.Setup(x => x.AllAsNoTracking()).Returns(this.authors.AsQueryable());
 
-//            Mock<IDeletableEntityRepository<Publisher>> mockPublisherRepo = new Mock<IDeletableEntityRepository<Publisher>>();
+// Mock<IDeletableEntityRepository<Publisher>> mockPublisherRepo = new Mock<IDeletableEntityRepository<Publisher>>();
 //            mockPublisherRepo.Setup(x => x.AllAsNoTracking()).Returns(this.publishers.AsQueryable());
 
-//            Mock<IRepository<Comment>> mockCommentRepo = new Mock<IRepository<Comment>>();
+// Mock<IRepository<Comment>> mockCommentRepo = new Mock<IRepository<Comment>>();
 //            mockCommentRepo.Setup(x => x.AllAsNoTracking()).Returns(this.comments.AsQueryable());
 //            mockCommentRepo.Setup(x => x.All()).Returns(this.comments.AsQueryable());
 
-//            Mock<IRepository<Rating>> mockRatingRepo = new Mock<IRepository<Rating>>();
+// Mock<IRepository<Rating>> mockRatingRepo = new Mock<IRepository<Rating>>();
 //            mockRatingRepo.Setup(x => x.AllAsNoTracking()).Returns(this.ratings.AsQueryable());
 //            mockRatingRepo.Setup(x => x.All()).Returns(this.ratings.AsQueryable());
 
-//            Mock<IRepository<Vote>> mockVoteRepo = new Mock<IRepository<Vote>>();
+// Mock<IRepository<Vote>> mockVoteRepo = new Mock<IRepository<Vote>>();
 //            mockVoteRepo.Setup(x => x.AllAsNoTracking()).Returns(this.votes.AsQueryable());
 
-//            Mock<IRepository<FavoriteBook>> mockFavoriteBookRepo = new Mock<IRepository<FavoriteBook>>();
+// Mock<IRepository<FavoriteBook>> mockFavoriteBookRepo = new Mock<IRepository<FavoriteBook>>();
 //            mockFavoriteBookRepo.Setup(x => x.AllAsNoTracking()).Returns(this.favoriteBooks.AsQueryable());
 
-//            Mock<ILanguagesService> mockLanguagesService = new Mock<ILanguagesService>();
+// Mock<ILanguagesService> mockLanguagesService = new Mock<ILanguagesService>();
 
-//            Mock<ICategoriesService> mockCategoriesService = new Mock<ICategoriesService>();
+// Mock<ICategoriesService> mockCategoriesService = new Mock<ICategoriesService>();
 //            Mock<IDeletableEntityRepository<Book>> mockBookRepo = new Mock<IDeletableEntityRepository<Book>>();
 //            mockBookRepo.Setup(x => x.AllAsNoTracking()).Returns(this.books.AsQueryable());
 //            mockBookRepo.Setup(x => x.All()).Returns(this.books.AsQueryable());
 
-//            this.booksService = new RetrieveBooksService(
+// this.booksService = new RetrieveBooksService(
 //                mockBookRepo.Object,
 //                mockAuthorBookRepo.Object,
 //                mockAuthorRepo.Object,
@@ -161,28 +161,28 @@
 //                mockFavoriteBookRepo.Object);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public void GetUnapprovedBooksShouldWorkCorrectly()
 //        {
 //            //IEnumerable<BookViewModel> books = this.booksService.GetUnapprovedBooks();
 
-//            //Assert.Single(books);
+// //Assert.Single(books);
 //            //Assert.Equal("77e6fd96-e081-441b-a349-1e6f00e8a5ca", books.SingleOrDefault().Id);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public void GetUnapprovedBookWithIdShouldWorkCorrectly()
 //        {
 //            //BookViewModel book = this.booksService.GetUnapprovedBookWithId("8e5fca84-9b02-4f98-9ca1-9268f2bfb62d");
 
-//            //Assert.NotNull(book);
+// //Assert.NotNull(book);
 //            //Assert.Equal("https://act.example.com/", book.FileUrl);
 //            //Assert.Equal("Second book description", book.Description);
 //            //Assert.Equal("Second book title", book.Title);
 //            //Assert.Equal("http://baseball.example.com/", book.ImageUrl);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public async Task GetUserBooksShouldWorkCorrectly()
 //        {
 //            BookListingViewModel model = await this.booksService.GetUserBooksAsync("cc741abb-7aba-42eb-bc02-d64d931af949", 1, 12);
@@ -192,38 +192,38 @@
 //            Assert.Equal("First book title", books[1].Title);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public async Task GetRecentBooksShouldWorkCorrectly()
 //        {
 //            //List<BookViewModel> books = await this.booksService.GetRecentBooksAsync(2);
 
-//            //Assert.Equal(2, books.Count);
+// //Assert.Equal(2, books.Count);
 //            //Assert.Equal("https://www.example.com/base/bit.php", books[0].ImageUrl);
 //            //Assert.Equal("http://baseball.example.com/", books[1].ImageUrl);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public void GetPopularBooksShouldWorkCorrectly()
 //        {
 //            //List<BookViewModel> books = this.booksService.GetPopularBooks(2).ToList();
 
-//            //Assert.Equal("http://baseball.example.com/", books[0].ImageUrl);
+// //Assert.Equal("http://baseball.example.com/", books[0].ImageUrl);
 //            //Assert.Equal("https://www.example.com/base/bit.php", books[1].ImageUrl);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public void GetBooksShouldWorkCorrectly()
 //        {
 //            //var model = this.booksService.GetBooks(5, 1, 2);
 //            //Assert.Equal(2, model.BookCount);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public void GetBookWithId()
 //        {
 //            //var book = this.booksService.GetBookWithId("8e5fca84-9b02-4f98-9ca1-9268f2bfb62d", "e397ffe3-95a4-4b13-b9b7-9c84bafccc32");
 
-//            //Assert.NotNull(book);
+// //Assert.NotNull(book);
 //        }
 //    }
-//}
+// }

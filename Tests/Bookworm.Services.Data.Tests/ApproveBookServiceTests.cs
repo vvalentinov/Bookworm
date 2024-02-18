@@ -63,7 +63,7 @@
         }
 
         [Fact]
-        public async Task ApproveBookShouldWorkCorrectly()
+        public void ApproveBookShouldWorkCorrectly()
         {
             // await this.approveBookService.ApproveBook("77e6fd96-e081-441b-a349-1e6f00e8a5ca", "5865cc89-166a-4abe-8749-8498291e9499");
             Book book = this.books.SingleOrDefault();

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Models;
@@ -73,8 +74,8 @@
         [Fact]
         public void GetCategoryNameShouldWorkCorrectly()
         {
-            //string categoryName = this.categoriesService.GetCategoryName(5);
-            //Assert.Equal("Cooking", categoryName);
+            // string categoryName = this.categoriesService.GetCategoryName(5);
+            // Assert.Equal("Cooking", categoryName);
         }
 
         [Fact]

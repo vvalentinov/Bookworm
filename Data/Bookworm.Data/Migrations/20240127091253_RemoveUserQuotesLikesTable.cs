@@ -1,10 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-#nullable disable
+﻿#nullable disable
 
 namespace Bookworm.Data.Migrations
 {
+    using System;
+
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     /// <inheritdoc />
     public partial class RemoveUserQuotesLikesTable : Migration
     {
@@ -141,7 +142,7 @@ namespace Bookworm.Data.Migrations
                 table: "Ratings",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true)
@@ -171,7 +172,7 @@ namespace Bookworm.Data.Migrations
                 table: "Ratings",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true)
@@ -247,7 +248,7 @@ namespace Bookworm.Data.Migrations
                 table: "QuotesLikes",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "")
+                defaultValue: string.Empty)
                 .Annotation("Relational:ColumnOrder", 2);
 
             migrationBuilder.AlterColumn<string>(
@@ -380,7 +381,7 @@ namespace Bookworm.Data.Migrations
                 table: "FavoriteBooks",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true)
@@ -410,7 +411,7 @@ namespace Bookworm.Data.Migrations
                 table: "FavoriteBooks",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true)
@@ -447,7 +448,7 @@ namespace Bookworm.Data.Migrations
                 table: "Comments",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true);
@@ -486,7 +487,7 @@ namespace Bookworm.Data.Migrations
                 type: "nvarchar(1000)",
                 maxLength: 1000,
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(1000)",
                 oldMaxLength: 1000,
@@ -498,7 +499,7 @@ namespace Bookworm.Data.Migrations
                 table: "Comments",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true);
@@ -591,7 +592,7 @@ namespace Bookworm.Data.Migrations
                 table: "Books",
                 type: "nvarchar(450)",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)",
                 oldNullable: true)
@@ -1755,7 +1756,7 @@ namespace Bookworm.Data.Migrations
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                 },
                 constraints: table =>
                 {

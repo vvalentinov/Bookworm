@@ -1,23 +1,23 @@
-﻿//namespace Bookworm.Services.Data.Tests
-//{
+﻿// namespace Bookworm.Services.Data.Tests
+// {
 //    using System.Collections.Generic;
 //    using System.Linq;
 //    using System.Threading.Tasks;
 
-//    using Bookworm.Data.Common.Repositories;
+// using Bookworm.Data.Common.Repositories;
 //    using Bookworm.Data.Models;
 //    using Bookworm.Data.Models.Enums;
 //    using Bookworm.Services.Data.Models;
 //    using Moq;
 //    using Xunit;
 
-//    public class CommentsServiceTests
+// public class CommentsServiceTests
 //    {
 //        private readonly IList<Comment> comments;
 //        private readonly IList<Vote> votes;
 //        private readonly CommentsService commentsService;
 
-//        public CommentsServiceTests()
+// public CommentsServiceTests()
 //        {
 //            this.votes = new List<Vote>()
 //            {
@@ -35,7 +35,7 @@
 //                },
 //            };
 
-//            this.comments = new List<Comment>()
+// this.comments = new List<Comment>()
 //            {
 //                new Comment()
 //                {
@@ -55,7 +55,7 @@
 //                },
 //            };
 
-//            Mock<IRepository<Vote>> mockVoteRepo = new Mock<IRepository<Vote>>();
+// Mock<IRepository<Vote>> mockVoteRepo = new Mock<IRepository<Vote>>();
 //            mockVoteRepo.Setup(x => x.All()).Returns(this.votes.AsQueryable());
 //            mockVoteRepo.Setup(x => x.AllAsNoTracking()).Returns(this.votes.AsQueryable());
 //            mockVoteRepo.Setup(x => x.AddAsync(It.IsAny<Vote>()))
@@ -63,7 +63,7 @@
 //            mockVoteRepo.Setup(x => x.Delete(It.IsAny<Vote>()))
 //                .Callback((Vote vote) => this.votes.Remove(vote));
 
-//            Mock<IRepository<Comment>> mockCommentsRepo = new Mock<IRepository<Comment>>();
+// Mock<IRepository<Comment>> mockCommentsRepo = new Mock<IRepository<Comment>>();
 //            mockCommentsRepo.Setup(x => x.All()).Returns(this.comments.AsQueryable());
 //            mockCommentsRepo.Setup(x => x.AllAsNoTracking()).Returns(this.comments.AsQueryable());
 //            mockCommentsRepo.Setup(x => x.AddAsync(It.IsAny<Comment>()))
@@ -71,32 +71,32 @@
 //            mockCommentsRepo.Setup(x => x.Delete(It.IsAny<Comment>()))
 //                .Callback((Comment comment) => this.comments.Remove(comment));
 
-//            this.commentsService = new CommentsService(mockCommentsRepo.Object, mockVoteRepo.Object);
+// this.commentsService = new CommentsService(mockCommentsRepo.Object, mockVoteRepo.Object);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public void CommentShouldHaveTheCorrectUserId()
 //        {
 //            string userId = this.commentsService.GetCommentUserId(1);
 
-//            Assert.Equal("2ce0609c-7492-47cf-a09b-14e6b329e5d7", userId);
+// Assert.Equal("2ce0609c-7492-47cf-a09b-14e6b329e5d7", userId);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public async Task DeleteCommentShouldWorkCorrectly()
 //        {
 //            await this.commentsService.DeleteAsync(1);
 
-//            Comment comment = this.comments.FirstOrDefault(x => x.Id == 1);
+// Comment comment = this.comments.FirstOrDefault(x => x.Id == 1);
 //            Assert.Null(comment);
 //        }
 
-//        [Fact]
+// [Fact]
 //        public async Task CommentCreateShouldWorkCorrectly()
 //        {
 //            await this.commentsService.Create("cf092d2f-e9c5-4416-a3d1-b6769cd7f364", "Some comment content", "a28c1cf8-8877-402c-adb7-855dbf5905da");
 
-//            Comment comment = this.comments.FirstOrDefault(x =>
+// Comment comment = this.comments.FirstOrDefault(x =>
 //                                                       x.UserId == "cf092d2f-e9c5-4416-a3d1-b6769cd7f364" &&
 //                                                       x.BookId == "a28c1cf8-8877-402c-adb7-855dbf5905da" &&
 //                                                       x.Content == "Some comment content");
@@ -107,4 +107,4 @@
 //            Assert.Equal("Some comment content", comment.Content);
 //        }
 //    }
-//}
+// }
