@@ -7,7 +7,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Comments;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +24,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Post([Bind(Prefix = "PostComment")] PostCommentInputModel model)
         {
             try
@@ -41,7 +39,7 @@
             }
         }
 
-        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> Delete(int deleteCommentId, string bookId)
         {
             try
@@ -59,7 +57,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Edit(int editCommentId, string content, string bookId)
         {
             try

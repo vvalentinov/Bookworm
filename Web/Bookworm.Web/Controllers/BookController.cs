@@ -1,7 +1,6 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -52,14 +51,12 @@
         }
 
         [HttpGet]
-        [Authorize]
         public IActionResult Upload()
         {
             return this.View(new UploadBookViewModel());
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
             if (!this.ModelState.IsValid)
@@ -86,14 +83,14 @@
             }
         }
 
-        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Edit(string bookId)
         {
-            EditBookViewModel model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+            var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+
             return this.View(model);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(EditBookViewModel model)
         {
@@ -119,15 +116,14 @@
             }
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(string bookId)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            string userId = this.userManager.GetUserId(this.User);
 
             try
             {
-                await this.updateBookService.DeleteBookAsync(bookId, user.Id);
+                await this.updateBookService.DeleteBookAsync(bookId, userId);
                 this.TempData[MessageConstant.SuccessMessage] = BookDeleteSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
@@ -138,27 +134,36 @@
             }
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Random()
         {
-            RandomBookFormViewModel model = new RandomBookFormViewModel();
+            var model = new RandomBookFormViewModel();
+
             return this.View(model);
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Random(RandomBookFormViewModel model)
         {
-            IEnumerable<BookViewModel> books = this.randomBookService.GenerateBooks(model.CategoryName, model.CountBooks);
+            var books = this.randomBookService.GenerateBooks(model.CategoryName, model.CountBooks);
+
             return this.View("GeneratedBooks", books);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> All(string categoryName, int page = 1)
         {
             int categoryId = this.categoriesService.GetCategoryId(categoryName);
-            BookListingViewModel model = await this.retrieveBooksService.GetBooksAsync(categoryId, page, 12);
+
+            var model = await this.retrieveBooksService.GetBooksAsync(categoryId, page, 12);
+
             return this.View(model);
         }
 
-        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> UserBooks(int page = 1)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
@@ -166,6 +171,8 @@
             return this.View(books);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             string userId = this.userManager.GetUserId(this.User);
@@ -175,7 +182,7 @@
             return this.View(bookViewModel);
         }
 
-        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Download(string id)
         {
             var result = await this.blobService.DownloadBlobAsync(id);

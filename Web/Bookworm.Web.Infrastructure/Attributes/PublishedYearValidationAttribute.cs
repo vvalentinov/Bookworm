@@ -7,7 +7,7 @@
     {
         public PublishedYearValidationAttribute(int minYear)
         {
-            MinYear = minYear;
+            this.MinYear = minYear;
         }
 
         public int MinYear { get; }
@@ -16,7 +16,7 @@
         {
             if (value is int year)
             {
-                if (year >= MinYear && year <= DateTime.UtcNow.Year)
+                if (year >= this.MinYear && year <= DateTime.UtcNow.Year)
                 {
                     return ValidationResult.Success;
                 }

@@ -1,9 +1,7 @@
 ﻿namespace Bookworm.Web
 {
     using System.Reflection;
-    using System.Threading.Tasks;
 
-    using Azure.Storage.Blobs;
     using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Seeding;
@@ -44,8 +42,6 @@
 
             builder.Services.AddSingleton(builder.Configuration);
 
-            builder.Services.AddScoped(x => new BlobServiceClient(builder.Configuration["ConnectionStrings:StorageConnection"]));
-
             builder.Services.AddApplicationServices(builder.Configuration);
 
             builder.Services.AddDistributedSqlServerCache(options =>
@@ -53,15 +49,6 @@
                 options.ConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
                 options.SchemaName = "dbo";
                 options.TableName = "Cache";
-            });
-
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
-                };
             });
 
             WebApplication app = builder.Build();
@@ -74,7 +61,6 @@
                     .ServiceProvider
                     .GetRequiredService<ApplicationDbContext>();
 
-                // dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder(builder.Configuration)
                     .SeedAsync(dbContext, serviceScope.ServiceProvider)
                     .GetAwaiter()

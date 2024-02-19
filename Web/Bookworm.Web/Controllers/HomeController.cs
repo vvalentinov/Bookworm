@@ -7,6 +7,7 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels;
     using Bookworm.Web.ViewModels.Home;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController
@@ -22,6 +23,8 @@
             this.booksService = booksService;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var model = new IndexViewModel
@@ -42,8 +45,10 @@
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return this.View(
-                new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
+            });
         }
     }
 }

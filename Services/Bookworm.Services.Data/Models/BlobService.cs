@@ -4,7 +4,6 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    using Azure.Storage;
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using Bookworm.Data.Common.Repositories;
@@ -17,15 +16,12 @@
     public class BlobService : IBlobService
     {
         private readonly IConfiguration configuration;
-        private readonly BlobServiceClient blobServiceClient;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public BlobService(
-            BlobServiceClient blobServiceClient,
             IConfiguration configuration,
             IDeletableEntityRepository<Book> bookRepository)
         {
-            this.blobServiceClient = blobServiceClient;
             this.configuration = configuration;
             this.bookRepository = bookRepository;
         }
@@ -46,7 +42,8 @@
             Uri uri = new Uri(book.FileUrl);
 
             string containerName = this.configuration.GetConnectionString("ContainerName");
-            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            var blobServiceClient = this.GetBlobServiceClient();
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
             BlobClient blobClient = new BlobClient(uri);
 
             BlobProperties blobProperties = blobClient.GetProperties();
@@ -62,7 +59,9 @@
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
 
-            var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            var blobServiceClient = this.GetBlobServiceClient();
+
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
             string uniqueName = GenerateUniqueName(file, path);
 
@@ -80,7 +79,9 @@
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
 
-            var containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
+            var blobServiceClient = this.GetBlobServiceClient();
+
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
             var oldBlobClient = containerClient.GetBlobClient(blobName);
 
@@ -91,22 +92,13 @@
 
             string uniqueName = GenerateUniqueName(file, path);
 
-            string accountName = this.configuration.GetConnectionString("AccountName");
-            string accountKey = this.configuration.GetConnectionString("AccountKey");
+            await containerClient.CreateIfNotExistsAsync();
 
-            var serviceUri = new Uri($"https://{accountName}.blob.core.windows.net");
-            var credential = new StorageSharedKeyCredential(accountName, accountKey);
-
-            var blobServiceClient = new BlobServiceClient(serviceUri, credential);
-            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-            await blobContainerClient.CreateIfNotExistsAsync();
-
-            var blobCopyClient = blobContainerClient.GetBlobClient($"{path}{uniqueName}");
+            var blobCopyClient = containerClient.GetBlobClient($"{path}{uniqueName}");
 
             if (!await blobCopyClient.ExistsAsync())
             {
-                var newBlobClient = blobContainerClient.GetBlobClient(blobName);
+                var newBlobClient = containerClient.GetBlobClient(blobName);
 
                 if (await newBlobClient.ExistsAsync())
                 {
@@ -121,12 +113,19 @@
         public async Task DeleteBlobAsync(string blobName)
         {
             string containerName = this.configuration.GetConnectionString("ContainerName");
-            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(containerName);
-            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+
+            var blobServiceClient = this.GetBlobServiceClient();
+
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            var blobClient = containerClient.GetBlobClient(blobName);
+
             await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
         }
 
         private static string GenerateUniqueName(IFormFile file, string path)
          => $"{path}{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+
+        private BlobServiceClient GetBlobServiceClient() => new (this.configuration.GetConnectionString("StorageConnection"));
     }
 }

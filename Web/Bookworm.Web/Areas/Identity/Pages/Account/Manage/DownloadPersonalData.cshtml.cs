@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -50,7 +51,7 @@
                 personalData.Add($"{l.LoginProvider} external login provider key", l.ProviderKey);
             }
 
-            this.Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
+            this.Response.Headers.Append("Content-Disposition", "attachment; filename=PersonalData.json");
             return new FileContentResult(JsonSerializer.SerializeToUtf8Bytes(personalData), "application/json");
         }
     }

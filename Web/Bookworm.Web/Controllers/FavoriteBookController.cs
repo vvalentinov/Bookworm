@@ -6,7 +6,6 @@
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -15,13 +14,22 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IFavoriteBooksService favoriteBooksService;
 
-        public FavoriteBookController(UserManager<ApplicationUser> userManager, IFavoriteBooksService favoriteBooksService)
+        public FavoriteBookController(
+            UserManager<ApplicationUser> userManager,
+            IFavoriteBooksService favoriteBooksService)
         {
             this.userManager = userManager;
             this.favoriteBooksService = favoriteBooksService;
         }
 
-        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Favorites()
+        {
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            var books = this.favoriteBooksService.GetUserFavoriteBooks(user.Id);
+            return this.View(books);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddToFavorites(string id)
         {
@@ -38,21 +46,13 @@
             return this.Ok();
         }
 
-        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> DeleteFromFavorites(string bookId)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             await this.favoriteBooksService.DeleteFromFavoritesAsync(bookId, user.Id);
             this.TempData[MessageConstant.SuccessMessage] = "Successfully removed book!";
             return this.RedirectToAction("Favorites");
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Favorites()
-        {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            var books = this.favoriteBooksService.GetUserFavoriteBooks(user.Id);
-            return this.View(books);
         }
     }
 }

@@ -37,14 +37,12 @@
         }
 
         [HttpGet]
-        [Authorize]
         public IActionResult Upload()
         {
             return this.View(new UploadQuoteViewModel());
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> UploadGeneralQuote(GeneralQuoteInputModel generalQuoteInputModel)
         {
             if (this.ModelState.IsValid == false)
@@ -72,7 +70,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> UploadMovieQuote(MovieQuoteInputModel movieQuoteInputModel)
         {
             if (this.ModelState.IsValid == false)
@@ -100,7 +97,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> UploadBookQuote(BookQuoteInputModel bookQuoteInputModel)
         {
             if (this.ModelState.IsValid == false)
@@ -128,7 +124,6 @@
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             try
@@ -148,7 +143,6 @@
             }
         }
 
-        [Authorize]
         [HttpPost(Name = EditGeneralQuoteAction)]
         public async Task<IActionResult> EditGeneralQuote(GeneralQuoteInputModel generalQuoteInputModel)
         {
@@ -177,7 +171,6 @@
             }
         }
 
-        [Authorize]
         [HttpPost(Name = EditBookQuoteAction)]
         public async Task<IActionResult> EditBookQuote(BookQuoteInputModel bookQuoteInputModel)
         {
@@ -205,7 +198,6 @@
             }
         }
 
-        [Authorize]
         [HttpPost(Name = EditMovieQuoteAction)]
         public async Task<IActionResult> EditMovieQuote(MovieQuoteInputModel movieQuoteInputModel)
         {
@@ -234,7 +226,6 @@
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> UserQuotes(int id = 1)
         {
             if (id <= 0)
@@ -250,7 +241,6 @@
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Delete(int quoteId)
         {
             try
@@ -270,6 +260,7 @@
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> All(int id = 1)
         {
             if (id <= 0)
