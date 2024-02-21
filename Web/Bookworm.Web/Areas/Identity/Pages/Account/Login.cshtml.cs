@@ -65,13 +65,6 @@
 
             if (this.ModelState.IsValid)
             {
-                var user = await this.userManager.FindByEmailAsync(this.Input.Email);
-                if (user?.UserName != this.Input.UserName)
-                {
-                    this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return this.Page();
-                }
-
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await this.signInManager.PasswordSignInAsync(
@@ -112,10 +105,6 @@
             [Required]
             [Display(Name = "Username")]
             public string UserName { get; set; }
-
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
 
             [Required]
             [DataType(DataType.Password)]

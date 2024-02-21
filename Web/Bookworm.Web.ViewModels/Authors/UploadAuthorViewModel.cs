@@ -10,8 +10,6 @@
 
     public class UploadAuthorViewModel : IMapFrom<Author>
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage = RequiredAuthorNameError)]
         [StringLength(
             AuthorNameMaxLength,

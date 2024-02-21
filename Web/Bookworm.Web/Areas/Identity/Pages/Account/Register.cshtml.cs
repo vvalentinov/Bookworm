@@ -54,7 +54,15 @@
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= this.Url.Content("~/");
+
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (await this.userManager.FindByEmailAsync(this.Input.Email) != null)
+            {
+                this.ModelState.AddModelError("Email", "User with given email already exist!");
+                return this.Page();
+            }
+
             if (this.ModelState.IsValid)
             {
                 ApplicationUser user = new ()

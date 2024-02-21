@@ -28,12 +28,14 @@
 
             services.AddTransient<ISettingsService, SettingsService>();
 
+            // Quotes services
             services.AddTransient<IManageQuoteLikesService, ManageQuoteLikesService>();
             services.AddTransient<IRetrieveQuotesService, RetrieveQuotesService>();
             services.AddTransient<ISearchQuoteService, SearchQuoteService>();
             services.AddTransient<IUpdateQuoteService, UpdateQuoteService>();
             services.AddTransient<IUploadQuoteService, UploadQuoteService>();
 
+            // Books services
             services.AddTransient<IValidateUploadedBookService, ValidateUploadedBookService>();
             services.AddTransient<IRetrieveBooksService, RetrieveBooksService>();
             services.AddTransient<IUploadBookService, UploadBookService>();
@@ -55,10 +57,7 @@
 
             services.AddTransient<IUsersService, UsersService>();
 
-            services.AddAntiforgery(options =>
-            {
-                options.HeaderName = "X-CSRF-TOKEN";
-            });
+            services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 
             return services;
         }

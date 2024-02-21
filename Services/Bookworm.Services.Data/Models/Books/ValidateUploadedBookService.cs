@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -13,12 +12,11 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
+    using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
     public class ValidateUploadedBookService : IValidateUploadedBookService
     {
-        private readonly string[] permittedImageExtensions = { ".png", ".jpg", ".jpeg" };
         private readonly IRepository<Category> categoryRepository;
         private readonly IRepository<Language> languageRepository;
 
@@ -58,13 +56,6 @@
                 {
                     throw new InvalidOperationException(BookInvalidPdfSizeError);
                 }
-
-                string bookFileExtension = Path.GetExtension(bookFile.FileName);
-
-                if (bookFileExtension != BookFileAllowedExtension)
-                {
-                    throw new InvalidOperationException(BookInvalidFileExtensionError);
-                }
             }
 
             if (imageFile != null)
@@ -73,33 +64,21 @@
                 {
                     throw new InvalidOperationException(BookImageFileEmptyError);
                 }
-
-                string bookImageExtension = Path.GetExtension(imageFile.FileName);
-
-                if (this.permittedImageExtensions.Contains(bookImageExtension) == false)
-                {
-                    throw new InvalidOperationException(BookInvalidImageFileError);
-                }
-            }
-
-            if (authors == null)
-            {
-                throw new InvalidOperationException(BookMissingAuthorsError);
             }
 
             bool hasDuplicates = authors
-                .Select(x => x.Name)
+                .Select(x => x.Name.Trim())
                 .GroupBy(author => author)
                 .Any(group => group.Count() > 1);
 
             if (hasDuplicates)
             {
-                throw new Exception("No author duplicates allowed!");
+                throw new Exception(AuthorDuplicatesError);
             }
 
             if (authors.Count() > 5)
             {
-                throw new InvalidOperationException("Authors count must be between 1 and 5!");
+                throw new InvalidOperationException(AuthorsCountError);
             }
         }
     }

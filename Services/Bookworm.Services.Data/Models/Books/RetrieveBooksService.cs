@@ -134,7 +134,6 @@
                     Authors = x.AuthorsBooks
                         .Select(a => new UploadAuthorViewModel
                         {
-                            Id = a.Author.Id,
                             Name = a.Author.Name,
                         }).ToList(),
                     CategoryId = x.CategoryId,

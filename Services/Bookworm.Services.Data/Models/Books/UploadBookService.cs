@@ -11,6 +11,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;
+    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
     public class UploadBookService : IUploadBookService
     {
@@ -45,7 +46,7 @@
 
             if (bookWithTitleExist)
             {
-                throw new InvalidOperationException("Book with given name already exist!");
+                throw new InvalidOperationException(BookWithTitleExistsError);
             }
 
             await this.validateUploadedBookService.ValidateUploadedBookAsync(
@@ -75,7 +76,7 @@
             {
                 var publisher = await this.publisherRepository
                     .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name.ToLower() == uploadBookDto.Publisher.ToLower());
+                    .FirstOrDefaultAsync(x => x.Name.ToLower() == uploadBookDto.Publisher.Trim().ToLower());
 
                 if (publisher == null)
                 {
@@ -98,38 +99,31 @@
 
                 if (author == null)
                 {
-                    author = new Author() { Name = authorModel.Name.Trim() };
+                    author = new Author { Name = authorModel.Name.Trim() };
                     await this.authorRepository.AddAsync(author);
                     await this.authorRepository.SaveChangesAsync();
 
-                    var authorBook = new AuthorBook
-                    {
-                        BookId = book.Id,
-                        AuthorId = author.Id,
-                    };
-
-                    await this.authorBookRepository.AddAsync(authorBook);
-                    await this.authorBookRepository.SaveChangesAsync();
+                    await this.AddAuthorBookConnectionAsync(book.Id, author.Id);
                 }
                 else
                 {
-                    var authorBookConnection = await this.authorBookRepository
+                    var authorBook = await this.authorBookRepository
                         .AllAsNoTracking()
                         .FirstOrDefaultAsync(x => x.BookId == book.Id && x.AuthorId == author.Id);
 
-                    if (authorBookConnection == null)
+                    if (authorBook == null)
                     {
-                        var authorBook = new AuthorBook
-                        {
-                            BookId = book.Id,
-                            AuthorId = author.Id,
-                        };
-
-                        await this.authorBookRepository.AddAsync(authorBook);
-                        await this.authorBookRepository.SaveChangesAsync();
+                        await this.AddAuthorBookConnectionAsync(book.Id, author.Id);
                     }
                 }
             }
+        }
+
+        private async Task AddAuthorBookConnectionAsync(string bookId, int authorId)
+        {
+            var authorBook = new AuthorBook { BookId = bookId, AuthorId = authorId };
+            await this.authorBookRepository.AddAsync(authorBook);
+            await this.authorBookRepository.SaveChangesAsync();
         }
     }
 }

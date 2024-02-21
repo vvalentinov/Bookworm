@@ -41,9 +41,8 @@
 
             Uri uri = new Uri(book.FileUrl);
 
-            string containerName = this.configuration.GetConnectionString("ContainerName");
             var blobServiceClient = this.GetBlobServiceClient();
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(this.GetContainerName());
             BlobClient blobClient = new BlobClient(uri);
 
             BlobProperties blobProperties = blobClient.GetProperties();
@@ -57,11 +56,9 @@
 
         public async Task<string> UploadBlobAsync(IFormFile file, string path)
         {
-            string containerName = this.configuration.GetConnectionString("ContainerName");
-
             var blobServiceClient = this.GetBlobServiceClient();
 
-            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = blobServiceClient.GetBlobContainerClient(this.GetContainerName());
 
             string uniqueName = GenerateUniqueName(file, path);
 
@@ -77,11 +74,9 @@
 
         public async Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path)
         {
-            string containerName = this.configuration.GetConnectionString("ContainerName");
-
             var blobServiceClient = this.GetBlobServiceClient();
 
-            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = blobServiceClient.GetBlobContainerClient(this.GetContainerName());
 
             var oldBlobClient = containerClient.GetBlobClient(blobName);
 
@@ -112,11 +107,9 @@
 
         public async Task DeleteBlobAsync(string blobName)
         {
-            string containerName = this.configuration.GetConnectionString("ContainerName");
-
             var blobServiceClient = this.GetBlobServiceClient();
 
-            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = blobServiceClient.GetBlobContainerClient(this.GetContainerName());
 
             var blobClient = containerClient.GetBlobClient(blobName);
 
@@ -124,8 +117,10 @@
         }
 
         private static string GenerateUniqueName(IFormFile file, string path)
-         => $"{path}{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            => $"{path}{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
         private BlobServiceClient GetBlobServiceClient() => new (this.configuration.GetConnectionString("StorageConnection"));
+
+        private string GetContainerName() => this.configuration.GetConnectionString("ContainerName");
     }
 }

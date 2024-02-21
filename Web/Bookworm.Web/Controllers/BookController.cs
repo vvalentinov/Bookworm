@@ -57,6 +57,7 @@
         }
 
         [HttpPost]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
             if (!this.ModelState.IsValid)
@@ -99,19 +100,22 @@
                 return this.View(model);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            var user = await this.userManager.GetUserAsync(this.User);
 
             var editBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
 
             try
             {
-                await this.updateBookService.EditBookAsync(editBookDto, model.Authors, user.Id);
+                await this.updateBookService.EditBookAsync(editBookDto, user.Id);
+
                 this.TempData[MessageConstant.SuccessMessage] = BookEditSuccess;
+
                 return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+
                 return this.View(model);
             }
         }

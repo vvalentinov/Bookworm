@@ -83,8 +83,16 @@
         [HttpPost]
         public async Task<IActionResult> ApproveBook(string bookId)
         {
-            await this.updateBookService.ApproveBookAsync(bookId);
-            return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
+            try
+            {
+                await this.updateBookService.ApproveBookAsync(bookId);
+                return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
+            }
         }
 
         [HttpPost]

@@ -54,3 +54,19 @@
         return;
     }
 });
+
+function removeAuthor(e) {
+    let authorsContainer = document.getElementById('authorsContainer');
+    let authorsCount = authorsContainer.childElementCount - 2;
+    e.target.parentElement.remove();
+
+    const hiddenIdInputs = authorsContainer.querySelectorAll('input[type="hidden"]');
+    hiddenIdInputs.forEach((input, index) => input.name = `Authors[${index}].Id`);
+    const authorsNameInputs = authorsContainer.querySelectorAll('input[type="text"]');
+    authorsNameInputs.forEach((input, index) => input.name = `Authors[${index}].Name`);
+
+    if (authorsCount < 5) {
+        const addAuthorBtn = document.getElementById('addAuthorBtn');
+        addAuthorBtn.disabled = false;
+    }
+}

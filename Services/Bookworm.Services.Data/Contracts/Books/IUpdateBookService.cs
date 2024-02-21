@@ -1,9 +1,7 @@
 ﻿namespace Bookworm.Services.Data.Contracts.Books
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.DTOs;
 
     public interface IUpdateBookService
@@ -16,9 +14,6 @@
 
         Task UndeleteBookAsync(string bookId);
 
-        Task EditBookAsync(
-            BookDto editBookDto,
-            IEnumerable<UploadAuthorViewModel> authors,
-            string userId);
+        Task EditBookAsync(BookDto editBookDto, string userId);
     }
 }

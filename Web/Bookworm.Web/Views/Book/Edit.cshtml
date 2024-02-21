@@ -7,75 +7,80 @@
 
 <partial name="PartialViews/_TitleCardPartial" />
 
-<section class="editBookSection">
+<section class="uploadBookSection">
     <form method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="@Model.Id" value="@Model.Id">
         <div asp-validation-summary="All" class="text-danger"></div>
 
-        <div class="form-group">
-            <label asp-for="Title"><strong>Title</strong></label>
-            <input asp-for="Title" value="@Model.Title" type="text" class="form-control">
+        <div>
+            <label asp-for="Title"></label>
+            <input asp-for="Title" type="text" class="form-control fs-5">
             <span asp-validation-for="Title" class="small text-danger"></span>
         </div>
 
-        <div class="d-flex justify-content-center gap-3">
-            <div class="form-group mt-4 w-50">
-                <label asp-for="LanguageId"><strong>Select Language</strong></label>
-                <select asp-for="LanguageId" size="10" aria-label="size 5 select example" class="form-select form-control">
+        <div class="selectContainer">
+            <div class="mt-4">
+                <label asp-for="LanguageId"></label>
+                <select asp-for="LanguageId"
+                        size="8"
+                        aria-label="size 5 select example"
+                        class="fs-5 form-select">
                     @await Component.InvokeAsync("Languages", new { selectedLanguageId = Model.LanguageId })
                 </select>
+                <span asp-validation-for="LanguageId" class="small text-danger"></span>
             </div>
-
-            <div class="form-group mt-4 w-50">
-                <label asp-for="CategoryId"><strong>Select Category</strong></label>
-                <select asp-for="CategoryId" size="10" aria-label="size 5 select example" class="form-select form-control">
+            <div class="mt-4">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId"
+                        size="8"
+                        aria-label="size 5 select example"
+                        class="fs-5 form-select">
                     @await Component.InvokeAsync("Categories", new { selectedCategoryId = Model.CategoryId })
                 </select>
+                <span asp-validation-for="CategoryId" class="small text-danger"></span>
             </div>
+        </div>
+
+        <div class="mt-4">
+            <label asp-for="PagesCount"></label>
+            <input asp-for="PagesCount" type="number" class="form-control fs-5">
+            <span asp-validation-for="PagesCount" class="small text-danger"></span>
+        </div>
+
+        <div class="mt-4">
+            <label asp-for="PublishedYear"></label>
+            <input asp-for="PublishedYear" type="number" class="form-control fs-5">
+            <span asp-validation-for="PublishedYear" class="small text-danger"></span>
+        </div>
+
+        <div class="mt-4">
+            <label asp-for="Publisher"></label>
+            <input asp-for="Publisher" type="text" class="form-control fs-5">
+            <span asp-validation-for="Publisher" class="small text-danger"></span>
+        </div>
+
+        <div class="mt-4">
+            <label asp-for="BookFile" class="form-label"></label>
+            <input asp-for="BookFile" type="file" class="form-control fs-5">
+            <span asp-validation-for="BookFile" class="small text-danger"></span>
+        </div>
+
+        <div class="mt-4">
+            <label asp-for="ImageFile" class="form-label"></label>
+            <input asp-for="ImageFile" type="file" class="form-control fs-5">
+            <span asp-validation-for="ImageFile" class="small text-danger"></span>
         </div>
 
         
 
-        <div class="form-group mt-4">
-            <label asp-for="PagesCount"><strong>Number of Pages</strong></label>
-            <input asp-for="PagesCount" value="@Model.PagesCount" type="number" min="5" class="form-control">
-            <span asp-validation-for="PagesCount" class="small text-danger"></span>
-        </div>
-
-        <div class="form-group mt-4">
-            <label asp-for="BookFile" class="form-label"></label>
-            <input asp-for="BookFile" type="file" class="form-control">
-            <span asp-validation-for="BookFile" class="small text-danger"></span>
-        </div>
-
-        <div class="form-group mt-4">
-            <label asp-for="ImageFile" class="form-label"></label>
-            <input asp-for="ImageFile" type="file" class="form-control">
-            <span asp-validation-for="ImageFile" class="small text-danger"></span>
-        </div>
-
-        <div class="form-group mt-4">
-            <label asp-for="PublishedYear"><strong>Year</strong></label>
-            <input asp-for="PublishedYear" value="@Model.PublishedYear" type="number" class="form-control">
-            <span asp-validation-for="PublishedYear" class="small text-danger"></span>
-        </div>
-
-        <div class="form-group mt-4">
-            <label asp-for="Publisher"><strong>Publisher(optional)</strong></label>
-            <input asp-for="Publisher" value="@Model.Publisher" type="text" class="form-control">
-            <span asp-validation-for="Publisher" class="small text-danger"></span>
-        </div>
-
         <div class="mt-4" id="authorsContainer" data-index="0">
-            <div id="alert-message"></div>
             <button type="button"
                     id="addAuthorBtn"
                     class="btn button fs-5 w-100">
-                Add Author
-                <i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
+                Add Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
-            
-            @for (int i = 0; i < Model.Authors?.Count; i++)
+
+            @for (int i = 0; i < Model.Authors.Count(); i++)
             {
                 <div class="input-group mt-4">
                     <input asp-for="@Model.Authors[i].Name"
@@ -84,48 +89,30 @@
                            placeholder="Author's username"
                            aria-label="Author's username"
                            aria-describedby="button-addon2">
-                    <button onclick="removeAuthor(event)" class="btn btn-danger" type="button">
+                    <button onclick="removeAuthor(event)"
+                            class="btn btn-danger"
+                            type="button">
                         Remove
                     </button>
                 </div>
             }
         </div>
 
-        <div class="form-group mt-4">
-            <label asp-for="Description"><strong>Description</strong></label>
-            <textarea asp-for="Description" class="form-control" rows="12"></textarea>
+        <div class="mt-4">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"></textarea>
             <span asp-validation-for="Description" class="small text-danger"></span>
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn button btn-lg">
+        <div class="text-center my-4">
+            <button type="submit" class="btn fs-5">
                 <strong>Edit Book<i class="fa fa-pen-to-square ms-2"></i></strong>
             </button>
         </div>
     </form>
 </section>
 
-
-
-
 @section Scripts {
-    <script>
-        function removeAuthor(e) {
-            let authorsContainer = document.getElementById('authorsContainer');
-            let authorsCount = authorsContainer.childElementCount - 2;
-            event.target.parentElement.remove();
-
-            const hiddenIdInputs = authorsContainer.querySelectorAll('input[type="hidden"]');
-            hiddenIdInputs.forEach((input, index) => input.name = `Authors[${index}].Id`);
-            const authorsNameInputs = authorsContainer.querySelectorAll('input[type="text"]');
-            authorsNameInputs.forEach((input, index) => input.name = `Authors[${index}].Name`);
-
-            if (authorsCount < 5) {
-                const addAuthorBtn = document.getElementById('addAuthorBtn');
-                addAuthorBtn.disabled = false;
-            }
-        }
-    </script>
     <script src="~/js/authors.js"></script>
     <script src="~/lib/tinymce/tinymce.min.js"></script>
     <script>

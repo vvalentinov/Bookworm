@@ -266,13 +266,34 @@ body {
     align-items: center;
 }
 
-.loginRegisterForm {
-    flex-basis: 50%;
-}
+    .loginRegisterContainer #account {
+        border: solid 4px black;
+        padding: 2rem;
+        border-radius: 15px;
+        background-color: var(--clr-primary);
+    }
+
+        .loginRegisterContainer #account h5,
+        .loginRegisterContainer #account .rememberMe {
+            color: white;
+        }
+
+        .loginRegisterContainer #account button[type="submit"] {
+            background-color: var(--clr-secondary);
+            border: solid 2px black;
+            padding: 0.4rem 3rem;
+            font-size: 2rem;
+        }
+            .loginRegisterContainer #account button[type="submit"]:hover {
+                color: white;
+            }
+
+            .loginRegisterForm {
+                flex-basis: 50%;
+            }
 
 .loginRegisterImg {
-    height: 40rem;
-    flex-basis: 40%;
+    height: 30rem;
 }
 
 
@@ -357,29 +378,6 @@ body {
             .uploadBookSection form .selectContainer div {
                 width: 50%;
             }
-
-
-/*Book Edit*/
-.editBookSection {
-    display: flex;
-    justify-content: center;
-}
-
-    .editBookSection form {
-        width: 80%;
-        border: solid 2px black;
-        border-radius: 15px;
-        padding: 2rem;
-        margin: 2rem 0;
-        font-size: 1.1rem;
-    }
-
-        .editBookSection form input,
-        .editBookSection form select,
-        .editBookSection form textarea {
-            font-size: 1.2rem;
-            border: solid 2px black;
-        }
 
 
 /*Book Details*/
@@ -645,7 +643,8 @@ body {
         width: 100%;
         max-width: 7rem;
         height: 0.25rem;
-        background-color: var(--clr-custom-divider);
+        /*background-color: var(--clr-custom-divider);*/
+        background-color: var(--clr-secondary);
         border-radius: 1rem;
         border-color: var(--clr-custom-divider);
     }
@@ -659,7 +658,7 @@ body {
         }
 
     .divider-custom .divider-custom-icon {
-        color: var(--clr-custom-divider);
+        color: var(--clr-secondary);
         font-size: 2rem;
     }
 
@@ -673,13 +672,13 @@ body {
 
 
 a[class="form-link"] {
-    color: var(--clr-primary);
+    color: var(--clr-secondary);
     font-size: 1.2rem;
     text-decoration: none;
 }
 
     a[class="form-link"]:hover {
-        color: var(--clr-secondary);
+        color: white;
     }
 
 a[class="privacy-link"] {
