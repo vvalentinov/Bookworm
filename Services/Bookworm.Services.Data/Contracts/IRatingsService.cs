@@ -4,12 +4,12 @@
 
     public interface IRatingsService
     {
-        Task SetRatingAsync(string bookId, string userId, byte value);
+        Task SetRatingAsync(int bookId, string userId, byte value);
 
-        Task<double> GetAverageRatingAsync(string bookId);
+        Task<double> GetAverageRatingAsync(int bookId);
 
-        Task<int> GetUserRatingAsync(string bookId, string userId);
+        Task<int> GetUserRatingAsync(int bookId, string userId);
 
-        Task<int> GetRatingsCountAsync(string bookId);
+        Task<int> GetRatingsCountAsync(int bookId);
     }
 }

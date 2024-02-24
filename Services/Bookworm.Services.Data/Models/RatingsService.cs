@@ -17,7 +17,7 @@
             this.ratingRepository = ratingRepository;
         }
 
-        public async Task<double> GetAverageRatingAsync(string bookId)
+        public async Task<double> GetAverageRatingAsync(int bookId)
         {
             if (await this.GetRatingsCountAsync(bookId) > 0)
             {
@@ -30,7 +30,7 @@
             return 0;
         }
 
-        public async Task<int> GetUserRatingAsync(string bookId, string userId)
+        public async Task<int> GetUserRatingAsync(int bookId, string userId)
         {
             var rating = await this.ratingRepository
                  .AllAsNoTracking()
@@ -39,13 +39,13 @@
             return rating == null ? 0 : rating.Value;
         }
 
-        public async Task<int> GetRatingsCountAsync(string bookId)
+        public async Task<int> GetRatingsCountAsync(int bookId)
             => await this.ratingRepository
                 .AllAsNoTracking()
                 .Where(x => x.BookId == bookId)
                 .CountAsync();
 
-        public async Task SetRatingAsync(string bookId, string userId, byte value)
+        public async Task SetRatingAsync(int bookId, string userId, byte value)
         {
             Rating rating = await this.ratingRepository
                 .All()

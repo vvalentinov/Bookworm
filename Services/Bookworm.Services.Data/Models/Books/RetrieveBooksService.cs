@@ -45,7 +45,7 @@
             this.ratingsService = ratingsService;
         }
 
-        public async Task<BookViewModel> GetBookDetails(string bookId, string currentUserId)
+        public async Task<BookViewModel> GetBookDetails(int bookId, string currentUserId)
         {
             var bookViewModel = await this.bookRepository
                 .AllAsNoTracking()
@@ -122,7 +122,7 @@
             return bookViewModel;
         }
 
-        public async Task<EditBookViewModel> GetEditBookAsync(string bookId)
+        public async Task<EditBookViewModel> GetEditBookAsync(int bookId)
          => await this.bookRepository
                 .AllAsNoTracking()
                 .Include(x => x.Publisher)

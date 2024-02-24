@@ -15,12 +15,12 @@
         [ForeignKey(nameof(Comment))]
         public int CommentId { get; set; }
 
-        public virtual Comment Comment { get; set; }
+        public Comment Comment { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

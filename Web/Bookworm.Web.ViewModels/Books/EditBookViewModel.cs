@@ -17,7 +17,7 @@
 
     public class EditBookViewModel : IMapFrom<Book>, IMapTo<BookDto>
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = BookTitleRequiredError)]
         [StringLength(BookTitleMaxLength, MinimumLength = BookTitleMinLength, ErrorMessage = BookTitleLengthError)]

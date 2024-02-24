@@ -6,13 +6,13 @@
 
     public interface IUpdateBookService
     {
-        Task DeleteBookAsync(string bookId, string userId);
+        Task DeleteBookAsync(int bookId, string userId);
 
-        Task ApproveBookAsync(string bookId);
+        Task ApproveBookAsync(int bookId);
 
-        Task UnapproveBookAsync(string bookId);
+        Task UnapproveBookAsync(int bookId);
 
-        Task UndeleteBookAsync(string bookId);
+        Task UndeleteBookAsync(int bookId);
 
         Task EditBookAsync(BookDto editBookDto, string userId);
     }

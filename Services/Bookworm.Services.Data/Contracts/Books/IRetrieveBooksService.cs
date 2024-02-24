@@ -11,9 +11,9 @@
 
         Task<BookListingViewModel> GetUserBooksAsync(string userId, int page, int booksPerPage);
 
-        Task<BookViewModel> GetBookDetails(string bookId, string userId);
+        Task<BookViewModel> GetBookDetails(int bookId, string userId);
 
-        Task<EditBookViewModel> GetEditBookAsync(string bookId);
+        Task<EditBookViewModel> GetEditBookAsync(int bookId);
 
         Task<List<BookViewModel>> GetPopularBooksAsync();
 

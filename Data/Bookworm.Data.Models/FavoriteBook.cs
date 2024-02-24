@@ -9,14 +9,14 @@
     {
         [Required]
         [ForeignKey(nameof(Book))]
-        public string BookId { get; set; }
+        public int BookId { get; set; }
 
-        public virtual Book Book { get; set; }
+        public Book Book { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

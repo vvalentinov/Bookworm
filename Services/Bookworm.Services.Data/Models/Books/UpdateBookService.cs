@@ -48,7 +48,7 @@
             this.usersService = usersService;
         }
 
-        public async Task ApproveBookAsync(string bookId)
+        public async Task ApproveBookAsync(int bookId)
         {
             var book = await this.bookRepository
                 .All()
@@ -66,7 +66,7 @@
             await this.usersService.IncreaseUserPointsAsync(user, BookPoints);
         }
 
-        public async Task UnapproveBookAsync(string bookId)
+        public async Task UnapproveBookAsync(int bookId)
         {
             var book = await this.bookRepository
                 .All()
@@ -82,7 +82,7 @@
             await this.usersService.ReduceUserPointsAsync(user, BookPoints);
         }
 
-        public async Task DeleteBookAsync(string bookId, string userId)
+        public async Task DeleteBookAsync(int bookId, string userId)
         {
             var book = await this.bookRepository
                 .All()
@@ -107,7 +107,7 @@
             await this.bookRepository.SaveChangesAsync();
         }
 
-        public async Task UndeleteBookAsync(string bookId)
+        public async Task UndeleteBookAsync(int bookId)
         {
             var book = await this.bookRepository
                 .AllWithDeleted()

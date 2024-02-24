@@ -12,7 +12,7 @@
         public Author Author { get; set; }
 
         [ForeignKey(nameof(Book))]
-        public string BookId { get; set; }
+        public int BookId { get; set; }
 
         public Book Book { get; set; }
     }

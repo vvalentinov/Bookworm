@@ -119,7 +119,7 @@
             }
         }
 
-        private async Task AddAuthorBookConnectionAsync(string bookId, int authorId)
+        private async Task AddAuthorBookConnectionAsync(int bookId, int authorId)
         {
             var authorBook = new AuthorBook { BookId = bookId, AuthorId = authorId };
             await this.authorBookRepository.AddAsync(authorBook);

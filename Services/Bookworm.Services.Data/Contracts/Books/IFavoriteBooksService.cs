@@ -9,8 +9,8 @@
     {
         IEnumerable<BookViewModel> GetUserFavoriteBooks(string userId);
 
-        Task AddBookToFavoritesAsync(string bookId, string userId);
+        Task AddBookToFavoritesAsync(int bookId, string userId);
 
-        Task DeleteFromFavoritesAsync(string bookId, string userId);
+        Task DeleteFromFavoritesAsync(int bookId, string userId);
     }
 }

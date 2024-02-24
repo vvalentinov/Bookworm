@@ -8,19 +8,13 @@
 
     public interface ICommentsService
     {
-        Task CreateAsync(
-            string userId,
-            string content,
-            string bookId);
+        Task CreateAsync(string userId, string content, int bookId);
 
         string GetCommentUserId(int commentId);
 
         Task DeleteAsync(int commentId, string userId);
 
-        Task EditAsync(
-            int commentId,
-            string content,
-            string userId);
+        Task EditAsync(int commentId, string content, string userId);
 
         Task<SortedCommentsResponseModel> GetSortedCommentsAsync(
             ApplicationUser user,

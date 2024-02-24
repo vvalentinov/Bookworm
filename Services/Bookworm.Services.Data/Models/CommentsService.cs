@@ -38,7 +38,7 @@
         public async Task CreateAsync(
             string userId,
             string content,
-            string bookId)
+            int bookId)
         {
             if (string.IsNullOrWhiteSpace(content))
             {

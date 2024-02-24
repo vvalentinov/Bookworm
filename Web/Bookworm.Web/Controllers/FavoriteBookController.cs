@@ -31,7 +31,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToFavorites(string id)
+        public async Task<IActionResult> AddToFavorites(int id)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
 
@@ -47,7 +47,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteFromFavorites(string bookId)
+        public async Task<IActionResult> DeleteFromFavorites(int bookId)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             await this.favoriteBooksService.DeleteFromFavoritesAsync(bookId, user.Id);

@@ -23,7 +23,7 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task AddBookToFavoritesAsync(string bookId, string userId)
+        public async Task AddBookToFavoritesAsync(int bookId, string userId)
         {
             var book = this.favoriteBooksRepository
                 .AllAsNoTracking()
@@ -38,7 +38,7 @@
             await this.favoriteBooksRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteFromFavoritesAsync(string bookId, string userId)
+        public async Task DeleteFromFavoritesAsync(int bookId, string userId)
         {
             FavoriteBook book = this.favoriteBooksRepository
                 .All()
@@ -50,7 +50,7 @@
 
         public IEnumerable<BookViewModel> GetUserFavoriteBooks(string userId)
         {
-            List<string> bookIds = this.favoriteBooksRepository
+            List<int> bookIds = this.favoriteBooksRepository
                 .AllAsNoTracking()
                 .Where(x => x.UserId == userId)
                 .Select(x => x.BookId)
@@ -59,7 +59,7 @@
             return this.bookRepository
                 .AllAsNoTracking()
                 .Where(x => bookIds.Contains(x.Id))
-                .Select(x => new BookViewModel()
+                .Select(x => new BookViewModel
                 {
                     Id = x.Id,
                     ImageUrl = x.ImageUrl,

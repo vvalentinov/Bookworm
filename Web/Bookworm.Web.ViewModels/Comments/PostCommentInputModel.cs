@@ -2,7 +2,7 @@
 {
     public class PostCommentInputModel
     {
-        public string BookId { get; set; }
+        public int BookId { get; set; }
 
         public string Content { get; set; }
     }

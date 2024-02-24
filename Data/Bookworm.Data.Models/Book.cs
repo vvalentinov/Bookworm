@@ -1,6 +1,5 @@
 ﻿namespace Bookworm.Data.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -11,11 +10,10 @@
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
-    public class Book : BaseDeletableModel<string>
+    public class Book : BaseDeletableModel<int>
     {
         public Book()
         {
-            this.Id = Guid.NewGuid().ToString();
             this.Ratings = new HashSet<Rating>();
             this.Comments = new HashSet<Comment>();
             this.AuthorsBooks = new HashSet<AuthorBook>();
@@ -63,18 +61,18 @@
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-        public virtual Category Category { get; set; }
+        public Category Category { get; set; }
 
         [Required]
         [ForeignKey(nameof(Language))]
         public int LanguageId { get; set; }
 
-        public virtual Language Language { get; set; }
+        public Language Language { get; set; }
 
         [ForeignKey(nameof(Publisher))]
         public int? PublisherId { get; set; }
 
-        public virtual Publisher Publisher { get; set; }
+        public Publisher Publisher { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]

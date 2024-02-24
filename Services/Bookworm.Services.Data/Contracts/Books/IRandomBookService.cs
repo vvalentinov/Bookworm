@@ -3,7 +3,6 @@
     using System.Collections.Generic;
 
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Categories;
 
     public interface IRandomBookService
     {

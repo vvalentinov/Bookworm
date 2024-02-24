@@ -43,7 +43,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string bookId)
+        public async Task<IActionResult> Delete(int bookId)
         {
             try
             {
@@ -81,7 +81,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApproveBook(string bookId)
+        public async Task<IActionResult> ApproveBook(int bookId)
         {
             try
             {
@@ -96,14 +96,14 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> UnapproveBook(string bookId)
+        public async Task<IActionResult> UnapproveBook(int bookId)
         {
             await this.updateBookService.UnapproveBookAsync(bookId);
             return this.RedirectToAction(nameof(this.ApprovedBooks), "Book");
         }
 
         [HttpPost]
-        public async Task<IActionResult> UndeleteBook(string bookId)
+        public async Task<IActionResult> UndeleteBook(int bookId)
         {
             await this.updateBookService.UndeleteBookAsync(bookId);
             return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");

@@ -26,7 +26,7 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId)
+        public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(int bookId)
         {
             Book book = await this.bookRepository
                 .AllAsNoTracking()

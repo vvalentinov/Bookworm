@@ -11,12 +11,12 @@
         [ForeignKey(nameof(Quote))]
         public int QuoteId { get; set; }
 
-        public virtual Quote Quote { get; set; }
+        public Quote Quote { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

@@ -12,7 +12,7 @@
 
         Task DeleteBlobAsync(string blobName);
 
-        Task<Tuple<Stream, string, string>> DownloadBlobAsync(string bookId);
+        Task<Tuple<Stream, string, string>> DownloadBlobAsync(int bookId);
 
         Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path);
     }

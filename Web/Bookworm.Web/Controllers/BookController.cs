@@ -85,7 +85,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string bookId)
+        public async Task<IActionResult> Edit(int bookId)
         {
             var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
 
@@ -121,7 +121,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string bookId)
+        public async Task<IActionResult> Delete(int bookId)
         {
             string userId = this.userManager.GetUserId(this.User);
 
@@ -177,7 +177,7 @@
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
         {
             string userId = this.userManager.GetUserId(this.User);
 
@@ -187,7 +187,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Download(string id)
+        public async Task<IActionResult> Download(int id)
         {
             var result = await this.blobService.DownloadBlobAsync(id);
             return this.File(result.Item1, result.Item2, result.Item3);
