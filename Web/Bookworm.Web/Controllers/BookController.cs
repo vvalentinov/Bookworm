@@ -53,6 +53,10 @@
         [HttpGet]
         public IActionResult Upload()
         {
+            this.ViewData["Title"] = "Upload Book";
+
+            this.ViewData["Action"] = nameof(this.Upload);
+
             return this.View(new UploadBookViewModel());
         }
 
@@ -60,6 +64,10 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
+            this.ViewData["Title"] = "Upload Book";
+
+            this.ViewData["Action"] = nameof(this.Upload);
+
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
@@ -76,9 +84,9 @@
 
                 return this.RedirectToAction("Index", "Home");
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
 
                 return this.View(model);
             }
@@ -87,36 +95,53 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int bookId)
         {
-            var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+            this.ViewData["Title"] = "Edit Book";
 
-            return this.View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(EditBookViewModel model)
-        {
-            if (!this.ModelState.IsValid)
-            {
-                return this.View(model);
-            }
-
-            var user = await this.userManager.GetUserAsync(this.User);
-
-            var editBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
+            this.ViewData["Action"] = nameof(this.Edit);
 
             try
             {
-                await this.updateBookService.EditBookAsync(editBookDto, user.Id);
+                var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
 
-                this.TempData[MessageConstant.SuccessMessage] = BookEditSuccess;
-
-                return this.RedirectToAction(nameof(this.Details), "Book", new { id = model.Id });
+                return this.View(nameof(this.Upload), model);
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
 
-                return this.View(model);
+                return this.RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UploadBookViewModel model)
+        {
+            this.ViewData["Title"] = "Edit Book";
+
+            this.ViewData["Action"] = nameof(this.Edit);
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(nameof(this.Upload), model);
+            }
+
+            var userId = this.userManager.GetUserId(this.User);
+
+            var editBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
+
+            try
+            {
+                await this.updateBookService.EditBookAsync(editBookDto, userId);
+
+                this.TempData[MessageConstant.SuccessMessage] = BookEditSuccess;
+
+                return this.RedirectToAction(nameof(this.UserBooks), "Book");
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+
+                return this.View(nameof(this.Upload), model);
             }
         }
 
@@ -158,11 +183,11 @@
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All(string categoryName, int page = 1)
+        public async Task<IActionResult> All(string category, int id = 1)
         {
-            int categoryId = this.categoriesService.GetCategoryId(categoryName);
+            int categoryId = this.categoriesService.GetCategoryId(category);
 
-            var model = await this.retrieveBooksService.GetBooksAsync(categoryId, page, 12);
+            var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
 
             return this.View(model);
         }
@@ -171,7 +196,7 @@
         public async Task<IActionResult> UserBooks(int page = 1)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookListingViewModel books = await this.retrieveBooksService.GetUserBooksAsync(user.Id, page, 12);
+            BookListingViewModel books = await this.retrieveBooksService.GetUserBooksAsync(user.Id, page);
             return this.View(books);
         }
 
@@ -179,11 +204,20 @@
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            string userId = this.userManager.GetUserId(this.User);
+            try
+            {
+                string userId = this.userManager.GetUserId(this.User);
 
-            var bookViewModel = await this.retrieveBooksService.GetBookDetails(id, userId);
+                var bookViewModel = await this.retrieveBooksService.GetBookDetails(id, userId);
 
-            return this.View(bookViewModel);
+                return this.View(bookViewModel);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+
+                return this.RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]

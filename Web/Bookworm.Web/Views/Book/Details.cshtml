@@ -50,7 +50,7 @@
             <span>(Ratings count: <span class="bookRatingsCount">@Model.RatingsCount</span>)</span>
         </li>
         <li class="list-group-item">
-            <span> Authors: @string.Join(",", Model.Authors)</span>
+            <span> Authors: @string.Join(", ", Model.Authors)</span>
         </li>
         <li class="list-group-item">
             <span>uploaded by - @Model.Username</span>
@@ -67,30 +67,27 @@
            asp-route-id="@Model.Id">
             Download<i class="fas fa-download icon ms-2"></i>
         </a>
-        @if (Model.IsApproved)
+        @if (Model.IsUserBook == false && Model.IsApproved)
         {
-            @if (Model.IsUserBook == false)
-            {
-                <button class="btn btn-lg button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ratingModal">
-                    Rate Book<i class="fas fa-star icon ms-2"></i>
-                </button>
-            }
-            else
-            {
-                <a class="btn btn-lg button"
-                   asp-controller="Book"
-                   asp-action="Edit"
-                   asp-route-bookId="@Model.Id">
-                    Edit<i class="fas fa-user-pen icon ms-2"></i>
-                </a>
-                <a class="btn btn-lg button"
-                   data-bs-toggle="modal"
-                   data-bs-target="#deleteBookModal">
-                    Delete<i class="fas fa-trash-can icon ms-2"></i>
-                </a>
-            }
+            <button class="btn btn-lg button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#ratingModal">
+                Rate Book<i class="fas fa-star icon ms-2"></i>
+            </button>
+        }
+        else if (Model.IsUserBook)
+        {
+            <a class="btn btn-lg button"
+               asp-controller="Book"
+               asp-action="Edit"
+               asp-route-bookId="@Model.Id">
+                Edit<i class="fas fa-user-pen icon ms-2"></i>
+            </a>
+            <a class="btn btn-lg button"
+               data-bs-toggle="modal"
+               data-bs-target="#deleteBookModal">
+                Delete<i class="fas fa-trash-can icon ms-2"></i>
+            </a>
         }
     </section>
 }
@@ -129,7 +126,7 @@
                 <h2>Comments: @Model.Comments.Count()</h2>
                 @if (Model.Comments.Count() > 1 && this.User.Identity.IsAuthenticated)
                 {
-                    <partial name="PartialViews/_CommentsButtonsPartial"/>
+                    <partial name="PartialViews/_CommentsButtonsPartial" />
                 }
                 <div class="commentsContainer">
                     @foreach (CommentViewModel comment in Model.Comments)

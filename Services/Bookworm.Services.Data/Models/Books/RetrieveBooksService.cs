@@ -12,37 +12,33 @@
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
+    using static Bookworm.Common.GlobalConstants;
 
     public class RetrieveBooksService : IRetrieveBooksService
     {
-        private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IRepository<AuthorBook> authorsBooksRepository;
-        private readonly IRepository<Author> authorRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly IRepository<Comment> commentRepository;
-        private readonly ICategoriesService categoriesService;
         private readonly IRatingsService ratingsService;
+        private readonly ICategoriesService categoriesService;
+        private readonly IRepository<Comment> commentRepository;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public RetrieveBooksService(
-            IDeletableEntityRepository<Book> bookRepository,
-            IRepository<AuthorBook> authorsBooksRepository,
-            IRepository<Author> authorRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository,
-            IRepository<Comment> commentRepository,
+            IRatingsService ratingsService,
             ICategoriesService categoriesService,
-            IRatingsService ratingsService)
+            IRepository<Comment> commentRepository,
+            UserManager<ApplicationUser> userManager,
+            IDeletableEntityRepository<Book> bookRepository)
         {
-            this.bookRepository = bookRepository;
-            this.authorsBooksRepository = authorsBooksRepository;
-            this.authorRepository = authorRepository;
-            this.userRepository = userRepository;
-            this.commentRepository = commentRepository;
-            this.categoriesService = categoriesService;
             this.ratingsService = ratingsService;
+            this.categoriesService = categoriesService;
+            this.commentRepository = commentRepository;
+            this.userManager = userManager;
+            this.bookRepository = bookRepository;
         }
 
         public async Task<BookViewModel> GetBookDetails(int bookId, string currentUserId)
@@ -72,47 +68,52 @@
                     CategoryName = x.Category.Name,
                     Authors = x.AuthorsBooks.Select(ab => ab.Author.Name),
                 }).FirstOrDefaultAsync(book => book.Id == bookId) ??
-                throw new InvalidOperationException("No book with given id found!");
+                throw new InvalidOperationException(BookWrongIdError);
 
-            var bookUser = await this.userRepository
-                .AllAsNoTracking()
-                .Select(x => new { x.Id, x.UserName })
-                .FirstAsync(x => x.Id == bookViewModel.UserId);
+            var currentUser = await this.userManager
+                        .Users
+                        .Include(u => u.FavoriteBooks)
+                        .FirstOrDefaultAsync(u => u.Id == currentUserId);
+
+            var isUserAdmin = currentUser != null && await this.userManager.IsInRoleAsync(currentUser, AdministratorRoleName);
+
+            if (!bookViewModel.IsApproved && !isUserAdmin && !bookViewModel.IsUserBook)
+            {
+                throw new InvalidOperationException("You don't have permission to view this book!");
+            }
+
+            var bookUser = await this.userManager.Users.FirstAsync(u => u.Id == bookViewModel.UserId);
 
             bookViewModel.Username = bookUser.UserName;
 
             if (bookViewModel.IsApproved)
             {
                 bookViewModel.RatingsAvg = await this.ratingsService.GetAverageRatingAsync(bookId);
+
                 bookViewModel.RatingsCount = await this.ratingsService.GetRatingsCountAsync(bookId);
 
                 bookViewModel.Comments = await this.commentRepository
                     .AllAsNoTracking()
-                    .Include(x => x.User)
-                    .Include(x => x.Votes)
-                    .Where(x => x.BookId == bookId)
-                    .Select(x => new CommentViewModel
+                    .Include(c => c.User)
+                    .Include(c => c.Votes)
+                    .Where(c => c.BookId == bookId)
+                    .Select(c => new CommentViewModel
                     {
-                        Content = x.Content,
-                        CreatedOn = x.CreatedOn,
-                        IsCommentOwner = x.UserId == currentUserId,
-                        NetWorth = x.NetWorth,
-                        Id = x.Id,
-                        UserId = x.UserId,
-                        UserUserName = x.User.UserName,
-                        UserVoteValue = x.Votes
-                            .Where(v => v.CommentId == x.Id && v.UserId == currentUserId)
-                            .Select(v => (int?)v.Value)
-                            .FirstOrDefault() ?? 0,
+                        Content = c.Content,
+                        CreatedOn = c.CreatedOn,
+                        IsCommentOwner = c.UserId == currentUserId,
+                        NetWorth = c.NetWorth,
+                        Id = c.Id,
+                        UserId = c.UserId,
+                        UserUserName = c.User.UserName,
+                        UserVoteValue = c.Votes
+                            .Where(v => v.CommentId == c.Id && v.UserId == currentUserId)
+                            .Select(v => (int)v.Value)
+                            .FirstOrDefault(),
                     }).ToListAsync();
 
                 if (currentUserId != null)
                 {
-                    var currentUser = await this.userRepository
-                        .AllAsNoTracking()
-                        .Include(x => x.FavoriteBooks)
-                        .FirstAsync(x => x.Id == currentUserId);
-
                     bookViewModel.IsFavorite = currentUser.FavoriteBooks.Any(x => x.BookId == bookId);
 
                     bookViewModel.UserRating = await this.ratingsService.GetUserRatingAsync(bookId, currentUserId);
@@ -122,87 +123,74 @@
             return bookViewModel;
         }
 
-        public async Task<EditBookViewModel> GetEditBookAsync(int bookId)
-         => await this.bookRepository
+        public async Task<UploadBookViewModel> GetEditBookAsync(int bookId)
+            => await this.bookRepository
                 .AllAsNoTracking()
-                .Include(x => x.Publisher)
-                .Include(x => x.AuthorsBooks)
-                .ThenInclude(x => x.Author)
-                .Select(x => new EditBookViewModel
+                .Include(b => b.Publisher)
+                .Include(b => b.AuthorsBooks)
+                .ThenInclude(b => b.Author)
+                .Select(b => new UploadBookViewModel
                 {
-                    Id = x.Id,
-                    Authors = x.AuthorsBooks
-                        .Select(a => new UploadAuthorViewModel
-                        {
-                            Name = a.Author.Name,
-                        }).ToList(),
-                    CategoryId = x.CategoryId,
-                    Description = x.Description,
-                    LanguageId = x.LanguageId,
-                    PagesCount = x.PagesCount,
-                    PublishedYear = x.Year,
-                    Publisher = x.Publisher.Name,
-                    Title = x.Title,
-                }).FirstOrDefaultAsync(book => book.Id == bookId) ??
-                   throw new InvalidOperationException(BookWrongIdError);
+                    Id = b.Id,
+                    Title = b.Title,
+                    PublishedYear = b.Year,
+                    CategoryId = b.CategoryId,
+                    LanguageId = b.LanguageId,
+                    PagesCount = b.PagesCount,
+                    Description = b.Description,
+                    Publisher = b.Publisher.Name,
+                    Authors = b.AuthorsBooks.Select(a => new UploadAuthorViewModel { Name = a.Author.Name }).ToList(),
+                }).FirstOrDefaultAsync(b => b.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
 
-        public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page, int booksPerPage)
-        {
-            BookListingViewModel model = new BookListingViewModel()
-            {
-                CategoryName = await this.categoriesService.GetCategoryNameAsync(categoryId),
-                Books = await this.bookRepository
-                            .AllAsNoTracking()
-                            .Where(x => x.CategoryId == categoryId && x.IsApproved)
-                            .Select(x => new BookViewModel()
-                            {
-                                Id = x.Id,
-                                Title = x.Title,
-                                ImageUrl = x.ImageUrl,
-                            })
-                            .OrderByDescending(x => x.Id)
-                            .Skip((page - 1) * booksPerPage)
-                            .Take(booksPerPage)
-                            .ToListAsync(),
-                PageNumber = page,
-                BookCount = await this.bookRepository
+        public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page)
+            => new BookListingViewModel
+                {
+                    CategoryName = await this.categoriesService.GetCategoryNameAsync(categoryId),
+                    Books = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.CategoryId == categoryId && x.IsApproved)
-                                .CountAsync(),
-                BooksPerPage = booksPerPage,
-            };
+                                .Select(x => new BookViewModel
+                                {
+                                    Id = x.Id,
+                                    Title = x.Title,
+                                    ImageUrl = x.ImageUrl,
+                                })
+                                .OrderByDescending(x => x.Id)
+                                .Skip((page - 1) * BooksPerPage)
+                                .Take(BooksPerPage)
+                                .ToListAsync(),
+                    PageNumber = page,
+                    RecordsCount = await this.bookRepository
+                                    .AllAsNoTracking()
+                                    .Where(x => x.CategoryId == categoryId && x.IsApproved)
+                                    .CountAsync(),
+                    ItemsPerPage = BooksPerPage,
+                };
 
-            return model;
-        }
-
-        public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page, int booksPerPage)
-        {
-            BookListingViewModel model = new BookListingViewModel()
-            {
-                Books = await this.bookRepository
-                            .AllAsNoTracking()
-                            .Where(x => x.UserId == userId)
-                            .OrderByDescending(x => x.CreatedOn)
-                            .Select(x => new BookViewModel()
-                            {
-                                Id = x.Id,
-                                Title = x.Title,
-                                ImageUrl = x.ImageUrl,
-                            })
-                            .Skip((page - 1) * booksPerPage)
-                            .Take(booksPerPage)
-                            .OrderByDescending(x => x.Id)
-                            .ToListAsync(),
-                PageNumber = page,
-                BookCount = await this.bookRepository
+        public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page)
+            => new BookListingViewModel
+                {
+                    Books = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.UserId == userId)
-                                .CountAsync(),
-                BooksPerPage = booksPerPage,
-            };
-
-            return model;
-        }
+                                .OrderByDescending(x => x.CreatedOn)
+                                .Select(x => new BookViewModel
+                                {
+                                    Id = x.Id,
+                                    Title = x.Title,
+                                    ImageUrl = x.ImageUrl,
+                                })
+                                .Skip((page - 1) * BooksPerPage)
+                                .Take(BooksPerPage)
+                                .OrderByDescending(x => x.Id)
+                                .ToListAsync(),
+                    PageNumber = page,
+                    RecordsCount = await this.bookRepository
+                                    .AllAsNoTracking()
+                                    .Where(x => x.UserId == userId)
+                                    .CountAsync(),
+                    ItemsPerPage = BooksPerPage,
+                };
 
         public async Task<List<BookViewModel>> GetPopularBooksAsync()
             => await this.bookRepository

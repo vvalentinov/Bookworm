@@ -21,7 +21,7 @@
         flex-basis: 65%;
         border-radius: 15px;
         border: solid 2.5px black;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
     }
 
         .bookDetailsInfoSection ul a {
@@ -34,9 +34,12 @@
     word-wrap: break-word;
 }
 
+    .list-group .list-group-item:hover {
+        background-color: var(--clr-secondary);
+    }
+
     .list-group .list-group-item a {
-        color: var(--clr-secondary);
-        text-decoration: none;
+        color: var(--clr-white);
     }
 
 .bookDetailsActionsSection {

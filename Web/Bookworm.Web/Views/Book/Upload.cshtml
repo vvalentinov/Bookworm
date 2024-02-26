@@ -1,8 +1,9 @@
 ﻿@model UploadBookViewModel
 
 @{
-    this.ViewData["Title"] = "Upload Book";
     this.ViewData["Icon-Class"] = "fa-book";
+    var title = this.ViewData["Title"] as string;
+    var action = this.ViewData["Action"] as string;
 }
 
 @section Styles {
@@ -13,16 +14,23 @@
 
 <section class="uploadBookSection">
     <form asp-controller="Book"
-          asp-action="Upload"
-          id="uploadBookForm"
+          asp-action=@action
           method="post"
           enctype="multipart/form-data">
+
+        @if (action == "Edit")
+        {
+            <input type="hidden" asp-for="@Model.Id" value="@Model.Id">
+        }
+
         <div asp-validation-summary="All" class="text-danger"></div>
+
         <div>
             <label asp-for="Title"></label>
             <input asp-for="Title" type="text" class="form-control fs-5">
             <span asp-validation-for="Title" class="small text-danger"></span>
         </div>
+
         <div class="selectContainer">
             <div class="mt-4">
                 <label asp-for="LanguageId"></label>
@@ -30,7 +38,14 @@
                         size="8"
                         aria-label="size 5 select example"
                         class="fs-5 form-select">
-                    @await Component.InvokeAsync("Languages")
+                    @if (action == "Edit")
+                    {
+                        @await Component.InvokeAsync("Languages", new { selectedLanguageId = Model.LanguageId })
+                    }
+                    else
+                    {
+                        @await Component.InvokeAsync("Languages")
+                    }
                 </select>
                 <span asp-validation-for="LanguageId" class="small text-danger"></span>
             </div>
@@ -40,52 +55,98 @@
                         size="8"
                         aria-label="size 5 select example"
                         class="fs-5 form-select">
-
-                    @await Component.InvokeAsync("Categories")
+                    @if (action == "Edit")
+                    {
+                        @await Component.InvokeAsync("Categories", new { selectedCategoryId = Model.CategoryId })
+                    }
+                    else
+                    {
+                        @await Component.InvokeAsync("Categories")
+                    }
                 </select>
                 <span asp-validation-for="CategoryId" class="small text-danger"></span>
             </div>
         </div>
+
         <div class="mt-4">
             <label asp-for="PagesCount"></label>
             <input asp-for="PagesCount" type="number" class="form-control fs-5">
             <span asp-validation-for="PagesCount" class="small text-danger"></span>
         </div>
+
         <div class="mt-4">
             <label asp-for="PublishedYear"></label>
             <input asp-for="PublishedYear" type="number" class="form-control fs-5">
             <span asp-validation-for="PublishedYear" class="small text-danger"></span>
         </div>
+
         <div class="mt-4">
             <label asp-for="Publisher"></label>
             <input asp-for="Publisher" type="text" class="form-control fs-5">
             <span asp-validation-for="Publisher" class="small text-danger"></span>
         </div>
+
         <div class="mt-4">
             <label asp-for="BookFile" class="form-label"></label>
             <input asp-for="BookFile" type="file" class="form-control fs-5">
             <span asp-validation-for="BookFile" class="small text-danger"></span>
         </div>
+
         <div class="mt-4">
             <label asp-for="ImageFile" class="form-label"></label>
             <input asp-for="ImageFile" type="file" class="form-control fs-5">
             <span asp-validation-for="ImageFile" class="small text-danger"></span>
         </div>
+
         <div class="mt-4" id="authorsContainer" data-index="0">
             <button type="button"
                     id="addAuthorBtn"
                     class="btn button fs-5 w-100">
                 Add Author (Max - 5)<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
+
+            @if (action == "Edit")
+            {
+                @for (int i = 0; i < Model.Authors.Count(); i++)
+                {
+                    <div class="input-group mt-4">
+                        <input asp-for="@Model.Authors[i].Name"
+                               type="text"
+                               class="form-control border-2 border-dark fs-5"
+                               placeholder="Author's username"
+                               aria-label="Author's username"
+                               aria-describedby="button-addon2">
+                        <button onclick="removeAuthor(event)"
+                                class="btn btn-danger border-2 border-dark"
+                                type="button">
+                            Remove
+                        </button>
+                    </div>
+                }
+            }
         </div>
+
         <div class="mt-4">
             <label asp-for="Description"></label>
             <textarea asp-for="Description"></textarea>
             <span asp-validation-for="Description" class="small text-danger"></span>
         </div>
+
         <div class="text-center my-4">
             <button type="submit" class="btn fs-5">
-                <strong>Upload Book<i class="fas fa-upload icon ms-2"></i></strong>
+                <strong>
+                    @if (action == "Edit")
+                    {
+                        <text>Edit Book</text>
+                        <i class="fa fa-pen-to-square ms-2"></i>
+                    }
+                    else
+                    {
+                        <text>Upload Book</text>
+                        <i class="fas fa-upload icon ms-2"></i>
+                    }
+                    
+                </strong>
             </button>
         </div>
     </form>

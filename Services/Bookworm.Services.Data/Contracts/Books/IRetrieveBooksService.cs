@@ -7,13 +7,13 @@
 
     public interface IRetrieveBooksService
     {
-        Task<BookListingViewModel> GetBooksAsync(int categoryId, int page, int booksPerPage);
+        Task<BookListingViewModel> GetBooksAsync(int categoryId, int page);
 
-        Task<BookListingViewModel> GetUserBooksAsync(string userId, int page, int booksPerPage);
+        Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
 
         Task<BookViewModel> GetBookDetails(int bookId, string userId);
 
-        Task<EditBookViewModel> GetEditBookAsync(int bookId);
+        Task<UploadBookViewModel> GetEditBookAsync(int bookId);
 
         Task<List<BookViewModel>> GetPopularBooksAsync();
 

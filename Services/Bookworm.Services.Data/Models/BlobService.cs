@@ -89,7 +89,7 @@
 
             await containerClient.CreateIfNotExistsAsync();
 
-            var blobCopyClient = containerClient.GetBlobClient($"{path}{uniqueName}");
+            var blobCopyClient = containerClient.GetBlobClient(uniqueName);
 
             if (!await blobCopyClient.ExistsAsync())
             {

@@ -138,11 +138,12 @@
             }
 
             await this.validateUploadedBookService.ValidateUploadedBookAsync(
+                true,
+                editBookDto.CategoryId,
+                editBookDto.LanguageId,
                 editBookDto.BookFile,
                 editBookDto.ImageFile,
-                editBookDto.Authors,
-                editBookDto.CategoryId,
-                editBookDto.LanguageId);
+                editBookDto.Authors);
 
             if (editBookDto.BookFile != null)
             {

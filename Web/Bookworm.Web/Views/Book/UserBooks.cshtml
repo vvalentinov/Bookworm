@@ -2,7 +2,7 @@
 
 @{
     this.ViewData["Title"] = "My Books";
-    this.ViewData["Count"] = Model.BookCount;
+    this.ViewData["Count"] = Model.RecordsCount;
 }
 
 <partial name="PartialViews/_TitleCardPartial" />
@@ -20,7 +20,7 @@
     }
 </div>
 
-@if (Model.BookCount > 0)
+@if (Model.RecordsCount > 0)
 {
     <nav>
         <ul class="pagination justify-content-center">
@@ -73,5 +73,11 @@
 }
 else
 {
-    <h2 class="text-center mt-5">You haven't uploaded any books yet!</h2>
+    <h3 class="text-center mt-5 display-3">You haven't uploaded any books yet!</h3>
+    <h5 class="text-center mt-5 display-5">
+        Want to change that?
+        <a asp-controller="Book" asp-action="Upload">
+            Click here!
+        </a>
+    </h5>
 }

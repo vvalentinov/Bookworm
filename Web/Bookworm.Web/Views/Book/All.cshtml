@@ -1,16 +1,13 @@
 ﻿@model BookListingViewModel
 
 @{
-    this.ViewData["Title"] = $"{Model.CategoryName}";
+    this.ViewData["Count"] = Model.RecordsCount;
+    this.ViewData["Title"] = Model.CategoryName;
+    this.ViewData["PaginationActionName"] = "All";
+    this.ViewData["PaginationControllerName"] = "Book";
 }
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card">
-        <div class="card-body">
-            <h2>@Model.CategoryName (@Model.BookCount)</h2>
-        </div>
-    </div>
-</div>
+<partial name="PartialViews/_TitleCardPartial" />
 
 <div>
     <div class="row">
@@ -26,40 +23,8 @@
         }
     </div>
 </div>
-@if (Model.BookCount > 0)
+
+@if (Model.PagesCount > 1)
 {
-    <nav id="booksPagination" aria-label="...">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @if (Model.HasPreviousPage == false){
-        <text>disabled</text>
-}">
-                <a id="previous" class="page-link" asp-action="All" asp-route-categoryName="@Model.CategoryName" asp-route-page="@Model.PreviousPageNumber">Previous</a>
-            </li>
-            @for (int i = Model.PageNumber - 3; i < Model.PageNumber; i++)
-            {
-                if (i > 0)
-                {
-                    <li class="page-item"><a class="page-link" asp-action="All" asp-route-categoryName="@Model.CategoryName" asp-route-page="@i">@i</a></li>
-                }
-            }
-            <li class="page-item active">
-                <span class="page-link">
-                    @Model.PageNumber
-                    <span class="sr-only">(current)</span>
-                </span>
-            </li>
-            @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 3; i++)
-            {
-                if (i <= Model.PagesCount)
-                {
-                    <li class="page-item"><a class="page-link" asp-action="All" asp-route-categoryName="@Model.CategoryName" asp-route-page="@i">@i</a></li>
-                }
-            }
-            <li class="page-item @if (Model.HasNextPage == false) {
-        <text>disabled</text>
-}">
-                <a class="page-link" asp-action="All" asp-route-categoryName="@Model.CategoryName" asp-route-page="@Model.NextPageNumber">Next</a>
-            </li>
-        </ul>
-    </nav>
+    <partial name="PartialViews/_PaginationPartial" model="@Model" />
 }

@@ -9,10 +9,11 @@
     public interface IValidateUploadedBookService
     {
         Task ValidateUploadedBookAsync(
+            bool isForEdit,
+            int categoryId,
+            int languageId,
             IFormFile bookFile,
             IFormFile imageFile,
-            IEnumerable<UploadAuthorViewModel> authors,
-            int categoryId,
-            int languageId);
+            IEnumerable<UploadAuthorViewModel> authors);
     }
 }

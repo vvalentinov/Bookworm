@@ -15,17 +15,17 @@
 
     public class UploadBookService : IUploadBookService
     {
-        private readonly IDeletableEntityRepository<Book> booksRepository;
-        private readonly IRepository<Publisher> publisherRepository;
-        private readonly IRepository<Author> authorRepository;
         private readonly IBlobService blobService;
+        private readonly IRepository<Author> authorRepository;
+        private readonly IRepository<Publisher> publisherRepository;
+        private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IValidateUploadedBookService validateUploadedBookService;
 
         public UploadBookService(
-            IDeletableEntityRepository<Book> booksRepository,
-            IRepository<Publisher> publisherRepository,
-            IRepository<Author> authorRepository,
             IBlobService blobService,
+            IRepository<Author> authorRepository,
+            IRepository<Publisher> publisherRepository,
+            IDeletableEntityRepository<Book> booksRepository,
             IValidateUploadedBookService validateUploadedBookService)
         {
             this.booksRepository = booksRepository;
@@ -49,11 +49,12 @@
             }
 
             await this.validateUploadedBookService.ValidateUploadedBookAsync(
+                false,
+                uploadBookDto.CategoryId,
+                uploadBookDto.LanguageId,
                 uploadBookDto.BookFile,
                 uploadBookDto.ImageFile,
-                uploadBookDto.Authors,
-                uploadBookDto.CategoryId,
-                uploadBookDto.LanguageId);
+                uploadBookDto.Authors);
 
             string bookBlobUrl = await this.blobService.UploadBlobAsync(
                 uploadBookDto.BookFile,

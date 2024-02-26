@@ -17,6 +17,8 @@
 
     public class UploadBookViewModel : IMapFrom<Book>, IMapTo<BookDto>
     {
+        public int Id { get; set; }
+
         [Required(ErrorMessage = BookTitleRequiredError)]
         [StringLength(
             BookTitleMaxLength,
@@ -52,12 +54,10 @@
         public int PublishedYear { get; set; }
 
         [Display(Name = "Book PDF file (Max - 15 MB)")]
-        [Required(ErrorMessage = BookFileRequiredError)]
         [BookFileAllowedExtensionAttribute(BookFileAllowedExtension)]
         public IFormFile BookFile { get; set; }
 
         [Display(Name = "Image File (Max - 5 MB)")]
-        [Required(ErrorMessage = BookImageFileRequiredError)]
         [ImageFileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
         public IFormFile ImageFile { get; set; }
 
@@ -70,6 +70,6 @@
         public int LanguageId { get; set; }
 
         [NotEmptyCollection(nameof(Authors))]
-        public ICollection<UploadAuthorViewModel> Authors { get; set; }
+        public IList<UploadAuthorViewModel> Authors { get; set; }
     }
 }

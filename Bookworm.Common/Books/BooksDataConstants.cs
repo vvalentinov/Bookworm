@@ -20,5 +20,11 @@
         public const string BookImageFileUploadPath = "BooksImages/";
 
         public const byte BooksCountOnHomePage = 8;
+
+        public const byte BooksPerPage = 12;
+
+        public const int BookPdfMaxSize = 15_000_000;
+
+        public const int BookImageMaxSize = 5_000_000;
     }
 }
