@@ -9,6 +9,12 @@
     if (title == "My Quotes")
     {
         <h3 class="text-center mt-5 display-3">You haven't uploaded any quotes!</h3>
+        <h5 class="text-center mt-5 display-5">
+            Want to change that?
+            <a asp-controller="Quote" asp-action="Upload">
+                Click here!
+            </a>
+        </h5>
     }
     else
     {

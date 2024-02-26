@@ -18,6 +18,7 @@
         public const string BookImageFileRequiredError = "Image file is required!";
         public const string BookPdfFileEmptyError = "PDF file is empty!";
         public const string BookInvalidPdfSizeError = "Book PDF file must not exceed 15 MB!";
+        public const string BookInvalidImageSizeError = "Book image file must not exceed 5 MB!";
         public const string BookImageFileEmptyError = "Book image file is empty!";
         public const string BookInvalidFileExtensionError = "Invalid book file extension. Allowed extension: .pdf!";
         public const string BookInvalidImageFileError = "Invalid image file extension. Allowed extensions: .jpg, .jpeg, .png!";

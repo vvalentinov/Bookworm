@@ -12,7 +12,10 @@
 
 <partial name="PartialViews/Quotes/_QuotesTablePartial" />
 
-<partial name="PartialViews/_PaginationPartial" />
+@if (Model.PagesCount > 1)
+{
+    <partial name="PartialViews/_PaginationPartial" />
+}
 
 <div class="modal fade"
      id="deleteQuoteModal"

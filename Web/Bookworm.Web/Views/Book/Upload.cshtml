@@ -5,6 +5,10 @@
     this.ViewData["Icon-Class"] = "fa-book";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/bookUpload.css" asp-append-version="true" />
+}
+
 <partial name="PartialViews/_TitleCardPartial" />
 
 <section class="uploadBookSection">
@@ -36,6 +40,7 @@
                         size="8"
                         aria-label="size 5 select example"
                         class="fs-5 form-select">
+
                     @await Component.InvokeAsync("Categories")
                 </select>
                 <span asp-validation-for="CategoryId" class="small text-danger"></span>
@@ -70,7 +75,7 @@
             <button type="button"
                     id="addAuthorBtn"
                     class="btn button fs-5 w-100">
-                Add Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
+                Add Author (Max - 5)<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
         </div>
         <div class="mt-4">

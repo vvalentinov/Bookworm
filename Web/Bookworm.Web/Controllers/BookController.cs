@@ -57,7 +57,7 @@
         }
 
         [HttpPost]
-        [DisableRequestSizeLimit]
+        [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
             if (!this.ModelState.IsValid)

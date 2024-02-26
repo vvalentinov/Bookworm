@@ -64,6 +64,11 @@
                 {
                     throw new InvalidOperationException(BookImageFileEmptyError);
                 }
+
+                if (imageFile.Length > 5_000_000)
+                {
+                    throw new InvalidOperationException(BookInvalidImageSizeError);
+                }
             }
 
             bool hasDuplicates = authors

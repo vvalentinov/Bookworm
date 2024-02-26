@@ -9,7 +9,6 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Users;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.Extensions.Configuration;
 
     public class UsersService : IUsersService
     {
@@ -22,9 +21,7 @@
             IDeletableEntityRepository<ApplicationUser> usersRepository,
             IDeletableEntityRepository<Book> bookRepository,
             IRepository<Quote> quoteRepository,
-            UserManager<ApplicationUser> userManager,
-            IConfiguration configuration,
-            IBlobService blobService)
+            UserManager<ApplicationUser> userManager)
         {
             this.usersRepository = usersRepository;
             this.bookRepository = bookRepository;

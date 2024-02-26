@@ -18,7 +18,6 @@
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IRepository<Publisher> publisherRepository;
         private readonly IRepository<Author> authorRepository;
-        private readonly IRepository<AuthorBook> authorBookRepository;
         private readonly IBlobService blobService;
         private readonly IValidateUploadedBookService validateUploadedBookService;
 
@@ -26,23 +25,23 @@
             IDeletableEntityRepository<Book> booksRepository,
             IRepository<Publisher> publisherRepository,
             IRepository<Author> authorRepository,
-            IRepository<AuthorBook> authorBookRepository,
             IBlobService blobService,
             IValidateUploadedBookService validateUploadedBookService)
         {
             this.booksRepository = booksRepository;
             this.publisherRepository = publisherRepository;
             this.authorRepository = authorRepository;
-            this.authorBookRepository = authorBookRepository;
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
         }
 
         public async Task UploadBookAsync(BookDto uploadBookDto)
         {
+            var bookTitle = uploadBookDto.Title.Trim();
+
             bool bookWithTitleExist = await this.booksRepository
-                .AllAsNoTracking()
-                .AnyAsync(x => x.Title.ToLower() == uploadBookDto.Title.Trim().ToLower());
+                .AllAsNoTrackingWithDeleted()
+                .AnyAsync(x => x.Title.ToLower() == bookTitle.ToLower());
 
             if (bookWithTitleExist)
             {
@@ -56,74 +55,70 @@
                 uploadBookDto.CategoryId,
                 uploadBookDto.LanguageId);
 
-            string bookBlobUrl = await this.blobService.UploadBlobAsync(uploadBookDto.BookFile, BookFileUploadPath);
-            string imageBlobUrl = await this.blobService.UploadBlobAsync(uploadBookDto.ImageFile, BookImageFileUploadPath);
+            string bookBlobUrl = await this.blobService.UploadBlobAsync(
+                uploadBookDto.BookFile,
+                BookFileUploadPath);
+
+            string imageBlobUrl = await this.blobService.UploadBlobAsync(
+                uploadBookDto.ImageFile,
+                BookImageFileUploadPath);
 
             var book = new Book
             {
-                UserId = uploadBookDto.BookCreatorId,
+                Title = bookTitle,
                 FileUrl = bookBlobUrl,
-                Title = uploadBookDto.Title.Trim(),
                 ImageUrl = imageBlobUrl,
                 Year = uploadBookDto.PublishedYear,
+                UserId = uploadBookDto.BookCreatorId,
+                PagesCount = uploadBookDto.PagesCount,
                 LanguageId = uploadBookDto.LanguageId,
                 CategoryId = uploadBookDto.CategoryId,
-                PagesCount = uploadBookDto.PagesCount,
                 Description = uploadBookDto.Description,
             };
 
+            await this.booksRepository.AddAsync(book);
+
             if (!string.IsNullOrWhiteSpace(uploadBookDto.Publisher))
             {
+                var publisherName = uploadBookDto.Publisher.Trim();
+
                 var publisher = await this.publisherRepository
                     .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name.ToLower() == uploadBookDto.Publisher.Trim().ToLower());
+                    .FirstOrDefaultAsync(x => x.Name.ToLower() == publisherName.ToLower());
 
                 if (publisher == null)
                 {
-                    publisher = new Publisher() { Name = uploadBookDto.Publisher.Trim() };
-                    await this.publisherRepository.AddAsync(publisher);
-                    await this.publisherRepository.SaveChangesAsync();
-                }
-
-                book.PublisherId = publisher.Id;
-            }
-
-            await this.booksRepository.AddAsync(book);
-            await this.booksRepository.SaveChangesAsync();
-
-            foreach (var authorModel in uploadBookDto.Authors)
-            {
-                var author = await this.authorRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name.ToLower() == authorModel.Name.Trim().ToLower());
-
-                if (author == null)
-                {
-                    author = new Author { Name = authorModel.Name.Trim() };
-                    await this.authorRepository.AddAsync(author);
-                    await this.authorRepository.SaveChangesAsync();
-
-                    await this.AddAuthorBookConnectionAsync(book.Id, author.Id);
+                    book.Publisher = new Publisher { Name = publisherName };
                 }
                 else
                 {
-                    var authorBook = await this.authorBookRepository
-                        .AllAsNoTracking()
-                        .FirstOrDefaultAsync(x => x.BookId == book.Id && x.AuthorId == author.Id);
-
-                    if (authorBook == null)
-                    {
-                        await this.AddAuthorBookConnectionAsync(book.Id, author.Id);
-                    }
+                    book.PublisherId = publisher.Id;
                 }
             }
-        }
 
-        private async Task AddAuthorBookConnectionAsync(int bookId, int authorId)
-        {
-            var authorBook = new AuthorBook { BookId = bookId, AuthorId = authorId };
-            await this.authorBookRepository.AddAsync(authorBook);
-            await this.authorBookRepository.SaveChangesAsync();
+            foreach (var authorModel in uploadBookDto.Authors)
+            {
+                var authorName = authorModel.Name.Trim();
+
+                var author = await this.authorRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Name.ToLower() == authorName.ToLower());
+
+                if (author == null)
+                {
+                    book.AuthorsBooks.Add(new AuthorBook
+                    {
+                        Book = book,
+                        Author = new Author { Name = authorName },
+                    });
+                }
+                else
+                {
+                    book.AuthorsBooks.Add(new AuthorBook { Author = author, Book = book });
+                }
+            }
+
+            await this.booksRepository.SaveChangesAsync();
         }
     }
 }

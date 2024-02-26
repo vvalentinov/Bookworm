@@ -46,15 +46,17 @@
         public int PagesCount { get; set; }
 
         [Display(Name = "Year")]
-        [PublishedYearValidationAttribute(BookPublishedYearMin, ErrorMessage = BookPublishedYearInvalidError)]
+        [PublishedYearValidationAttribute(
+            BookPublishedYearMin,
+            ErrorMessage = BookPublishedYearInvalidError)]
         public int PublishedYear { get; set; }
 
-        [Display(Name = "Book PDF file")]
+        [Display(Name = "Book PDF file (Max - 15 MB)")]
         [Required(ErrorMessage = BookFileRequiredError)]
         [BookFileAllowedExtensionAttribute(BookFileAllowedExtension)]
         public IFormFile BookFile { get; set; }
 
-        [Display(Name = "Image File")]
+        [Display(Name = "Image File (Max - 5 MB)")]
         [Required(ErrorMessage = BookImageFileRequiredError)]
         [ImageFileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
         public IFormFile ImageFile { get; set; }

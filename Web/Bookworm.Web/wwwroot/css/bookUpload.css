@@ -1,0 +1,53 @@
+﻿.uploadBookSection {
+    display: flex;
+    justify-content: center;
+}
+
+    .uploadBookSection form #addAuthorBtn {
+        background-color: var(--clr-secondary);
+    }
+
+        .uploadBookSection form #addAuthorBtn:hover {
+            color: black;
+        }
+
+    .uploadBookSection form button[type="submit"] {
+        background-color: var(--clr-secondary);
+        color: white;
+        padding: 0.5rem 2rem;
+        border: solid 2px black;
+    }
+
+        .uploadBookSection form button[type="submit"]:hover {
+            color: black;
+        }
+
+    .uploadBookSection form {
+        width: 85%;
+        border: solid 4px var(--clr-secondary);
+        border-radius: 15px;
+        margin: 2rem 0;
+        padding: 1rem;
+        font-size: 1.2rem;
+        background-color: var(--clr-primary);
+        color: white;
+    }
+
+        .uploadBookSection form div input,
+        .uploadBookSection form div select {
+            border: solid 2px var(--clr-secondary);
+        }
+
+        .uploadBookSection form div textarea {
+            font-size: 10rem;
+        }
+
+        .uploadBookSection form .selectContainer {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+            .uploadBookSection form .selectContainer div {
+                width: 50%;
+            }

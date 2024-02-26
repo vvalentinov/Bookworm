@@ -1,6 +1,5 @@
 ﻿namespace Bookworm.Web.ViewComponents
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Services.Data.Contracts;
@@ -18,8 +17,10 @@
 
         public async Task<IViewComponentResult> InvokeAsync(int? selectedCategoryId)
         {
-            List<CategoryViewModel> categories = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+            var categories = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+
             this.ViewData["SelectedCategoryId"] = selectedCategoryId;
+
             return this.View(categories);
         }
     }
