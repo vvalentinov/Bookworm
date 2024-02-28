@@ -11,9 +11,9 @@ bookSearchInput.addEventListener('keypress', function (event) {
 });
 
 const fetchForBooks = (page) => {
-    const searchParams = new URLSearchParams(window.location.search);
-    let category = searchParams.get('category');
-    category = encodeURIComponent(category);
+    const isForUserBooks = document.getElementById('isForUserBooks')?.value;
+    
+    const category = encodeURIComponent(new URLSearchParams(window.location.search).get('category'));
 
     if (!page) {
         page = 1;
@@ -24,13 +24,17 @@ const fetchForBooks = (page) => {
         input = '';
     }
 
-    fetch(`/ApiBook/SearchBook?input=${input}&page=${page}&category=${category}`)
+    let url = `/ApiBook/SearchBooks?input=${input}&page=${page}&category=${category}`;
+    if (isForUserBooks) {
+        url = `/ApiBook/SearchUserBooks?input=${input}&page=${page}&category=${category}`;
+    }
+
+    fetch(url)
         .then(res => res.json())
         .then(res => {
             updateBooks(res.books);
             updatePagination(res, fetchForBooks);
-        })
-        .catch(err => console.log(err.message));
+        }).catch(err => console.log(err.message));
 };
 
 const updateBooks = (books) => {

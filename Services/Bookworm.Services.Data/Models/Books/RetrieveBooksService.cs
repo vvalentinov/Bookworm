@@ -22,20 +22,17 @@
     public class RetrieveBooksService : IRetrieveBooksService
     {
         private readonly IRatingsService ratingsService;
-        private readonly ICategoriesService categoriesService;
         private readonly IRepository<Comment> commentRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public RetrieveBooksService(
             IRatingsService ratingsService,
-            ICategoriesService categoriesService,
             IRepository<Comment> commentRepository,
             UserManager<ApplicationUser> userManager,
             IDeletableEntityRepository<Book> bookRepository)
         {
             this.ratingsService = ratingsService;
-            this.categoriesService = categoriesService;
             this.commentRepository = commentRepository;
             this.userManager = userManager;
             this.bookRepository = bookRepository;
@@ -168,21 +165,15 @@
                                 .AllAsNoTracking()
                                 .Where(x => x.UserId == userId)
                                 .OrderByDescending(x => x.CreatedOn)
-                                .Select(x => new BookViewModel
-                                {
-                                    Id = x.Id,
-                                    Title = x.Title,
-                                    ImageUrl = x.ImageUrl,
-                                })
+                                .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
                                 .Skip((page - 1) * BooksPerPage)
                                 .Take(BooksPerPage)
-                                .OrderByDescending(x => x.Id)
                                 .ToListAsync(),
-                PageNumber = page,
                 RecordsCount = await this.bookRepository
                                     .AllAsNoTracking()
                                     .Where(x => x.UserId == userId)
                                     .CountAsync(),
+                PageNumber = page,
                 ItemsPerPage = BooksPerPage,
             };
 
@@ -242,34 +233,5 @@
                         Title = book.Title,
                         UserId = book.UserId,
                     }).ToListAsync();
-
-        public async Task<BookListingViewModel> SearchBooks(string input, int page, int categoryId)
-            => new BookListingViewModel
-            {
-                Books = await this.bookRepository
-                        .AllAsNoTracking()
-                        .Include(x => x.Publisher)
-                        .Include(x => x.AuthorsBooks)
-                        .ThenInclude(x => x.Author)
-                        .Where(x => x.CategoryId == categoryId &&
-                            (x.Title.Contains(input) ||
-                            x.Publisher.Name.Contains(input) ||
-                            x.AuthorsBooks.Select(x => x.Author).Any(x => x.Name.Contains(input))))
-                        .OrderByDescending(x => x.CreatedOn)
-                        .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
-                        .Skip((page - 1) * BooksPerPage)
-                        .Take(BooksPerPage)
-                        .ToListAsync(),
-                RecordsCount = await this.bookRepository
-                        .AllAsNoTracking()
-                        .Include(x => x.Publisher)
-                        .Include(x => x.AuthorsBooks)
-                        .ThenInclude(x => x.Author)
-                        .Where(x => x.AuthorsBooks.Any(ab => ab.Author.Name.Contains(input) ||
-                               x.Publisher.Name.Contains(input) ||
-                               x.Title.Contains(input))).CountAsync(),
-                PageNumber = page,
-                ItemsPerPage = BooksPerPage,
-            };
     }
 }

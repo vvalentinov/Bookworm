@@ -2,34 +2,54 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     public class ApiBookController : BaseApiController
     {
-        private readonly IRetrieveBooksService retrieveBooksService;
+        private readonly ISearchBooksService searchBooksService;
         private readonly ICategoriesService categoriesService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public ApiBookController(
-            IRetrieveBooksService retrieveBooksService,
-            ICategoriesService categoriesService)
+            ISearchBooksService searchBooksService,
+            ICategoriesService categoriesService,
+            UserManager<ApplicationUser> userManager)
         {
-            this.retrieveBooksService = retrieveBooksService;
+            this.searchBooksService = searchBooksService;
             this.categoriesService = categoriesService;
+            this.userManager = userManager;
         }
 
-        [HttpGet(nameof(SearchBook))]
-        public async Task<BookListingViewModel> SearchBook(
-            string input,
-            int page,
-            string category)
+        [HttpGet(nameof(SearchBooks))]
+        public async Task<BookListingViewModel> SearchBooks(string input, int page, string category)
         {
             try
             {
                 var categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-                var model = await this.retrieveBooksService.SearchBooks(input ?? string.Empty, page, categoryId);
+
+                var model = await this.searchBooksService.SearchBooks(input ?? string.Empty, page, categoryId);
+
+                return model;
+            }
+            catch
+            {
+                return new BookListingViewModel();
+            }
+        }
+
+        [HttpGet(nameof(SearchUserBooks))]
+        public async Task<BookListingViewModel> SearchUserBooks(string input, int page)
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+
+                var model = await this.searchBooksService.SearchUserBooks(input ?? string.Empty, page, userId);
 
                 return model;
             }

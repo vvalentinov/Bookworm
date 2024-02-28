@@ -6,13 +6,11 @@
     using Bookworm.Data.Models;
     using Bookworm.Data.Seeding;
     using Bookworm.Services.Mapping;
-    using Bookworm.Web.Infrastructure;
     using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
 
@@ -35,10 +33,9 @@
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            builder.Services.AddControllersWithViews(options =>
-                            {
-                                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                            }).AddRazorRuntimeCompilation();
+            builder.Services.AddControllersWithViews(
+                options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+                .AddRazorRuntimeCompilation();
 
             builder.Services.AddRazorPages();
 
@@ -69,7 +66,6 @@
                     .GetResult();
             }
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

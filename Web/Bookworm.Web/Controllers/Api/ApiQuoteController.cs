@@ -17,18 +17,15 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
-        private readonly ISearchQuoteService searchQuoteService;
         private readonly IManageQuoteLikesService manageQuoteLikesService;
 
         public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
-            ISearchQuoteService searchQuoteService,
             IManageQuoteLikesService manageQuoteLikesService)
         {
             this.userManager = userManager;
             this.retrieveQuotesService = retrieveQuotesService;
-            this.searchQuoteService = searchQuoteService;
             this.manageQuoteLikesService = manageQuoteLikesService;
         }
 

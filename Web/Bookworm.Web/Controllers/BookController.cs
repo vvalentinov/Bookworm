@@ -160,9 +160,7 @@
         [AllowAnonymous]
         public IActionResult Random()
         {
-            var model = new RandomBookFormViewModel();
-
-            return this.View(model);
+            return this.View(new RandomBookFormViewModel());
         }
 
         [HttpPost]
@@ -201,10 +199,18 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserBooks(int page = 1)
+        public async Task<IActionResult> UserBooks(int id = 1)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            BookListingViewModel books = await this.retrieveBooksService.GetUserBooksAsync(user.Id, page);
+            if (id < 1)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Invalid page number!";
+                return this.RedirectToAction(nameof(this.UserBooks), new { id = 1 });
+            }
+
+            var userId = this.userManager.GetUserId(this.User);
+
+            var books = await this.retrieveBooksService.GetUserBooksAsync(userId, id);
+
             return this.View(books);
         }
 

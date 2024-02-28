@@ -31,7 +31,6 @@
             // Quotes services
             services.AddTransient<IManageQuoteLikesService, ManageQuoteLikesService>();
             services.AddTransient<IRetrieveQuotesService, RetrieveQuotesService>();
-            services.AddTransient<ISearchQuoteService, SearchQuoteService>();
             services.AddTransient<IUpdateQuoteService, UpdateQuoteService>();
             services.AddTransient<IUploadQuoteService, UploadQuoteService>();
 
@@ -42,6 +41,7 @@
             services.AddTransient<IFavoriteBooksService, FavoriteBookService>();
             services.AddTransient<IRandomBookService, RandomBookService>();
             services.AddTransient<IUpdateBookService, UpdateBookService>();
+            services.AddTransient<ISearchBooksService, SearchBooksService>();
 
             services.AddTransient<ICategoriesService, CategoriesService>();
 

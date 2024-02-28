@@ -26,7 +26,5 @@
         Task<List<BookDetailsViewModel>> GetDeletedBooksAsync();
 
         Task<int> GetUnapprovedBooksCountAsync();
-
-        Task<BookListingViewModel> SearchBooks(string input, int page, int categoryId);
     }
 }

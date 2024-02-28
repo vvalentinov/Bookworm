@@ -11,13 +11,13 @@
     border-radius: 15px;
 }
 
-.booksSection div {
-    flex-basis: 23%;
-}
-
-    .booksSection div img {
-        width: 100%;
+    .booksSection div {
+        flex-basis: 23%;
     }
+
+        .booksSection div img {
+            width: 100%;
+        }
 
 .imageZoom {
     transition: transform .2s;
@@ -29,30 +29,44 @@
         transform: scale(1.1);
     }
 
+.bookSearchInputGroup input,
+.bookSearchInputGroup input:focus {
+    border: solid 3px black;
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+}
+
+    .bookSearchInputGroup input::placeholder {
+        color: white;
+    }
 
 .bookSearchInputGroup input,
 .bookSearchInputGroup button {
-    font-size: 1.3rem;
-    border: solid 3px black;
-    color: var(--clr-secondary);
+    font-size: 1.5rem;
 }
 
     .bookSearchInputGroup button,
     .bookSearchInputGroup button:active {
         width: 10%;
         background-color: var(--clr-primary);
+        color: var(--clr-secondary);
+        border-start-end-radius: 10px;
+        border-end-end-radius: 10px;
+        border-top: solid 3px black;
+        border-right: solid 3px black;
+        border-bottom: solid 3px black;
     }
 
-.bookSearchInputGroup button:hover {
-    color: var(--clr-white);
-}
+        .bookSearchInputGroup button:hover {
+            color: var(--clr-white);
+        }
 
 @media only screen and (max-width: 950px) {
-.booksSection {
-    flex-direction: column;
-}
+    .booksSection {
+        flex-direction: column;
+    }
 
-.booksSection div {
-    width: 100%;
-}
+        .booksSection div {
+            width: 100%;
+        }
 }
