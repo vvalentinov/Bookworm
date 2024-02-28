@@ -1,33 +1,4 @@
-﻿.booksSection {
-    border: solid 4px black;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    margin: 2rem 0;
-    padding: 2rem;
-    background-color: var(--clr-primary);
-    border-radius: 15px;
-}
-
-    .booksSection div {
-        flex-basis: 23%;
-    }
-
-        .booksSection div img {
-            width: 100%;
-        }
-
-.imageZoom {
-    transition: transform .2s;
-    border: solid 3px var(--clr-secondary);
-    border-radius: 15px;
-}
-
-    .imageZoom:hover {
-        transform: scale(1.1);
-    }
+﻿@import 'bookListing.css';
 
 .bookSearchInputGroup input,
 .bookSearchInputGroup input:focus {

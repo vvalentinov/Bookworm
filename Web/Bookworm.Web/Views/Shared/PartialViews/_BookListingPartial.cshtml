@@ -1,0 +1,16 @@
+﻿<section class="booksSection">
+    @foreach (var book in Model)
+    {
+        <div>
+            <a asp-controller="Book"
+               asp-action="Details"
+               asp-route-id="@book.Id">
+                <img title="@book.Title"
+                     src="@book.ImageUrl"
+                     alt="@book.Title"
+                     height="300"
+                     class="imageZoom">
+            </a>
+        </div>
+    }
+</section>

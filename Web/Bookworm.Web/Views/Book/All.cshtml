@@ -12,24 +12,12 @@
 
 <partial name="PartialViews/_TitleCardPartial" />
 
-<partial name="PartialViews/_BooksSearchInputPartial"/>
+@if (this.User.Identity.IsAuthenticated)
+{
+    <partial name="PartialViews/_BooksSearchInputPartial" />
+}
 
-<section class="booksSection">
-    @foreach (var book in Model.Books)
-    {
-        <div>
-            <a asp-controller="Book"
-               asp-action="Details"
-               asp-route-id="@book.Id">
-                <img title="@book.Title"
-                     src="@book.ImageUrl"
-                     alt="@book.Title"
-                     height="300"
-                     class="imageZoom">
-            </a>
-        </div>
-    }
-</section>
+<partial name="PartialViews/_BookListingPartial" model="@Model.Books" />
 
 @if (Model.PagesCount > 1)
 {

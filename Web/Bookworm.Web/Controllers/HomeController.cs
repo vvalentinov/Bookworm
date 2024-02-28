@@ -13,14 +13,14 @@
     public class HomeController : BaseController
     {
         private readonly IRetrieveQuotesService retrieveQuotesService;
-        private readonly IRetrieveBooksService booksService;
+        private readonly IRetrieveBooksService retrieveBooksService;
 
         public HomeController(
             IRetrieveQuotesService retrieveQuotesService,
             IRetrieveBooksService booksService)
         {
             this.retrieveQuotesService = retrieveQuotesService;
-            this.booksService = booksService;
+            this.retrieveBooksService = booksService;
         }
 
         [HttpGet]
@@ -30,8 +30,8 @@
             var model = new IndexViewModel
             {
                 RandomQuote = await this.retrieveQuotesService.GetRandomAsync(),
-                RecentBooks = await this.booksService.GetRecentBooksAsync(),
-                PopularBooks = await this.booksService.GetPopularBooksAsync(),
+                RecentBooks = await this.retrieveBooksService.GetRecentBooksAsync(),
+                PopularBooks = await this.retrieveBooksService.GetPopularBooksAsync(),
             };
 
             return this.View(model);

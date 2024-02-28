@@ -177,22 +177,22 @@
                 ItemsPerPage = BooksPerPage,
             };
 
-        public async Task<List<BookDetailsViewModel>> GetPopularBooksAsync()
+        public async Task<List<BookViewModel>> GetPopularBooksAsync()
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.IsApproved)
                     .OrderByDescending(x => x.DownloadsCount)
                     .Take(BooksCountOnHomePage)
-                    .Select(x => new BookDetailsViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
+                    .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
                     .ToListAsync();
 
-        public async Task<List<BookDetailsViewModel>> GetRecentBooksAsync()
+        public async Task<List<BookViewModel>> GetRecentBooksAsync()
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.IsApproved)
                     .OrderByDescending(x => x.CreatedOn)
                     .Take(BooksCountOnHomePage)
-                    .Select(x => new BookDetailsViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
+                    .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
                     .ToListAsync();
 
         public async Task<List<BookDetailsViewModel>> GetUnapprovedBooksAsync()

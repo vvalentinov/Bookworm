@@ -4,6 +4,24 @@
     this.ViewData["Title"] = "Home Page";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/bookListing.css" asp-append-version="true" />
+}
+
+<section class="welcomeSection mt-5">
+    <h1 class="text-center mb-5">Welcome to @GlobalConstants.SystemName!</h1>
+    <div class="card mb-5 col-8 d-flex justify-content-center mx-auto border-2 border-dark">
+        <div class="card-header fs-4">
+            Quote
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote ">
+                <p class="text-center">"This is some random quote!"</p>
+            </blockquote>
+        </div>
+    </div>
+</section>
+
 @* <section class="welcomeSection mt-5">
     <h1 class="text-center mb-5">Welcome to @GlobalConstants.SystemName!</h1>
     <div class="card mb-5 col-8 d-flex justify-content-center mx-auto border-2 border-dark">
@@ -51,3 +69,13 @@
         </div>
     </section>
 }
+
+<section class="my-5">
+    <h2 class="text-center">Recent Books:</h2>
+    <partial name="PartialViews/_BookListingPartial" model="@Model.RecentBooks" />
+</section>
+
+<section class="my-5">
+    <h2 class="text-center">Popular Books:</h2>
+    <partial name="PartialViews/_BookListingPartial" model="@Model.PopularBooks"/>
+</section>

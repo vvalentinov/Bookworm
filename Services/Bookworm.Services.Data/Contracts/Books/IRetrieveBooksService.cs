@@ -15,9 +15,9 @@
 
         Task<UploadBookViewModel> GetEditBookAsync(int bookId);
 
-        Task<List<BookDetailsViewModel>> GetPopularBooksAsync();
+        Task<List<BookViewModel>> GetPopularBooksAsync();
 
-        Task<List<BookDetailsViewModel>> GetRecentBooksAsync();
+        Task<List<BookViewModel>> GetRecentBooksAsync();
 
         Task<List<BookDetailsViewModel>> GetUnapprovedBooksAsync();
 

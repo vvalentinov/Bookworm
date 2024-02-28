@@ -42,9 +42,10 @@
                         .Include(b => b.Publisher)
                         .Include(b => b.AuthorsBooks)
                         .ThenInclude(b => b.Author)
-                        .Where(x => x.AuthorsBooks.Any(ab => ab.Author.Name.Contains(input) ||
-                               x.Publisher.Name.Contains(input) ||
-                               x.Title.Contains(input))).CountAsync(),
+                        .Where(b => b.CategoryId == categoryId && b.IsApproved &&
+                            (b.Title.Contains(input) ||
+                            b.Publisher.Name.Contains(input) ||
+                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(input)))).CountAsync(),
                 PageNumber = page,
                 ItemsPerPage = BooksPerPage,
             };
@@ -71,9 +72,10 @@
                         .Include(b => b.Publisher)
                         .Include(b => b.AuthorsBooks)
                         .ThenInclude(b => b.Author)
-                        .Where(x => x.AuthorsBooks.Any(ab => ab.Author.Name.Contains(input) ||
-                               x.Publisher.Name.Contains(input) ||
-                               x.Title.Contains(input))).CountAsync(),
+                        .Where(x => x.UserId == userId &&
+                            (x.Title.Contains(input) ||
+                            x.Publisher.Name.Contains(input) ||
+                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(input)))).CountAsync(),
                 PageNumber = page,
                 ItemsPerPage = BooksPerPage,
             };
