@@ -2,7 +2,6 @@
 
 @{
     this.ViewData["Count"] = Model.RecordsCount;
-    this.ViewData["Title"] = Model.CategoryName;
     this.ViewData["PaginationActionName"] = "All";
     this.ViewData["PaginationControllerName"] = "Book";
 }
@@ -13,19 +12,30 @@
 
 <partial name="PartialViews/_TitleCardPartial" />
 
+<div class="input-group mt-4 bookSearchInputGroup">
+    <input type="text"
+           class="form-control bookSearchInput"
+           placeholder="Search by book title, author or publisher..."
+           aria-label="Recipient's username"
+           aria-describedby="button-addon2">
+    <button type="button" id="bookSearchButton">
+        <i class="fa fa-magnifying-glass fa-xl"></i>
+    </button>
+</div>
+
 <section class="booksSection">
     @foreach (var book in Model.Books)
     {
         <div>
-        <a asp-controller="Book"
-           asp-action="Details"
-           asp-route-id="@book.Id">
+            <a asp-controller="Book"
+               asp-action="Details"
+               asp-route-id="@book.Id">
                 <img title="@book.Title"
-                 src="@book.ImageUrl"
-                 alt="@book.Title"
-                 height="300"
-                 class="imageZoom">  
-        </a>
+                     src="@book.ImageUrl"
+                     alt="@book.Title"
+                     height="300"
+                     class="imageZoom">
+            </a>
         </div>
     }
 </section>
@@ -33,4 +43,8 @@
 @if (Model.PagesCount > 1)
 {
     <partial name="PartialViews/_PaginationPartial" model="@Model" />
+}
+
+@section Scripts {
+    <script type="module" src="~/js/books.js"></script>
 }

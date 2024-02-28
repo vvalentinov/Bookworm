@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -8,7 +9,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Mapping;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
     public class CategoriesService : ICategoriesService
@@ -29,34 +29,14 @@
                 .ToListAsync();
         }
 
-        public IEnumerable<SelectListItem> GetCategoriesAsSelectListItems()
+        public async Task<int> GetCategoryIdAsync(string categoryName)
         {
-            return this.categoriesRepository
-               .AllAsNoTracking()
-               .OrderBy(x => x.Name)
-               .Select(x => new SelectListItem()
-               {
-                   Text = x.Name,
-                   Value = x.Id.ToString(),
-               })
-               .ToList();
-        }
-
-        public int GetCategoryId(string categoryName)
-        {
-            return this.categoriesRepository
+            var category = await this.categoriesRepository
                 .AllAsNoTracking()
-                .First(x => x.Name == categoryName)
-                .Id;
-        }
+                .FirstOrDefaultAsync(c => c.Name == categoryName) ??
+                throw new InvalidOperationException("Invalid category name!");
 
-        public async Task<string> GetCategoryNameAsync(int categoryId)
-        {
-            Category category = await this.categoriesRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-
-            return category?.Name;
+            return category.Id;
         }
     }
 }

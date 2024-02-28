@@ -1,6 +1,6 @@
-import { fetchForQuotes} from './quotes/fetchForQuotes.js';
+//import { fetchForQuotes} from './quotes/fetchForQuotes.js';
 
-export function updatePagination(model) {
+export function updatePagination(model, fetcher) {
     const navigation = document.getElementById('pagination');
     navigation.children[0]?.remove();
 
@@ -22,9 +22,8 @@ export function updatePagination(model) {
         const previousIconEl = document.createElement('i');
         previousIconEl.className = 'fa fa-angles-left';
         previousLiAnchorEl.appendChild(previousIconEl);
-        //previousLiAnchorEl.textContent = 'Previous';
         if (model.hasPreviousPage) {
-            previousLiAnchorEl.addEventListener('click', () => fetchForQuotes(model.previousPageNumber));
+            previousLiAnchorEl.addEventListener('click', () => fetcher(model.previousPageNumber));
         }
         previousLiEl.appendChild(previousLiAnchorEl);
         ulElement.appendChild(previousLiEl);
@@ -40,7 +39,7 @@ export function updatePagination(model) {
                 anchorEl.className = 'page-link';
                 anchorEl.textContent = `${i}`;
                 anchorEl.addEventListener('click', function () {
-                    fetchForQuotes(page);
+                    fetcher(page);
                 });
 
                 liElement.appendChild(anchorEl);
@@ -74,7 +73,7 @@ export function updatePagination(model) {
                 const anchorElement = document.createElement('a');
                 anchorElement.className = 'page-link';
                 anchorElement.textContent = `${i}`;
-                anchorElement.addEventListener('click', () => fetchForQuotes(page));
+                anchorElement.addEventListener('click', () => fetcher(page));
 
                 liElement.appendChild(anchorElement);
                 ulElement.appendChild(liElement);
@@ -96,9 +95,8 @@ export function updatePagination(model) {
         const nextIconEl = document.createElement('i');
         nextIconEl.className = 'fa fa-angles-right';
         nextPageAnchorEl.appendChild(nextIconEl);
-        //nextPageAnchorEl.textContent = 'Next';
         if (model.hasNextPage) {
-            nextPageAnchorEl.addEventListener('click', () => fetchForQuotes(model.nextPageNumber))
+            nextPageAnchorEl.addEventListener('click', () => fetcher(model.nextPageNumber))
         }
         nextPageLiEl.appendChild(nextPageAnchorEl);
         ulElement.appendChild(nextPageLiEl);

@@ -105,7 +105,7 @@
 
         private void RegisterMappings()
         {
-            AutoMapperConfig.RegisterMappings(typeof(BookViewModel).GetTypeInfo().Assembly);
+            AutoMapperConfig.RegisterMappings(typeof(BookDetailsViewModel).GetTypeInfo().Assembly);
         }
     }
 }

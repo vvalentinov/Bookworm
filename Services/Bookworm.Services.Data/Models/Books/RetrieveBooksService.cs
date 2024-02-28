@@ -41,7 +41,7 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<BookViewModel> GetBookDetails(int bookId, string currentUserId)
+        public async Task<BookDetailsViewModel> GetBookDetails(int bookId, string currentUserId)
         {
             var bookViewModel = await this.bookRepository
                 .AllAsNoTracking()
@@ -50,7 +50,7 @@
                 .Include(x => x.Category)
                 .Include(x => x.AuthorsBooks)
                 .ThenInclude(x => x.Author)
-                .Select(x => new BookViewModel
+                .Select(x => new BookDetailsViewModel
                 {
                     Id = x.Id,
                     Title = x.Title,
@@ -144,33 +144,27 @@
 
         public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page)
             => new BookListingViewModel
-                {
-                    CategoryName = await this.categoriesService.GetCategoryNameAsync(categoryId),
-                    Books = await this.bookRepository
+            {
+                Books = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.CategoryId == categoryId && x.IsApproved)
-                                .Select(x => new BookViewModel
-                                {
-                                    Id = x.Id,
-                                    Title = x.Title,
-                                    ImageUrl = x.ImageUrl,
-                                })
+                                .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
                                 .OrderByDescending(x => x.Id)
                                 .Skip((page - 1) * BooksPerPage)
                                 .Take(BooksPerPage)
                                 .ToListAsync(),
-                    PageNumber = page,
-                    RecordsCount = await this.bookRepository
+                PageNumber = page,
+                RecordsCount = await this.bookRepository
                                     .AllAsNoTracking()
                                     .Where(x => x.CategoryId == categoryId && x.IsApproved)
                                     .CountAsync(),
-                    ItemsPerPage = BooksPerPage,
-                };
+                ItemsPerPage = BooksPerPage,
+            };
 
         public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page)
             => new BookListingViewModel
-                {
-                    Books = await this.bookRepository
+            {
+                Books = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.UserId == userId)
                                 .OrderByDescending(x => x.CreatedOn)
@@ -184,37 +178,37 @@
                                 .Take(BooksPerPage)
                                 .OrderByDescending(x => x.Id)
                                 .ToListAsync(),
-                    PageNumber = page,
-                    RecordsCount = await this.bookRepository
+                PageNumber = page,
+                RecordsCount = await this.bookRepository
                                     .AllAsNoTracking()
                                     .Where(x => x.UserId == userId)
                                     .CountAsync(),
-                    ItemsPerPage = BooksPerPage,
-                };
+                ItemsPerPage = BooksPerPage,
+            };
 
-        public async Task<List<BookViewModel>> GetPopularBooksAsync()
+        public async Task<List<BookDetailsViewModel>> GetPopularBooksAsync()
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.IsApproved)
                     .OrderByDescending(x => x.DownloadsCount)
                     .Take(BooksCountOnHomePage)
-                    .Select(x => new BookViewModel { Id = x.Id, ImageUrl = x.ImageUrl })
+                    .Select(x => new BookDetailsViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
                     .ToListAsync();
 
-        public async Task<List<BookViewModel>> GetRecentBooksAsync()
+        public async Task<List<BookDetailsViewModel>> GetRecentBooksAsync()
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.IsApproved)
                     .OrderByDescending(x => x.CreatedOn)
                     .Take(BooksCountOnHomePage)
-                    .Select(x => new BookViewModel { Id = x.Id, ImageUrl = x.ImageUrl })
+                    .Select(x => new BookDetailsViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
                     .ToListAsync();
 
-        public async Task<List<BookViewModel>> GetUnapprovedBooksAsync()
+        public async Task<List<BookDetailsViewModel>> GetUnapprovedBooksAsync()
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(book => book.IsApproved == false)
-                    .Select(book => new BookViewModel
+                    .Select(book => new BookDetailsViewModel
                     {
                         Id = book.Id,
                         Title = book.Title,
@@ -227,26 +221,55 @@
                     .Where(book => book.IsApproved == false)
                     .CountAsync();
 
-        public async Task<List<BookViewModel>> GetApprovedBooksAsync()
+        public async Task<List<BookDetailsViewModel>> GetApprovedBooksAsync()
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(book => book.IsApproved)
-                    .Select(book => new BookViewModel
+                    .Select(book => new BookDetailsViewModel
                     {
                         Id = book.Id,
                         Title = book.Title,
                         UserId = book.UserId,
                     }).ToListAsync();
 
-        public async Task<List<BookViewModel>> GetDeletedBooksAsync()
+        public async Task<List<BookDetailsViewModel>> GetDeletedBooksAsync()
             => await this.bookRepository
                     .AllAsNoTrackingWithDeleted()
                     .Where(book => book.IsDeleted)
-                    .Select(book => new BookViewModel
+                    .Select(book => new BookDetailsViewModel
                     {
                         Id = book.Id,
                         Title = book.Title,
                         UserId = book.UserId,
                     }).ToListAsync();
+
+        public async Task<BookListingViewModel> SearchBooks(string input, int page, int categoryId)
+            => new BookListingViewModel
+            {
+                Books = await this.bookRepository
+                        .AllAsNoTracking()
+                        .Include(x => x.Publisher)
+                        .Include(x => x.AuthorsBooks)
+                        .ThenInclude(x => x.Author)
+                        .Where(x => x.CategoryId == categoryId &&
+                            (x.Title.Contains(input) ||
+                            x.Publisher.Name.Contains(input) ||
+                            x.AuthorsBooks.Select(x => x.Author).Any(x => x.Name.Contains(input))))
+                        .OrderByDescending(x => x.CreatedOn)
+                        .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
+                        .Skip((page - 1) * BooksPerPage)
+                        .Take(BooksPerPage)
+                        .ToListAsync(),
+                RecordsCount = await this.bookRepository
+                        .AllAsNoTracking()
+                        .Include(x => x.Publisher)
+                        .Include(x => x.AuthorsBooks)
+                        .ThenInclude(x => x.Author)
+                        .Where(x => x.AuthorsBooks.Any(ab => ab.Author.Name.Contains(input) ||
+                               x.Publisher.Name.Contains(input) ||
+                               x.Title.Contains(input))).CountAsync(),
+                PageNumber = page,
+                ItemsPerPage = BooksPerPage,
+            };
     }
 }

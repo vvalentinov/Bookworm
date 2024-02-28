@@ -29,12 +29,30 @@
         transform: scale(1.1);
     }
 
-@media only screen and (max-width: 950px) {
-    .booksSection {
-        flex-direction: column;
+
+.bookSearchInputGroup input,
+.bookSearchInputGroup button {
+    font-size: 1.3rem;
+    border: solid 3px black;
+    color: var(--clr-secondary);
+}
+
+    .bookSearchInputGroup button,
+    .bookSearchInputGroup button:active {
+        width: 10%;
+        background-color: var(--clr-primary);
     }
 
-        .booksSection div {
-            width: 100%;
-        }
+.bookSearchInputGroup button:hover {
+    color: var(--clr-white);
+}
+
+@media only screen and (max-width: 950px) {
+.booksSection {
+    flex-direction: column;
+}
+
+.booksSection div {
+    width: 100%;
+}
 }

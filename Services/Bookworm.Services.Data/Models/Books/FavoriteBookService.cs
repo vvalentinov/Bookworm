@@ -48,7 +48,7 @@
             await this.favoriteBooksRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<BookViewModel> GetUserFavoriteBooks(string userId)
+        public IEnumerable<BookDetailsViewModel> GetUserFavoriteBooks(string userId)
         {
             List<int> bookIds = this.favoriteBooksRepository
                 .AllAsNoTracking()
@@ -59,7 +59,7 @@
             return this.bookRepository
                 .AllAsNoTracking()
                 .Where(x => bookIds.Contains(x.Id))
-                .Select(x => new BookViewModel
+                .Select(x => new BookDetailsViewModel
                 {
                     Id = x.Id,
                     ImageUrl = x.ImageUrl,

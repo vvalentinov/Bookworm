@@ -11,20 +11,22 @@
 
         Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
 
-        Task<BookViewModel> GetBookDetails(int bookId, string userId);
+        Task<BookDetailsViewModel> GetBookDetails(int bookId, string userId);
 
         Task<UploadBookViewModel> GetEditBookAsync(int bookId);
 
-        Task<List<BookViewModel>> GetPopularBooksAsync();
+        Task<List<BookDetailsViewModel>> GetPopularBooksAsync();
 
-        Task<List<BookViewModel>> GetRecentBooksAsync();
+        Task<List<BookDetailsViewModel>> GetRecentBooksAsync();
 
-        Task<List<BookViewModel>> GetUnapprovedBooksAsync();
+        Task<List<BookDetailsViewModel>> GetUnapprovedBooksAsync();
 
-        Task<List<BookViewModel>> GetApprovedBooksAsync();
+        Task<List<BookDetailsViewModel>> GetApprovedBooksAsync();
 
-        Task<List<BookViewModel>> GetDeletedBooksAsync();
+        Task<List<BookDetailsViewModel>> GetDeletedBooksAsync();
 
         Task<int> GetUnapprovedBooksCountAsync();
+
+        Task<BookListingViewModel> SearchBooks(string input, int page, int categoryId);
     }
 }

@@ -7,7 +7,7 @@
 
     public interface IFavoriteBooksService
     {
-        IEnumerable<BookViewModel> GetUserFavoriteBooks(string userId);
+        IEnumerable<BookDetailsViewModel> GetUserFavoriteBooks(string userId);
 
         Task AddBookToFavoritesAsync(int bookId, string userId);
 

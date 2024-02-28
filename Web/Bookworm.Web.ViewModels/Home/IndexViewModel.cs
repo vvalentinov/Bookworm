@@ -9,8 +9,8 @@
     {
         public QuoteViewModel RandomQuote { get; set; }
 
-        public IList<BookViewModel> RecentBooks { get; set; }
+        public IList<BookDetailsViewModel> RecentBooks { get; set; }
 
-        public IList<BookViewModel> PopularBooks { get; set; }
+        public IList<BookDetailsViewModel> PopularBooks { get; set; }
     }
 }

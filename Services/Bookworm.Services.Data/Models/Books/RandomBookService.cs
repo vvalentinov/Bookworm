@@ -22,19 +22,19 @@
             this.bookRepository = bookRepository;
         }
 
-        public IEnumerable<BookViewModel> GenerateBooks(string category, int countBooks)
+        public IEnumerable<BookDetailsViewModel> GenerateBooks(string category, int countBooks)
         {
             int categoryId = this.categoriesRepository
                                  .AllAsNoTracking()
                                  .First(x => x.Name == category)
                                  .Id;
 
-            List<BookViewModel> books = this.bookRepository
+            List<BookDetailsViewModel> books = this.bookRepository
                 .AllAsNoTracking()
                 .Where(x => x.CategoryId == categoryId)
                 .OrderBy(x => Guid.NewGuid())
                 .Take(countBooks)
-                .Select(x => new BookViewModel()
+                .Select(x => new BookDetailsViewModel()
                 {
                     Id = x.Id,
                     Title = x.Title,

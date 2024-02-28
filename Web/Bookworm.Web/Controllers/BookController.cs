@@ -54,7 +54,6 @@
         public IActionResult Upload()
         {
             this.ViewData["Title"] = "Upload Book";
-
             this.ViewData["Action"] = nameof(this.Upload);
 
             return this.View(new UploadBookViewModel());
@@ -65,7 +64,6 @@
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
             this.ViewData["Title"] = "Upload Book";
-
             this.ViewData["Action"] = nameof(this.Upload);
 
             if (!this.ModelState.IsValid)
@@ -96,19 +94,16 @@
         public async Task<IActionResult> Edit(int bookId)
         {
             this.ViewData["Title"] = "Edit Book";
-
             this.ViewData["Action"] = nameof(this.Edit);
 
             try
             {
                 var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
-
                 return this.View(nameof(this.Upload), model);
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-
                 return this.RedirectToAction("Index", "Home");
             }
         }
@@ -117,7 +112,6 @@
         public async Task<IActionResult> Edit(UploadBookViewModel model)
         {
             this.ViewData["Title"] = "Edit Book";
-
             this.ViewData["Action"] = nameof(this.Edit);
 
             if (!this.ModelState.IsValid)
@@ -134,13 +128,11 @@
                 await this.updateBookService.EditBookAsync(editBookDto, userId);
 
                 this.TempData[MessageConstant.SuccessMessage] = BookEditSuccess;
-
                 return this.RedirectToAction(nameof(this.UserBooks), "Book");
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-
                 return this.View(nameof(this.Upload), model);
             }
         }
@@ -153,6 +145,7 @@
             try
             {
                 await this.updateBookService.DeleteBookAsync(bookId, userId);
+
                 this.TempData[MessageConstant.SuccessMessage] = BookDeleteSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
@@ -185,11 +178,26 @@
         [AllowAnonymous]
         public async Task<IActionResult> All(string category, int id = 1)
         {
-            int categoryId = this.categoriesService.GetCategoryId(category);
+            if (id < 1)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = "Invalid page number!";
+                return this.RedirectToAction(nameof(this.All), new { category, id = 1 });
+            }
 
-            var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
+            try
+            {
+                int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
-            return this.View(model);
+                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
+
+                this.ViewData["Title"] = category;
+                return this.View(model);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.All), "Category");
+            }
         }
 
         [HttpGet]

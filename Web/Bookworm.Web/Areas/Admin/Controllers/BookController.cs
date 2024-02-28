@@ -62,21 +62,21 @@
         [HttpGet]
         public async Task<IActionResult> UnapprovedBooks()
         {
-            List<BookViewModel> books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
+            List<BookDetailsViewModel> books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
             return this.View(books);
         }
 
         [HttpGet]
         public async Task<IActionResult> DeletedBooks()
         {
-            List<BookViewModel> books = await this.retrieveBooksService.GetDeletedBooksAsync();
+            List<BookDetailsViewModel> books = await this.retrieveBooksService.GetDeletedBooksAsync();
             return this.View(books);
         }
 
         [HttpGet]
         public async Task<IActionResult> ApprovedBooks()
         {
-            List<BookViewModel> approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
+            List<BookDetailsViewModel> approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
             return this.View(approvedBooks);
         }
 

@@ -59,18 +59,17 @@
             Assert.Equal(18, categories.Count);
         }
 
-        [Fact]
-        public void GetCategoriesAsSelectListItemsShouldWorkCorrectly()
-        {
-            IEnumerable<SelectListItem> categories = this.categoriesService.GetCategoriesAsSelectListItems();
+        // [Fact]
+        // public void GetCategoriesAsSelectListItemsShouldWorkCorrectly()
+        // {
+        //    IEnumerable<SelectListItem> categories = this.categoriesService.GetCategoriesAsSelectListItems();
 
-            Assert.Equal(18, categories.Count());
-            foreach (var category in categories)
-            {
-                Assert.IsType<SelectListItem>(category);
-            }
-        }
-
+        // Assert.Equal(18, categories.Count());
+        //    foreach (var category in categories)
+        //    {
+        //        Assert.IsType<SelectListItem>(category);
+        //    }
+        // }
         [Fact]
         public void GetCategoryNameShouldWorkCorrectly()
         {

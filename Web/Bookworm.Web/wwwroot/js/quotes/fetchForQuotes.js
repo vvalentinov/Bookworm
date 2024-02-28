@@ -3,7 +3,6 @@ import { updatePagination } from '../pagination.js';
 import { updateQuotesTable } from './updateUserQuotesTable.js';
 import { getCheckedRadioBtn, constructUrl, getSearchTextFromQuoteTypeId } from './quotesUtil.js';
 
-
 export const fetchForQuotes = (page) => {
     let isForUserRecords = document.getElementById('isForUserQuotes')?.value;
     if (!isForUserRecords) {
@@ -28,6 +27,6 @@ export const fetchForQuotes = (page) => {
             } else {
                 filterQuotes(res.quotes, searchText);
             }
-            updatePagination(res);
+            updatePagination(res, fetchForQuotes);
         }).catch(err => console.log(err));
 };
