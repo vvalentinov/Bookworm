@@ -42,6 +42,7 @@
             services.AddTransient<IRandomBookService, RandomBookService>();
             services.AddTransient<IUpdateBookService, UpdateBookService>();
             services.AddTransient<ISearchBooksService, SearchBooksService>();
+            services.AddTransient<IDownloadBookService, DownloadBookService>();
 
             services.AddTransient<ICategoriesService, CategoriesService>();
 

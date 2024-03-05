@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Controllers
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
@@ -27,6 +28,7 @@
         private readonly IBlobService blobService;
         private readonly IUpdateBookService updateBookService;
         private readonly IValidateUploadedBookService validateBookService;
+        private readonly IDownloadBookService downloadBookService;
 
         public BookController(
             IRetrieveBooksService retrieveBooksService,
@@ -37,7 +39,8 @@
             IRandomBookService randomBookService,
             IBlobService blobService,
             IUpdateBookService updateBookService,
-            IValidateUploadedBookService validateBookService)
+            IValidateUploadedBookService validateBookService,
+            IDownloadBookService downloadBookService)
         {
             this.retrieveBooksService = retrieveBooksService;
             this.categoriesService = categoriesService;
@@ -48,6 +51,7 @@
             this.blobService = blobService;
             this.updateBookService = updateBookService;
             this.validateBookService = validateBookService;
+            this.downloadBookService = downloadBookService;
         }
 
         [HttpGet]
@@ -237,8 +241,20 @@
         [HttpGet]
         public async Task<IActionResult> Download(int id)
         {
-            var result = await this.blobService.DownloadBlobAsync(id);
-            return this.File(result.Item1, result.Item2, result.Item3);
+            try
+            {
+                (Stream stream,
+                 string contentType,
+                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id);
+
+                return this.File(stream, contentType, downloadName);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+
+                return this.RedirectToAction(nameof(this.Details), new { id });
+            }
         }
     }
 }

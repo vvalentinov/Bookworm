@@ -6,8 +6,6 @@
 
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
-    using Bookworm.Data.Common.Repositories;
-    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
@@ -16,41 +14,28 @@
     public class BlobService : IBlobService
     {
         private readonly IConfiguration configuration;
-        private readonly IDeletableEntityRepository<Book> bookRepository;
 
-        public BlobService(
-            IConfiguration configuration,
-            IDeletableEntityRepository<Book> bookRepository)
+        public BlobService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.bookRepository = bookRepository;
         }
 
-        public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(int bookId)
+        public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string fileUrl)
         {
-            Book book = await this.bookRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == bookId);
+            var uri = new Uri(fileUrl);
 
-            if (book.IsApproved)
-            {
-                book.DownloadsCount++;
-                this.bookRepository.Update(book);
-                await this.bookRepository.SaveChangesAsync();
-            }
+            var blobClient = new BlobClient(uri);
 
-            Uri uri = new Uri(book.FileUrl);
+            var blobProperties = await blobClient.GetPropertiesAsync();
 
-            var blobServiceClient = this.GetBlobServiceClient();
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(this.GetContainerName());
-            BlobClient blobClient = new BlobClient(uri);
+            var contentType = blobProperties.Value.ContentType;
 
-            BlobProperties blobProperties = blobClient.GetProperties();
-            string contentType = blobProperties.ContentType;
+            using var ms = new MemoryStream();
 
-            MemoryStream ms = new MemoryStream();
             await blobClient.DownloadToAsync(ms);
-            Stream blobStream = blobClient.OpenReadAsync().Result;
+
+            var blobStream = await blobClient.OpenReadAsync();
+
             return Tuple.Create(blobStream, contentType, blobClient.Name);
         }
 
