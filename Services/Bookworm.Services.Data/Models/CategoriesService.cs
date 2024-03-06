@@ -21,13 +21,11 @@
         }
 
         public async Task<List<T>> GetAllAsync<T>()
-        {
-            return await this.categoriesRepository
-                .AllAsNoTracking()
-                .OrderBy(x => x.Name)
-                .To<T>()
-                .ToListAsync();
-        }
+            => await this.categoriesRepository
+                    .AllAsNoTracking()
+                    .OrderBy(x => x.Name)
+                    .To<T>()
+                    .ToListAsync();
 
         public async Task<int> GetCategoryIdAsync(string categoryName)
         {
@@ -38,5 +36,10 @@
 
             return category.Id;
         }
+
+        public async Task<bool> CheckIfIdIsValid(int categoryId)
+            => await this.categoriesRepository
+                    .AllAsNoTracking()
+                    .AnyAsync(c => c.Id == categoryId);
     }
 }

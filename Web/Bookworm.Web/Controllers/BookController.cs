@@ -24,7 +24,6 @@
         private readonly IUploadBookService uploadBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
-        private readonly IRandomBookService randomBookService;
         private readonly IBlobService blobService;
         private readonly IUpdateBookService updateBookService;
         private readonly IValidateUploadedBookService validateBookService;
@@ -36,7 +35,6 @@
             IUploadBookService uploadBookService,
             UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService,
-            IRandomBookService randomBookService,
             IBlobService blobService,
             IUpdateBookService updateBookService,
             IValidateUploadedBookService validateBookService,
@@ -47,7 +45,6 @@
             this.uploadBookService = uploadBookService;
             this.userManager = userManager;
             this.languagesService = languagesService;
-            this.randomBookService = randomBookService;
             this.blobService = blobService;
             this.updateBookService = updateBookService;
             this.validateBookService = validateBookService;
@@ -164,16 +161,35 @@
         [AllowAnonymous]
         public IActionResult Random()
         {
-            return this.View(new RandomBookFormViewModel());
+            return this.View(new RandomBookInputModel());
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Random(RandomBookFormViewModel model)
+        public async Task<IActionResult> Random(RandomBookInputModel model)
         {
-            var books = this.randomBookService.GenerateBooks(model.CategoryName, model.CountBooks);
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(nameof(this.Random), model);
+            }
 
-            return this.View("GeneratedBooks", books);
+            try
+            {
+                if (model.CategoryId != null &&
+                    !await this.categoriesService.CheckIfIdIsValid((int)model.CategoryId))
+                {
+                    throw new InvalidOperationException("Invalid category id!");
+                }
+
+                var books = await this.retrieveBooksService.GetRandomBooksAsync(model.CountBooks, model.CategoryId);
+
+                return this.View("GeneratedBooks", books);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.Random));
+            }
         }
 
         [HttpGet]

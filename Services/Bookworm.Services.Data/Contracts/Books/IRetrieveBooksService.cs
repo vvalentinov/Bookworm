@@ -9,6 +9,8 @@
     {
         Task<BookListingViewModel> GetBooksAsync(int categoryId, int page);
 
+        Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
+
         Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
 
         Task<BookDetailsViewModel> GetBookDetails(int bookId, string userId);

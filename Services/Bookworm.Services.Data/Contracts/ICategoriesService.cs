@@ -8,5 +8,7 @@
         Task<List<T>> GetAllAsync<T>();
 
         Task<int> GetCategoryIdAsync(string categoryName);
+
+        Task<bool> CheckIfIdIsValid(int categoryId);
     }
 }

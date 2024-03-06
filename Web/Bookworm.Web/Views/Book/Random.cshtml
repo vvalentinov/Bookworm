@@ -1,41 +1,80 @@
-﻿@model RandomBookFormViewModel
+﻿@model RandomBookInputModel
 
 @{
     this.ViewData["Title"] = "Random Book Generator";
     this.ViewData["Icon-Class"] = "fa-cog";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/randomBooks.css" asp-append-version="true" />
+}
+
 <partial name="PartialViews/_TitleCardPartial" />
 
-<form method="post" asp-controller="Book" asp-action="Random" class="col-8 mx-auto d-flex justify-content-center flex-column">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group fs-4 mt-4">
-        <label asp-for="CategoryName">Select Category</label>
-        <select asp-for="CategoryName" size="8" aria-label="size 5 select example" class="form-select form-control border border-2 fs-5">
-            <vc:categories></vc:categories>
-        </select>
-    </div>
-    <div class="form-group mt-4">
-        <label class="fs-4" asp-for="@Model.CountBooks">Select Number of books:</label>
-        <br>
-        <div class="d-flex align-items-center">
-            <input asp-for="@Model.CountBooks" id="five" type="radio" name="CountBooks" value=5>
-            <label class="fs-5 ms-1" for="five"><strong>5</strong></label>
+<section class="randomBooksSection">
+    <form method="post" asp-controller="Book" asp-action="Random" class="randomBooksForm">
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <h3 class="text-center">Select Category</h3>
+        <div class="form-group">
+            <select asp-for="CategoryId"
+                    size="8"
+                    aria-label="size 5 select example"
+                    class="form-select form-control">
+                @await Component.InvokeAsync("Categories")
+            </select>
         </div>
-        <div class="d-flex align-items-center mt-2">
-            <input asp-for="@Model.CountBooks" id="ten" type="radio" name="CountBooks" value=10>
-            <label class="fs-5 ms-1" for="ten"><strong>10</strong></label>
+
+        <h3 class="text-center mt-4">Select number of books</h3>
+        <div class="radioButtonsContainer">
+            <div class="btn-group"
+                 role="group"
+                 aria-label="Basic radio toggle button group">
+
+                <input asp-for="@Model.CountBooks"
+                       type="radio"
+                       class="btn-check"
+                       name="CountBooks"
+                       id="btnradio1"
+                       autocomplete="off"
+                       value="5">
+                <label class="btn" for="btnradio1">Five</label>
+
+                <input asp-for="@Model.CountBooks"
+                       type="radio"
+                       class="btn-check"
+                       name="CountBooks"
+                       id="btnradio2"
+                       autocomplete="off"
+                       value="10">
+                <label class="btn" for="btnradio2">Ten</label>
+
+                <input asp-for="@Model.CountBooks"
+                       type="radio"
+                       class="btn-check"
+                       name="CountBooks"
+                       id="btnradio3"
+                       autocomplete="off"
+                       value="15">
+                <label class="btn" for="btnradio3">Fifteen</label>
+
+                <input asp-for="@Model.CountBooks"
+                       type="radio"
+                       class="btn-check"
+                       name="CountBooks"
+                       id="btnradio4"
+                       autocomplete="off"
+                       value="20">
+                <label class="btn" for="btnradio4">Twenty</label>
+            </div>
         </div>
-        <div class="d-flex align-items-center mt-2">
-            <input asp-for="@Model.CountBooks" id="fifteen" type="radio" name="CountBooks" value=15>
-            <label class="fs-5 ms-1" for="fifteen"><strong>15</strong></label>
+
+        <div class="text-center">
+            <button type="submit" class="btn">
+                Generate<i class="fa fa-gear ms-2"></i>
+            </button>
         </div>
-        <div class="d-flex align-items-center mt-2">
-            <input asp-for="@Model.CountBooks" id="twenty" type="radio" name="CountBooks" value=20>
-            <label class="fs-5 ms-1" for="twenty"><strong>20</strong></label>
-        </div>
-    </div>
-    <div class="text-center mt-4 mb-4">
-        <button type="submit" class="btn button fs-5"><strong>Generate</strong></button>
-    </div>
-</form>
+    </form>
+</section>
+

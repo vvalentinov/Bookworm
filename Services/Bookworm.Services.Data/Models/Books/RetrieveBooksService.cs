@@ -38,6 +38,24 @@
             this.bookRepository = bookRepository;
         }
 
+        public async Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId)
+        {
+            var query = this.bookRepository.AllAsNoTracking();
+
+            if (categoryId != null)
+            {
+                query = query.Where(b => b.CategoryId == categoryId);
+            }
+
+            var books = await query
+                .OrderBy(b => Guid.NewGuid())
+                .Take(countBooks)
+                .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
+                .ToListAsync();
+
+            return books;
+        }
+
         public async Task<BookDetailsViewModel> GetBookDetails(int bookId, string currentUserId)
         {
             var bookViewModel = await this.bookRepository

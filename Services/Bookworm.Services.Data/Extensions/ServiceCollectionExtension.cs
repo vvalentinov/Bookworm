@@ -39,7 +39,6 @@
             services.AddTransient<IRetrieveBooksService, RetrieveBooksService>();
             services.AddTransient<IUploadBookService, UploadBookService>();
             services.AddTransient<IFavoriteBooksService, FavoriteBookService>();
-            services.AddTransient<IRandomBookService, RandomBookService>();
             services.AddTransient<IUpdateBookService, UpdateBookService>();
             services.AddTransient<ISearchBooksService, SearchBooksService>();
             services.AddTransient<IDownloadBookService, DownloadBookService>();
