@@ -22,6 +22,6 @@
             ErrorMessage = AuthorNameLengthError)]
         public string Name { get; set; }
 
-        public virtual ICollection<AuthorBook> AuthorsBooks { get; set; }
+        public ICollection<AuthorBook> AuthorsBooks { get; set; }
     }
 }

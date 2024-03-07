@@ -74,10 +74,16 @@
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 
+            builder.Entity<AuthorBook>().HasKey(x => new { x.AuthorId, x.BookId });
+            builder.Entity<FavoriteBook>().HasKey(x => new { x.BookId, x.UserId });
+            builder.Entity<QuoteLike>().HasKey(x => new { x.QuoteId, x.UserId });
+
             // Apply query filters
             builder.Entity<QuoteLike>().HasQueryFilter(x => x.Quote.IsDeleted == false);
             builder.Entity<Vote>().HasQueryFilter(x => x.User.IsDeleted == false);
             builder.Entity<Rating>().HasQueryFilter(x => x.Book.IsDeleted == false);
+            builder.Entity<AuthorBook>().HasQueryFilter(x => x.Book.IsDeleted == false);
+            builder.Entity<FavoriteBook>().HasQueryFilter(x => x.Book.IsDeleted == false);
 
             this.ConfigureUserIdentityRelations(builder);
 

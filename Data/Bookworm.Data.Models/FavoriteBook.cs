@@ -3,9 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using Bookworm.Data.Common.Models;
-
-    public class FavoriteBook : BaseDeletableModel<int>
+    public class FavoriteBook
     {
         [Required]
         [ForeignKey(nameof(Book))]

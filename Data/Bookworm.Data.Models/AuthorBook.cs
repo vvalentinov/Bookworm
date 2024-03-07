@@ -2,9 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using Bookworm.Data.Common.Models;
-
-    public class AuthorBook : BaseDeletableModel<int>
+    public class AuthorBook
     {
         [ForeignKey(nameof(Author))]
         public int AuthorId { get; set; }

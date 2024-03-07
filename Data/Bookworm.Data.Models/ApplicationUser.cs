@@ -23,34 +23,32 @@
             this.Quotes = new HashSet<Quote>();
         }
 
-        // Audit info
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
 
-        // Deletable entity
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
 
         public int Points { get; set; }
 
-        public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
+        public ICollection<IdentityUserRole<string>> Roles { get; set; }
 
-        public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
+        public ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
-        public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
+        public ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public ICollection<Rating> Ratings { get; set; }
 
-        public virtual ICollection<Vote> Votes { get; set; }
+        public ICollection<Vote> Votes { get; set; }
 
-        public virtual ICollection<Book> Books { get; set; }
+        public ICollection<Book> Books { get; set; }
 
-        public virtual ICollection<FavoriteBook> FavoriteBooks { get; set; }
+        public ICollection<FavoriteBook> FavoriteBooks { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
-        public virtual ICollection<Quote> Quotes { get; set; }
+        public ICollection<Quote> Quotes { get; set; }
     }
 }

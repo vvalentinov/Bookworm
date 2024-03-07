@@ -22,7 +22,7 @@
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IRepository<Publisher> publishersRepository;
         private readonly IRepository<Author> authorsRepository;
-        private readonly IDeletableEntityRepository<AuthorBook> authorsBooksRepository;
+        private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IBlobService blobService;
         private readonly IValidateUploadedBookService validateUploadedBookService;
         private readonly UserManager<ApplicationUser> userManager;
@@ -32,7 +32,7 @@
             IDeletableEntityRepository<Book> bookRepository,
             IRepository<Publisher> publishersRepository,
             IRepository<Author> authorsRepository,
-            IDeletableEntityRepository<AuthorBook> authorsBooksRepository,
+            IRepository<AuthorBook> authorsBooksRepository,
             IBlobService blobService,
             IValidateUploadedBookService validateUploadedBookService,
             UserManager<ApplicationUser> userManager,
@@ -219,7 +219,7 @@
                     else
                     {
                         var existingAuthorBook = await this.authorsBooksRepository
-                            .AllAsNoTrackingWithDeleted()
+                            .AllAsNoTracking()
                             .FirstOrDefaultAsync(x => x.AuthorId == author.Id);
 
                         if (existingAuthorBook == null)
@@ -228,7 +228,6 @@
                             continue;
                         }
 
-                        existingAuthorBook.IsDeleted = false;
                         existingAuthorBook.Author = author;
                         existingAuthorBook.Book = book;
                         book.AuthorsBooks.Add(existingAuthorBook);

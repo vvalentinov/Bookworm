@@ -78,9 +78,9 @@
         }
 
         [Fact]
-        public void GetCategoryIdShouldWorkCorrectly()
+        public async void GetCategoryIdShouldWorkCorrectly()
         {
-            int categoryId = this.categoriesService.GetCategoryId("Arts & Music");
+            int categoryId = await this.categoriesService.GetCategoryIdAsync("Arts & Music");
             Assert.Equal(1, categoryId);
         }
 

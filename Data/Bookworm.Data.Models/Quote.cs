@@ -28,9 +28,6 @@
         public string MovieTitle { get; set; }
 
         [Required]
-        public int Likes { get; set; }
-
-        [Required]
         public QuoteType Type { get; set; }
 
         [Required]

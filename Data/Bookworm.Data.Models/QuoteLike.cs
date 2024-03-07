@@ -3,9 +3,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    using Bookworm.Data.Common.Models;
-
-    public class QuoteLike : BaseDeletableModel<int>
+    public class QuoteLike
     {
         [Required]
         [ForeignKey(nameof(Quote))]
