@@ -1,23 +1,14 @@
 ﻿@model QuoteListingViewModel
 
-@using Bookworm.Data.Models
-@using Microsoft.AspNetCore.Identity
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
-@inject SignInManager<ApplicationUser> SignInManager
-
 @{
     this.ViewData["Title"] = "All Quotes";
-    this.ViewData["Count"] = Model.RecordsCount;
-    this.ViewData["PaginationControllerName"] = "Quote";
-    this.ViewData["PaginationActionName"] = "All";
-    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+    var titleCardModel = new TitleCardPartialViewModel { Title = "All Quotes", Count = Model.RecordsCount };
+    var isUserAuthenticated = this.User.Identity.IsAuthenticated;
 }
 
-<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+@await Html.PartialAsync("PartialViews/_TitleCardPartial", titleCardModel)
 
-<partial name="PartialViews/_TitleCardPartial" />
-
-@if (this.SignInManager.IsSignedIn(this.User))
+@if (isUserAuthenticated)
 {
     <partial name="PartialViews/Quotes/_QuotesButtonsPartial" />
 }
@@ -29,11 +20,11 @@
             <div class="card-header">
                 Quote
                 <span>
-                    @if (this.SignInManager.IsSignedIn(this.User))
+                    @if (isUserAuthenticated)
                     {
                         <i onclick="likeQuote(this, @quote.Id, @quote.IsUserQuoteCreator.ToString().ToLower())"
                            class="@(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
-                        @(quote.IsUserQuoteCreator == false && this.SignInManager.IsSignedIn(this.User) ? "likeQuote" : "")
+                        @(quote.IsUserQuoteCreator == false && isUserAuthenticated ? "likeQuote" : "")
                         fa-thumbs-up">
                         </i>
                     }
@@ -71,7 +62,7 @@
     }
 </div>
 
-<partial name="PartialViews/_PaginationPartial" model="@Model" />
+<partial name="PartialViews/Pagination/_QuotesPaginationPartial" model="@Model" />
 
 @section Scripts {
     <script type="module" src="~/js/quotes/allQuotes.js"></script>

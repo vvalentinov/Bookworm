@@ -1,16 +1,14 @@
 ﻿@model BookListingViewModel
 
 @{
-    this.ViewData["Count"] = Model.RecordsCount;
-    this.ViewData["PaginationActionName"] = "All";
-    this.ViewData["PaginationControllerName"] = "Book";
+    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, Count = Model.RecordsCount };
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/bookAll.css" asp-append-version="true" />
 }
 
-<partial name="PartialViews/_TitleCardPartial" />
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 @if (this.User.Identity.IsAuthenticated)
 {
@@ -21,7 +19,7 @@
 
 @if (Model.PagesCount > 1)
 {
-    <partial name="PartialViews/_PaginationPartial" model="@Model" />
+    <partial name="PartialViews/Pagination/_BooksPaginationPartial" model="@Model" />
 }
 
 @section Scripts {

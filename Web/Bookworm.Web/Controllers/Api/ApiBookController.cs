@@ -32,9 +32,11 @@
             {
                 var categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
-                var model = await this.searchBooksService.SearchBooks(input ?? string.Empty, page, categoryId);
+                var books = await this.searchBooksService.SearchBooks(input ?? string.Empty, page, categoryId);
+                books.PaginationController = "ApiBook";
+                books.PaginationAction = nameof(this.SearchBooks);
 
-                return model;
+                return books;
             }
             catch
             {
@@ -49,9 +51,11 @@
             {
                 var userId = this.userManager.GetUserId(this.User);
 
-                var model = await this.searchBooksService.SearchUserBooks(input ?? string.Empty, page, userId);
+                var books = await this.searchBooksService.SearchUserBooks(input ?? string.Empty, page, userId);
+                books.PaginationController = "ApiBook";
+                books.PaginationAction = nameof(this.SearchUserBooks);
 
-                return model;
+                return books;
             }
             catch
             {

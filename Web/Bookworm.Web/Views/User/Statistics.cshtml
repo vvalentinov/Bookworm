@@ -2,10 +2,11 @@
 
 @{
     ViewData["Title"] = "Users Statistics";
+    var titleCardModel = new TitleCardPartialViewModel { Title = "Users Statistics" };
     int index = 1;
 }
 
-<partial name="PartialViews/_TitleCardPartial" />
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <table class="table table-bordered mt-5">
     <thead>

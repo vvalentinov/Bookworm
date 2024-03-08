@@ -2,10 +2,10 @@
 
 @{
     ViewData["Title"] = "Upload Quote";
-    ViewData["Icon-Class"] = "fa-pen";
+    var titleCardModel = new TitleCardPartialViewModel { Title = "Upload Quote", IconClass = "fa-pen" };
 }
 
-<partial name="PartialViews/_TitleCardPartial" />
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <!-- Button trigger modal -->
 <div class="uploadQuoteBtnsContainer">

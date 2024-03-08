@@ -2,6 +2,9 @@
 
 @{
     this.ViewData["Title"] = "Home Page";
+    var titleCardModel = new TitleCardPartialViewModel { Title = $"Welcome to {GlobalConstants.SystemName}!", IconClass = "fa fa-book" };
+    var popularBooksTitleCardModel = new TitleCardPartialViewModel { Title = "Popular Books", IconClass = "fa fa-book" };
+    var recentBooksTitleCardModel = new TitleCardPartialViewModel { Title = "Recent Books", IconClass = "fa fa-book" };
 }
 
 @section Styles {
@@ -9,8 +12,8 @@
 }
 
 <section class="welcomeSection mt-5">
-    <h1 class="text-center mb-5">Welcome to @GlobalConstants.SystemName!</h1>
-    <div class="card mb-5 col-8 d-flex justify-content-center mx-auto border-2 border-dark">
+    <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
+    <div class="card mt-5 mb-5 col-8 d-flex justify-content-center mx-auto border-2 border-dark">
         <div class="card-header fs-4">
             Quote
         </div>
@@ -71,11 +74,11 @@
 }
 
 <section class="my-5">
-    <h2 class="text-center">Recent Books:</h2>
+    <partial name="PartialViews/_TitleCardPartial" model=recentBooksTitleCardModel />
     <partial name="PartialViews/_BookListingPartial" model="@Model.RecentBooks" />
 </section>
 
 <section class="my-5">
-    <h2 class="text-center">Popular Books:</h2>
+    <partial name="PartialViews/_TitleCardPartial" model=popularBooksTitleCardModel />
     <partial name="PartialViews/_BookListingPartial" model="@Model.PopularBooks"/>
 </section>

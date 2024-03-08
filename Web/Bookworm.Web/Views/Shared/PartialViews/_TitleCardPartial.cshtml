@@ -1,23 +1,24 @@
-﻿@{
+﻿@* @{
     var title = ViewData["Title"];
     var iconClass = ViewData["Icon-Class"];
     var count = ViewData["Count"];
-}
+} *@
+@model TitleCardPartialViewModel
 
 <div class="d-flex justify-content-center mt-5">
     <div class="card text-center title-card border-3 border-dark">
         <div class="card-body">
-            @if (count != null)
+            @if (Model.Count != null)
             {
-                <h3>@title (@count)</h3>
+                <h3>@Model.Title (@Model.Count)</h3>
             }
-            else if(iconClass != null)
+            else if(Model.IconClass != null)
             {
-                <h3>@title<i class="fas @iconClass icon ms-3"></i></h3>
+                <h3>@Model.Title<i class="fas @Model.IconClass icon ms-3"></i></h3>
             }
             else
             {
-                <h3>@title</h3>
+                <h3>@Model.Title</h3>
             }
         </div>
     </div>

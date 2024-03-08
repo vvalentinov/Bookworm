@@ -2,13 +2,17 @@
 {
     using System;
 
-    public class PagingViewModel
+    public abstract class PagingViewModel
     {
         public int PageNumber { get; set; }
 
         public int RecordsCount { get; set; }
 
         public int ItemsPerPage { get; set; }
+
+        public string PaginationAction { get; set; }
+
+        public string PaginationController { get; set; }
 
         public bool HasPreviousPage => this.PageNumber > 1;
 

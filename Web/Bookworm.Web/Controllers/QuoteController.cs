@@ -271,6 +271,8 @@
 
             var userId = this.userManager.GetUserId(this.User);
             var quotes = await this.retrieveQuotesService.GetAllApprovedAsync(userId, id);
+            quotes.PaginationController = "Quote";
+            quotes.PaginationAction = nameof(this.All);
 
             return this.View(quotes);
         }

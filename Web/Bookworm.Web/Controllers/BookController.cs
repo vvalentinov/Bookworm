@@ -206,10 +206,12 @@
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
-                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
+                var books = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
+                books.PaginationController = "Book";
+                books.PaginationAction = nameof(this.All);
 
                 this.ViewData["Title"] = category;
-                return this.View(model);
+                return this.View(books);
             }
             catch (Exception ex)
             {
@@ -230,6 +232,8 @@
             var userId = this.userManager.GetUserId(this.User);
 
             var books = await this.retrieveBooksService.GetUserBooksAsync(userId, id);
+            books.PaginationController = "Book";
+            books.PaginationAction = nameof(this.UserBooks);
 
             return this.View(books);
         }

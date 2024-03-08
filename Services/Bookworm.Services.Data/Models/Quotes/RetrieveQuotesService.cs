@@ -12,7 +12,6 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
     using Bookworm.Web.ViewModels.Quotes.QuoteInputModels;
     using Microsoft.EntityFrameworkCore;
 

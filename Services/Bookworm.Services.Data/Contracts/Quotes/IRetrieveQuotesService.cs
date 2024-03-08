@@ -4,7 +4,6 @@
 
     using Bookworm.Data.Models.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.ListingViewModels;
     using Bookworm.Web.ViewModels.Quotes.QuoteInputModels;
 
     public interface IRetrieveQuotesService
