@@ -5,6 +5,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
     <link rel="stylesheet" href="~/css/bookAll.css" asp-append-version="true" />
 }
 
@@ -15,6 +16,29 @@
     <partial name="PartialViews/_BooksSearchInputPartial" />
 }
 
+<select class="languagesSelect" multiple="multiple">
+    <option value="CI">Christmas Island</option>
+    <option value="SS">South Sudan</option>
+    <option value="J">Jamaica</option>
+    <option>Kenya</option>
+    <option>French Guiana</option>
+    <option>Mayotta</option>
+    <option>Liechtenstein</option>
+    <option>Denmark</option>
+    <option>Eritrea</option>
+    <option>Gibraltar</option>
+    <option>Saint Helena, Ascension and Tristan da Cunha</option>
+    <option>Haiti</option>
+    <option>Namibia</option>
+    <option>South Georgia and the South Sandwich Islands</option>
+    <option>Vietnam</option>
+    <option>Yemen</option>
+    <option>Philippines</option>
+    <option>Benin</option>
+    <option>Czech Republic</option>
+    <option>Russia</option>
+</select>
+
 <partial name="PartialViews/_BookListingPartial" model="@Model.Books" />
 
 @if (Model.PagesCount > 1)
@@ -23,5 +47,18 @@
 }
 
 @section Scripts {
+    <script src="~/lib/select2/js/select2.min.js"></script>
     <script type="module" src="~/js/books.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.languagesSelect').select2({
+                placeholder: "Filter by language...",
+                width: "100%"
+            });
+        });
+        $('.languagesSelect').on('select2:select', function (e) {
+            var data = e.params.data;
+            console.log(data);
+        });
+    </script>
 }

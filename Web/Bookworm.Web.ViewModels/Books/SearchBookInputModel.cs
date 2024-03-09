@@ -2,10 +2,16 @@
 {
     public class SearchBookInputModel
     {
-        public string Title { get; set; }
+        public string Input { get; set; }
 
-        public string Author { get; set; }
+        public int Page { get; set; }
 
-        public string Publisher { get; set; }
+        public int CategoryId { get; set; }
+
+        public string Category { get; set; }
+
+        public string UserId { get; set; }
+
+        public bool IsForUserBooks { get; set; }
     }
 }

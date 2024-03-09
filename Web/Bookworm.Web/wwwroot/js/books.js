@@ -11,23 +11,17 @@ bookSearchInput.addEventListener('keypress', function (event) {
 });
 
 const fetchForBooks = (page) => {
-    const isForUserBooks = document.getElementById('isForUserBooks')?.value;
-    
+    let isForUserBooks = document.getElementById('isForUserBooks')?.value;
+    if (!isForUserBooks) { isForUserBooks = false; }
+
     const category = encodeURIComponent(new URLSearchParams(window.location.search).get('category'));
 
-    if (!page) {
-        page = 1;
-    }
+    if (!page) { page = 1; }
 
     let input = bookSearchInput.value.trim();
-    if (!input) {
-        input = '';
-    }
+    if (!input) { input = ''; }
 
-    let url = `/ApiBook/SearchBooks?input=${input}&page=${page}&category=${category}`;
-    if (isForUserBooks) {
-        url = `/ApiBook/SearchUserBooks?input=${input}&page=${page}&category=${category}`;
-    }
+    const url = `/ApiBook/SearchBooks?input=${input}&page=${page}&category=${category}&isForUserBooks=${isForUserBooks}`;
 
     fetch(url)
         .then(res => res.json())

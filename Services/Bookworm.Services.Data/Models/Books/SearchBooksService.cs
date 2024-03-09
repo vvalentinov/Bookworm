@@ -20,64 +20,63 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<BookListingViewModel> SearchBooks(string input, int page, int categoryId)
-            => new BookListingViewModel
-            {
-                Books = await this.bookRepository
-                        .AllAsNoTracking()
-                        .Include(b => b.Publisher)
-                        .Include(b => b.AuthorsBooks)
-                        .ThenInclude(b => b.Author)
-                        .Where(b => b.CategoryId == categoryId && b.IsApproved &&
-                            (b.Title.Contains(input) ||
-                            b.Publisher.Name.Contains(input) ||
-                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(input))))
-                        .OrderByDescending(b => b.CreatedOn)
-                        .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
-                        .Skip((page - 1) * BooksPerPage)
-                        .Take(BooksPerPage)
-                        .ToListAsync(),
-                RecordsCount = await this.bookRepository
-                        .AllAsNoTracking()
-                        .Include(b => b.Publisher)
-                        .Include(b => b.AuthorsBooks)
-                        .ThenInclude(b => b.Author)
-                        .Where(b => b.CategoryId == categoryId && b.IsApproved &&
-                            (b.Title.Contains(input) ||
-                            b.Publisher.Name.Contains(input) ||
-                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(input)))).CountAsync(),
-                PageNumber = page,
-                ItemsPerPage = BooksPerPage,
-            };
+        public async Task<BookListingViewModel> SearchBooks(SearchBookInputModel model)
+        {
+            var booksQuery = (IQueryable<Book>)this.bookRepository
+                .AllWithDeleted()
+                .Include(b => b.Publisher)
+                .Include(b => b.AuthorsBooks)
+                .ThenInclude(b => b.Author);
 
-        public async Task<BookListingViewModel> SearchUserBooks(string input, int page, string userId)
-            => new BookListingViewModel
+            var recordsCountQuery = (IQueryable<Book>)this.bookRepository
+                        .AllAsNoTracking()
+                        .Include(b => b.Publisher)
+                        .Include(b => b.AuthorsBooks)
+                        .ThenInclude(b => b.Author);
+
+            int recordsCount;
+
+            if (model.IsForUserBooks)
             {
-                Books = await this.bookRepository
-                        .AllAsNoTracking()
-                        .Include(b => b.Publisher)
-                        .Include(b => b.AuthorsBooks)
-                        .ThenInclude(b => b.Author)
-                        .Where(x => x.UserId == userId &&
-                            (x.Title.Contains(input) ||
-                            x.Publisher.Name.Contains(input) ||
-                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(input))))
-                        .OrderByDescending(b => b.CreatedOn)
+                booksQuery = booksQuery.Where(x => x.UserId == model.UserId &&
+                            (x.Title.Contains(model.Input) ||
+                            x.Publisher.Name.Contains(model.Input) ||
+                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input))));
+
+                recordsCount = await recordsCountQuery.Where(x =>
+                            x.UserId == model.UserId &&
+                            (x.Title.Contains(model.Input) ||
+                            x.Publisher.Name.Contains(model.Input) ||
+                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input)))).CountAsync();
+            }
+            else
+            {
+                booksQuery = booksQuery.Where(b => b.CategoryId == model.CategoryId && b.IsApproved &&
+                            (b.Title.Contains(model.Input) ||
+                            b.Publisher.Name.Contains(model.Input) ||
+                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input))));
+
+                recordsCount = await recordsCountQuery.Where(b =>
+                            b.CategoryId == model.CategoryId &&
+                            b.IsApproved &&
+                            (b.Title.Contains(model.Input) ||
+                            b.Publisher.Name.Contains(model.Input) ||
+                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input)))).CountAsync();
+            }
+
+            var books = await booksQuery.OrderByDescending(b => b.CreatedOn)
                         .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
-                        .Skip((page - 1) * BooksPerPage)
+                        .Skip((model.Page - 1) * BooksPerPage)
                         .Take(BooksPerPage)
-                        .ToListAsync(),
-                RecordsCount = await this.bookRepository
-                        .AllAsNoTracking()
-                        .Include(b => b.Publisher)
-                        .Include(b => b.AuthorsBooks)
-                        .ThenInclude(b => b.Author)
-                        .Where(x => x.UserId == userId &&
-                            (x.Title.Contains(input) ||
-                            x.Publisher.Name.Contains(input) ||
-                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(input)))).CountAsync(),
-                PageNumber = page,
+                        .ToListAsync();
+
+            return new BookListingViewModel
+            {
+                Books = books,
+                RecordsCount = recordsCount,
+                PageNumber = model.Page,
                 ItemsPerPage = BooksPerPage,
             };
+        }
     }
 }

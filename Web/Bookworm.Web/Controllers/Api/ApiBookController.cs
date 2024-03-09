@@ -26,34 +26,22 @@
         }
 
         [HttpGet(nameof(SearchBooks))]
-        public async Task<BookListingViewModel> SearchBooks(string input, int page, string category)
+        public async Task<BookListingViewModel> SearchBooks([FromQuery]SearchBookInputModel model)
         {
             try
             {
-                var categoryId = await this.categoriesService.GetCategoryIdAsync(category);
+                model.CategoryId = await this.categoriesService.GetCategoryIdAsync(model.Category);
 
-                var books = await this.searchBooksService.SearchBooks(input ?? string.Empty, page, categoryId);
+                if (model.IsForUserBooks)
+                {
+                    model.UserId = this.userManager.GetUserId(this.User);
+                }
+
+                model.Input ??= string.Empty;
+
+                var books = await this.searchBooksService.SearchBooks(model);
                 books.PaginationController = "ApiBook";
                 books.PaginationAction = nameof(this.SearchBooks);
-
-                return books;
-            }
-            catch
-            {
-                return new BookListingViewModel();
-            }
-        }
-
-        [HttpGet(nameof(SearchUserBooks))]
-        public async Task<BookListingViewModel> SearchUserBooks(string input, int page)
-        {
-            try
-            {
-                var userId = this.userManager.GetUserId(this.User);
-
-                var books = await this.searchBooksService.SearchUserBooks(input ?? string.Empty, page, userId);
-                books.PaginationController = "ApiBook";
-                books.PaginationAction = nameof(this.SearchUserBooks);
 
                 return books;
             }

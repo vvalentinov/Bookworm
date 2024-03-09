@@ -6,14 +6,6 @@
 
     public interface ISearchBooksService
     {
-        Task<BookListingViewModel> SearchBooks(
-            string input,
-            int page,
-            int categoryId);
-
-        Task<BookListingViewModel> SearchUserBooks(
-            string input,
-            int page,
-            string userId);
+        Task<BookListingViewModel> SearchBooks(SearchBookInputModel model);
     }
 }
