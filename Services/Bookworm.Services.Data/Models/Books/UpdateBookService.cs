@@ -125,7 +125,6 @@
                 .All()
                 .Include(x => x.Publisher)
                 .Include(b => b.AuthorsBooks)
-                .ThenInclude(x => x.Author)
                 .FirstOrDefaultAsync(x => x.Id == editBookDto.Id) ??
                 throw new InvalidOperationException(BookWrongIdError);
 
@@ -163,31 +162,16 @@
                     BookImageFileUploadPath);
             }
 
-            if (editBookDto.Publisher != null)
+            var publisherName = editBookDto.Publisher.Trim();
+
+            if (editBookDto.Publisher != null && book.Publisher.Name != publisherName)
             {
-                var publisherName = editBookDto.Publisher.Trim();
-                if (book.Publisher == null)
-                {
-                    book.Publisher = new Publisher { Name = publisherName };
-                }
-                else if (!publisherName.Equals(book.Publisher.Name, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    var publisher = await this.publishersRepository
-                        .AllAsNoTracking()
-                        .FirstOrDefaultAsync(x => x.Name.ToLower() == publisherName.ToLower());
+                var publisher = await this.publishersRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(p => p.Name == publisherName);
 
-                    if (publisher == null)
-                    {
-                        book.Publisher = new Publisher { Name = publisherName };
-                    }
-                    else
-                    {
-                        book.Publisher = publisher;
-                    }
-                }
+                book.Publisher = publisher ?? new Publisher { Name = publisherName };
             }
-
-            await this.publishersRepository.SaveChangesAsync();
 
             book.Title = editBookDto.Title;
             book.Description = editBookDto.Description;
@@ -195,62 +179,32 @@
             book.LanguageId = editBookDto.LanguageId;
             book.PagesCount = editBookDto.PagesCount;
             book.Year = editBookDto.PublishedYear;
+            book.IsApproved = false;
 
-            var inputAuthors = editBookDto.Authors.Select(x => x.Name.Trim()).ToList();
+            var authorsNames = editBookDto.Authors.Select(x => x.Name.Trim()).ToList();
 
-            foreach (var inputAuthor in inputAuthors)
+            book.AuthorsBooks.Clear();
+
+            foreach (var name in authorsNames)
             {
-                var authorBook = book.AuthorsBooks
-                    .FirstOrDefault(x => x.Author.Name.Equals(
-                        inputAuthor,
-                        StringComparison.CurrentCultureIgnoreCase));
+                var author = await this.authorsRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(a => a.Name == name);
 
-                if (authorBook == null)
+                if (author == null)
                 {
-                    var author = await this.authorsRepository
-                        .AllAsNoTracking()
-                        .FirstOrDefaultAsync(a => a.Name.ToLower() == inputAuthor.ToLower());
-
-                    if (author == null)
-                    {
-                        author = new Author { Name = inputAuthor };
-                        book.AuthorsBooks.Add(new AuthorBook { Author = author, Book = book });
-                    }
-                    else
-                    {
-                        var existingAuthorBook = await this.authorsBooksRepository
-                            .AllAsNoTracking()
-                            .FirstOrDefaultAsync(x => x.AuthorId == author.Id);
-
-                        if (existingAuthorBook == null)
-                        {
-                            book.AuthorsBooks.Add(new AuthorBook { Author = author, Book = book });
-                            continue;
-                        }
-
-                        existingAuthorBook.Author = author;
-                        existingAuthorBook.Book = book;
-                        book.AuthorsBooks.Add(existingAuthorBook);
-                    }
+                    book.AuthorsBooks.Add(new AuthorBook { Author = new Author { Name = name }, Book = book });
+                }
+                else
+                {
+                    book.AuthorsBooks.Add(new AuthorBook { Author = author, Book = book });
                 }
             }
 
-            var authorsBooks = book.AuthorsBooks.Where(x => inputAuthors.Contains(x.Author.Name) == false);
-
-            foreach (var authorBook in authorsBooks)
-            {
-                this.authorsBooksRepository.Delete(authorBook);
-            }
-
-            await this.authorsBooksRepository.SaveChangesAsync();
-
-            book.IsApproved = false;
+            this.bookRepository.Update(book);
+            await this.bookRepository.SaveChangesAsync();
 
             await this.usersService.ReduceUserPointsAsync(user, BookPoints);
-
-            this.bookRepository.Update(book);
-
-            await this.bookRepository.SaveChangesAsync();
         }
     }
 }

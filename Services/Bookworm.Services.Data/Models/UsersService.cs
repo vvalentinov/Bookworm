@@ -90,7 +90,7 @@
 
         public async Task ReduceUserPointsAsync(ApplicationUser user, byte points)
         {
-            user.Points -= points;
+            user.Points = user.Points - points < 0 ? 0 : user.Points - points;
             await this.userManager.UpdateAsync(user);
         }
 
