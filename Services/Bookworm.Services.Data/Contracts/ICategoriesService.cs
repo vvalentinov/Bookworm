@@ -10,5 +10,7 @@
         Task<int> GetCategoryIdAsync(string categoryName);
 
         Task<bool> CheckIfIdIsValid(int categoryId);
+
+        Task<string> GetCategoryNameAsync(int categoryId);
     }
 }

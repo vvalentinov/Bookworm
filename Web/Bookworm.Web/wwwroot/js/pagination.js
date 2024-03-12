@@ -2,7 +2,7 @@
 
 export function updatePagination(model, fetcher) {
     const navigation = document.getElementById('pagination');
-    navigation.children[0]?.remove();
+    navigation?.children[0]?.remove();
 
     if (model.pagesCount > 1) {
         const ulElement = document.createElement('ul');

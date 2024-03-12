@@ -41,5 +41,11 @@
             => await this.categoriesRepository
                     .AllAsNoTracking()
                     .AnyAsync(c => c.Id == categoryId);
+
+        public async Task<string> GetCategoryNameAsync(int categoryId)
+        {
+            var category = await this.categoriesRepository.AllAsNoTracking().FirstAsync(x => x.Id == categoryId);
+            return category?.Name;
+        }
     }
 }

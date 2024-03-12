@@ -207,7 +207,7 @@
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
                 var books = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
-                books.PaginationController = "Book";
+                books.PaginationController = nameof(Book);
                 books.PaginationAction = nameof(this.All);
 
                 this.ViewData["Title"] = category;

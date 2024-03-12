@@ -5,5 +5,7 @@
     public class BookListingViewModel : PagingViewModel
     {
         public IEnumerable<BookViewModel> Books { get; set; }
+
+        public string CategoryName { get; set; }
     }
 }

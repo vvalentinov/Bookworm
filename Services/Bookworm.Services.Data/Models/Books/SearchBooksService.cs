@@ -36,9 +36,16 @@
 
             int recordsCount;
 
+            if (model.LanguagesIds.Count > 0)
+            {
+                booksQuery = booksQuery.Where(b => model.LanguagesIds.Contains(b.LanguageId));
+                recordsCountQuery = recordsCountQuery.Where(b => model.LanguagesIds.Contains(b.LanguageId));
+            }
+
             if (model.IsForUserBooks)
             {
-                booksQuery = booksQuery.Where(x => x.UserId == model.UserId &&
+                booksQuery = booksQuery.Where(x =>
+                            x.UserId == model.UserId &&
                             (x.Title.Contains(model.Input) ||
                             x.Publisher.Name.Contains(model.Input) ||
                             x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input))));
@@ -47,11 +54,14 @@
                             x.UserId == model.UserId &&
                             (x.Title.Contains(model.Input) ||
                             x.Publisher.Name.Contains(model.Input) ||
-                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input)))).CountAsync();
+                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input))))
+                            .CountAsync();
             }
             else
             {
-                booksQuery = booksQuery.Where(b => b.CategoryId == model.CategoryId && b.IsApproved &&
+                booksQuery = booksQuery.Where(b =>
+                            b.IsApproved &&
+                            b.CategoryId == model.CategoryId &&
                             (b.Title.Contains(model.Input) ||
                             b.Publisher.Name.Contains(model.Input) ||
                             b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input))));
@@ -61,7 +71,8 @@
                             b.IsApproved &&
                             (b.Title.Contains(model.Input) ||
                             b.Publisher.Name.Contains(model.Input) ||
-                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input)))).CountAsync();
+                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(model.Input))))
+                            .CountAsync();
             }
 
             var books = await booksQuery.OrderByDescending(b => b.CreatedOn)

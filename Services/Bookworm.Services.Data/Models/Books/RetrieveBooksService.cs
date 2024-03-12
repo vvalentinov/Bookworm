@@ -25,17 +25,20 @@
         private readonly IRepository<Comment> commentRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly ICategoriesService categoriesService;
 
         public RetrieveBooksService(
             IRatingsService ratingsService,
             IRepository<Comment> commentRepository,
             UserManager<ApplicationUser> userManager,
-            IDeletableEntityRepository<Book> bookRepository)
+            IDeletableEntityRepository<Book> bookRepository,
+            ICategoriesService categoriesService)
         {
             this.ratingsService = ratingsService;
             this.commentRepository = commentRepository;
             this.userManager = userManager;
             this.bookRepository = bookRepository;
+            this.categoriesService = categoriesService;
         }
 
         public async Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId)
@@ -158,8 +161,11 @@
                 }).FirstOrDefaultAsync(b => b.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
 
         public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page)
-            => new BookListingViewModel
+        {
+            var categoryName = await this.categoriesService.GetCategoryNameAsync(categoryId);
+            return new BookListingViewModel
             {
+                CategoryName = categoryName,
                 Books = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.CategoryId == categoryId && x.IsApproved)
@@ -175,6 +181,7 @@
                                     .CountAsync(),
                 ItemsPerPage = BooksPerPage,
             };
+        }
 
         public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page)
             => new BookListingViewModel

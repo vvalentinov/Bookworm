@@ -1,11 +1,13 @@
 ﻿namespace Bookworm.Web.Controllers.Api
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
@@ -14,27 +16,32 @@
         private readonly ISearchBooksService searchBooksService;
         private readonly ICategoriesService categoriesService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ILanguagesService languagesService;
 
         public ApiBookController(
             ISearchBooksService searchBooksService,
             ICategoriesService categoriesService,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ILanguagesService languagesService)
         {
             this.searchBooksService = searchBooksService;
             this.categoriesService = categoriesService;
             this.userManager = userManager;
+            this.languagesService = languagesService;
         }
 
-        [HttpGet(nameof(SearchBooks))]
-        public async Task<BookListingViewModel> SearchBooks([FromQuery]SearchBookInputModel model)
+        [HttpPost(nameof(SearchBooks))]
+        public async Task<BookListingViewModel> SearchBooks([FromBody]SearchBookInputModel model)
         {
             try
             {
-                model.CategoryId = await this.categoriesService.GetCategoryIdAsync(model.Category);
-
                 if (model.IsForUserBooks)
                 {
                     model.UserId = this.userManager.GetUserId(this.User);
+                }
+                else
+                {
+                    model.CategoryId = await this.categoriesService.GetCategoryIdAsync(model.Category);
                 }
 
                 model.Input ??= string.Empty;
@@ -49,6 +56,21 @@
             {
                 return new BookListingViewModel();
             }
+        }
+
+        [HttpGet(nameof(GetLanguagesInBookCategory))]
+        public async Task<List<LanguageViewModel>> GetLanguagesInBookCategory(string category)
+        {
+            int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
+
+            return await this.languagesService.GetAllInBookCategory(categoryId);
+        }
+
+        [HttpGet(nameof(GetLanguagesInUserBooks))]
+        public async Task<List<LanguageViewModel>> GetLanguagesInUserBooks()
+        {
+            var userId = this.userManager.GetUserId(this.User);
+            return await this.languagesService.GetAllInUserBooksAsync(userId);
         }
     }
 }

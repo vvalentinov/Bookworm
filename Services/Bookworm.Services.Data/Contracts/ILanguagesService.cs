@@ -10,5 +10,9 @@
         Task<List<LanguageViewModel>> GetAllAsync();
 
         Task<string> GetLanguageNameAsync(int languageId);
+
+        Task<List<LanguageViewModel>> GetAllInBookCategory(int categoryId);
+
+        Task<List<LanguageViewModel>> GetAllInUserBooksAsync(string userId);
     }
 }

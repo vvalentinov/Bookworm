@@ -1,11 +1,18 @@
 ﻿@model BookListingViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
     this.ViewData["Title"] = "My Books";
-    var titleCardModel = new TitleCardPartialViewModel { Title = "My Books", Count = Model.RecordsCount };
+    var titleCardModel = new TitleCardPartialViewModel
+    {
+        Title = "My Books",
+        Count = Model.RecordsCount
+    };
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
     <link rel="stylesheet" href="~/css/bookAll.css" asp-append-version="true" />
 }
 
@@ -13,9 +20,12 @@
 
 @if (Model.RecordsCount > 0)
 {
+    <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
     <input type="hidden" id="isForUserBooks" value="true" />
 
     <partial name="PartialViews/_BooksSearchInputPartial" />
+
+    <select class="languagesSelect" multiple="multiple"></select>
 
     <partial name="PartialViews/_BookListingPartial" model="@Model.Books" />
 
@@ -36,5 +46,6 @@ else
 }
 
 @section Scripts {
+    <script src="~/lib/select2/js/select2.min.js"></script>
     <script type="module" src="~/js/books.js"></script>
 }

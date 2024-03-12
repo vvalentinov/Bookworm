@@ -1,5 +1,7 @@
 ﻿namespace Bookworm.Web.ViewModels.Books
 {
+    using System.Collections.Generic;
+
     public class SearchBookInputModel
     {
         public string Input { get; set; }
@@ -13,5 +15,7 @@
         public string UserId { get; set; }
 
         public bool IsForUserBooks { get; set; }
+
+        public List<int> LanguagesIds { get; set; }
     }
 }
