@@ -1,5 +1,3 @@
-//import { fetchForQuotes} from './quotes/fetchForQuotes.js';
-
 export function updatePagination(model, fetcher) {
     const navigation = document.getElementById('pagination');
     navigation?.children[0]?.remove();

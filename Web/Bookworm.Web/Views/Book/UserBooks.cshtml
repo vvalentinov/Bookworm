@@ -20,8 +20,8 @@
 
 @if (Model.RecordsCount > 0)
 {
-    <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
     <input type="hidden" id="isForUserBooks" value="true" />
+    <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
     <partial name="PartialViews/_BooksSearchInputPartial" />
 
@@ -46,6 +46,6 @@ else
 }
 
 @section Scripts {
-    <script src="~/lib/select2/js/select2.min.js"></script>
     <script type="module" src="~/js/books.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
 }

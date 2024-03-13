@@ -1,4 +1,4 @@
-﻿@model BookListingViewModel
+﻿@model BookCategoryListingViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
@@ -16,7 +16,7 @@
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
-<input id="categoryName" type="hidden" value="@Model.CategoryName" />
+<input id="category" type="hidden" value="@Model.CategoryName" />
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 

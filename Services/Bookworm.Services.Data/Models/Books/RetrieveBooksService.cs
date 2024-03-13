@@ -11,6 +11,7 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Books.ListingViewModels;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
@@ -160,10 +161,10 @@
                     Authors = b.AuthorsBooks.Select(a => new UploadAuthorViewModel { Name = a.Author.Name }).ToList(),
                 }).FirstOrDefaultAsync(b => b.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
 
-        public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page)
+        public async Task<BookCategoryListingViewModel> GetBooksAsync(int categoryId, int page)
         {
             var categoryName = await this.categoriesService.GetCategoryNameAsync(categoryId);
-            return new BookListingViewModel
+            return new BookCategoryListingViewModel
             {
                 CategoryName = categoryName,
                 Books = await this.bookRepository

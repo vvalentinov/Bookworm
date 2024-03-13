@@ -2,12 +2,17 @@
 
 @{
     ViewData["Title"] = "Generated Books";
+    var titleCardModel = new TitleCardPartialViewModel
+    {
+        Title = ViewData["Title"] as string,
+        Count = Model.Count()
+    };
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/bookListing.css" asp-append-version="true" />
 }
 
-<h2 class="text-center mt-5">@ViewData["Title"]</h2>
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <partial name="PartialViews/_BookListingPartial" model="@Model" />

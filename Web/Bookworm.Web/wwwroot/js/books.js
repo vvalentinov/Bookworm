@@ -1,14 +1,14 @@
 import { updatePagination } from './pagination.js';
 
-let isForUserBooks = document.getElementById('isForUserBooks')?.value.toLowerCase() === "true";
-
 const bookSearchInput = document.querySelector('.bookSearchInput');
 const bookSearchButton = document.getElementById('bookSearchButton');
+
+let isForUserBooks = document.getElementById('isForUserBooks')?.value.toLowerCase() === "true";
 
 bookSearchButton.addEventListener('click', () => fetchForBooks());
 bookSearchInput.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
-        fetchForBooks(1, getLanguagesIds());
+        fetchForBooks();
     }
 });
 $(function () {
@@ -17,61 +17,41 @@ $(function () {
         width: "100%",
     });
 
-    $('.languagesSelect').on('select2:select', function () {
-        fetchForBooks(1, getLanguagesIds());
-    });
+    $('.languagesSelect').on('select2:select', () => fetchForBooks(1));
+    $('.languagesSelect').on('select2:unselect', () => fetchForBooks(1));
 
-    const select = document.querySelector('.languagesSelect');
-    const category = encodeURIComponent(new URLSearchParams(window.location.search).get('category'));
+
     let url;
-    if (!isForUserBooks) {
-        url = `/ApiBook/GetLanguagesInBookCategory?category=${category}`;
-    } else {
+    if (isForUserBooks) {
         url = '/ApiBook/GetLanguagesInUserBooks';
+    } else {
+        const category = encodeURIComponent(document.getElementById('category')?.value);
+        url = `/ApiBook/GetLanguagesInBookCategory?category=${category}`;
     }
 
     fetch(url)
         .then(res => res.json())
-        .then(res => {
-            res.forEach(model => {
-                const optionEl = document.createElement('option');
-                optionEl.setAttribute('value', model.id);
-                optionEl.textContent = model.name;
-                optionEl.addEventListener('click', () => fetchForBooks());
-                select.appendChild(optionEl);
-            });
-        }).catch(res => console.log(res));
+        .then(res => populateLanguagesOptions(res))
+        .catch(res => console.log(res));
 });
 
-const fetchForBooks = (page, languagesIds) => {
-    //isForUserBooks = isForUserBooks.toLowerCase() === "true";
-
-    if (!isForUserBooks) { isForUserBooks = false; }
-
-    const category = document.getElementById('categoryName')?.value;
+const fetchForBooks = (page) => {
+    const category = document.getElementById('category')?.value;
 
     if (!page) { page = 1; }
 
     let input = bookSearchInput.value.trim();
     if (!input) { input = ''; }
 
-    const model = {
-        Input: input,
-        Page: page,
-        Category: category,
-        IsForUserBooks: isForUserBooks,
-        LanguagesIds: languagesIds
-    };
+    const languagesIds = getLanguagesIds();
+
+    const model = { input, page, category, isForUserBooks, languagesIds };
 
     const token = document.getElementById('RequestVerificationToken').value;
 
     fetch('/ApiBook/SearchBooks', {
         method: 'POST',
-        headers:
-        {
-            'X-CSRF-TOKEN': token,
-            'Content-Type': 'application/json'
-        },
+        headers: { 'X-CSRF-TOKEN': token, 'Content-Type': 'application/json' },
         body: JSON.stringify(model)
     })
         .then(res => res.json())
@@ -111,6 +91,14 @@ const updateBooks = (books) => {
     }
 };
 
-function getLanguagesIds() {
-    return $('.languagesSelect').select2('data').map(x => x.id);
+const getLanguagesIds = () => $('.languagesSelect').select2('data').map(x => x.id);
+function populateLanguagesOptions(languages) {
+    const select = document.querySelector('.languagesSelect');
+    languages.forEach(language => {
+        const optionEl = document.createElement('option');
+        optionEl.setAttribute('value', language.id);
+        optionEl.textContent = language.name;
+        optionEl.addEventListener('click', () => fetchForBooks());
+        select.appendChild(optionEl);
+    });
 }

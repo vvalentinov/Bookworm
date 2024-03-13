@@ -7,6 +7,7 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Books.ListingViewModels;
     using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
