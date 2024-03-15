@@ -17,7 +17,9 @@
 
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddApplicationServices(
+            this IServiceCollection services,
+            IConfiguration config)
         {
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -43,26 +45,25 @@
             services.AddTransient<ISearchBooksService, SearchBooksService>();
             services.AddTransient<IDownloadBookService, DownloadBookService>();
 
+            // Other services
             services.AddTransient<ICategoriesService, CategoriesService>();
-
             services.AddTransient<ILanguagesService, LanguagesService>();
-
             services.AddTransient<ICommentsService, CommentsService>();
-
             services.AddTransient<IBlobService, BlobService>();
-
             services.AddTransient<IRatingsService, RatingsService>();
-
             services.AddTransient<IVoteService, VotesService>();
-
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IPublishersService, PublishersService>();
+            services.AddTransient<IAuthorsService, AuthorsService>();
 
             services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 
             return services;
         }
 
-        public static IServiceCollection AddApplicationDbContexts(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddApplicationDbContexts(
+            this IServiceCollection services,
+            IConfiguration config)
         {
             string connectionString = config.GetConnectionString("DefaultConnection");
 

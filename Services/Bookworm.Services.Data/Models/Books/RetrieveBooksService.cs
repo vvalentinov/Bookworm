@@ -48,6 +48,11 @@
 
             if (categoryId != null)
             {
+                if (!await this.categoriesService.CheckIfIdIsValidAsync(categoryId))
+                {
+                    throw new InvalidOperationException("The given category doesn't exist!");
+                }
+
                 query = query.Where(b => b.CategoryId == categoryId);
             }
 

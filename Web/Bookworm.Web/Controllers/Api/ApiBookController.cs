@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Web.Controllers.Api
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -32,7 +33,7 @@
         }
 
         [HttpPost(nameof(SearchBooks))]
-        public async Task<BookListingViewModel> SearchBooks([FromBody]SearchBookInputModel model)
+        public async Task<ActionResult<BookListingViewModel>> SearchBooks([FromBody]SearchBookInputModel model)
         {
             try
             {
@@ -47,30 +48,38 @@
 
                 model.Input ??= string.Empty;
 
-                var books = await this.searchBooksService.SearchBooks(model);
+                var books = await this.searchBooksService.SearchBooksAsync(model);
                 books.PaginationController = "ApiBook";
                 books.PaginationAction = nameof(this.SearchBooks);
 
                 return books;
             }
-            catch
+            catch (Exception ex)
             {
-                return new BookListingViewModel();
+                return this.BadRequest(ex.Message);
             }
         }
 
         [HttpGet(nameof(GetLanguagesInBookCategory))]
-        public async Task<List<LanguageViewModel>> GetLanguagesInBookCategory(string category)
+        public async Task<ActionResult<List<LanguageViewModel>>> GetLanguagesInBookCategory(string category)
         {
-            int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
+            try
+            {
+                int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
-            return await this.languagesService.GetAllInBookCategory(categoryId);
+                return await this.languagesService.GetAllInBookCategoryAsync(categoryId);
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
         }
 
         [HttpGet(nameof(GetLanguagesInUserBooks))]
         public async Task<List<LanguageViewModel>> GetLanguagesInUserBooks()
         {
             var userId = this.userManager.GetUserId(this.User);
+
             return await this.languagesService.GetAllInUserBooksAsync(userId);
         }
     }

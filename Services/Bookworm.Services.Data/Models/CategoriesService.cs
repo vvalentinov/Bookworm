@@ -31,20 +31,24 @@
         {
             var category = await this.categoriesRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(c => c.Name == categoryName) ??
-                throw new InvalidOperationException("Invalid category name!");
+                .FirstOrDefaultAsync(c => c.Name == categoryName.Trim()) ??
+                throw new InvalidOperationException("The given category doesn't exist!");
 
             return category.Id;
         }
 
-        public async Task<bool> CheckIfIdIsValid(int categoryId)
+        public async Task<bool> CheckIfIdIsValidAsync(int? categoryId)
             => await this.categoriesRepository
                     .AllAsNoTracking()
                     .AnyAsync(c => c.Id == categoryId);
 
         public async Task<string> GetCategoryNameAsync(int categoryId)
         {
-            var category = await this.categoriesRepository.AllAsNoTracking().FirstAsync(x => x.Id == categoryId);
+            var category = await this.categoriesRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == categoryId) ??
+                throw new InvalidOperationException("The given category doesn't exist!");
+
             return category?.Name;
         }
     }

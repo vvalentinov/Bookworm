@@ -21,7 +21,12 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<BookListingViewModel> SearchBooks(SearchBookInputModel model)
+        public async Task<bool> CheckIfBookWithTitleExistsAsync(string title)
+            => await this.bookRepository
+                 .AllAsNoTrackingWithDeleted()
+                 .AnyAsync(b => b.Title == title.Trim());
+
+        public async Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model)
         {
             var booksQuery = (IQueryable<Book>)this.bookRepository
                 .AllWithDeleted()

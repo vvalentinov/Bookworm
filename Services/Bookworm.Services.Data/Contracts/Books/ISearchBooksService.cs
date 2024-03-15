@@ -7,6 +7,8 @@
 
     public interface ISearchBooksService
     {
-        Task<BookListingViewModel> SearchBooks(SearchBookInputModel model);
+        Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model);
+
+        Task<bool> CheckIfBookWithTitleExistsAsync(string title);
     }
 }

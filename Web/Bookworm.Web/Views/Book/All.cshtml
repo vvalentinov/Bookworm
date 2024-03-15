@@ -7,7 +7,10 @@
         Title = ViewData["Title"] as string,
         Count = Model.RecordsCount
     };
+
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+
+    var isUserAuthenticated = this.User.Identity.IsAuthenticated;
 }
 
 @section Styles {
@@ -20,12 +23,11 @@
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
-@if (this.User.Identity.IsAuthenticated)
+@if (isUserAuthenticated)
 {
     <partial name="PartialViews/_BooksSearchInputPartial" />
+    <select class="languagesSelect" multiple="multiple"></select>
 }
-
-<select class="languagesSelect" multiple="multiple"></select>
 
 <partial name="PartialViews/_BookListingPartial" model="@Model.Books" />
 
@@ -34,7 +36,10 @@
     <partial name="PartialViews/Pagination/_BooksPaginationPartial" model="@Model" />
 }
 
-@section Scripts {
-    <script src="~/lib/select2/js/select2.min.js"></script>
+@if (isUserAuthenticated)
+{
+    @section Scripts {
     <script type="module" src="~/js/books.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    }
 }

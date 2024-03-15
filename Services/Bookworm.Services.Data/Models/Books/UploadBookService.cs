@@ -8,7 +8,6 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.DTOs;
-    using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
@@ -16,34 +15,34 @@
     public class UploadBookService : IUploadBookService
     {
         private readonly IBlobService blobService;
-        private readonly IRepository<Author> authorRepository;
-        private readonly IRepository<Publisher> publisherRepository;
+        private readonly IAuthorsService authorsService;
+        private readonly IPublishersService publishersService;
+        private readonly ISearchBooksService searchBooksService;
         private readonly IDeletableEntityRepository<Book> booksRepository;
         private readonly IValidateUploadedBookService validateUploadedBookService;
 
         public UploadBookService(
             IBlobService blobService,
-            IRepository<Author> authorRepository,
-            IRepository<Publisher> publisherRepository,
+            IAuthorsService authorsService,
+            IPublishersService publishersService,
+            ISearchBooksService searchBooksService,
             IDeletableEntityRepository<Book> booksRepository,
             IValidateUploadedBookService validateUploadedBookService)
         {
-            this.booksRepository = booksRepository;
-            this.publisherRepository = publisherRepository;
-            this.authorRepository = authorRepository;
             this.blobService = blobService;
+            this.authorsService = authorsService;
+            this.booksRepository = booksRepository;
+            this.publishersService = publishersService;
+            this.searchBooksService = searchBooksService;
             this.validateUploadedBookService = validateUploadedBookService;
         }
 
         public async Task UploadBookAsync(BookDto uploadBookDto)
         {
-            var bookTitle = uploadBookDto.Title.Trim();
+            var bookExists = await this.searchBooksService
+                .CheckIfBookWithTitleExistsAsync(uploadBookDto.Title);
 
-            bool bookWithTitleExist = await this.booksRepository
-                .AllAsNoTrackingWithDeleted()
-                .AnyAsync(x => x.Title.ToLower() == bookTitle.ToLower());
-
-            if (bookWithTitleExist)
+            if (bookExists)
             {
                 throw new InvalidOperationException(BookWithTitleExistsError);
             }
@@ -66,7 +65,7 @@
 
             var book = new Book
             {
-                Title = bookTitle,
+                Title = uploadBookDto.Title.Trim(),
                 FileUrl = bookBlobUrl,
                 ImageUrl = imageBlobUrl,
                 Year = uploadBookDto.PublishedYear,
@@ -81,15 +80,15 @@
 
             if (!string.IsNullOrWhiteSpace(uploadBookDto.Publisher))
             {
-                var publisherName = uploadBookDto.Publisher.Trim();
-
-                var publisher = await this.publisherRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name.ToLower() == publisherName.ToLower());
+                var publisher = await this.publishersService
+                    .GetPublisherWithNameAsync(uploadBookDto.Publisher);
 
                 if (publisher == null)
                 {
-                    book.Publisher = new Publisher { Name = publisherName };
+                    book.Publisher = new Publisher
+                    {
+                        Name = uploadBookDto.Publisher.Trim(),
+                    };
                 }
                 else
                 {
@@ -99,18 +98,15 @@
 
             foreach (var authorModel in uploadBookDto.Authors)
             {
-                var authorName = authorModel.Name.Trim();
-
-                var author = await this.authorRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Name.ToLower() == authorName.ToLower());
+                var author = await this.authorsService
+                    .GetAuthorWithNameAsync(authorModel.Name);
 
                 if (author == null)
                 {
                     book.AuthorsBooks.Add(new AuthorBook
                     {
                         Book = book,
-                        Author = new Author { Name = authorName },
+                        Author = new Author { Name = authorModel.Name.Trim() },
                     });
                 }
                 else

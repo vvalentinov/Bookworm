@@ -80,13 +80,11 @@
                 await this.uploadBookService.UploadBookAsync(uploadBookDto);
 
                 this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
-
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-
                 return this.View(model);
             }
         }
@@ -100,6 +98,7 @@
             try
             {
                 var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+
                 return this.View(nameof(this.Upload), model);
             }
             catch (Exception ex)
@@ -110,6 +109,7 @@
         }
 
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Edit(UploadBookViewModel model)
         {
             this.ViewData["Title"] = "Edit Book";
@@ -168,20 +168,15 @@
         [AllowAnonymous]
         public async Task<IActionResult> Random(RandomBookInputModel model)
         {
-            if (this.ModelState.IsValid == false)
+            if (!this.ModelState.IsValid)
             {
                 return this.View(nameof(this.Random), model);
             }
 
             try
             {
-                if (model.CategoryId != null &&
-                    !await this.categoriesService.CheckIfIdIsValid((int)model.CategoryId))
-                {
-                    throw new InvalidOperationException("Invalid category id!");
-                }
-
-                var books = await this.retrieveBooksService.GetRandomBooksAsync(model.CountBooks, model.CategoryId);
+                var books = await this.retrieveBooksService
+                    .GetRandomBooksAsync(model.CountBooks, model.CategoryId);
 
                 return this.View("GeneratedBooks", books);
             }
@@ -206,12 +201,12 @@
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
-                var books = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
-                books.PaginationController = nameof(Book);
-                books.PaginationAction = nameof(this.All);
+                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
+                model.PaginationController = nameof(Book);
+                model.PaginationAction = nameof(this.All);
 
                 this.ViewData["Title"] = category;
-                return this.View(books);
+                return this.View(model);
             }
             catch (Exception ex)
             {

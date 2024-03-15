@@ -3,10 +3,10 @@ import { updatePagination } from './pagination.js';
 const bookSearchInput = document.querySelector('.bookSearchInput');
 const bookSearchButton = document.getElementById('bookSearchButton');
 
-let isForUserBooks = document.getElementById('isForUserBooks')?.value.toLowerCase() === "true";
+const isForUserBooks = document.getElementById('isForUserBooks')?.value.toLowerCase() === "true";
 
-bookSearchButton.addEventListener('click', () => fetchForBooks());
-bookSearchInput.addEventListener('keypress', function (event) {
+bookSearchButton?.addEventListener('click', () => fetchForBooks());
+bookSearchInput?.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
         fetchForBooks();
     }
@@ -17,9 +17,8 @@ $(function () {
         width: "100%",
     });
 
-    $('.languagesSelect').on('select2:select', () => fetchForBooks(1));
-    $('.languagesSelect').on('select2:unselect', () => fetchForBooks(1));
-
+    $('.languagesSelect').on('select2:select', () => fetchForBooks());
+    $('.languagesSelect').on('select2:unselect', () => fetchForBooks());
 
     let url;
     if (isForUserBooks) {

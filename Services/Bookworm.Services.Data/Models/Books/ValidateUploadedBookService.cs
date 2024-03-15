@@ -5,12 +5,10 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Common.Repositories;
-    using Bookworm.Data.Models;
+    using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Authors;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
     using static Bookworm.Common.Books.BooksDataConstants;
@@ -18,15 +16,15 @@
 
     public class ValidateUploadedBookService : IValidateUploadedBookService
     {
-        private readonly IRepository<Category> categoryRepository;
-        private readonly IRepository<Language> languageRepository;
+        private readonly ICategoriesService categoriesService;
+        private readonly ILanguagesService languagesService;
 
         public ValidateUploadedBookService(
-            IRepository<Category> categoryRepository,
-            IRepository<Language> languageRepository)
+            ICategoriesService categoriesService,
+            ILanguagesService languagesService)
         {
-            this.categoryRepository = categoryRepository;
-            this.languageRepository = languageRepository;
+            this.categoriesService = categoriesService;
+            this.languagesService = languagesService;
         }
 
         public async Task ValidateUploadedBookAsync(
@@ -37,12 +35,12 @@
             IFormFile imageFile,
             IEnumerable<UploadAuthorViewModel> authors)
         {
-            if (!await this.categoryRepository.AllAsNoTracking().AnyAsync(c => c.Id == categoryId))
+            if (!await this.categoriesService.CheckIfIdIsValidAsync(categoryId))
             {
                 throw new InvalidOperationException("The given category doesn't exist!");
             }
 
-            if (!await this.languageRepository.AllAsNoTracking().AnyAsync(l => l.Id == languageId))
+            if (!await this.languagesService.CheckIfIdIsValidAsync(languageId))
             {
                 throw new InvalidOperationException("The given language doesn't exist!");
             }
