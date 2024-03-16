@@ -2,48 +2,27 @@
 
 @{
     this.ViewData["Title"] = "Categories";
+    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, IconClass = "fa-solid fa-layer-group" };
 }
 
-<div class="mt-5">
-    <h5 class="text-center text-uppercase fs-2">Categories</h5>
-    <partial name="PartialViews/_CustomDividerPartial" />
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/categories.css" asp-append-version="true" />
+}
 
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
-<div class="container mb-5">
-    @for (int i = 0; i <= Model.Count - 1; i += 3)
+<section class="categoriesSection">
+    @foreach (var category in Model)
     {
-        <div class="row">
-            <div class="col-md-4 my-3">
-                <a class="category-link"
-                   asp-controller="Book"
-                   asp-action="All"
-                   asp-route-category="@Model[i].Name">
-                    <div class="card bg-dark text-light h-100">
-                        <img src="@Model[i].ImageUrl" alt="Book" height="300">
-                    </div>
-                </a>
+        <a asp-controller="Book"
+           asp-action="All"
+           asp-route-category="@category.Name">
+            <div class="imageContainer">
+                <img class="rounded-4" src="@category.ImageUrl" alt="Book" height="300">
+                <div class="overlay">
+                    <div class="text text-center">@category.Name</div>
+                </div>
             </div>
-            <div class="col-md-4 my-3">
-                <a class="category-link"
-                   asp-controller="Book"
-                   asp-action="All"
-                   asp-route-category="@Model[i + 1].Name">
-                    <div class="card bg-dark text-light h-100">
-                        <img src="@Model[i + 1].ImageUrl" alt="Book" height="300">
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 my-3">
-                <a class="category-link"
-                   asp-controller="Book"
-                   asp-action="All"
-                   asp-route-category="@Model[i + 2].Name">
-                    <div class="card bg-dark text-light h-100">
-                        <img src="@Model[i + 2].ImageUrl" alt="Book" height="300">
-                    </div>
-                </a>
-            </div>
-        </div>
+        </a>
     }
-</div>
+</section>
