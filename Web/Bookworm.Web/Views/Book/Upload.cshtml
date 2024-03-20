@@ -4,7 +4,6 @@
     var title = this.ViewData["Title"] as string;
     var action = this.ViewData["Action"] as string;
     var titleCardModel = new TitleCardPartialViewModel { Title = title, IconClass = "fa-book" };
-
 }
 
 @section Styles {
@@ -14,7 +13,7 @@
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <section class="uploadBookSection">
-    <form asp-controller="Book"
+    <form id="uploadBookForm" asp-controller="Book"
           asp-action=@action
           method="post"
           enctype="multipart/form-data">
@@ -100,12 +99,9 @@
         </div>
 
         <div class="mt-4" id="authorsContainer" data-index="0">
-            <button type="button"
-                    id="addAuthorBtn"
-                    class="btn button fs-5 w-100">
+            <button type="button" id="addAuthorBtn" class="btn button fs-5 w-100">
                 Add Author (Max - 5)<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
-
             @if (action == "Edit")
             {
                 @for (int i = 0; i < Model.Authors.Count(); i++)
@@ -117,7 +113,7 @@
                                placeholder="Author's username"
                                aria-label="Author's username"
                                aria-describedby="button-addon2">
-                        <button onclick="removeAuthor(event)"
+                        <button onclick="onRemoveAuthorBtnClick(event)"
                                 class="btn btn-danger border-2 border-dark"
                                 type="button">
                             Remove
@@ -135,19 +131,16 @@
 
         <div class="text-center my-4">
             <button type="submit" class="btn fs-5">
-                <strong>
-                    @if (action == "Edit")
-                    {
-                        <text>Edit Book</text>
-                        <i class="fa fa-pen-to-square ms-2"></i>
-                    }
-                    else
-                    {
-                        <text>Upload Book</text>
-                        <i class="fas fa-upload icon ms-2"></i>
-                    }
-                    
-                </strong>
+                @if (action == "Edit")
+                {
+                    <text>Edit Book</text>
+                    <i class="fa fa-pen-to-square ms-2"></i>
+                }
+                else
+                {
+                    <text>Upload Book</text>
+                    <i class="fas fa-upload icon ms-2"></i>
+                }
             </button>
         </div>
     </form>

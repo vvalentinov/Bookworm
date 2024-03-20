@@ -5,7 +5,7 @@ function onDeleteCommentBtnClick(e) {
 }
 
 function onEditCommentBtnClick(e) {
-    const article = e.parentElement.parentElement.parentElement;
+    const article = e.parentElement.parentElement.parentElement.parentElement;
     tinymce.get("editCommentTextarea").setContent(article.children[1].innerHTML);
 
     const modelId = e.getAttribute('data-model-id');
@@ -96,13 +96,16 @@ function updateComments(model) {
             divCommentActionsContainerEl.appendChild(divArrowsContainerEl);
 
             if (currComment.isCommentOwner || model.isUserAdmin) {
+                const btnsContainer = document.createElement('div');
+                btnsContainer.className = 'btnsContainer';
+
                 const deleteCommentBtn = document.createElement('button');
                 deleteCommentBtn.className = 'btn btn-lg btn-danger modalBtn';
                 deleteCommentBtn.setAttribute("onclick", "onDeleteCommentBtnClick(this)");
                 deleteCommentBtn.setAttribute('data-model-id', currComment.id);
                 deleteCommentBtn.setAttribute('data-bs-toggle', 'modal');
                 deleteCommentBtn.setAttribute('data-bs-target', '#deleteModal');
-                deleteCommentBtn.textContent = 'Delete';
+                deleteCommentBtn.innerHTML = '<i class="fa fa-trash-can"></i>';
 
                 const editCommentBtn = document.createElement('button');
                 editCommentBtn.className = 'btn btn-lg btn-warning modalBtn';
@@ -110,10 +113,12 @@ function updateComments(model) {
                 editCommentBtn.setAttribute('data-model-id', currComment.id);
                 editCommentBtn.setAttribute('data-bs-toggle', 'modal');
                 editCommentBtn.setAttribute('data-bs-target', '#editModal');
-                editCommentBtn.textContent = 'Edit';
+                editCommentBtn.innerHTML = '<i class="fa fa-square-pen"></i>';
 
-                divCommentActionsContainerEl.appendChild(deleteCommentBtn);
-                divCommentActionsContainerEl.appendChild(editCommentBtn);
+                btnsContainer.appendChild(deleteCommentBtn);
+                btnsContainer.appendChild(editCommentBtn);
+
+                divCommentActionsContainerEl.appendChild(btnsContainer);
             }
 
             divCardHeaderEl.appendChild(divCommentActionsContainerEl);

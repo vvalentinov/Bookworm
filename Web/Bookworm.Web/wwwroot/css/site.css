@@ -82,7 +82,7 @@ body {
     height: 65px;
     background: var(--clr-secondary);
     bottom: 40px;
-    right: 50px;
+    right: 40px;
     text-decoration: none;
     text-align: center;
     line-height: 50px;
@@ -284,13 +284,14 @@ body {
             padding: 0.4rem 3rem;
             font-size: 2rem;
         }
+
             .loginRegisterContainer #account button[type="submit"]:hover {
                 color: white;
             }
 
-            .loginRegisterForm {
-                flex-basis: 50%;
-            }
+.loginRegisterForm {
+    flex-basis: 50%;
+}
 
 .loginRegisterImg {
     height: 30rem;

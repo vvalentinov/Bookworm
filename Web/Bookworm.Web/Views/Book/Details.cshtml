@@ -95,7 +95,7 @@
 <section class="bookDetailsDescSection">
     <div class="card">
         <div class="card-header">
-            Book Description
+            Description
         </div>
         <div class="card-body">
             <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
@@ -123,7 +123,7 @@
         @if (Model.Comments?.Count() > 0)
         {
             <section class="commentsSection">
-                <h2>Comments: @Model.Comments.Count()</h2>
+                <h2 class="text-white">Comments: @Model.Comments.Count()</h2>
                 @if (Model.Comments.Count() > 1 && this.User.Identity.IsAuthenticated)
                 {
                     <partial name="PartialViews/_CommentsButtonsPartial" />
@@ -161,20 +161,22 @@
                                         </div>
                                         @if (comment.IsCommentOwner || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                                         {
-                                            <button class="btn btn-lg btn-danger modalBtn"
-                                                    data-model-id=@comment.Id
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal"
-                                                    onclick="onDeleteCommentBtnClick(this)">
-                                                Delete
-                                            </button>
-                                            <button class="btn btn-lg btn-warning modalBtn"
-                                                    onclick="onEditCommentBtnClick(this)"
-                                                    data-model-id=@comment.Id
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editModal">
-                                                Edit
-                                            </button>
+                                            <div class="btnsContainer">
+                                                <button class="btn btn-lg btn-danger modalBtn"
+                                                        data-model-id=@comment.Id
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        onclick="onDeleteCommentBtnClick(this)">
+                                                    <i class="fa fa-trash-can"></i>
+                                                </button>
+                                                <button class="btn btn-lg btn-warning modalBtn"
+                                                        onclick="onEditCommentBtnClick(this)"
+                                                        data-model-id=@comment.Id
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editModal">
+                                                    <i class="fa fa-square-pen"></i>
+                                                </button>
+                                            </div>
                                         }
                                     </div>
                                 }

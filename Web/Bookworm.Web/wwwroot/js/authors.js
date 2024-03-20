@@ -1,72 +1,49 @@
-﻿document.getElementById('addAuthorBtn').addEventListener('click', function () {
-    var form = document.getElementById("uploadBookForm");
+﻿const addAuthorButton = document.getElementById('addAuthorBtn');
 
-    let authorsContainer = document.getElementById('authorsContainer');
-    let authorsCount = authorsContainer.childElementCount - 1;
+const getAuthorsCount = () => document.getElementById('authorsContainer').children.length - 1;
 
-    //Create and append author
-    let authorContainer = document.createElement('div');
+$(function () {
+    if (getAuthorsCount() == 5) { addAuthorButton.disabled = true; }
+})
 
-    let inputGroupEl = document.createElement('div');
-    inputGroupEl.className = 'input-group mt-4 animate__animated animate__zoomIn';
+addAuthorButton.addEventListener('click', (e) => onClickAddAuthorBtn(e.target));
+function onClickAddAuthorBtn(addAuthorBtn) {
+    if (!addAuthorBtn.disabled) {
+        createAndAppendAuthor();
+    }
+}
+function createAndAppendAuthor() {
+    const authorsCount = getAuthorsCount();
 
-    let inputElement = document.createElement('input');
-    inputElement.setAttribute('data-val', 'true');
-    inputElement.setAttribute('data-val-length-max', '50');
-    inputElement.setAttribute('data-val-length-min', '2');
-    inputElement.setAttribute('data-val-length', 'Author name must be between 2 and 50 characters!');
-    inputElement.setAttribute('data-val-required', 'Author\'s name is required.');
+    const inputGroupDivElement = document.createElement('div');
+    inputGroupDivElement.className = 'input-group mt-4 animate__animated animate__zoomIn';
+
+    const inputElement = document.createElement('input');
     inputElement.name = `Authors[${authorsCount}].Name`;
     inputElement.type = 'text';
     inputElement.className = 'form-control border-2 border-dark fs-5';
     inputElement.placeholder = 'Author\'s Name';
 
-    let spanElement = document.createElement('span');
-    spanElement.setAttribute('data-valmsg-for', `Authors[${authorsCount}].Name`);
-    spanElement.setAttribute('data-valmsg-replace', 'true');
-    spanElement.className = 'small text-danger field-validation-valid';
-
-    let buttonElement = document.createElement('button');
+    const buttonElement = document.createElement('button');
     buttonElement.className = 'btn btn-danger border-2 border-dark';
     buttonElement.type = 'button';
     buttonElement.id = 'deleteAuthorBtn';
     buttonElement.textContent = 'Remove';
-    buttonElement.addEventListener('click', function handleClick(event) {
-        event.target.parentElement.parentElement.remove();
-        if (authorsCount < 5) {
-            addAuthorBtn.disabled = false;
-        }
-    });
+    buttonElement.addEventListener('click', (e) => onRemoveAuthorBtnClick(e));
 
-    inputGroupEl.appendChild(inputElement);
-    inputGroupEl.appendChild(buttonElement);
+    inputGroupDivElement.appendChild(inputElement);
+    inputGroupDivElement.appendChild(buttonElement);
 
-    authorContainer.appendChild(inputGroupEl);
-    authorContainer.appendChild(spanElement);
+    authorsContainer.appendChild(inputGroupDivElement);
 
-    authorsContainer.appendChild(authorContainer);
-
-    $(form).removeData("validator").removeData("unobtrusiveValidation");
-    $.validator.unobtrusive.parse(form);
-
-    if (authorsCount == 4) {
-        addAuthorBtn.disabled = true;
-        return;
-    }
-});
-
-function removeAuthor(e) {
-    let authorsContainer = document.getElementById('authorsContainer');
-    let authorsCount = authorsContainer.childElementCount - 2;
-    e.target.parentElement.remove();
+    if (authorsCount == 4) { addAuthorBtn.disabled = true; }
+}
+function onRemoveAuthorBtnClick(event) {
+    event.target.parentElement.remove();
+    addAuthorButton.disabled = false;
 
     const hiddenIdInputs = authorsContainer.querySelectorAll('input[type="hidden"]');
     hiddenIdInputs.forEach((input, index) => input.name = `Authors[${index}].Id`);
     const authorsNameInputs = authorsContainer.querySelectorAll('input[type="text"]');
     authorsNameInputs.forEach((input, index) => input.name = `Authors[${index}].Name`);
-
-    if (authorsCount < 5) {
-        const addAuthorBtn = document.getElementById('addAuthorBtn');
-        addAuthorBtn.disabled = false;
-    }
 }
