@@ -248,7 +248,6 @@
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-
                 return this.RedirectToAction("Index", "Home");
             }
         }

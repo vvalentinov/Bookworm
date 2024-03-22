@@ -134,12 +134,11 @@
                             .Where(v => v.CommentId == c.Id && v.UserId == currentUserId)
                             .Select(v => (int)v.Value)
                             .FirstOrDefault(),
-                    }).ToListAsync();
+                    }).OrderByDescending(c => c.CreatedOn).ToListAsync();
 
                 if (currentUserId != null)
                 {
                     bookViewModel.IsFavorite = currentUser.FavoriteBooks.Any(x => x.BookId == bookId);
-
                     bookViewModel.UserRating = await this.ratingsService.GetUserRatingAsync(bookId, currentUserId);
                 }
             }
