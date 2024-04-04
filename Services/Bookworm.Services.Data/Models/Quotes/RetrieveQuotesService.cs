@@ -12,10 +12,8 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.QuoteInputModels;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Quotes.QuotesActionsNamesConstants;
     using static Bookworm.Common.Quotes.QuotesDataConstants;
 
     public class RetrieveQuotesService : IRetrieveQuotesService
@@ -258,27 +256,27 @@
             };
         }
 
-        public async Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId)
-        {
-            var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == id) ??
-                throw new InvalidOperationException("No quote with given id found!");
+        //public async Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId)
+        //{
+        //    var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == id) ??
+        //        throw new InvalidOperationException("No quote with given id found!");
 
-            if (quote.UserId != userId)
-            {
-                throw new InvalidOperationException("You have to be the quote's creator to edit it!");
-            }
+        //    if (quote.UserId != userId)
+        //    {
+        //        throw new InvalidOperationException("You have to be the quote's creator to edit it!");
+        //    }
 
-            switch (quote.Type)
-            {
-                case QuoteType.BookQuote:
-                    return (AutoMapperConfig.MapperInstance.Map<BookQuoteInputModel>(quote), EditBookQuoteAction);
-                case QuoteType.MovieQuote:
-                    return (AutoMapperConfig.MapperInstance.Map<MovieQuoteInputModel>(quote), EditMovieQuoteAction);
-                case QuoteType.GeneralQuote:
-                    return (AutoMapperConfig.MapperInstance.Map<GeneralQuoteInputModel>(quote), EditGeneralQuoteAction);
-                default: throw new InvalidOperationException("Invalid quote type!");
-            }
-        }
+        //    switch (quote.Type)
+        //    {
+        //        case QuoteType.BookQuote:
+        //            return (AutoMapperConfig.MapperInstance.Map<BookQuoteInputModel>(quote), EditBookQuoteAction);
+        //        case QuoteType.MovieQuote:
+        //            return (AutoMapperConfig.MapperInstance.Map<MovieQuoteInputModel>(quote), EditMovieQuoteAction);
+        //        case QuoteType.GeneralQuote:
+        //            return (AutoMapperConfig.MapperInstance.Map<GeneralQuoteInputModel>(quote), EditGeneralQuoteAction);
+        //        default: throw new InvalidOperationException("Invalid quote type!");
+        //    }
+        //}
 
         private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
             List<QuoteViewModel> quotes,

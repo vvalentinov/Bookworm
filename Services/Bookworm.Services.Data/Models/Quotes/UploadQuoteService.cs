@@ -7,6 +7,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
@@ -14,23 +15,20 @@
     public class UploadQuoteService : IUploadQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UploadQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository)
+            UserManager<ApplicationUser> userManager)
         {
             this.quoteRepository = quoteRepository;
-            this.userRepository = userRepository;
+            this.userManager = userManager;
         }
 
         public async Task UploadQuoteAsync(QuoteDto quoteDto, string userId)
         {
-            bool userExists = await this.userRepository.AllAsNoTracking().AnyAsync(x => x.Id == userId);
-            if (!userExists)
-            {
+            var user = await this.userManager.FindByIdAsync(userId) ??
                 throw new InvalidOperationException("No username with given id found!");
-            }
 
             bool quoteExist = await this.quoteRepository
                 .AllAsNoTracking()
@@ -40,20 +38,24 @@
                 throw new InvalidOperationException(QuoteExistsError);
             }
 
-            var quote = new Quote { Content = quoteDto.Content.Trim() };
+            var quote = new Quote { Content = quoteDto.Content.Trim(), UserId = user.Id };
 
             switch (quoteDto.Type)
             {
                 case QuoteType.BookQuote:
                     quote.AuthorName = quoteDto.AuthorName.Trim();
                     quote.BookTitle = quoteDto.BookTitle.Trim();
+                    quote.Type = QuoteType.BookQuote;
                     break;
                 case QuoteType.MovieQuote:
                     quote.MovieTitle = quoteDto.MovieTitle.Trim();
+                    quote.Type = QuoteType.MovieQuote;
                     break;
                 case QuoteType.GeneralQuote:
                     quote.AuthorName = quoteDto.AuthorName.Trim();
+                    quote.Type = QuoteType.GeneralQuote;
                     break;
+                default: throw new InvalidOperationException("Invdalid Quote Type!");
             }
 
             await this.quoteRepository.AddAsync(quote);

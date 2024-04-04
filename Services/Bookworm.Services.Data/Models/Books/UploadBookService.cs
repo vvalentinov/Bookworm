@@ -41,7 +41,6 @@
         {
             var bookExists = await this.searchBooksService
                 .CheckIfBookWithTitleExistsAsync(uploadBookDto.Title);
-
             if (bookExists)
             {
                 throw new InvalidOperationException(BookWithTitleExistsError);

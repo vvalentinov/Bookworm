@@ -4,7 +4,6 @@
 
     using Bookworm.Data.Models.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
-    using Bookworm.Web.ViewModels.Quotes.QuoteInputModels;
 
     public interface IRetrieveQuotesService
     {
@@ -24,6 +23,6 @@
 
         Task<QuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
 
-        Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId);
+        //Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId);
     }
 }

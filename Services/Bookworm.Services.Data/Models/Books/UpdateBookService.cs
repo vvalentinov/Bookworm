@@ -22,7 +22,6 @@
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IRepository<Publisher> publishersRepository;
         private readonly IRepository<Author> authorsRepository;
-        private readonly IRepository<AuthorBook> authorsBooksRepository;
         private readonly IBlobService blobService;
         private readonly IValidateUploadedBookService validateUploadedBookService;
         private readonly UserManager<ApplicationUser> userManager;
@@ -32,7 +31,6 @@
             IDeletableEntityRepository<Book> bookRepository,
             IRepository<Publisher> publishersRepository,
             IRepository<Author> authorsRepository,
-            IRepository<AuthorBook> authorsBooksRepository,
             IBlobService blobService,
             IValidateUploadedBookService validateUploadedBookService,
             UserManager<ApplicationUser> userManager,
@@ -41,7 +39,6 @@
             this.bookRepository = bookRepository;
             this.publishersRepository = publishersRepository;
             this.authorsRepository = authorsRepository;
-            this.authorsBooksRepository = authorsBooksRepository;
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
             this.userManager = userManager;
@@ -58,7 +55,6 @@
             book.IsApproved = true;
 
             this.bookRepository.Update(book);
-
             await this.bookRepository.SaveChangesAsync();
 
             var user = await this.userManager.FindByIdAsync(book.UserId);

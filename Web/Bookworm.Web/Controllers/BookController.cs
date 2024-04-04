@@ -8,7 +8,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Authorization;
@@ -16,6 +15,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     using static Bookworm.Common.Books.BooksSuccessMessagesConstants;
+    using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class BookController : BaseController
     {
@@ -72,7 +72,7 @@
                 return this.View(model);
             }
 
-            var uploadBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
+            var uploadBookDto = MapperInstance.Map<BookDto>(model);
             uploadBookDto.BookCreatorId = this.userManager.GetUserId(this.User);
 
             try
@@ -122,7 +122,7 @@
 
             var userId = this.userManager.GetUserId(this.User);
 
-            var editBookDto = AutoMapperConfig.MapperInstance.Map<BookDto>(model);
+            var editBookDto = MapperInstance.Map<BookDto>(model);
 
             try
             {
@@ -266,7 +266,6 @@
             catch (Exception ex)
             {
                 this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-
                 return this.RedirectToAction(nameof(this.Details), new { id });
             }
         }
