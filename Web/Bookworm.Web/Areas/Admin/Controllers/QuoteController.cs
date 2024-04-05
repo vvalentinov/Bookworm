@@ -6,14 +6,11 @@
     using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.GlobalConstants;
     using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
 
-    [Authorize(Roles = AdministratorRoleName)]
     public class QuoteController : BaseController
     {
         private readonly IRetrieveQuotesService retrieveQuotesService;

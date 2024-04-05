@@ -13,6 +13,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
     using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
 
     public class QuoteController : BaseController
@@ -108,7 +109,7 @@
             {
                 var exceptionMsg = ex.Message;
                 this.TempData[MessageConstant.ErrorMessage] = exceptionMsg;
-                if (exceptionMsg == "No quote with given id found!")
+                if (exceptionMsg == QuoteWrongIdError)
                 {
                     return this.RedirectToAction(nameof(this.UserQuotes));
                 }

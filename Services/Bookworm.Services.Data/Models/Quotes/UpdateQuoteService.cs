@@ -1,7 +1,6 @@
 ﻿namespace Bookworm.Services.Data.Models.Quotes
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Common.Enums;
@@ -9,7 +8,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
@@ -20,50 +18,39 @@
     public class UpdateQuoteService : IUpdateQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IUsersService usersService;
-        private readonly IEmailSender emailSender;
 
         public UpdateQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository,
             UserManager<ApplicationUser> userManager,
-            IUsersService usersService,
-            IEmailSender emailSender)
+            IUsersService usersService)
         {
             this.quoteRepository = quoteRepository;
-            this.userRepository = userRepository;
             this.userManager = userManager;
             this.usersService = usersService;
-            this.emailSender = emailSender;
         }
 
         public async Task ApproveQuoteAsync(int quoteId, string userId)
         {
-            ApplicationUser currentUser = await this.userRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == userId);
+            var currentUser = await this.userManager.FindByIdAsync(userId)
+                ?? throw new InvalidOperationException("No user with given id found!");
+
             bool isCurrUserAdmin = await this.userManager.IsInRoleAsync(currentUser, AdministratorRoleName);
             if (!isCurrUserAdmin)
             {
-                throw new InvalidOperationException("You have to be an admin to approve a quote!");
+                throw new InvalidOperationException(QuoteApproveError);
             }
 
-            Quote quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId)
+            var quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId)
                 ?? throw new InvalidOperationException(QuoteWrongIdError);
+
             quote.IsApproved = true;
             this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();
 
-            ApplicationUser quoteCreator = await this.userRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.Id == quote.UserId);
-            quoteCreator.Points += QuotePoints;
-            this.userRepository.Update(quoteCreator);
-            await this.userRepository.SaveChangesAsync();
-
-            // TODO: Send email to user
+            var quoteCreator = await this.userManager.FindByIdAsync(quote.UserId);
+            await this.usersService.IncreaseUserPointsAsync(quoteCreator, QuotePoints);
         }
 
         public async Task DeleteQuoteAsync(int quoteId, string userId)
@@ -71,19 +58,19 @@
             var quote = await this.quoteRepository.All().FirstOrDefaultAsync(q => q.Id == quoteId) ??
                 throw new InvalidOperationException(QuoteWrongIdError);
 
-            var user = await this.userRepository.All().FirstOrDefaultAsync(u => u.Id == userId) ??
-                throw new InvalidOperationException("No user with given id found!");
+            var currentUser = await this.userManager.FindByIdAsync(userId)
+                ?? throw new InvalidOperationException("No user with given id found!");
 
-            var isUserAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+            var isCurrUserAdmin = await this.userManager.IsInRoleAsync(currentUser, AdministratorRoleName);
 
-            if (quote.UserId != userId && isUserAdmin == false)
+            if (quote.UserId != userId && isCurrUserAdmin == false)
             {
                 throw new InvalidOperationException(QuoteDeleteError);
             }
 
             if (quote.IsApproved)
             {
-                await this.usersService.ReduceUserPointsAsync(user, QuotePoints);
+                await this.usersService.ReduceUserPointsAsync(currentUser, QuotePoints);
             }
 
             this.quoteRepository.Delete(quote);
@@ -92,40 +79,42 @@
 
         public async Task UndeleteQuoteAsync(int quoteId)
         {
-            Quote quote = this.quoteRepository.AllWithDeleted().First(x => x.Id == quoteId);
+            var quote = await this.quoteRepository
+                .AllWithDeleted()
+                .FirstOrDefaultAsync(x => x.Id == quoteId)
+                ?? throw new InvalidOperationException(QuoteWrongIdError);
             this.quoteRepository.Undelete(quote);
             await this.quoteRepository.SaveChangesAsync();
         }
 
         public async Task UnapproveQuoteAsync(int quoteId)
         {
-            Quote quote = this.quoteRepository.All().First(x => x.Id == quoteId);
+            var quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId)
+                ?? throw new InvalidOperationException(QuoteWrongIdError);
+
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
 
-            ApplicationUser user = this.userRepository.All().First(x => x.Id == quote.UserId);
-            if (user.Points > 0)
-            {
-                user.Points -= QuotePoints;
-            }
-
-            await this.userRepository.SaveChangesAsync();
+            var quoteCreator = await this.userManager.FindByIdAsync(quote.UserId);
+            await this.usersService.ReduceUserPointsAsync(quoteCreator, QuotePoints);
         }
 
         public async Task EditQuoteAsync(QuoteDto quoteDto, string userId)
         {
             var quote = await this.quoteRepository.All().FirstOrDefaultAsync(q => q.Id == quoteDto.Id) ??
-                throw new InvalidOperationException("No quote with given id found!");
+                throw new InvalidOperationException(QuoteWrongIdError);
 
             if (quote.UserId != userId)
             {
-                throw new InvalidOperationException("You have to be the quote's creator to edit it!");
+                throw new InvalidOperationException(QuoteEditError);
             }
 
             if (quote.Type != quoteDto.Type)
             {
-                throw new InvalidOperationException("Invalid quote type!");
+                throw new InvalidOperationException(QuoteInvalidTypeError);
             }
+
+            quote.Content = quoteDto.Content;
 
             switch (quoteDto.Type)
             {
@@ -141,24 +130,10 @@
                     break;
             }
 
-            quote.Content = quoteDto.Content;
-
             if (quote.IsApproved)
             {
-                var user = await this.userRepository.AllAsNoTracking().FirstAsync(x => x.Id == userId);
-
-                if (user.Points - QuotePoints < 0)
-                {
-                    user.Points = 0;
-                }
-                else
-                {
-                    user.Points -= QuotePoints;
-                }
-
-                this.userRepository.Update(user);
-                await this.userRepository.SaveChangesAsync();
-
+                var currUser = await this.userManager.FindByIdAsync(userId);
+                await this.usersService.ReduceUserPointsAsync(currUser, QuotePoints);
                 quote.IsApproved = false;
             }
 

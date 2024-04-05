@@ -15,6 +15,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Quotes.QuotesDataConstants;
+    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
     public class RetrieveQuotesService : IRetrieveQuotesService
     {
@@ -259,11 +260,11 @@
         public async Task<UploadQuoteViewModel> GetQuoteForEditAsync(int quoteId, string userId)
         {
             var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == quoteId) ??
-                throw new InvalidOperationException("No quote with given id found!");
+                throw new InvalidOperationException(QuoteWrongIdError);
 
             if (quote.UserId != userId)
             {
-                throw new InvalidOperationException("You have to be the quote's creator to edit it!");
+                throw new InvalidOperationException(QuoteEditError);
             }
 
             return AutoMapperConfig.MapperInstance.Map<UploadQuoteViewModel>(quote);

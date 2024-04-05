@@ -21,5 +21,9 @@
         public const string QuoteEditError = "You have to be the quote's creator to edit it!";
 
         public const string QuoteDeleteError = "You have to be either the quote's creator or an admin to delete it!";
+
+        public const string QuoteInvalidTypeError = "Invalid quote type!";
+
+        public const string QuoteApproveError = "You have to be an admin to approve a quote!";
     }
 }

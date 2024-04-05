@@ -80,7 +80,7 @@
             }
             else
             {
-                yield return new ValidationResult("Invalid quote type!");
+                yield return new ValidationResult(QuoteInvalidTypeError);
             }
         }
     }
