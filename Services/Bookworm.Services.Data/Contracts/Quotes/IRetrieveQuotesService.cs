@@ -23,6 +23,6 @@
 
         Task<QuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
 
-        //Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId);
+        Task<UploadQuoteViewModel> GetQuoteForEditAsync(int id, string userId);
     }
 }

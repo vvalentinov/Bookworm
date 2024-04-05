@@ -10,8 +10,11 @@
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
 
-    public class UploadQuoteViewModel : IValidatableObject, IMapTo<QuoteDto>, IMapFrom<Quote>
+    public class UploadQuoteViewModel
+        : IValidatableObject, IMapTo<QuoteDto>, IMapFrom<Quote>
     {
+        public int Id { get; set; }
+
         [Required(ErrorMessage = QuoteContentRequiredError)]
         [StringLength(
             QuoteContentMaxLength,

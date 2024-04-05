@@ -35,28 +35,20 @@
         }
 
         [HttpGet]
-        public IActionResult Upload()
-        {
-            return this.View(new UploadQuoteViewModel());
-        }
+        public IActionResult Upload() => this.View(new UploadQuoteViewModel());
 
         [HttpPost]
         public async Task<IActionResult> Upload(UploadQuoteViewModel model)
         {
             if (this.ModelState.IsValid == false)
             {
-                var modelErrors = string.Join("\n", this.ModelState
-                    .Values
-                    .SelectMany(v => v.Errors)
-                    .Select(x => x.ErrorMessage));
-                this.TempData[MessageConstant.ErrorMessage] = modelErrors;
+                this.TempData[MessageConstant.ErrorMessage] = this.GetModelStateErrors();
                 return this.View(model);
             }
 
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
-
                 var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
                 await this.uploadQuoteService.UploadQuoteAsync(quoteDto, userId);
 
@@ -70,107 +62,62 @@
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    try
-        //    {
-        //        var userId = this.userManager.GetUserId(this.User);
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                var model = await this.retrieveQuotesService.GetQuoteForEditAsync(id, userId);
+                return this.View(model);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.UserQuotes));
+            }
+        }
 
-        //        var (model, actionName) = await this.retrieveQuotesService.GetQuoteForEditAsync(id, userId);
+        [HttpPost]
+        public async Task<IActionResult> Edit(UploadQuoteViewModel model)
+        {
+            var userId = this.userManager.GetUserId(this.User);
 
-        //        this.ViewData["ActionName"] = actionName;
+            if (this.ModelState.IsValid == false)
+            {
+                try
+                {
+                    return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+                }
+                catch (Exception ex)
+                {
+                    this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                    return this.RedirectToAction(nameof(this.UserQuotes));
+                }
+            }
 
-        //        return this.View(model);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-        //        return this.RedirectToAction(nameof(this.UserQuotes));
-        //    }
-        //}
+            try
+            {
+                var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
+                await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
 
-        //[HttpPost(Name = EditGeneralQuoteAction)]
-        //public async Task<IActionResult> EditGeneralQuote(GeneralQuoteInputModel generalQuoteInputModel)
-        //{
-        //    if (this.ModelState.IsValid == false)
-        //    {
-        //        this.ViewData["ActionName"] = EditGeneralQuoteAction;
-        //        return this.View(nameof(this.Edit), generalQuoteInputModel);
-        //    }
-
-        //    try
-        //    {
-        //        var userId = this.userManager.GetUserId(this.User);
-
-        //        var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(generalQuoteInputModel);
-        //        quoteDto.Type = QuoteType.GeneralQuote;
-
-        //        await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
-
-        //        this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
-        //        return this.RedirectToAction(nameof(this.UserQuotes));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-        //        return this.RedirectToAction(nameof(this.Edit), new { id = generalQuoteInputModel.Id });
-        //    }
-        //}
-
-        //[HttpPost(Name = EditBookQuoteAction)]
-        //public async Task<IActionResult> EditBookQuote(BookQuoteInputModel bookQuoteInputModel)
-        //{
-        //    if (this.ModelState.IsValid == false)
-        //    {
-        //        return this.View(nameof(this.Edit), bookQuoteInputModel);
-        //    }
-
-        //    try
-        //    {
-        //        var userId = this.userManager.GetUserId(this.User);
-
-        //        var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(bookQuoteInputModel);
-        //        quoteDto.Type = QuoteType.BookQuote;
-
-        //        await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
-
-        //        this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
-        //        return this.RedirectToAction(nameof(this.UserQuotes));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-        //        return this.RedirectToAction(nameof(this.Edit), new { id = bookQuoteInputModel.Id });
-        //    }
-        //}
-
-        //[HttpPost(Name = EditMovieQuoteAction)]
-        //public async Task<IActionResult> EditMovieQuote(MovieQuoteInputModel movieQuoteInputModel)
-        //{
-        //    if (this.ModelState.IsValid == false)
-        //    {
-        //        return this.View(nameof(this.Edit), movieQuoteInputModel);
-        //    }
-
-        //    try
-        //    {
-        //        var userId = this.userManager.GetUserId(this.User);
-
-        //        var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(movieQuoteInputModel);
-        //        quoteDto.Type = QuoteType.MovieQuote;
-
-        //        await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
-
-        //        this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
-        //        return this.RedirectToAction(nameof(this.UserQuotes));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.TempData[MessageConstant.ErrorMessage] = ex.Message;
-        //        return this.RedirectToAction(nameof(this.Edit), new { id = movieQuoteInputModel.Id });
-        //    }
-        //}
+                this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
+                return this.RedirectToAction(nameof(this.UserQuotes));
+            }
+            catch (Exception ex)
+            {
+                var exceptionMsg = ex.Message;
+                this.TempData[MessageConstant.ErrorMessage] = exceptionMsg;
+                if (exceptionMsg == "No quote with given id found!")
+                {
+                    return this.RedirectToAction(nameof(this.UserQuotes));
+                }
+                else
+                {
+                    return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+                }
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> UserQuotes(int id = 1)
@@ -193,7 +140,6 @@
             try
             {
                 var userId = this.userManager.GetUserId(this.User);
-
                 await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId);
 
                 this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
@@ -223,5 +169,11 @@
 
             return this.View(quotes);
         }
+
+        private string GetModelStateErrors()
+            => string.Join("\n", this.ModelState
+                    .Values
+                    .SelectMany(v => v.Errors)
+                    .Select(x => x.ErrorMessage));
     }
 }

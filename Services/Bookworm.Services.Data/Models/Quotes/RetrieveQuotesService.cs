@@ -256,27 +256,18 @@
             };
         }
 
-        //public async Task<(BaseQuoteInputModel, string)> GetQuoteForEditAsync(int id, string userId)
-        //{
-        //    var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == id) ??
-        //        throw new InvalidOperationException("No quote with given id found!");
+        public async Task<UploadQuoteViewModel> GetQuoteForEditAsync(int quoteId, string userId)
+        {
+            var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == quoteId) ??
+                throw new InvalidOperationException("No quote with given id found!");
 
-        //    if (quote.UserId != userId)
-        //    {
-        //        throw new InvalidOperationException("You have to be the quote's creator to edit it!");
-        //    }
+            if (quote.UserId != userId)
+            {
+                throw new InvalidOperationException("You have to be the quote's creator to edit it!");
+            }
 
-        //    switch (quote.Type)
-        //    {
-        //        case QuoteType.BookQuote:
-        //            return (AutoMapperConfig.MapperInstance.Map<BookQuoteInputModel>(quote), EditBookQuoteAction);
-        //        case QuoteType.MovieQuote:
-        //            return (AutoMapperConfig.MapperInstance.Map<MovieQuoteInputModel>(quote), EditMovieQuoteAction);
-        //        case QuoteType.GeneralQuote:
-        //            return (AutoMapperConfig.MapperInstance.Map<GeneralQuoteInputModel>(quote), EditGeneralQuoteAction);
-        //        default: throw new InvalidOperationException("Invalid quote type!");
-        //    }
-        //}
+            return AutoMapperConfig.MapperInstance.Map<UploadQuoteViewModel>(quote);
+        }
 
         private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
             List<QuoteViewModel> quotes,
