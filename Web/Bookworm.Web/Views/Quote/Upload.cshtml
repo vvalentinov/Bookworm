@@ -33,17 +33,7 @@
             <div class="modal-body uploadQuoteModalContainer">
                 <img class="col-4" src="~/images/movieQuote.jpg" />
                 <form method="post" asp-controller="Quote" asp-action="Upload">
-                    <input type="hidden" asp-for="@Model.Type" value="@QuoteType.MovieQuote"></input>
-                    <div class="form-group fs-4">
-                        <label asp-for="@Model.Content">Content*</label>
-                        <textarea asp-for="@Model.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
-                        <span asp-validation-for="@Model.Content" class="small text-danger"></span>
-                    </div>
-                    <div class="form-group mt-4 fs-4">
-                        <label asp-for="@Model.MovieTitle">Movie Title*</label>
-                        <input asp-for="@Model.MovieTitle" type="text" class="form-control border border-2 fs-5">
-                        <span asp-validation-for="@Model.MovieTitle" class="small text-danger"></span>
-                    </div>
+                    <partial name="PartialViews/Quotes/QuotesTypesInputs/_MovieQuoteInputsPartial" />
                     <div class="text-center mt-4 mb-5">
                         <button type="submit" class="btn button form-button">
                             <strong>Upload<i class="ms-2 fas fa-upload icon"></i></strong>
@@ -66,22 +56,7 @@
             <div class="modal-body uploadQuoteModalContainer">
                 <img class="img-fluid" src="~/images/bookQuote.jpg" />
                 <form method="post" asp-controller="Quote" asp-action="Upload">
-                    <input type="hidden" asp-for="@Model.Type" value="@QuoteType.BookQuote"></input>
-                    <div class="form-group">
-                        <label asp-for="@Model.Content">Content*</label>
-                        <textarea asp-for="@Model.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
-                        <span asp-validation-for="@Model.Content" class="small text-danger"></span>
-                    </div>
-                    <div class="form-group mt-4">
-                        <label asp-for="@Model.BookTitle">Book Title*</label>
-                        <input asp-for="@Model.BookTitle" type="text" class="form-control border border-2 fs-5">
-                        <span asp-validation-for="@Model.BookTitle" class="small text-danger"></span>
-                    </div>
-                    <div class="form-group mt-4">
-                        <label asp-for="@Model.AuthorName">Author's Name*</label>
-                        <input asp-for="@Model.AuthorName" type="text" class="form-control border border-2 fs-5">
-                        <span asp-validation-for="@Model.AuthorName" class="small text-danger"></span>
-                    </div>
+                    <partial name="PartialViews/Quotes/QuotesTypesInputs/_BookQuoteInputsPartial" />
                     <div class="text-center mt-4 mb-5">
                         <button type="submit" class="btn button form-button">
                             <strong>Upload<i class="ms-2 fas fa-upload icon"></i></strong>
@@ -104,17 +79,7 @@
             <div class="modal-body uploadQuoteModalContainer">
                 <img class="col-4" src="~/images/generalQuote.jpg" />
                 <form method="post" asp-controller="Quote" asp-action="Upload">
-                    <input type="hidden" asp-for="@Model.Type" value="@QuoteType.GeneralQuote"></input>
-                    <div class="form-group fs-4">
-                        <label asp-for="@Model.Content">Content*</label>
-                        <textarea asp-for="@Model.Content" class="form-control border border-2 fs-5" rows="6"></textarea>
-                        <span asp-validation-for="@Model.Content" class="small text-danger"></span>
-                    </div>
-                    <div class="form-group mt-4 fs-4">
-                        <label asp-for="@Model.AuthorName">Author's Name*</label>
-                        <input asp-for="@Model.AuthorName" type="text" class="form-control border border-2 fs-5">
-                        <span asp-validation-for="@Model.AuthorName" class="small text-danger"></span>
-                    </div>
+                    <partial name="PartialViews/Quotes/QuotesTypesInputs/_GeneralQuoteInputsPartial" />
                     <div class="text-center mt-4 mb-5">
                         <button type="submit" class="btn button form-button">
                             <strong>Upload<i class="ms-2 fas fa-upload icon"></i></strong>

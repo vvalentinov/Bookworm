@@ -1,0 +1,18 @@
+﻿@model UploadQuoteViewModel
+
+<input type="hidden" asp-for="@Model.Type" value="@QuoteType.BookQuote" />
+<div class="form-group justify-content-center">
+    <label asp-for="@Model.Content"><strong>Content</strong></label>
+    <textarea asp-for="@Model.Content" class="form-control" rows="6"></textarea>
+    <span asp-validation-for="@Model.Content" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.BookTitle"><strong>Book Title</strong></label>
+    <input asp-for="@Model.BookTitle" value="@Model.BookTitle" type="text" class="form-control">
+    <span asp-validation-for="@Model.BookTitle" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="@Model.AuthorName"><strong>Author's Name</strong></label>
+    <input value="@Model.AuthorName" asp-for="@Model.AuthorName" type="text" class="form-control">
+    <span asp-validation-for="@Model.AuthorName" class="text-danger"></span>
+</div>
