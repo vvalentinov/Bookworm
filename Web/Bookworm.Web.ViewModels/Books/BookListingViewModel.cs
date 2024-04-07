@@ -1,8 +1,8 @@
-﻿namespace Bookworm.Web.ViewModels.Books.ListingViewModels
+﻿namespace Bookworm.Web.ViewModels.Books
 {
     using System.Collections.Generic;
 
-    public class BookListingViewModel : PagingViewModel
+    public class BookListingViewModel : BaseListingViewModel
     {
         public IEnumerable<BookViewModel> Books { get; set; }
     }

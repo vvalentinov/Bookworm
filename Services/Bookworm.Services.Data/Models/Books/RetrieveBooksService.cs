@@ -11,8 +11,8 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Books.ListingViewModels;
     using Bookworm.Web.ViewModels.Comments;
+    using Bookworm.Web.ViewModels.Pagination;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
@@ -165,12 +165,15 @@
                     Authors = b.AuthorsBooks.Select(a => new UploadAuthorViewModel { Name = a.Author.Name }).ToList(),
                 }).FirstOrDefaultAsync(b => b.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
 
-        public async Task<BookCategoryListingViewModel> GetBooksAsync(int categoryId, int page)
+        public async Task<BookListingViewModel> GetBooksAsync(
+            int categoryId,
+            int page,
+            string paginationAction,
+            string paginationController,
+            string category)
         {
-            var categoryName = await this.categoriesService.GetCategoryNameAsync(categoryId);
-            return new BookCategoryListingViewModel
+            return new BookListingViewModel
             {
-                CategoryName = categoryName,
                 Books = await this.bookRepository
                                 .AllAsNoTracking()
                                 .Where(x => x.CategoryId == categoryId && x.IsApproved)
@@ -185,6 +188,12 @@
                                     .Where(x => x.CategoryId == categoryId && x.IsApproved)
                                     .CountAsync(),
                 ItemsPerPage = BooksPerPage,
+                PaginationNavigation = new PaginationNavigationViewModel
+                {
+                    PaginationAction = paginationAction,
+                    PaginationController = paginationController,
+                    IsPaginationForBooks = true,
+                },
             };
         }
 

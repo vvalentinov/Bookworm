@@ -6,7 +6,7 @@
     var isUserAuthenticated = this.User.Identity.IsAuthenticated;
 }
 
-@await Html.PartialAsync("PartialViews/_TitleCardPartial", titleCardModel)
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 @if (isUserAuthenticated)
 {
@@ -62,7 +62,7 @@
     }
 </div>
 
-<partial name="PartialViews/Pagination/_QuotesPaginationPartial" model="@Model" />
+<partial name="PartialViews/_PaginationPartial" model="@Model" />
 
 @section Scripts {
     <script type="module" src="~/js/quotes/allQuotes.js"></script>

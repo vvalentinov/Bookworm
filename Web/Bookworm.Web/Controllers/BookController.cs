@@ -201,9 +201,12 @@
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
 
-                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
-                model.PaginationController = nameof(Book);
-                model.PaginationAction = nameof(this.All);
+                var model = await this.retrieveBooksService.GetBooksAsync(
+                    categoryId,
+                    id,
+                    nameof(this.All),
+                    nameof(Book),
+                    category);
 
                 this.ViewData["Title"] = category;
                 return this.View(model);
@@ -227,8 +230,8 @@
             var userId = this.userManager.GetUserId(this.User);
 
             var books = await this.retrieveBooksService.GetUserBooksAsync(userId, id);
-            books.PaginationController = "Book";
-            books.PaginationAction = nameof(this.UserBooks);
+            books.PaginationNavigation.PaginationController = "Book";
+            books.PaginationNavigation.PaginationAction = nameof(this.UserBooks);
 
             return this.View(books);
         }

@@ -4,11 +4,15 @@
     using System.Threading.Tasks;
 
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Books.ListingViewModels;
 
     public interface IRetrieveBooksService
     {
-        Task<BookCategoryListingViewModel> GetBooksAsync(int categoryId, int page);
+        Task<BookListingViewModel> GetBooksAsync(
+            int categoryId,
+            int page,
+            string paginationAction,
+            string paginationController,
+            string category);
 
         Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
 

@@ -7,7 +7,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Books.ListingViewModels;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;

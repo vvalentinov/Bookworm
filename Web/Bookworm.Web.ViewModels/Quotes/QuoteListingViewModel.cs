@@ -2,9 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using Bookworm.Web.ViewModels;
-
-    public class QuoteListingViewModel : PagingViewModel
+    public class QuoteListingViewModel : BaseListingViewModel
     {
         public List<QuoteViewModel> Quotes { get; set; }
     }

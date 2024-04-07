@@ -1,0 +1,109 @@
+﻿@model BasePaginationViewModel
+
+<nav id="pagination" aria-label="...">
+    <ul class="pagination pagination-lg justify-content-center">
+        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+            @if (Model.PaginationNavigation.IsPaginationForBooks)
+            {
+                <a class="page-link"
+                   asp-controller=@Model.PaginationNavigation.PaginationController
+                   asp-action=@Model.PaginationNavigation.PaginationAction
+                   asp-route-id="@Model.PreviousPageNumber"
+                   asp-route-category=@this.ViewData["Title"]>
+                    <i class="fa fa-angles-left"></i>
+                </a>
+            }
+            else
+            {
+                <a class="page-link"
+                   asp-controller=@Model.PaginationNavigation.PaginationController
+                   asp-action=@Model.PaginationNavigation.PaginationAction
+                   asp-route-id="@Model.PreviousPageNumber">
+                    <i class="fa fa-angles-left"></i>
+                </a>
+            }
+        </li>
+        @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
+        {
+            if (i > 0)
+            {
+                <li class="page-item">
+                    @if (Model.PaginationNavigation.IsPaginationForBooks)
+                    {
+                        <a class="page-link"
+                           asp-controller=@Model.PaginationNavigation.PaginationController
+                           asp-action=@Model.PaginationNavigation.PaginationAction
+                           asp-route-id="@Model.PreviousPageNumber"
+                           asp-route-category=@this.ViewData["Title"]>
+                            @i
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="page-link"
+                           asp-controller=@Model.PaginationNavigation.PaginationController
+                           asp-action=@Model.PaginationNavigation.PaginationAction
+                           asp-route-id="@i">
+                            @i
+                        </a>
+                    }
+                </li>
+            }
+        }
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">
+                @Model.PageNumber
+                <span class="sr-only">(current)</span>
+            </span>
+        </li>
+        @for (int i = Model.PageNumber + 1; i <= Model.PageNumber + 4; i++)
+        {
+            if (i <= Model.PagesCount)
+            {
+                <li class="page-item">
+                    @if (Model.PaginationNavigation.IsPaginationForBooks)
+                    {
+                        <a class="page-link"
+                           asp-controller=@Model.PaginationNavigation.PaginationController
+                           asp-action=@Model.PaginationNavigation.PaginationAction
+                           asp-route-id="@i"
+                           asp-route-category=@this.ViewData["Title"]>
+                            @i
+                        </a>
+                    }
+                    else
+                    {
+
+                        <a class="page-link"
+                           asp-controller=@Model.PaginationNavigation.PaginationController
+                           asp-action=@Model.PaginationNavigation.PaginationAction
+                           asp-route-id="@i">
+                            @i
+                        </a>
+                    }
+                </li>
+            }
+        }
+        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+            @if (Model.PaginationNavigation.IsPaginationForBooks)
+            {
+                <a class="page-link"
+                   asp-controller=@Model.PaginationNavigation.PaginationController
+                   asp-action=@Model.PaginationNavigation.PaginationAction
+                   asp-route-id="@Model.NextPageNumber"
+                   asp-route-category=@this.ViewData["Title"]>
+                    <i class="fa fa-angles-right"></i>
+                </a>
+            }
+            else
+            {
+                <a class="page-link"
+                   asp-controller=@Model.PaginationNavigation.PaginationController
+                   asp-action=@Model.PaginationNavigation.PaginationAction
+                   asp-route-id="@Model.NextPageNumber">
+                    <i class="fa fa-angles-right"></i>
+                </a>
+            }
+        </li>
+    </ul>
+</nav>

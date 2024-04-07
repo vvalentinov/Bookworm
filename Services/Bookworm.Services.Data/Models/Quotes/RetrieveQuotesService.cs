@@ -11,6 +11,7 @@
     using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Pagination;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
 
@@ -30,7 +31,11 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<QuoteListingViewModel> GetAllApprovedAsync(string userId = null, int? page = null)
+        public async Task<QuoteListingViewModel> GetAllApprovedAsync(
+            int? page = null,
+            string userId = null,
+            string paginationAction = null,
+            string paginationController = null)
         {
             var quotesQuery = this.quoteRepository
                 .AllAsNoTracking()
@@ -40,23 +45,29 @@
 
             if (page.HasValue)
             {
-                var quotes = await quotesQuery
-                    .Skip((page.Value - 1) * QuotesPerPage)
-                    .Take(QuotesPerPage)
-                    .ToListAsync();
+                quotesQuery = quotesQuery.Skip((page.Value - 1) * QuotesPerPage).Take(QuotesPerPage);
+            }
 
-                return new QuoteListingViewModel
+            var quotes = await quotesQuery.ToListAsync();
+
+            var model = new QuoteListingViewModel
+            {
+                PageNumber = page ?? 1,
+                ItemsPerPage = QuotesPerPage,
+                RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(x => x.IsApproved),
+                Quotes = userId != null ? await this.RetrieveQuoteUserStatusAsync(quotes, userId) : quotes,
+            };
+
+            if (paginationController != null && paginationAction != null)
+            {
+                model.PaginationNavigation = new PaginationNavigationViewModel
                 {
-                    Quotes = userId != null ? await this.RetrieveQuoteUserStatusAsync(quotes, userId) : quotes,
-                    PageNumber = page ?? 1,
-                    ItemsPerPage = QuotesPerPage,
-                    RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(x => x.IsApproved),
+                    PaginationController = paginationController,
+                    PaginationAction = paginationAction,
                 };
             }
-            else
-            {
-                return new QuoteListingViewModel { Quotes = await quotesQuery.ToListAsync() };
-            }
+
+            return model;
         }
 
         public async Task<QuoteListingViewModel> GetAllUnapprovedAsync()
@@ -270,9 +281,7 @@
             return AutoMapperConfig.MapperInstance.Map<UploadQuoteViewModel>(quote);
         }
 
-        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
-            List<QuoteViewModel> quotes,
-            string userId)
+        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(List<QuoteViewModel> quotes, string userId)
         {
             foreach (var quote in quotes)
             {

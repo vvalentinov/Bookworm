@@ -1,4 +1,4 @@
-﻿@model BookCategoryListingViewModel
+﻿@model BookListingViewModel
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
@@ -13,7 +13,7 @@
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
-<input id="category" type="hidden" value="@Model.CategoryName" />
+<input id="category" type="hidden" value="@this.ViewData["Title"]" />
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
@@ -29,13 +29,13 @@
 }
 else
 {
-    <h3 class="display-4 text-center mt-5">Sorry, no books in @Model.CategoryName category yet!</h3>
+    <h3 class="display-4 text-center mt-5">Sorry, no books in @this.ViewData["Title"] category yet!</h3>
     <h4 class="display-4 text-center">Want to change that?<a asp-controller="Book" asp-action="Upload">Click here</a></h4>
 }
 
 @if (Model.PagesCount > 1)
 {
-    <partial name="PartialViews/Pagination/_BooksPaginationPartial" model="@Model" />
+    <partial name="PartialViews/_PaginationPartial" model="@Model" />
 }
 
 @if (isUserAuthenticated)

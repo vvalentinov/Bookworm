@@ -7,12 +7,8 @@
     using Bookworm.Web.ViewModels.Comments;
     using Ganss.Xss;
 
-    public class BookDetailsViewModel : IMapFrom<Book>
+    public class BookDetailsViewModel : BookViewModel, IMapFrom<Book>
     {
-        public int Id { get; set; }
-
-        public string Title { get; set; }
-
         public string Description { get; set; }
 
         public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
@@ -34,8 +30,6 @@
         public int PagesCount { get; set; }
 
         public string Language { get; set; }
-
-        public string ImageUrl { get; set; }
 
         public bool IsFavorite { get; set; }
 

@@ -8,7 +8,6 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.Books.ListingViewModels;
     using Bookworm.Web.ViewModels.Languages;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -49,8 +48,8 @@
                 model.Input ??= string.Empty;
 
                 var books = await this.searchBooksService.SearchBooksAsync(model);
-                books.PaginationController = "ApiBook";
-                books.PaginationAction = nameof(this.SearchBooks);
+                books.PaginationNavigation.PaginationController = "ApiBook";
+                books.PaginationNavigation.PaginationAction = nameof(this.SearchBooks);
 
                 return books;
             }
@@ -66,7 +65,6 @@
             try
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-
                 return await this.languagesService.GetAllInBookCategoryAsync(categoryId);
             }
             catch (Exception ex)
@@ -79,7 +77,6 @@
         public async Task<List<LanguageViewModel>> GetLanguagesInUserBooks()
         {
             var userId = this.userManager.GetUserId(this.User);
-
             return await this.languagesService.GetAllInUserBooksAsync(userId);
         }
     }
