@@ -2,7 +2,7 @@
 {
     using Bookworm.Web.ViewModels.Pagination;
 
-    public abstract class BaseListingViewModel : BasePaginationViewModel
+    public abstract class BaseListingViewModel : PaginationViewModel
     {
     }
 }

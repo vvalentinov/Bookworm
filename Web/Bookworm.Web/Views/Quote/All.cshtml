@@ -62,7 +62,10 @@
     }
 </div>
 
-<partial name="PartialViews/_PaginationPartial" model="@Model" />
+@if (Model.PagesCount > 1)
+{
+    <vc:pagination controller="Quote" action="All" is-for-books="@false" model="@Model"></vc:pagination>
+}
 
 @section Scripts {
     <script type="module" src="~/js/quotes/allQuotes.js"></script>

@@ -2,12 +2,7 @@
 
 @{
     this.ViewData["Title"] = "Favorite Books";
-
-    var titleCardModel = new TitleCardPartialViewModel
-    {
-        Title = ViewData["Title"] as string,
-        IconClass = "fa-book"
-    };
+    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, IconClass = "fa-book" };
 }
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />

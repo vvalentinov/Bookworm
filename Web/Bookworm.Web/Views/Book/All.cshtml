@@ -35,7 +35,7 @@ else
 
 @if (Model.PagesCount > 1)
 {
-    <partial name="PartialViews/_PaginationPartial" model="@Model" />
+    <vc:pagination controller="Book" action="All" is-for-books="@true" model="@Model"></vc:pagination>
 }
 
 @if (isUserAuthenticated)

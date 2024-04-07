@@ -48,8 +48,6 @@
                 model.Input ??= string.Empty;
 
                 var books = await this.searchBooksService.SearchBooksAsync(model);
-                books.PaginationNavigation.PaginationController = "ApiBook";
-                books.PaginationNavigation.PaginationAction = nameof(this.SearchBooks);
 
                 return books;
             }

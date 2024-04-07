@@ -3,11 +3,7 @@
 
 @{
     this.ViewData["Title"] = "My Books";
-    var titleCardModel = new TitleCardPartialViewModel
-    {
-        Title = "My Books",
-        Count = Model.RecordsCount
-    };
+    var titleCardModel = new TitleCardPartialViewModel { Title = "My Books", Count = Model.RecordsCount };
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
@@ -31,7 +27,7 @@
 
     @if (Model.PagesCount > 1)
     {
-        <partial name="PartialViews/_PaginationPartial" model="@Model" />
+        <vc:pagination controller="Book" action="UserBooks" is-for-books="@true" model="@Model"></vc:pagination>
     }
 }
 else

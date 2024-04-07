@@ -98,7 +98,6 @@
             try
             {
                 var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
-
                 return this.View(nameof(this.Upload), model);
             }
             catch (Exception ex)
@@ -121,7 +120,6 @@
             }
 
             var userId = this.userManager.GetUserId(this.User);
-
             var editBookDto = MapperInstance.Map<BookDto>(model);
 
             try
@@ -159,10 +157,7 @@
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Random()
-        {
-            return this.View(new RandomBookInputModel());
-        }
+        public IActionResult Random() => this.View(new RandomBookInputModel());
 
         [HttpPost]
         [AllowAnonymous]
@@ -175,8 +170,9 @@
 
             try
             {
-                var books = await this.retrieveBooksService
-                    .GetRandomBooksAsync(model.CountBooks, model.CategoryId);
+                var books = await this.retrieveBooksService.GetRandomBooksAsync(
+                    model.CountBooks,
+                    model.CategoryId);
 
                 return this.View("GeneratedBooks", books);
             }
@@ -228,10 +224,7 @@
             }
 
             var userId = this.userManager.GetUserId(this.User);
-
             var books = await this.retrieveBooksService.GetUserBooksAsync(userId, id);
-            books.PaginationNavigation.PaginationController = "Book";
-            books.PaginationNavigation.PaginationAction = nameof(this.UserBooks);
 
             return this.View(books);
         }
@@ -243,10 +236,8 @@
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
-
-                var bookViewModel = await this.retrieveBooksService.GetBookDetails(id, userId);
-
-                return this.View(bookViewModel);
+                var model = await this.retrieveBooksService.GetBookDetails(id, userId);
+                return this.View(model);
             }
             catch (Exception ex)
             {

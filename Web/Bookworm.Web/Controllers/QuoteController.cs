@@ -164,11 +164,7 @@
             }
 
             var userId = this.userManager.GetUserId(this.User);
-            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync(
-                id,
-                userId,
-                nameof(this.All),
-                "Quote");
+            var quotes = await this.retrieveQuotesService.GetAllApprovedAsync(id, userId);
 
             return this.View(quotes);
         }

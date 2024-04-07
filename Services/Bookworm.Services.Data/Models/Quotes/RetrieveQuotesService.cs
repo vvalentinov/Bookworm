@@ -11,7 +11,6 @@
     using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
-    using Bookworm.Web.ViewModels.Pagination;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
 
@@ -31,11 +30,7 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<QuoteListingViewModel> GetAllApprovedAsync(
-            int? page = null,
-            string userId = null,
-            string paginationAction = null,
-            string paginationController = null)
+        public async Task<QuoteListingViewModel> GetAllApprovedAsync(int? page = null, string userId = null)
         {
             var quotesQuery = this.quoteRepository
                 .AllAsNoTracking()
@@ -57,15 +52,6 @@
                 RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(x => x.IsApproved),
                 Quotes = userId != null ? await this.RetrieveQuoteUserStatusAsync(quotes, userId) : quotes,
             };
-
-            if (paginationController != null && paginationAction != null)
-            {
-                model.PaginationNavigation = new PaginationNavigationViewModel
-                {
-                    PaginationController = paginationController,
-                    PaginationAction = paginationAction,
-                };
-            }
 
             return model;
         }

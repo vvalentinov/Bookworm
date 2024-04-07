@@ -12,7 +12,6 @@
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
-    using Bookworm.Web.ViewModels.Pagination;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
@@ -188,12 +187,6 @@
                                     .Where(x => x.CategoryId == categoryId && x.IsApproved)
                                     .CountAsync(),
                 ItemsPerPage = BooksPerPage,
-                PaginationNavigation = new PaginationNavigationViewModel
-                {
-                    PaginationAction = paginationAction,
-                    PaginationController = paginationController,
-                    IsPaginationForBooks = true,
-                },
             };
         }
 

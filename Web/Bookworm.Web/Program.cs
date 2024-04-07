@@ -55,7 +55,7 @@
 
             using (IServiceScope serviceScope = app.Services.CreateScope())
             {
-                ApplicationDbContext dbContext = serviceScope
+                var dbContext = serviceScope
                     .ServiceProvider
                     .GetRequiredService<ApplicationDbContext>();
 

@@ -11,11 +11,7 @@
 
         Task<QuoteListingViewModel> GetAllByCriteriaAsync(GetQuotesApiDto getQuotesApiDto, string userId);
 
-        Task<QuoteListingViewModel> GetAllApprovedAsync(
-            int? page = null,
-            string userId = null,
-            string paginationAction = null,
-            string paginationController = null);
+        Task<QuoteListingViewModel> GetAllApprovedAsync(int? page = null, string userId = null);
 
         Task<QuoteListingViewModel> GetAllUnapprovedAsync();
 
