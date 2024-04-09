@@ -1,7 +1,9 @@
 ﻿@inject SignInManager<ApplicationUser> SignInManager
+
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
+
 <ul class="nav nav-pills flex-column">
     <li class="nav-item">
         <a class=" @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a>

@@ -76,7 +76,7 @@
         [HttpGet]
         public async Task<IActionResult> ApprovedBooks()
         {
-            List<BookDetailsViewModel> approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
+            var approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
             return this.View(approvedBooks);
         }
 

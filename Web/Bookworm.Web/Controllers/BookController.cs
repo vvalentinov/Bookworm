@@ -196,13 +196,7 @@
             try
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-
-                var model = await this.retrieveBooksService.GetBooksAsync(
-                    categoryId,
-                    id,
-                    nameof(this.All),
-                    nameof(Book),
-                    category);
+                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
 
                 this.ViewData["Title"] = category;
                 return this.View(model);

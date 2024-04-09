@@ -164,12 +164,7 @@
                     Authors = b.AuthorsBooks.Select(a => new UploadAuthorViewModel { Name = a.Author.Name }).ToList(),
                 }).FirstOrDefaultAsync(b => b.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
 
-        public async Task<BookListingViewModel> GetBooksAsync(
-            int categoryId,
-            int page,
-            string paginationAction,
-            string paginationController,
-            string category)
+        public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page)
         {
             return new BookListingViewModel
             {

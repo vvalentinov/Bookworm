@@ -5,7 +5,7 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data;
+    using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Settings;
 
     using Microsoft.AspNetCore.Mvc;

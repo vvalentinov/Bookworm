@@ -10,7 +10,8 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
-    using Bookworm.Services.Data;
+    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Data.Models;
     using Bookworm.Services.Messaging;
 
     using CommandLine;

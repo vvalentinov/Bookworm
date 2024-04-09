@@ -7,12 +7,7 @@
 
     public interface IRetrieveBooksService
     {
-        Task<BookListingViewModel> GetBooksAsync(
-            int categoryId,
-            int page,
-            string paginationAction,
-            string paginationController,
-            string category);
+        Task<BookListingViewModel> GetBooksAsync(int categoryId, int page);
 
         Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
 

@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data
+﻿namespace Bookworm.Services.Data.Contracts
 {
     using System.Collections.Generic;
 
