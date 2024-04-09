@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models;
+    using Bookworm.Web.ViewModels.DTOs;
 
     public interface IUploadQuoteService
     {

@@ -8,6 +8,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
+    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 

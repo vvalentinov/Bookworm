@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Data.Models.DTOs
+﻿namespace Bookworm.Web.ViewModels.DTOs
 {
     public class GetQuotesApiDto
     {

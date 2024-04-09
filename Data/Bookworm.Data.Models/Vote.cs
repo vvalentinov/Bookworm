@@ -3,8 +3,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Models;
-    using Bookworm.Data.Models.Enums;
 
     public class Vote : BaseModel<int>
     {

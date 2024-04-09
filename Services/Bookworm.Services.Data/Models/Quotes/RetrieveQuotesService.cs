@@ -8,9 +8,9 @@
     using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Data.Models.DTOs;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
 

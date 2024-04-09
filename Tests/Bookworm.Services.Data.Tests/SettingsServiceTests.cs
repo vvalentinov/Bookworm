@@ -5,7 +5,7 @@
     using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
-
+    using Bookworm.Services.Data.Models;
     using Microsoft.EntityFrameworkCore;
 
     using Xunit;

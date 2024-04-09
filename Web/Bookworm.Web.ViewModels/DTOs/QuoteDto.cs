@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Data.Models
+﻿namespace Bookworm.Web.ViewModels.DTOs
 {
     using Bookworm.Common.Enums;
 

@@ -6,6 +6,7 @@
     using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.DTOs;
 
     using static Bookworm.Common.Quotes.QuotesDataConstants;
     using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;

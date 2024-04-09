@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models.DTOs;
+    using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IRetrieveQuotesService
