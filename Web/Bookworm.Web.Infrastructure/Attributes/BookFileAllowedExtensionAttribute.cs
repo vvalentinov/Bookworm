@@ -7,19 +7,14 @@
 
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
 
-    public class BookFileAllowedExtensionAttribute : ValidationAttribute
+    public class BookFileAllowedExtensionAttribute(string extension)
+        : ValidationAttribute
     {
-        private readonly string extension;
-
-        public BookFileAllowedExtensionAttribute(string extension)
-        {
-            this.extension = extension;
-        }
+        private readonly string extension = extension;
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            IFormFile file = value as IFormFile;
-            if (file != null)
+            if (value is IFormFile file)
             {
                 string extension = Path.GetExtension(file.FileName);
                 if (this.extension != extension)
