@@ -1,24 +1,24 @@
 ﻿@if (TempData[MessageConstant.ErrorMessage] != null)
 {
-    ViewData["Toast-Header-Class"] = "toast-header-error";
-    ViewData["Toast-Title"] = "Error Message";
-    ViewData["Toast-Message"] = TempData[MessageConstant.ErrorMessage];
+    this.ViewData["Toast-Header-Class"] = "toast-header-error";
+    this.ViewData["Toast-Title"] = "Error Message";
+    this.ViewData["Toast-Message"] = TempData[MessageConstant.ErrorMessage];
     <partial name="PartialViews/_ToastNotificationPartial" />
     <script src="~/js/toast.js"></script>
 }
 @if (TempData[MessageConstant.WarningMessage] != null)
 {
-    ViewData["Toast-Header-Class"] = "toast-header-warning";
-    ViewData["Toast-Title"] = "Warning Message";
-    ViewData["Toast-Message"] = TempData[MessageConstant.WarningMessage];
+    this.ViewData["Toast-Header-Class"] = "toast-header-warning";
+    this.ViewData["Toast-Title"] = "Warning Message";
+    this.ViewData["Toast-Message"] = TempData[MessageConstant.WarningMessage];
     <partial name="PartialViews/_ToastNotificationPartial" />
     <script src="~/js/toast.js"></script>
 }
 @if (TempData[MessageConstant.SuccessMessage] != null)
 {
-    ViewData["Toast-Header-Class"] = "toast-header-success";
-    ViewData["Toast-Title"] = "Success Message";
-    ViewData["Toast-Message"] = TempData[MessageConstant.SuccessMessage];
+    this.ViewData["Toast-Header-Class"] = "toast-header-success";
+    this.ViewData["Toast-Title"] = "Success Message";
+    this.ViewData["Toast-Message"] = TempData[MessageConstant.SuccessMessage];
     <partial name="PartialViews/_ToastNotificationPartial" />
     <script src="~/js/toast.js"></script>
 }

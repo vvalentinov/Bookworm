@@ -297,11 +297,17 @@ body {
     height: 30rem;
 }
 
-
 .bookworm-footer {
     background-color: var(--clr-primary);
     margin-top: auto;
     flex-shrink: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-white);
+    padding: 2rem 0;
+    font-size: 1.5rem;
 }
 
 .category-link {

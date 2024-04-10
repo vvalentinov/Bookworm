@@ -8,8 +8,10 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Books.BooksDataConstants;
@@ -26,6 +28,7 @@
         private readonly IValidateUploadedBookService validateUploadedBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IUsersService usersService;
+        private readonly IHubContext<NotificationHub> notificationHub;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
@@ -34,7 +37,8 @@
             IBlobService blobService,
             IValidateUploadedBookService validateUploadedBookService,
             UserManager<ApplicationUser> userManager,
-            IUsersService usersService)
+            IUsersService usersService,
+            IHubContext<NotificationHub> notificationHub)
         {
             this.bookRepository = bookRepository;
             this.publishersRepository = publishersRepository;
@@ -43,6 +47,7 @@
             this.validateUploadedBookService = validateUploadedBookService;
             this.userManager = userManager;
             this.usersService = usersService;
+            this.notificationHub = notificationHub;
         }
 
         public async Task ApproveBookAsync(int bookId)
@@ -53,13 +58,16 @@
                 throw new InvalidOperationException(BookWrongIdError);
 
             book.IsApproved = true;
-
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            var user = await this.userManager.FindByIdAsync(book.UserId);
+            var bookCreator = await this.userManager.FindByIdAsync(book.UserId);
+            await this.usersService.IncreaseUserPointsAsync(bookCreator, BookPoints);
 
-            await this.usersService.IncreaseUserPointsAsync(user, BookPoints);
+            await this.notificationHub
+                .Clients
+                .User(bookCreator.Id)
+                .SendAsync("receivedNotification", $"An admin has approved your book - {book.Title}");
         }
 
         public async Task UnapproveBookAsync(int bookId)
