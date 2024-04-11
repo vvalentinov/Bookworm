@@ -11,8 +11,8 @@
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
@@ -28,7 +28,8 @@
         private readonly IValidateUploadedBookService validateUploadedBookService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IUsersService usersService;
-        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IEmailSender emailSender;
+        private readonly IConfiguration configuration;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
@@ -38,7 +39,8 @@
             IValidateUploadedBookService validateUploadedBookService,
             UserManager<ApplicationUser> userManager,
             IUsersService usersService,
-            IHubContext<NotificationHub> notificationHub)
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             this.bookRepository = bookRepository;
             this.publishersRepository = publishersRepository;
@@ -47,7 +49,8 @@
             this.validateUploadedBookService = validateUploadedBookService;
             this.userManager = userManager;
             this.usersService = usersService;
-            this.notificationHub = notificationHub;
+            this.emailSender = emailSender;
+            this.configuration = configuration;
         }
 
         public async Task ApproveBookAsync(int bookId)
@@ -64,10 +67,17 @@
             var bookCreator = await this.userManager.FindByIdAsync(book.UserId);
             await this.usersService.IncreaseUserPointsAsync(bookCreator, BookPoints);
 
-            await this.notificationHub
-                .Clients
-                .User(bookCreator.Id)
-                .SendAsync("receivedNotification", $"An admin has approved your book - {book.Title}");
+            // Send email to user
+            var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
+            var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
+            await this.emailSender.SendEmailAsync(
+                fromEmail,
+                "Bookworm",
+                bookCreator.Email,
+                bookCreator.UserName,
+                "Approved Book",
+                $"<h1>Your book: {book.Title} has been approved! Congratulations!</h1>",
+                appPassword);
         }
 
         public async Task UnapproveBookAsync(int bookId)
