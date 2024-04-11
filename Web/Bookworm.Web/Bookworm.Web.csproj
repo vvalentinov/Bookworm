@@ -53,6 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="wwwroot\images\bookCategories\" />
 	  <Folder Include="wwwroot\lib\admin-lte\dist\css\" />
 	</ItemGroup>
 </Project>

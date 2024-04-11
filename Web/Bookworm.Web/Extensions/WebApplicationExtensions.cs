@@ -5,7 +5,6 @@
     using Bookworm.Data;
     using Bookworm.Data.Seeding;
     using Bookworm.Services.Mapping;
-    using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +22,7 @@
                     .ServiceProvider
                     .GetRequiredService<ApplicationDbContext>();
 
-                new ApplicationDbContextSeeder(app.Configuration)
+                new ApplicationDbContextSeeder()
                     .SeedAsync(dbContext, serviceScope.ServiceProvider)
                     .GetAwaiter()
                     .GetResult();
@@ -54,8 +53,6 @@
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
-
-            app.MapHub<NotificationHub>("/hubs/notification");
 
             return app;
         }

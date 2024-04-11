@@ -31,7 +31,7 @@
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
 
             services.AddTransient<ISettingsService, SettingsService>();
-            services.AddTransient<IEmailSender>(x => new SendGridEmailSender(config["SendGrid:ApiKey"]));
+            services.AddTransient<IEmailSender, MailKitEmailSender>();
 
             // Quotes services
             services.AddScoped<IManageQuoteLikesService, ManageQuoteLikesService>();

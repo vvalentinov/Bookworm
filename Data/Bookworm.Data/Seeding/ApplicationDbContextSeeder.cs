@@ -4,38 +4,31 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
     public class ApplicationDbContextSeeder : ISeeder
     {
-        private readonly IConfiguration configuration;
-
-        public ApplicationDbContextSeeder(IConfiguration configuration)
+        public ApplicationDbContextSeeder()
         {
-            this.configuration = configuration;
         }
 
-        public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
+        public async Task SeedAsync(
+            ApplicationDbContext dbContext,
+            IServiceProvider serviceProvider)
         {
-            if (dbContext == null)
-            {
-                throw new ArgumentNullException(nameof(dbContext));
-            }
+            ArgumentNullException.ThrowIfNull(dbContext);
+            ArgumentNullException.ThrowIfNull(serviceProvider);
 
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-
-            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
+            var logger = serviceProvider
+                .GetService<ILoggerFactory>()
+                .CreateLogger(typeof(ApplicationDbContextSeeder));
 
             var seeders = new List<ISeeder>
                           {
                               new RolesSeeder(),
                               new SettingsSeeder(),
-                              new CategoriesSeeder(this.configuration),
+                              new CategoriesSeeder(),
                               new LanguagesSeeder(),
                           };
 

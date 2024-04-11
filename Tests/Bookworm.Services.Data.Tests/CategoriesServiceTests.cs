@@ -10,7 +10,6 @@
     using Bookworm.Services.Data.Models;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Categories;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Moq;
     using Xunit;
 
@@ -22,27 +21,27 @@
         public CategoriesServiceTests()
         {
             this.RegisterMappings();
-            this.categoriesList = new List<Category>()
-            {
-                 new Category() { Id = 1, Name = "Arts & Music", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 2, Name = "Biographies & Autobiographies", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 3, Name = "Business & Economics", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 4, Name = "Comics & Graphic Novels", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 5, Name = "Cooking", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 6, Name = "Thrillers & Crimes & Mysteries", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 7, Name = "Health & Fitness", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 8, Name = "History", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 9, Name = "Hobbies & Crafts", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 10, Name = "Horror", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 11, Name = "Kid's Book's", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 12, Name = "Religion", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 13, Name = "Romance", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 14, Name = "Sci-Fi & Fantasy", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 15, Name = "Science & Technology", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 16, Name = "Self-help", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 17, Name = "Sports", ImageUrl = "https://www.example.com/#arithmetic" },
-                 new Category() { Id = 18, Name = "Travel", ImageUrl = "https://www.example.com/#arithmetic" },
-            };
+            this.categoriesList =
+            [
+                 new () { Id = 1, Name = "Arts & Music" },
+                 new () { Id = 2, Name = "Biographies & Autobiographies" },
+                 new () { Id = 3, Name = "Business & Economics" },
+                 new () { Id = 4, Name = "Comics & Graphic Novels" },
+                 new () { Id = 5, Name = "Cooking" },
+                 new () { Id = 6, Name = "Thrillers & Crimes & Mysteries" },
+                 new () { Id = 7, Name = "Health & Fitness" },
+                 new () { Id = 8, Name = "History" },
+                 new () { Id = 9, Name = "Hobbies & Crafts" },
+                 new () { Id = 10, Name = "Horror" },
+                 new () { Id = 11, Name = "Kid's Book's" },
+                 new () { Id = 12, Name = "Religion" },
+                 new () { Id = 13, Name = "Romance" },
+                 new () { Id = 14, Name = "Sci-Fi & Fantasy" },
+                 new () { Id = 15, Name = "Science & Technology" },
+                 new () { Id = 16, Name = "Self-help" },
+                 new () { Id = 17, Name = "Sports" },
+                 new () { Id = 18, Name = "Travel" },
+            ];
 
             Mock<IRepository<Category>> mockCategoriesRepo = new Mock<IRepository<Category>>();
             mockCategoriesRepo.Setup(x => x.AllAsNoTracking()).Returns(this.categoriesList.AsQueryable());
