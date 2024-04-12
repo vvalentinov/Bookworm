@@ -17,7 +17,7 @@ body {
     font-family: 'Diphylleia', serif;
     display: flex;
     flex-direction: column;
-    padding-top: 5rem;
+    padding-top: 91.6px;
 }
 
 .quotesContainer {
@@ -173,19 +173,7 @@ body {
     cursor: pointer;
 }
 
-.homeBtnsSection {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-}
 
-    .homeBtnsSection div {
-        flex-basis: 50%;
-    }
-
-        .homeBtnsSection div a {
-            width: 100%;
-        }
 
 /*Toast*/
 .toast-header-success {
@@ -439,6 +427,8 @@ a[class="privacy-link"] {
 .title-card {
     background-color: var(--clr-primary);
     color: var(--clr-white);
+    border: solid 3px var(--clr-secondary);
+    text-align: center;
 }
 
     .title-card .blockquote .blockquote-footer {
@@ -610,11 +600,4 @@ input[type="radio"] {
     }
 }
 
-@media only screen and (max-width: 370px) {
-    .homeBtnsSection {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-    }
-}
+

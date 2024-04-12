@@ -8,18 +8,20 @@
 
     public interface IUsersService
     {
+        Task<bool> IsUserAdminAsync(string userId);
+
         IEnumerable<UsersListViewModel> GetUsers();
 
-        Task<UserViewModel> GetUserModelWithId(string id);
+        Task<UserViewModel> GetUserModelWithId(string userId);
 
-        ApplicationUser GetUserWithId(string id);
+        Task<ApplicationUser> GetUserWithIdAsync(string userId);
 
         Task EditUser(string userId, string username);
 
         IEnumerable<UserStatisticsViewModel> GetUsersStatistics();
 
-        Task ReduceUserPointsAsync(ApplicationUser user, byte points);
+        Task ReduceUserPointsAsync(string userId, byte points);
 
-        Task IncreaseUserPointsAsync(ApplicationUser user, byte points);
+        Task IncreaseUserPointsAsync(string userId, byte points);
     }
 }

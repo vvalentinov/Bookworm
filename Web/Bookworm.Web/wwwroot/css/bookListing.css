@@ -1,5 +1,5 @@
 ﻿.booksSection {
-    border: solid 4px black;
+    border: solid 3px var(--clr-secondary);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -28,3 +28,13 @@
     .imageZoom:hover {
         transform: scale(1.1);
     }
+
+@media only screen and (max-width: 900px) {
+    .booksSection {
+        flex-direction: column;
+    }
+
+        .booksSection div {
+            width: 100%;
+        }
+}

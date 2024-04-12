@@ -260,5 +260,29 @@
                         Title = book.Title,
                         UserId = book.UserId,
                     }).ToListAsync();
+
+        public async Task<Book> GetBookWithIdAsync(
+            int bookId,
+            bool withTracking = false)
+        {
+            var bookQuery = withTracking ?
+                this.bookRepository.All() :
+                this.bookRepository.AllAsNoTracking();
+
+            return await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
+                throw new InvalidOperationException(BookWrongIdError);
+        }
+
+        public async Task<Book> GetDeletedBookWithIdAsync(
+            int bookId,
+            bool withTracking = false)
+        {
+            var bookQuery = withTracking ?
+                this.bookRepository.AllWithDeleted() :
+                this.bookRepository.AllAsNoTrackingWithDeleted();
+
+            return await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
+                throw new InvalidOperationException(BookWrongIdError);
+        }
     }
 }

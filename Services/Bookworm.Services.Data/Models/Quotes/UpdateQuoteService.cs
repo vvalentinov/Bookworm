@@ -50,8 +50,7 @@
             this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();
 
-            var quoteCreator = await this.userManager.FindByIdAsync(quote.UserId);
-            await this.usersService.IncreaseUserPointsAsync(quoteCreator, QuotePoints);
+            await this.usersService.IncreaseUserPointsAsync(quote.UserId, QuotePoints);
         }
 
         public async Task DeleteQuoteAsync(int quoteId, string userId)
@@ -62,16 +61,16 @@
             var currentUser = await this.userManager.FindByIdAsync(userId)
                 ?? throw new InvalidOperationException("No user with given id found!");
 
-            var isCurrUserAdmin = await this.userManager.IsInRoleAsync(currentUser, AdministratorRoleName);
+            var isCurrUserAdmin = await this.usersService.IsUserAdminAsync(userId);
 
-            if (quote.UserId != userId && isCurrUserAdmin == false)
+            if (quote.UserId != userId && !isCurrUserAdmin)
             {
                 throw new InvalidOperationException(QuoteDeleteError);
             }
 
             if (quote.IsApproved)
             {
-                await this.usersService.ReduceUserPointsAsync(currentUser, QuotePoints);
+                await this.usersService.ReduceUserPointsAsync(userId, QuotePoints);
             }
 
             this.quoteRepository.Delete(quote);
@@ -96,8 +95,7 @@
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
 
-            var quoteCreator = await this.userManager.FindByIdAsync(quote.UserId);
-            await this.usersService.ReduceUserPointsAsync(quoteCreator, QuotePoints);
+            await this.usersService.ReduceUserPointsAsync(quote.UserId, QuotePoints);
         }
 
         public async Task EditQuoteAsync(QuoteDto quoteDto, string userId)
@@ -133,8 +131,7 @@
 
             if (quote.IsApproved)
             {
-                var currUser = await this.userManager.FindByIdAsync(userId);
-                await this.usersService.ReduceUserPointsAsync(currUser, QuotePoints);
+                await this.usersService.ReduceUserPointsAsync(userId, QuotePoints);
                 quote.IsApproved = false;
             }
 

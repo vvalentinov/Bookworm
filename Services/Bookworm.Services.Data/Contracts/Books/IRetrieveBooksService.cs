@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Books;
 
     public interface IRetrieveBooksService
@@ -28,5 +29,9 @@
         Task<List<BookDetailsViewModel>> GetDeletedBooksAsync();
 
         Task<int> GetUnapprovedBooksCountAsync();
+
+        Task<Book> GetBookWithIdAsync(int bookId, bool withTracking = false);
+
+        Task<Book> GetDeletedBookWithIdAsync(int bookId, bool withTracking = false);
     }
 }

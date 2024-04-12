@@ -10,13 +10,11 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.DTOs;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.Books.BooksDataConstants;
     using static Bookworm.Common.Books.BooksErrorMessagesConstants;
-    using static Bookworm.Common.GlobalConstants;
     using static Bookworm.Common.PointsDataConstants;
 
     public class UpdateBookService : IUpdateBookService
@@ -26,10 +24,10 @@
         private readonly IRepository<Author> authorsRepository;
         private readonly IBlobService blobService;
         private readonly IValidateUploadedBookService validateUploadedBookService;
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly IUsersService usersService;
         private readonly IEmailSender emailSender;
         private readonly IConfiguration configuration;
+        private readonly IRetrieveBooksService retrieveBooksService;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
@@ -37,37 +35,33 @@
             IRepository<Author> authorsRepository,
             IBlobService blobService,
             IValidateUploadedBookService validateUploadedBookService,
-            UserManager<ApplicationUser> userManager,
             IUsersService usersService,
             IEmailSender emailSender,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IRetrieveBooksService retrieveBooksService)
         {
             this.bookRepository = bookRepository;
             this.publishersRepository = publishersRepository;
             this.authorsRepository = authorsRepository;
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
-            this.userManager = userManager;
             this.usersService = usersService;
             this.emailSender = emailSender;
             this.configuration = configuration;
+            this.retrieveBooksService = retrieveBooksService;
         }
 
         public async Task ApproveBookAsync(int bookId)
         {
-            var book = await this.bookRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, true);
 
             book.IsApproved = true;
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            var bookCreator = await this.userManager.FindByIdAsync(book.UserId);
-            await this.usersService.IncreaseUserPointsAsync(bookCreator, BookPoints);
+            var bookCreator = await this.usersService.GetUserWithIdAsync(book.UserId);
+            await this.usersService.IncreaseUserPointsAsync(book.UserId, BookPoints);
 
-            // Send email to user
             var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
             var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
             await this.emailSender.SendEmailAsync(
@@ -82,54 +76,35 @@
 
         public async Task UnapproveBookAsync(int bookId)
         {
-            var book = await this.bookRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
-
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, true);
             book.IsApproved = false;
-
             await this.bookRepository.SaveChangesAsync();
 
-            var user = await this.userManager.FindByIdAsync(book.UserId);
-
-            await this.usersService.ReduceUserPointsAsync(user, BookPoints);
+            await this.usersService.ReduceUserPointsAsync(book.UserId, BookPoints);
         }
 
         public async Task DeleteBookAsync(int bookId, string userId)
         {
-            var book = await this.bookRepository
-                .All()
-                .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, true);
 
-            var user = await this.userManager.FindByIdAsync(userId) ??
-                throw new InvalidOperationException("No user with given id found!");
+            bool isUserAdmin = await this.usersService.IsUserAdminAsync(userId);
 
-            bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
-            if (book.UserId != user.Id && !isAdmin)
+            if (book.UserId != userId && !isUserAdmin)
             {
                 throw new InvalidOperationException(BookDeleteError);
             }
 
-            await this.usersService.ReduceUserPointsAsync(user, BookPoints);
-
             book.IsApproved = false;
-
             this.bookRepository.Delete(book);
-
             await this.bookRepository.SaveChangesAsync();
+
+            await this.usersService.ReduceUserPointsAsync(book.UserId, BookPoints);
         }
 
         public async Task UndeleteBookAsync(int bookId)
         {
-            var book = await this.bookRepository
-                .AllWithDeleted()
-                .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
-
+            var book = await this.retrieveBooksService.GetDeletedBookWithIdAsync(bookId, true);
             this.bookRepository.Undelete(book);
-
             await this.bookRepository.SaveChangesAsync();
         }
 
@@ -141,9 +116,6 @@
                 .Include(b => b.AuthorsBooks)
                 .FirstOrDefaultAsync(x => x.Id == editBookDto.Id) ??
                 throw new InvalidOperationException(BookWrongIdError);
-
-            var user = await this.userManager.FindByIdAsync(userId) ??
-                throw new InvalidOperationException("No user with given id found!");
 
             if (book.UserId != userId)
             {
@@ -207,18 +179,26 @@
 
                 if (author == null)
                 {
-                    book.AuthorsBooks.Add(new AuthorBook { Author = new Author { Name = name }, Book = book });
+                    book.AuthorsBooks.Add(new AuthorBook
+                    {
+                        Author = new Author { Name = name },
+                        Book = book,
+                    });
                 }
                 else
                 {
-                    book.AuthorsBooks.Add(new AuthorBook { Author = author, Book = book });
+                    book.AuthorsBooks.Add(new AuthorBook
+                    {
+                        Author = author,
+                        Book = book,
+                    });
                 }
             }
 
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(user, BookPoints);
+            await this.usersService.ReduceUserPointsAsync(userId, BookPoints);
         }
     }
 }

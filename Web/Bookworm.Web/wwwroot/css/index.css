@@ -1,0 +1,77 @@
+﻿@import url(bookListing.css);
+
+.welcomeSection {
+    margin-top: 1rem;
+    border: solid 3px var(--clr-secondary);
+    background-color: var(--clr-primary);
+    padding: 2rem;
+    border-radius: 15px;
+}
+
+    .welcomeSection h1 {
+        text-align: center;
+        color: white;
+    }
+
+    .welcomeSection p:nth-child(2) {
+        color: white;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    .welcomeSection .cardContainer {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+        .welcomeSection .cardContainer .card {
+            width: 50%;
+            border: solid 3px var(--clr-secondary);
+        }
+
+            .welcomeSection .cardContainer .card .card-header {
+                border-bottom: solid 3px var(--clr-secondary);
+                font-size: 1.3rem;
+            }
+
+.homeBtnsSection {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+    .homeBtnsSection div {
+        flex-basis: 50%;
+        background-color: var(--clr-secondary);
+        border-radius: 15px;
+    }
+
+        .homeBtnsSection div:hover {
+            color: white;
+        }
+
+        .homeBtnsSection div a {
+            width: 100%;
+            font-size: 2rem;
+        }
+
+@media only screen and (max-width: 770px) {
+    .homeBtnsSection {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .homeBtnsSection div {
+            width: 100%;
+        }
+}
+
+@media only screen and (max-width: 1000px) {
+    .welcomeSection .cardContainer .card {
+        width: 100%;
+    }
+}

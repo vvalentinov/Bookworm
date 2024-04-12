@@ -19,9 +19,14 @@
             string appPassword = null,
             IEnumerable<EmailAttachment> attachments = null)
         {
+            if (string.IsNullOrWhiteSpace(subject) && string.IsNullOrWhiteSpace(htmlContent))
+            {
+                throw new ArgumentException("Subject and message should be provided.");
+            }
+
             if (string.IsNullOrWhiteSpace(appPassword))
             {
-                throw new InvalidOperationException();
+                throw new ArgumentException("Application Password should be provided!");
             }
 
             var mailMessage = new MimeMessage();

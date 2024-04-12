@@ -39,7 +39,7 @@
 
         public async Task<IActionResult> Roles(string userId)
         {
-            ApplicationUser user = this.usersService.GetUserWithId(userId);
+            ApplicationUser user = await this.usersService.GetUserWithIdAsync(userId);
             IList<string> userRoles = await this.userManager.GetRolesAsync(user);
 
             IEnumerable<SelectListItem> roles = this.roleManager
@@ -74,7 +74,7 @@
         [HttpPost]
         public async Task<IActionResult> Roles(UserRolesViewModel model)
         {
-            ApplicationUser user = this.usersService.GetUserWithId(model.UserId);
+            ApplicationUser user = await this.usersService.GetUserWithIdAsync(model.UserId);
             IList<string> userRoles = await this.userManager.GetRolesAsync(user);
             await this.userManager.RemoveFromRolesAsync(user, userRoles);
 

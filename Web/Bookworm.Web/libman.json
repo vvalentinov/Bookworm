@@ -109,15 +109,6 @@
         "css/select2.min.css",
         "js/select2.full.min.js"
       ]
-    },
-    {
-      "provider": "jsdelivr",
-      "library": "@microsoft/signalr@8.0.0",
-      "destination": "wwwroot/lib/microsoft/signalr/",
-      "files": [
-        "dist/browser/signalr.js",
-        "dist/browser/signalr.min.js"
-      ]
     }
   ]
 }

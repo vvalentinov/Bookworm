@@ -1,12 +1,7 @@
-﻿@* @{
-    var title = ViewData["Title"];
-    var iconClass = ViewData["Icon-Class"];
-    var count = ViewData["Count"];
-} *@
-@model TitleCardPartialViewModel
+﻿@model TitleCardPartialViewModel
 
 <div class="d-flex justify-content-center mt-5">
-    <div class="card text-center title-card border-3 border-dark">
+    <div class="card title-card">
         <div class="card-body">
             @if (Model.Count != null)
             {

@@ -4,9 +4,9 @@
     {
         public string Id { get; set; }
 
-        public string UserName { get; set; }
-
         public int Points { get; set; }
+
+        public string UserName { get; set; }
 
         public int UploadedBooks { get; set; }
 
