@@ -3,8 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
@@ -14,7 +13,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.GlobalConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
 
     [Authorize(Roles = AdministratorRoleName)]
     public class BookController : BaseController
@@ -49,11 +48,11 @@
             {
                 ApplicationUser user = await this.userManager.GetUserAsync(this.User);
                 await this.updateBookService.DeleteBookAsync(bookId, user.Id);
-                this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted book!";
+                this.TempData[TempDataMessageConstant.SuccessMessage] = "Successfully deleted book!";
             }
             catch (Exception)
             {
-                this.TempData[MessageConstant.ErrorMessage] = "Something went wrong!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = "Something went wrong!";
             }
 
             return this.RedirectToAction("Index", "Home", new { area = " " });
@@ -90,7 +89,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
             }
         }

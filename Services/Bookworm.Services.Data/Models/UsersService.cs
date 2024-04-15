@@ -11,7 +11,7 @@
     using Bookworm.Web.ViewModels.Users;
     using Microsoft.AspNetCore.Identity;
 
-    using static Bookworm.Common.GlobalConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
 
     public class UsersService : IUsersService
     {

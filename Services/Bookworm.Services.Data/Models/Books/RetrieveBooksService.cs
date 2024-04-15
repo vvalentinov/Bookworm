@@ -15,9 +15,9 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
-    using static Bookworm.Common.GlobalConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
 
     public class RetrieveBooksService : IRetrieveBooksService
     {
@@ -155,7 +155,7 @@
                 {
                     Id = b.Id,
                     Title = b.Title,
-                    PublishedYear = b.Year,
+                    Year = b.Year,
                     CategoryId = b.CategoryId,
                     LanguageId = b.LanguageId,
                     PagesCount = b.PagesCount,

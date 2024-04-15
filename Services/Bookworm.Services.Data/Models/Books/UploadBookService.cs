@@ -9,8 +9,8 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.DTOs;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
 
     public class UploadBookService : IUploadBookService
     {
@@ -67,7 +67,7 @@
                 Title = uploadBookDto.Title.Trim(),
                 FileUrl = bookBlobUrl,
                 ImageUrl = imageBlobUrl,
-                Year = uploadBookDto.PublishedYear,
+                Year = uploadBookDto.Year,
                 UserId = uploadBookDto.BookCreatorId,
                 PagesCount = uploadBookDto.PagesCount,
                 LanguageId = uploadBookDto.LanguageId,

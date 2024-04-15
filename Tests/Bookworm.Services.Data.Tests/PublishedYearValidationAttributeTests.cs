@@ -10,7 +10,7 @@
         [Fact]
         public void IsValidReturnsFalseForYearsAfterCurrentYear()
         {
-            PublishedYearValidationAttribute attribute = new PublishedYearValidationAttribute(2000);
+            BookYearValidationAttribute attribute = new BookYearValidationAttribute(2000);
 
             int year = DateTime.UtcNow.Year + 1;
 
@@ -22,7 +22,7 @@
         [Fact]
         public void IsValidShouldReturnTrueForYearEqualToCurrentYear()
         {
-            PublishedYearValidationAttribute attribute = new PublishedYearValidationAttribute(2000);
+            BookYearValidationAttribute attribute = new BookYearValidationAttribute(2000);
 
             int year = DateTime.UtcNow.Year;
 
@@ -34,7 +34,7 @@
         [Fact]
         public void IsValidShouldReturnTrueForYearBetweenMinYearAndCurrentYear()
         {
-            PublishedYearValidationAttribute attribute = new PublishedYearValidationAttribute(2000);
+            BookYearValidationAttribute attribute = new BookYearValidationAttribute(2000);
 
             int year = DateTime.UtcNow.Year - 10;
 

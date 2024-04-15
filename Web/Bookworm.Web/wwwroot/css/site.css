@@ -17,7 +17,7 @@ body {
     font-family: 'Diphylleia', serif;
     display: flex;
     flex-direction: column;
-    padding-top: 91.6px;
+    padding-top: 100px;
 }
 
 .quotesContainer {
@@ -101,6 +101,7 @@ body {
 /*Navbar*/
 .navbar {
     background-color: var(--clr-primary);
+    min-height: 100px;
 }
 
     .navbar .nav-item .nav-link {
@@ -296,6 +297,7 @@ body {
     color: var(--clr-white);
     padding: 2rem 0;
     font-size: 1.5rem;
+    min-height: 100px;
 }
 
 .category-link {
@@ -424,6 +426,12 @@ a[class="privacy-link"] {
     box-shadow: 0 0 0 0.2rem var(--clr-secondary);
 }
 
+.title-card-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
 .title-card {
     background-color: var(--clr-primary);
     color: var(--clr-white);
@@ -475,55 +483,6 @@ input[type="radio"] {
 
     input[type="radio"]:focus {
         outline: 0;
-    }
-
-/*Upload Quote*/
-.uploadQuoteBtnsContainer {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    padding: 8rem 1rem;
-}
-
-    .uploadQuoteBtnsContainer button,
-    .uploadQuoteBtnsContainer button:hover {
-        flex-basis: 33.3%;
-        border: solid 3px var(--clr-secondary);
-        font-size: 1.4rem;
-        padding: 1.5rem 0;
-        text-transform: uppercase;
-    }
-
-.uploadQuoteModalContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-}
-
-    .uploadQuoteModalContainer img {
-        flex-basis: 20%;
-        height: 30rem;
-        width: 20rem;
-        border: solid 2px var(--clr-secondary);
-    }
-
-    .uploadQuoteModalContainer form {
-        flex-basis: 80%;
-    }
-
-        .uploadQuoteModalContainer form input,
-        .uploadQuoteModalContainer form textarea {
-            border: solid 2px black !important;
-        }
-
-    .uploadQuoteModalContainer button,
-    .uploadQuoteModalContainer button:hover {
-        border: solid 2px black;
-        padding: 0.7rem 4rem;
-        text-align: center;
-        font-size: 1.4rem;
-        text-transform: uppercase;
     }
 
 /*Edit Quote*/

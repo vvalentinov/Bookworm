@@ -3,13 +3,13 @@
     using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
+    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
 
     public class QuoteController : BaseController
     {
@@ -62,12 +62,12 @@
 
                 await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId);
 
-                this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = DeleteSuccess;
                 return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
             }
         }

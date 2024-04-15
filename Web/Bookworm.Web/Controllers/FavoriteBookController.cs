@@ -2,8 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
-
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.AspNetCore.Identity;
@@ -51,7 +50,7 @@
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             await this.favoriteBooksService.DeleteFromFavoritesAsync(bookId, user.Id);
-            this.TempData[MessageConstant.SuccessMessage] = "Successfully removed book!";
+            this.TempData[TempDataMessageConstant.SuccessMessage] = "Successfully removed book!";
             return this.RedirectToAction("Favorites");
         }
     }

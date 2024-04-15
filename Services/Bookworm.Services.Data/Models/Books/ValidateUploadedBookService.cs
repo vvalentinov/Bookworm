@@ -10,9 +10,9 @@
     using Bookworm.Web.ViewModels.Authors;
     using Microsoft.AspNetCore.Http;
 
-    using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
-    using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.AuthorErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
 
     public class ValidateUploadedBookService : IValidateUploadedBookService
     {

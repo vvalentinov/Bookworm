@@ -10,63 +10,57 @@
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Http;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
-    using static Bookworm.Common.Publishers.PublishersDataConstants;
-    using static Bookworm.Common.Publishers.PublishersErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.DataConstants.PublisherDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class UploadBookViewModel : IMapFrom<Book>, IMapTo<BookDto>
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = BookTitleRequiredError)]
+        [Required(ErrorMessage = FieldRequiredError)]
         [StringLength(
             BookTitleMaxLength,
             MinimumLength = BookTitleMinLength,
-            ErrorMessage = BookTitleLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = BookDescriptionRequiredError)]
+        [Required(ErrorMessage = FieldRequiredError)]
         [StringLength(
             BookDescriptionMaxLength,
             MinimumLength = BookDescriptionMinLength,
-            ErrorMessage = BookDescriptionLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Description { get; set; }
 
-        [Display(Name = "Publisher(optional)")]
         [StringLength(
             PublisherNameMaxLength,
             MinimumLength = PublisherNameMinLength,
-            ErrorMessage = PublisherNameLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Publisher { get; set; }
 
-        [Display(Name = "Number of pages")]
         [Range(
             BookPagesCountMin,
             BookPagesCountMax,
-            ErrorMessage = BookPagesCountRangeError)]
+            ErrorMessage = FieldRangeError)]
         public int PagesCount { get; set; }
 
-        [Display(Name = "Year")]
-        [PublishedYearValidationAttribute(
-            BookPublishedYearMin,
-            ErrorMessage = BookPublishedYearInvalidError)]
-        public int PublishedYear { get; set; }
+        [BookYearValidationAttribute(BookPublishedYearMin)]
+        public int Year { get; set; }
 
-        [Display(Name = "Book PDF file (Max - 15 MB)")]
-        [BookFileAllowedExtensionAttribute(BookFileAllowedExtension)]
+        [Display(Name = "PDF file (Max - 15 MB)")]
+        [FileAllowedExtensionsAttribute([BookFileAllowedExtension])]
         public IFormFile BookFile { get; set; }
 
         [Display(Name = "Image File (Max - 5 MB)")]
-        [ImageFileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
+        [FileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
         public IFormFile ImageFile { get; set; }
 
-        [Display(Name = "Select Book Category")]
-        [Required(ErrorMessage = "You must select category!")]
+        [Display(Name = nameof(Category))]
+        [Required(ErrorMessage = FieldRequiredError)]
         public int CategoryId { get; set; }
 
-        [Display(Name = "Select Book Language")]
-        [Required(ErrorMessage = "You must select language!")]
+        [Display(Name = nameof(Language))]
+        [Required(ErrorMessage = FieldRequiredError)]
         public int LanguageId { get; set; }
 
         [NotEmptyCollection(nameof(Authors))]

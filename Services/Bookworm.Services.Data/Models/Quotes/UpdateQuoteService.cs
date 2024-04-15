@@ -12,9 +12,9 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.GlobalConstants;
-    using static Bookworm.Common.PointsDataConstants;
-    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
 
     public class UpdateQuoteService : IUpdateQuoteService
     {
@@ -50,7 +50,7 @@
             this.quoteRepository.Update(quote);
             await this.quoteRepository.SaveChangesAsync();
 
-            await this.usersService.IncreaseUserPointsAsync(quote.UserId, QuotePoints);
+            await this.usersService.IncreaseUserPointsAsync(quote.UserId, QuoteUploadPoints);
         }
 
         public async Task DeleteQuoteAsync(int quoteId, string userId)
@@ -70,7 +70,7 @@
 
             if (quote.IsApproved)
             {
-                await this.usersService.ReduceUserPointsAsync(userId, QuotePoints);
+                await this.usersService.ReduceUserPointsAsync(userId, QuoteUploadPoints);
             }
 
             this.quoteRepository.Delete(quote);
@@ -95,7 +95,7 @@
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(quote.UserId, QuotePoints);
+            await this.usersService.ReduceUserPointsAsync(quote.UserId, QuoteUploadPoints);
         }
 
         public async Task EditQuoteAsync(QuoteDto quoteDto, string userId)
@@ -131,7 +131,7 @@
 
             if (quote.IsApproved)
             {
-                await this.usersService.ReduceUserPointsAsync(userId, QuotePoints);
+                await this.usersService.ReduceUserPointsAsync(userId, QuoteUploadPoints);
                 quote.IsApproved = false;
             }
 

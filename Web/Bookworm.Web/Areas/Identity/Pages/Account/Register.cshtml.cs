@@ -6,8 +6,7 @@
     using System.Text;
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
-
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;

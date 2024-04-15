@@ -14,7 +14,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.GlobalConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
 
     public class CommentsService : ICommentsService
     {

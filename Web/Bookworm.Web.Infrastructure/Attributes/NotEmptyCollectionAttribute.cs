@@ -3,7 +3,8 @@
     using System.Collections;
     using System.ComponentModel.DataAnnotations;
 
-    public class NotEmptyCollectionAttribute : ValidationAttribute
+    public class NotEmptyCollectionAttribute
+        : ValidationAttribute
     {
         private readonly string collectionName;
 
@@ -12,7 +13,9 @@
             this.collectionName = collectionName;
         }
 
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(
+            object value,
+            ValidationContext validationContext)
         {
             if (value is ICollection collection && collection.Count > 0)
             {

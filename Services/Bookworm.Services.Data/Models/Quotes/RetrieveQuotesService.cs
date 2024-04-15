@@ -14,8 +14,8 @@
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Quotes.QuotesDataConstants;
-    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
 
     public class RetrieveQuotesService : IRetrieveQuotesService
     {

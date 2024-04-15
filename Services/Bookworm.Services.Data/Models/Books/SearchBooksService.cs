@@ -9,7 +9,7 @@
     using Bookworm.Web.ViewModels.Books;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
 
     public class SearchBooksService : ISearchBooksService
     {

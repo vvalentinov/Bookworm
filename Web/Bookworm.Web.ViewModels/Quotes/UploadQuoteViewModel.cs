@@ -8,19 +8,22 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.DTOs;
 
-    using static Bookworm.Common.Quotes.QuotesDataConstants;
-    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
 
-    public class UploadQuoteViewModel
-        : IValidatableObject, IMapTo<QuoteDto>, IMapFrom<Quote>
+    public class UploadQuoteViewModel :
+        IValidatableObject,
+        IMapTo<QuoteDto>,
+        IMapFrom<Quote>
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = QuoteContentRequiredError)]
+        [Required(ErrorMessage = FieldRequiredError)]
         [StringLength(
             QuoteContentMaxLength,
             MinimumLength = QuoteContentMinLength,
-            ErrorMessage = QuoteContentLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Content { get; set; }
 
         public string AuthorName { get; set; }
@@ -37,46 +40,66 @@
             {
                 if (string.IsNullOrWhiteSpace(this.AuthorName))
                 {
-                    yield return new ValidationResult(QuoteAuthorNameRequiredError);
+                    yield return new ValidationResult(string.Format(FieldRequiredError, "Author"));
                 }
 
                 if (string.IsNullOrWhiteSpace(this.BookTitle))
                 {
-                    yield return new ValidationResult(QuoteBookTitleRequiredError);
+                    yield return new ValidationResult(string.Format(FieldRequiredError, "Book Title"));
                 }
 
-                if (this.AuthorName?.Length < QuoteAuthorNameMinLength || this.AuthorName?.Length > QuoteAuthorNameMaxLength)
+                if (this.AuthorName?.Length < QuoteAuthorNameMinLength ||
+                    this.AuthorName?.Length > QuoteAuthorNameMaxLength)
                 {
-                    yield return new ValidationResult(QuoteAuthorNameLengthError);
+                    yield return new ValidationResult(string.Format(
+                        FieldStringLengthError,
+                        "Author",
+                        QuoteAuthorNameMaxLength,
+                        QuoteAuthorNameMinLength));
                 }
 
-                if (this.BookTitle?.Length < QuoteBookTitleMinLength || this.BookTitle?.Length > QuoteBookTitleMaxLength)
+                if (this.BookTitle?.Length < QuoteBookTitleMinLength ||
+                    this.BookTitle?.Length > QuoteBookTitleMaxLength)
                 {
-                    yield return new ValidationResult(QuoteBookTitleLengthError);
+                    yield return new ValidationResult(string.Format(
+                        FieldStringLengthError,
+                        "Book Title",
+                        QuoteBookTitleMaxLength,
+                        QuoteBookTitleMinLength));
                 }
             }
             else if (this.Type == QuoteType.MovieQuote)
             {
                 if (string.IsNullOrWhiteSpace(this.MovieTitle))
                 {
-                    yield return new ValidationResult(QuoteMovieTitleRequiredError);
+                    yield return new ValidationResult(string.Format(FieldRequiredError, "Movie Title"));
                 }
 
-                if (this.MovieTitle?.Length < QuoteMovieTitleMinLength || this.MovieTitle?.Length > QuoteMovieTitleMaxLength)
+                if (this.MovieTitle?.Length < QuoteMovieTitleMinLength ||
+                    this.MovieTitle?.Length > QuoteMovieTitleMaxLength)
                 {
-                    yield return new ValidationResult(QuoteMovieTitleLengthError);
+                    yield return new ValidationResult(string.Format(
+                        FieldStringLengthError,
+                        "Movie Title",
+                        QuoteMovieTitleMaxLength,
+                        QuoteMovieTitleMinLength));
                 }
             }
             else if (this.Type == QuoteType.GeneralQuote)
             {
                 if (string.IsNullOrWhiteSpace(this.AuthorName))
                 {
-                    yield return new ValidationResult(QuoteAuthorNameRequiredError);
+                    yield return new ValidationResult(string.Format(FieldRequiredError, "Author"));
                 }
 
-                if (this.AuthorName?.Length < QuoteAuthorNameMinLength || this.AuthorName?.Length > QuoteAuthorNameMaxLength)
+                if (this.AuthorName?.Length < QuoteAuthorNameMinLength ||
+                    this.AuthorName?.Length > QuoteAuthorNameMaxLength)
                 {
-                    yield return new ValidationResult(QuoteAuthorNameLengthError);
+                    yield return new ValidationResult(string.Format(
+                        FieldStringLengthError,
+                        "Author",
+                        QuoteAuthorNameMaxLength,
+                        QuoteAuthorNameMinLength));
                 }
             }
             else

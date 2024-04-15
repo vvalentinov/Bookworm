@@ -4,7 +4,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
@@ -14,7 +14,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Books.BooksSuccessMessagesConstants;
+    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class BookController : BaseController
@@ -78,13 +78,12 @@
             try
             {
                 await this.uploadBookService.UploadBookAsync(uploadBookDto);
-
-                this.TempData[MessageConstant.SuccessMessage] = BookUploadSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = UploadSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.View(model);
             }
         }
@@ -102,7 +101,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction("Index", "Home");
             }
         }
@@ -125,13 +124,12 @@
             try
             {
                 await this.updateBookService.EditBookAsync(editBookDto, userId);
-
-                this.TempData[MessageConstant.SuccessMessage] = BookEditSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = EditSuccess;
                 return this.RedirectToAction(nameof(this.UserBooks), "Book");
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.View(nameof(this.Upload), model);
             }
         }
@@ -144,13 +142,12 @@
             try
             {
                 await this.updateBookService.DeleteBookAsync(bookId, userId);
-
-                this.TempData[MessageConstant.SuccessMessage] = BookDeleteSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = DeleteSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Details), "Book", new { id = bookId });
             }
         }
@@ -178,47 +175,47 @@
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Random));
             }
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> All(string category, int id = 1)
+        public async Task<IActionResult> All(string category, int page = 1)
         {
-            if (id < 1)
+            if (page < 1)
             {
-                this.TempData[MessageConstant.ErrorMessage] = "Invalid page number!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = "Invalid page number!";
                 return this.RedirectToAction(nameof(this.All), new { category, id = 1 });
             }
 
             try
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, id);
+                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, page);
 
                 this.ViewData["Title"] = category;
                 return this.View(model);
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.All), "Category");
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserBooks(int id = 1)
+        public async Task<IActionResult> UserBooks(int page = 1)
         {
-            if (id < 1)
+            if (page < 1)
             {
-                this.TempData[MessageConstant.ErrorMessage] = "Invalid page number!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = "Invalid page number!";
                 return this.RedirectToAction(nameof(this.UserBooks), new { id = 1 });
             }
 
             var userId = this.userManager.GetUserId(this.User);
-            var books = await this.retrieveBooksService.GetUserBooksAsync(userId, id);
+            var books = await this.retrieveBooksService.GetUserBooksAsync(userId, page);
 
             return this.View(books);
         }
@@ -235,7 +232,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction("Index", "Home");
             }
         }
@@ -253,7 +250,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Details), new { id });
             }
         }

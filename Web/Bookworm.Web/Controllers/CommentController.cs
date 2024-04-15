@@ -2,8 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
-
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Comments;
@@ -34,7 +33,7 @@
             }
             catch (InvalidOperationException exception)
             {
-                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = exception.Message;
                 return this.RedirectToAction("Details", "Book", new { id = model.BookId });
             }
         }
@@ -46,12 +45,12 @@
             {
                 string userId = this.userManager.GetUserId(this.User);
                 await this.commentsService.DeleteAsync(deleteCommentId, userId);
-                this.TempData[MessageConstant.SuccessMessage] = "Successfully deleted comment!";
+                this.TempData[TempDataMessageConstant.SuccessMessage] = "Successfully deleted comment!";
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
             catch (InvalidOperationException exception)
             {
-                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = exception.Message;
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
         }
@@ -67,7 +66,7 @@
             }
             catch (InvalidOperationException exception)
             {
-                this.TempData[MessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = exception.Message;
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
         }

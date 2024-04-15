@@ -1,0 +1,78 @@
+﻿.title-card-container {
+    margin-top: 0rem !important;
+}
+
+.uploadQuoteSection {
+    min-height: calc(100vh - 200px);
+    padding-top: 2rem;
+}
+
+
+.uploadQuoteBtnsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 5rem;
+}
+
+    .uploadQuoteBtnsContainer button,
+    .uploadQuoteBtnsContainer button:hover {
+        flex-basis: 33.3%;
+        border: solid 3px var(--clr-secondary);
+        font-size: 1.4rem;
+        padding: 1.5rem 0;
+        text-transform: uppercase;
+    }
+
+.uploadQuoteModalContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+    .uploadQuoteModalContainer img {
+        flex-basis: 20%;
+        height: 30rem;
+        width: 20rem;
+        border: solid 2px var(--clr-secondary);
+    }
+
+    .uploadQuoteModalContainer form {
+        flex-basis: 80%;
+    }
+
+        .uploadQuoteModalContainer form input,
+        .uploadQuoteModalContainer form textarea {
+            border: solid 2px var(--clr-secondary);
+            font-size: 1.5rem;
+        }
+
+    .uploadQuoteModalContainer button,
+    .uploadQuoteModalContainer button:hover {
+        border: solid 2px black;
+        padding: 0.7rem 4rem;
+        text-align: center;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+    }
+
+@media only screen and (max-width: 1000px) {
+    .uploadQuoteBtnsContainer {
+        flex-direction: column;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .uploadQuoteModalContainer {
+        padding: 0;
+    }
+
+        .uploadQuoteModalContainer img {
+            display: none;
+        }
+
+        .uploadQuoteModalContainer form {
+            width: 100%;
+        }
+}

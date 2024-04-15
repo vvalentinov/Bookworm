@@ -10,7 +10,7 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
 
     public class DownloadBookService : IDownloadBookService
     {

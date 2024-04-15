@@ -5,8 +5,8 @@
 
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.Authors.AuthorsDataConstants;
-    using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.AuthorDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class Author : BaseModel<int>
     {
@@ -19,7 +19,7 @@
         [StringLength(
             AuthorNameMaxLength,
             MinimumLength = AuthorNameMinLength,
-            ErrorMessage = AuthorNameLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Name { get; set; }
 
         public ICollection<AuthorBook> AuthorsBooks { get; set; }

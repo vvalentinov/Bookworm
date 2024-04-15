@@ -5,16 +5,16 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
 
-    using static Bookworm.Common.Authors.AuthorsDataConstants;
-    using static Bookworm.Common.Authors.AuthorsErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.AuthorDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class UploadAuthorViewModel : IMapFrom<Author>
     {
-        [Required(ErrorMessage = RequiredAuthorNameError)]
+        [Required(ErrorMessage = FieldRequiredError)]
         [StringLength(
             AuthorNameMaxLength,
             MinimumLength = AuthorNameMinLength,
-            ErrorMessage = AuthorNameLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Name { get; set; }
     }
 }

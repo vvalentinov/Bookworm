@@ -13,9 +13,8 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
-    using static Bookworm.Common.PointsDataConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
 
     public class UpdateBookService : IUpdateBookService
     {
@@ -60,7 +59,7 @@
             await this.bookRepository.SaveChangesAsync();
 
             var bookCreator = await this.usersService.GetUserWithIdAsync(book.UserId);
-            await this.usersService.IncreaseUserPointsAsync(book.UserId, BookPoints);
+            await this.usersService.IncreaseUserPointsAsync(book.UserId, BookUploadPoints);
 
             var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
             var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
@@ -80,7 +79,7 @@
             book.IsApproved = false;
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(book.UserId, BookPoints);
+            await this.usersService.ReduceUserPointsAsync(book.UserId, BookUploadPoints);
         }
 
         public async Task DeleteBookAsync(int bookId, string userId)
@@ -98,7 +97,7 @@
             this.bookRepository.Delete(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(book.UserId, BookPoints);
+            await this.usersService.ReduceUserPointsAsync(book.UserId, BookUploadPoints);
         }
 
         public async Task UndeleteBookAsync(int bookId)
@@ -164,7 +163,7 @@
             book.CategoryId = editBookDto.CategoryId;
             book.LanguageId = editBookDto.LanguageId;
             book.PagesCount = editBookDto.PagesCount;
-            book.Year = editBookDto.PublishedYear;
+            book.Year = editBookDto.Year;
             book.IsApproved = false;
 
             var authorsNames = editBookDto.Authors.Select(x => x.Name.Trim()).ToList();
@@ -198,7 +197,7 @@
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(userId, BookPoints);
+            await this.usersService.ReduceUserPointsAsync(userId, BookUploadPoints);
         }
     }
 }

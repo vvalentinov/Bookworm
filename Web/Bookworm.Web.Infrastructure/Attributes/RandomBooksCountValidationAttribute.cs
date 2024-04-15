@@ -2,9 +2,12 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class RandomBooksCountValidationAttribute : ValidationAttribute
+    public class RandomBooksCountValidationAttribute
+        : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(
+            object value,
+            ValidationContext validationContext)
         {
             if (value is int input && (
                 input == 5 ||

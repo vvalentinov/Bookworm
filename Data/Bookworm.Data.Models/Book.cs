@@ -7,8 +7,8 @@
     using Bookworm.Data.Common.Models;
     using Microsoft.AspNetCore.Http;
 
-    using static Bookworm.Common.Books.BooksDataConstants;
-    using static Bookworm.Common.Books.BooksErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class Book : BaseDeletableModel<int>
     {
@@ -23,14 +23,14 @@
         [StringLength(
             BookTitleMaxLength,
             MinimumLength = BookTitleMinLength,
-            ErrorMessage = BookTitleLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Title { get; set; }
 
         [Required]
         [StringLength(
             BookDescriptionMaxLength,
             MinimumLength = BookDescriptionMinLength,
-            ErrorMessage = BookDescriptionLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Description { get; set; }
 
         [Required]

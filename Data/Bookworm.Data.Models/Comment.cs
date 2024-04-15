@@ -6,8 +6,8 @@
 
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.Comments.CommentsDataConstants;
-    using static Bookworm.Common.Comments.CommentsErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.CommentDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class Comment : BaseDeletableModel<int>
     {
@@ -20,7 +20,7 @@
         [StringLength(
             CommentContentMaxLength,
             MinimumLength = CommentContentMinLength,
-            ErrorMessage = CommentContentLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Content { get; set; }
 
         [Required]

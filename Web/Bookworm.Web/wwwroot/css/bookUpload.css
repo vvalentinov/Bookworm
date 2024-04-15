@@ -5,10 +5,12 @@
 
     .uploadBookSection form #addAuthorBtn {
         background-color: var(--clr-secondary);
+        width: 100%;
+        font-size: 1.5rem;
     }
 
         .uploadBookSection form #addAuthorBtn:hover {
-            color: black;
+            color: white;
         }
 
     .uploadBookSection form button[type="submit"] {
@@ -51,3 +53,20 @@
             .uploadBookSection form .selectContainer div {
                 width: 50%;
             }
+
+@media only screen and (max-width: 1000px){
+    .uploadBookSection form {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .uploadBookSection form .selectContainer {
+        flex-direction: column;
+        gap: normal;
+    }
+
+        .uploadBookSection form .selectContainer div {
+            width: 100%;
+        }
+}

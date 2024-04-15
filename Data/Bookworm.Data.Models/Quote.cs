@@ -6,8 +6,8 @@
     using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.Quotes.QuotesDataConstants;
-    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class Quote : BaseDeletableModel<int>
     {
@@ -15,7 +15,7 @@
         [StringLength(
             QuoteContentMaxLength,
             MinimumLength = QuoteContentMinLength,
-            ErrorMessage = QuoteContentLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Content { get; set; }
 
         [Required]

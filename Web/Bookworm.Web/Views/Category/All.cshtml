@@ -18,7 +18,10 @@
            asp-action="All"
            asp-route-category="@category.Name">
             <div class="imageContainer">
-                <img class="rounded-4" src="~/images/bookCategories/@(category.Name).jpg" alt="Book" height="300">
+                <img class="rounded-4"
+                     src="~/images/bookCategories/@(category.Name).jpg"
+                     alt=@category.Name
+                     height="300">
                 <div class="overlay">
                     <div class="text text-center">@category.Name</div>
                 </div>

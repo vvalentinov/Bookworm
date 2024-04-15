@@ -17,7 +17,7 @@
 
         public int PagesCount { get; set; }
 
-        public int PublishedYear { get; set; }
+        public int Year { get; set; }
 
         public IFormFile BookFile { get; set; }
 

@@ -5,8 +5,8 @@
 
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.Publishers.PublishersDataConstants;
-    using static Bookworm.Common.Publishers.PublishersErrorMessagesConstants;
+    using static Bookworm.Common.Constants.DataConstants.PublisherDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
     public class Publisher : BaseModel<int>
     {
@@ -19,7 +19,7 @@
         [StringLength(
             PublisherNameMaxLength,
             MinimumLength = PublisherNameMinLength,
-            ErrorMessage = PublisherNameLengthError)]
+            ErrorMessage = FieldStringLengthError)]
         public string Name { get; set; }
 
         public ICollection<Book> Books { get; set; }

@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Bookworm.Common;
+    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Services.Mapping;
@@ -14,8 +14,8 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Quotes.QuotesErrorMessagesConstants;
-    using static Bookworm.Common.Quotes.QuotesSuccessMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
 
     public class QuoteController : BaseController
     {
@@ -44,7 +44,7 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                this.TempData[MessageConstant.ErrorMessage] = this.GetModelStateErrors();
+                this.TempData[TempDataMessageConstant.ErrorMessage] = this.GetModelStateErrors();
                 return this.View(model);
             }
 
@@ -54,12 +54,12 @@
                 var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
                 await this.uploadQuoteService.UploadQuoteAsync(quoteDto, userId);
 
-                this.TempData[MessageConstant.SuccessMessage] = QuoteUploadSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = UploadSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.View(nameof(this.Upload));
             }
         }
@@ -75,7 +75,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.UserQuotes));
             }
         }
@@ -93,7 +93,7 @@
                 }
                 catch (Exception ex)
                 {
-                    this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                    this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                     return this.RedirectToAction(nameof(this.UserQuotes));
                 }
             }
@@ -103,13 +103,13 @@
                 var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
                 await this.updateQuoteService.EditQuoteAsync(quoteDto, userId);
 
-                this.TempData[MessageConstant.SuccessMessage] = QuoteEditSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = EditSuccess;
                 return this.RedirectToAction(nameof(this.UserQuotes));
             }
             catch (Exception ex)
             {
                 var exceptionMsg = ex.Message;
-                this.TempData[MessageConstant.ErrorMessage] = exceptionMsg;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = exceptionMsg;
                 if (exceptionMsg == QuoteWrongIdError)
                 {
                     return this.RedirectToAction(nameof(this.UserQuotes));
@@ -126,7 +126,7 @@
         {
             if (id <= 0)
             {
-                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
                 return this.RedirectToAction(nameof(this.UserQuotes), new { id = 1 });
             }
 
@@ -144,12 +144,12 @@
                 var userId = this.userManager.GetUserId(this.User);
                 await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId);
 
-                this.TempData[MessageConstant.SuccessMessage] = QuoteDeleteSuccess;
+                this.TempData[TempDataMessageConstant.SuccessMessage] = DeleteSuccess;
                 return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
             }
             catch (Exception ex)
             {
-                this.TempData[MessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.UserQuotes), "Quote");
             }
         }
@@ -160,7 +160,7 @@
         {
             if (id <= 0)
             {
-                this.TempData[MessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = "Page cannot be less than or equal to zero!";
                 return this.RedirectToAction(nameof(this.All), new { id = 1 });
             }
 
