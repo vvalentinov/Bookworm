@@ -44,8 +44,12 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = this.GetModelStateErrors();
-                return this.View(model);
+                this.TempData[TempDataMessageConstant.ErrorMessage] =
+                    string.Join("\n", this.ModelState
+                    .Values
+                    .SelectMany(v => v.Errors)
+                    .Select(x => x.ErrorMessage));
+                return this.View(new UploadQuoteViewModel());
             }
 
             try
@@ -169,11 +173,5 @@
 
             return this.View(quotes);
         }
-
-        private string GetModelStateErrors()
-            => string.Join("\n", this.ModelState
-                    .Values
-                    .SelectMany(v => v.Errors)
-                    .Select(x => x.ErrorMessage));
     }
 }
