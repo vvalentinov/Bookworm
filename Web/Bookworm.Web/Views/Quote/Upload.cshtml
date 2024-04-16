@@ -34,7 +34,7 @@
                 </div>
                 <div class="modal-body uploadQuoteModalContainer">
                     <img class="col-4" src="~/images/movieQuote.jpg" />
-                    <form method="post" asp-controller="Quote" asp-action="Upload">
+                    <form id="movieQuoteForm" method="post" asp-controller="Quote" asp-action="Upload">
                         <partial name="PartialViews/Quotes/QuotesTypesInputs/_MovieQuoteInputsPartial" />
                         <div class="text-center mt-4 mb-5">
                             <button type="submit" class="btn button form-button">
@@ -56,7 +56,7 @@
                 </div>
                 <div class="modal-body uploadQuoteModalContainer">
                     <img class="img-fluid" src="~/images/bookQuote.jpg" />
-                    <form method="post" asp-controller="Quote" asp-action="Upload">
+                    <form id="bookQuoteForm" method="post" asp-controller="Quote" asp-action="Upload">
                         <partial name="PartialViews/Quotes/QuotesTypesInputs/_BookQuoteInputsPartial" />
                         <div class="text-center mt-4 mb-5">
                             <button type="submit" class="btn button form-button">
@@ -78,7 +78,7 @@
                 </div>
                 <div class="modal-body uploadQuoteModalContainer">
                     <img class="col-4" src="~/images/generalQuote.jpg" />
-                    <form method="post" asp-controller="Quote" asp-action="Upload">
+                    <form id="generalQuoteForm" method="post" asp-controller="Quote" asp-action="Upload">
                         <partial name="PartialViews/Quotes/QuotesTypesInputs/_GeneralQuoteInputsPartial" />
                         <div class="text-center mt-4 mb-5">
                             <button type="submit" class="btn button form-button">
@@ -91,3 +91,41 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        const myModalEl = document.getElementById('movieModal');
+        myModalEl.addEventListener('hide.bs.modal', event => {
+            $("#movieQuoteForm").validate().resetForm();
+            $("#movieQuoteForm input, #movieQuoteForm textarea").val("");
+        });
+        $("#movieQuoteForm").validate({
+            rules: {
+                MovieTitle: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 150
+                },
+                Content: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 150
+                }
+            },
+            messages: {
+                MovieTitle: {
+                    required: "Movie Title field is required!",
+                    minlength: "Movie Title must be at least 5 characters long!",
+                    maxlength: "Movie Title must not exceed 150 characters!"
+                },
+                Content: {
+                    required: "Content field is required!",
+                    minlength: "Content must be at least 10 characters long!",
+                    maxlength: "Content must not exceed 150 characters!"
+                }
+            },
+            errorElement: "span",
+            errorClass: "text-danger",
+        });
+    </script>
+}
