@@ -12,6 +12,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.UserErrorMessagesConstants;
 
     public class UploadQuoteService : IUploadQuoteService
     {
@@ -29,17 +30,20 @@
         public async Task UploadQuoteAsync(QuoteDto quoteDto, string userId)
         {
             var user = await this.userManager.FindByIdAsync(userId) ??
-                throw new InvalidOperationException("No username with given id found!");
+                throw new InvalidOperationException(UserWrongIdError);
+
+            string content = quoteDto.Content.Trim();
 
             bool quoteExist = await this.quoteRepository
                 .AllAsNoTracking()
-                .AnyAsync(x => x.Content.ToLower() == quoteDto.Content.Trim().ToLower());
+                .AnyAsync(x => x.Content.ToLower() == content.ToLower());
+
             if (quoteExist)
             {
                 throw new InvalidOperationException(QuoteExistsError);
             }
 
-            var quote = new Quote { Content = quoteDto.Content.Trim(), UserId = user.Id };
+            var quote = new Quote { Content = content, UserId = user.Id };
 
             switch (quoteDto.Type)
             {
@@ -56,7 +60,7 @@
                     quote.AuthorName = quoteDto.AuthorName.Trim();
                     quote.Type = QuoteType.GeneralQuote;
                     break;
-                default: throw new InvalidOperationException("Invdalid Quote Type!");
+                default: throw new InvalidOperationException(QuoteInvalidTypeError);
             }
 
             await this.quoteRepository.AddAsync(quote);

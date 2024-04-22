@@ -256,7 +256,9 @@
 
         public async Task<UploadQuoteViewModel> GetQuoteForEditAsync(int quoteId, string userId)
         {
-            var quote = await this.quoteRepository.AllAsNoTracking().FirstOrDefaultAsync(q => q.Id == quoteId) ??
+            var quote = await this.quoteRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(q => q.Id == quoteId) ??
                 throw new InvalidOperationException(QuoteWrongIdError);
 
             if (quote.UserId != userId)

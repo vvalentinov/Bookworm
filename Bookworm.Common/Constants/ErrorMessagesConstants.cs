@@ -39,5 +39,10 @@
             public const string AuthorDuplicatesError = "No author duplicates allowed!";
             public const string AuthorsCountError = "Authors count must be between 1 and 5!";
         }
+
+        public static class UserErrorMessagesConstants
+        {
+            public const string UserWrongIdError = "No user with given id found!";
+        }
     }
 }

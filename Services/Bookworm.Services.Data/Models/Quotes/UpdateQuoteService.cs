@@ -100,7 +100,9 @@
 
         public async Task EditQuoteAsync(QuoteDto quoteDto, string userId)
         {
-            var quote = await this.quoteRepository.All().FirstOrDefaultAsync(q => q.Id == quoteDto.Id) ??
+            var quote = await this.quoteRepository
+                .All()
+                .FirstOrDefaultAsync(q => q.Id == quoteDto.Id) ??
                 throw new InvalidOperationException(QuoteWrongIdError);
 
             if (quote.UserId != userId)

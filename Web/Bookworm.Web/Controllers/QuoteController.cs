@@ -45,11 +45,11 @@
             if (this.ModelState.IsValid == false)
             {
                 this.TempData[TempDataMessageConstant.ErrorMessage] =
-                    string.Join("\n", this.ModelState
-                    .Values
-                    .SelectMany(v => v.Errors)
-                    .Select(x => x.ErrorMessage));
-                return this.View(new UploadQuoteViewModel());
+                    string.Join(", ", this.ModelState
+                        .Values
+                        .SelectMany(v => v.Errors)
+                        .Select(x => x.ErrorMessage));
+                return this.View(model);
             }
 
             try
@@ -64,7 +64,7 @@
             catch (Exception ex)
             {
                 this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
-                return this.View(nameof(this.Upload));
+                return this.View(model);
             }
         }
 
@@ -93,7 +93,8 @@
             {
                 try
                 {
-                    return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+                    return this.View(await this.retrieveQuotesService
+                        .GetQuoteForEditAsync(model.Id, userId));
                 }
                 catch (Exception ex)
                 {
@@ -112,16 +113,10 @@
             }
             catch (Exception ex)
             {
-                var exceptionMsg = ex.Message;
-                this.TempData[TempDataMessageConstant.ErrorMessage] = exceptionMsg;
-                if (exceptionMsg == QuoteWrongIdError)
-                {
-                    return this.RedirectToAction(nameof(this.UserQuotes));
-                }
-                else
-                {
-                    return this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
-                }
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                return ex.Message == QuoteWrongIdError ?
+                    this.RedirectToAction(nameof(this.UserQuotes)) :
+                    this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
             }
         }
 

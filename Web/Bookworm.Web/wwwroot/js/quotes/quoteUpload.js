@@ -4,7 +4,12 @@ modals.forEach(modal => {
     modal.addEventListener('hide.bs.modal', event => {
         const formId = modal.querySelector('form').id;
         $(`#${formId}`).validate().resetForm();
-        $(`#${formId} input, #${formId} textarea`).val("");
+        $(`#${formId} input:not([name="__RequestVerificationToken"]):not([type="hidden"]), #${formId} textarea`).val("");
+    });
+    modal.addEventListener('show.bs.modal', event => {
+        const formId = modal.querySelector('form').id;
+        $(`#${formId}`).validate().resetForm();
+        $(`#${formId} input:not([name="__RequestVerificationToken"]):not([type="hidden"]), #${formId} textarea`).val("");
     });
 });
 

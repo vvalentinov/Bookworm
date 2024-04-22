@@ -89,6 +89,11 @@
                 options.TableName = "Cache";
             });
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/Identity/User/Login");
+            });
+
             return services;
         }
 
