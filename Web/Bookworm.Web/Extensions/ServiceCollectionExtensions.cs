@@ -92,6 +92,7 @@
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = new PathString("/Identity/User/Login");
+                options.Cookie.HttpOnly = true;
             });
 
             return services;
