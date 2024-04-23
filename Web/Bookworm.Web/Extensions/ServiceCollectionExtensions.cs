@@ -92,6 +92,7 @@
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = new PathString("/Identity/User/Login");
+                options.AccessDeniedPath = new PathString("/Identity/User/AccessDenied");
                 options.Cookie.HttpOnly = true;
             });
 

@@ -2,15 +2,18 @@
 {
     using System.Linq;
     using System.Text;
+    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
     using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
+    using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Identity;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     public class UserController : BaseController
@@ -18,15 +21,21 @@
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<LoginViewModel> logger;
+        private readonly IEmailSender emailSender;
+        private readonly IConfiguration configuration;
 
         public UserController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<LoginViewModel> logger)
+            ILogger<LoginViewModel> logger,
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.logger = logger;
+            this.emailSender = emailSender;
+            this.configuration = configuration;
         }
 
         [HttpGet]
@@ -162,9 +171,48 @@
         }
 
         [HttpGet]
-        public IActionResult AccessDenied()
+        public IActionResult AccessDenied() => this.View();
+
+        [HttpGet]
+        public IActionResult ForgotPassword() => this.View();
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            return this.View();
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.userManager.FindByEmailAsync(model.Email);
+                if (user == null || !await this.userManager.IsEmailConfirmedAsync(user))
+                {
+                    return this.RedirectToAction("Index", "Home", new { area = string.Empty });
+                }
+
+                var code = await this.userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                var callbackUrl = this.Url.Page(
+                    "/Account/ResetPassword",
+                    pageHandler: null,
+                    values: new { area = "Identity", code },
+                    protocol: this.Request.Scheme);
+
+                var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
+                var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
+
+                await this.emailSender.SendEmailAsync(
+                    fromEmail,
+                    "Bookworm",
+                    model.Email,
+                    user.UserName,
+                    "Password reset",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
+                    appPassword);
+
+                this.TempData[TempDataMessageConstant.SuccessMessage] = "Please check your email to reset your password.";
+                return this.RedirectToAction("Index", "Home", new { area = string.Empty });
+            }
+
+            return this.View(model);
         }
     }
 }
