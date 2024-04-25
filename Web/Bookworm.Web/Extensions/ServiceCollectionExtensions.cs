@@ -1,5 +1,7 @@
 ﻿namespace Bookworm.Web.Extensions
 {
+    using System;
+
     using Bookworm.Data;
     using Bookworm.Data.Common;
     using Bookworm.Data.Common.Repositories;
@@ -14,6 +16,7 @@
     using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -25,6 +28,10 @@
             this IServiceCollection services,
             IConfiguration config)
         {
+            services.AddSingleton(config);
+
+            services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
+
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -59,29 +66,44 @@
             services.AddScoped<IPublishersService, PublishersService>();
             services.AddScoped<IAuthorsService, AuthorsService>();
 
-            services.AddSignalR();
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                options.Lockout.MaxFailedAccessAttempts = 2;
+                options.Lockout.AllowedForNewUsers = true;
+            });
 
-            services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
+            return services;
+        }
 
-            services.AddApplicationDbContexts(config);
-
-            services.AddRazorPages();
-
-            services.AddControllersWithViews(opt => opt.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
-                .AddRazorRuntimeCompilation();
-
+        public static IServiceCollection ConfigureCookiePolicy(this IServiceCollection services)
+        {
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddSingleton(config);
+            return services;
+        }
 
-            services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
-                            .AddRoles<ApplicationRole>()
-                            .AddEntityFrameworkStores<ApplicationDbContext>();
+        public static IServiceCollection ConfigureApplicationCookie(this IServiceCollection services)
+        {
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/User/Login");
+                options.AccessDeniedPath = new PathString("/User/AccessDenied");
+                options.Cookie.HttpOnly = true;
+            });
 
+            return services;
+        }
+
+        public static IServiceCollection AddDistributedSqlServerCache(
+            this IServiceCollection services,
+            IConfiguration config)
+        {
             services.AddDistributedSqlServerCache(options =>
             {
                 options.ConnectionString = GetSqlServerConnection(config);
@@ -89,22 +111,33 @@
                 options.TableName = "Cache";
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = new PathString("/Identity/User/Login");
-                options.AccessDeniedPath = new PathString("/Identity/User/AccessDenied");
-                options.Cookie.HttpOnly = true;
-            });
+            return services;
+        }
+
+        public static IServiceCollection AddApplicationDbContexts(
+            this IServiceCollection services,
+            IConfiguration config)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(GetSqlServerConnection(config)));
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            return services;
+        }
+
+        public static IServiceCollection AddIdentity(this IServiceCollection services)
+        {
+            services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
+                            .AddRoles<ApplicationRole>()
+                            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;
         }
 
-        private static IServiceCollection AddApplicationDbContexts(
-            this IServiceCollection services,
-            IConfiguration config)
+        public static IServiceCollection AddMvcControllers(this IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(GetSqlServerConnection(config)));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddControllersWithViews(opt =>
+                opt.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+
             return services;
         }
 
