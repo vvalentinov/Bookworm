@@ -12,7 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg fs-3 p-3 fixed-top border-bottom border-2">
+        <nav class="navbar navbar-expand-lg fixed-top mainLayoutNavbar">
             <div class="container-fluid">
                 <button class="navbar-toggler"
                         type="button"
@@ -48,17 +48,17 @@
         </nav>
     </header>
 
-    <div class="container">
+    @* <div class="container"> *@
+    <main role="main">
         <partial name="PartialViews/_CookieConsentPartial" />
-        <main role="main">
-            @this.RenderBody()
-        </main>
+        @this.RenderBody()
         <button class="topArrow"><i class="fa fa-arrow-up"></i></button>
-    </div>
+    </main>
+    @* </div> *@
 
     <footer class="bookworm-footer">
         <span>
-            &copy; @DateTime.Now.Year - @GlobalConstants.SystemName - 
+            &copy; @DateTime.Now.Year - @GlobalConstants.SystemName -
             <a class="privacy-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </span>
     </footer>

@@ -43,6 +43,10 @@
             this.configuration = configuration;
         }
 
+        public IActionResult Manage() => this.View();
+
+        public IActionResult ChangePassword() => this.View();
+
         public IActionResult Statistics()
         {
             var users = this.usersService.GetUsersStatistics();
@@ -77,8 +81,6 @@
 
             if (this.ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await this.signInManager.PasswordSignInAsync(
                     model.UserName,
                     model.Password,
@@ -98,7 +100,7 @@
                 if (result.IsLockedOut)
                 {
                     this.logger.LogWarning("User account locked out.");
-                    return this.RedirectToAction(nameof(this.Lockout));
+                    return this.View("Lockout");
                 }
                 else
                 {
@@ -110,9 +112,6 @@
             this.TempData["ErrorMessage"] = "Login failed! Try again!";
             return this.View(model);
         }
-
-        [HttpGet]
-        public IActionResult Lockout() => this.View();
 
         [HttpGet]
         [AllowAnonymous]
@@ -185,6 +184,21 @@
 
             this.TempData["ErrorMessage"] = "Register failed! Try again!";
             return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout(string returnUrl = null)
+        {
+            await this.signInManager.SignOutAsync();
+            this.logger.LogInformation("User logged out.");
+            if (returnUrl != null)
+            {
+                return this.LocalRedirect(returnUrl);
+            }
+            else
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]

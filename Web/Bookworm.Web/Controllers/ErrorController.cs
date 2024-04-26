@@ -4,6 +4,7 @@
 
     using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     public class ErrorController : BaseController
@@ -21,7 +22,14 @@
         }
 
         [AllowAnonymous]
-        [ActionName("404")]
-        public IActionResult NotFound404() => this.View();
+        public IActionResult StatusCodeError(int id)
+        {
+            if (id == StatusCodes.Status404NotFound)
+            {
+                return this.View("NotFound");
+            }
+
+            return this.Content($"Error with status code: {id}", "text/plain");
+        }
     }
 }

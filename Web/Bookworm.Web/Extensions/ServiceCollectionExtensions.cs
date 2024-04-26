@@ -1,7 +1,5 @@
 ﻿namespace Bookworm.Web.Extensions
 {
-    using System;
-
     using Bookworm.Data;
     using Bookworm.Data.Common;
     using Bookworm.Data.Common.Repositories;
@@ -16,7 +14,6 @@
     using Bookworm.Services.Messaging;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -65,14 +62,6 @@
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IPublishersService, PublishersService>();
             services.AddScoped<IAuthorsService, AuthorsService>();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Default Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
-                options.Lockout.MaxFailedAccessAttempts = 2;
-                options.Lockout.AllowedForNewUsers = true;
-            });
 
             return services;
         }

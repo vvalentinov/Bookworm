@@ -24,9 +24,9 @@
             }
 
             app
+                .UseStatusCodePagesWithReExecute("/Error/StatusCodeError/{0}")
                 .UseStaticFiles()
                 .UseCookiePolicy()
-                .UseStatusCodePagesWithReExecute("/Error/404")
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization();
