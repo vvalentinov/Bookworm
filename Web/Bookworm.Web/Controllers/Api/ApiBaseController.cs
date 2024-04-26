@@ -6,7 +6,7 @@
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public abstract class BaseApiController : ControllerBase
+    public abstract class ApiBaseController : ControllerBase
     {
     }
 }

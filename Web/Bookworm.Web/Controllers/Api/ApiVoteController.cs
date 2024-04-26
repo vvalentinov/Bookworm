@@ -9,7 +9,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class ApiVoteController : BaseApiController
+    public class ApiVoteController : ApiBaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IVoteService voteService;

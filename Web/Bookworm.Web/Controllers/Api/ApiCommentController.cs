@@ -10,7 +10,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class ApiCommentController : BaseApiController
+    public class ApiCommentController : ApiBaseController
     {
         private readonly ICommentsService commentsService;
         private readonly UserManager<ApplicationUser> userManager;

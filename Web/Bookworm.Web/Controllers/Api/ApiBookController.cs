@@ -12,7 +12,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class ApiBookController : BaseApiController
+    public class ApiBookController : ApiBaseController
     {
         private readonly ISearchBooksService searchBooksService;
         private readonly ICategoriesService categoriesService;

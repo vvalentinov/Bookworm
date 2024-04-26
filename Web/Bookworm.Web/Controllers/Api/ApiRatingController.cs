@@ -9,7 +9,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    public class ApiRatingController : BaseApiController
+    public class ApiRatingController : ApiBaseController
     {
         private readonly IRatingsService ratingService;
         private readonly UserManager<ApplicationUser> userManager;

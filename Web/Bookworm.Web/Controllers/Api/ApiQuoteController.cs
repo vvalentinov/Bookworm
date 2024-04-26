@@ -13,7 +13,7 @@
     using Microsoft.AspNetCore.Mvc;
 
     [Authorize]
-    public class ApiQuoteController : BaseApiController
+    public class ApiQuoteController : ApiBaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
