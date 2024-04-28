@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class ResendEmailConfirmationViewModel
+    public class EmailInputViewModel
     {
         [Required]
         [EmailAddress]

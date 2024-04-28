@@ -14,7 +14,11 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
+    using static Bookworm
+        .Common
+        .Constants
+        .SuccessMessagesConstants
+        .CrudSuccessMessagesConstants;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class BookController : BaseController
