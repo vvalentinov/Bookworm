@@ -315,11 +315,7 @@
                 var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-                var callbackUrl = this.Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { userId, code },
-                    protocol: this.Request.Scheme);
+                var callbackUrl = this.Url.Action("ConfirmEmail", "User", new { userId, code }, this.Request.Scheme);
 
                 var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
                 var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
@@ -338,6 +334,27 @@
             }
 
             return this.View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user == null || code == null)
+            {
+                this.TempData[TempDataMessageConstant.ErrorMessage] = "There was a problem confirming your email! Try again!";
+                return this.RedirectToAction("Index", "Home", new { area = string.Empty });
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+
+            var result = await this.userManager.ConfirmEmailAsync(user, code);
+
+            this.ViewData["Message"] = result.Succeeded ?
+                "Thank you for confirming your email." :
+                "Error confirming your email.";
+            return this.View();
         }
     }
 }
