@@ -4,11 +4,17 @@
     this.ViewData["Title"] = "Login";
 }
 
-<div class="loginRegisterContainer my-5">
-    <img src="~/images/login.jpg"
-         class="loginRegisterImg rounded-4 img-fluid animate__animated animate__fadeInLeft animate__faster"
-         alt="Books Image..." />
-    <div class="loginRegisterForm animate__animated animate__fadeInRight animate__faster">
+@section Styles {
+    <link rel="stylesheet" href="~/css/identity/loginRegister.css"/>
+}
+
+<div class="loginRegisterContainer">
+    <div class="imgContainer">
+        <img src="~/images/identity/login.jpg"
+             class="rounded-4 img-fluid"
+             alt="Books Image..." />
+    </div>
+    <div class="loginRegisterFormContainer">
         <form id="account" method="post">
             <h5 class="text-center text-uppercase fs-2">Login</h5>
             <partial name="PartialViews/_CustomDividerPartial" />
@@ -62,16 +68,16 @@
                     }
                 }
                 <div class="text-center">
-                    <a class="form-link" asp-controller="User" asp-action="ForgotPassword">Forgot Password?</a>
+                    <a class="form-link" asp-controller="Account" asp-action="ForgotPassword">Forgot Password?</a>
                 </div>
                 <div class="text-center">
-                    <a class="form-link" asp-controller="User" asp-action="ResendEmailConfirmation">
+                    <a class="form-link" asp-controller="Account" asp-action="ResendEmailConfirmation">
                         Resend email confirmation
                     </a>
                 </div>
                 <div class="text-center">
                     <a class="form-link"
-                       asp-controller="User"
+                       asp-controller="Account"
                        asp-action="Register"
                        asp-route-returnUrl="@Model.ReturnUrl">
                         You don't have an account? Register here!

@@ -7,7 +7,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/bookDetails.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/book/bookDetails.css" asp-append-version="true" />
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
@@ -198,9 +198,9 @@
 <partial name="PartialViews/Modals/_RateBookModalPartial" />
 
 @section Scripts {
-    <script src="~/js/vote.js"></script>
-    <script src="~/js/rating.js"></script>
-    <script src="~/js/comments.js"></script>
+    <script src="~/js/book/vote.js"></script>
+    <script src="~/js/book/rating.js"></script>
+    <script src="~/js/book/comments.js"></script>
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         tinymce.init({

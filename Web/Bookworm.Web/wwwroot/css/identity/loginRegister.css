@@ -1,0 +1,71 @@
+﻿.loginRegisterContainer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    min-height: calc(100vh - 200px);
+    border: solid 2px black;
+}
+
+    .loginRegisterContainer .imgContainer {
+        border: solid 2px red;
+    }
+
+        .loginRegisterContainer .imgContainer img {
+            height: 10rem;
+        }
+
+    .loginRegisterContainer .loginRegisterFormContainer {
+        flex-basis: 50%;
+    }
+
+    .loginRegisterContainer #account {
+        border: solid 3px var(--clr-secondary);
+        padding: 2rem;
+        border-radius: 15px;
+        background-color: var(--clr-primary);
+    }
+
+        .loginRegisterContainer #account h5,
+        .loginRegisterContainer #account .rememberMe {
+            color: white;
+        }
+
+        .loginRegisterContainer #account button[type="submit"] {
+            background-color: var(--clr-secondary);
+            border: solid 2px black;
+            padding: 0.4rem 3rem;
+            font-size: 2rem;
+        }
+
+            .loginRegisterContainer #account button[type="submit"]:hover {
+                color: white;
+            }
+
+@media only screen and (max-width: 1000px) {
+    .loginRegisterFormContainer .imageContainer {
+        display: none;
+    }
+
+    .loginRegisterFormContainer {
+        margin: 1rem;
+    }
+
+    .loginRegisterForm {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .loginRegisterImg {
+        display: none;
+    }
+
+    .loginRegisterContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .loginRegisterForm {
+        flex-basis: 80%;
+    }
+}

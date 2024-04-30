@@ -9,7 +9,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
-    <link rel="stylesheet" href="~/css/bookAll.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/book/bookAll.css" asp-append-version="true" />
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
@@ -29,19 +29,30 @@
 }
 else
 {
-    <h3 class="display-4 text-center mt-5">Sorry, no books in @this.ViewData["Title"] category yet!</h3>
-    <h4 class="display-4 text-center">Want to change that?<a asp-controller="Book" asp-action="Upload">Click here</a></h4>
+    <h3 class="display-4 text-center mt-5">
+        Sorry, no books in @this.ViewData["Title"] category yet!
+    </h3>
+    <h4 class="display-4 text-center">
+        Want to change that?
+        <a asp-controller="Book" asp-action="Upload">
+            Click here
+        </a>
+    </h4>
 }
 
 @if (Model.PagesCount > 1)
 {
-    <vc:pagination controller="Book" action="All" is-for-books="@true" model="@Model"></vc:pagination>
+    <vc:pagination controller="Book"
+                   action="All"
+                   is-for-books="@true"
+                   model="@Model">
+    </vc:pagination>
 }
 
 @if (isUserAuthenticated)
 {
     @section Scripts {
-    <script type="module" src="~/js/books.js"></script>
+    <script type="module" src="~/js/book/books.js"></script>
     <script src="~/lib/select2/js/select2.min.js"></script>
     }
 }

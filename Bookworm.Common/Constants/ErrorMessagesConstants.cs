@@ -40,9 +40,14 @@
             public const string AuthorsCountError = "Authors count must be between 1 and 5!";
         }
 
-        public static class UserErrorMessagesConstants
+        public static class IdentityErrorMessagesConstants
         {
             public const string UserWrongIdError = "No user with given id found!";
+            public const string ResetPasswordError = "There was a problem resetting your password! Please, try again!";
+            public const string ConfirmEmailError = "There was a problem confirming your email! Please, try again!";
+            public const string UserWithEmailError = "Email is already taken! Please, try again!";
+            public const string LoginError = "Login failed! Try again!";
+            public const string RegisterError = "Register failed! Try again!";
         }
     }
 }

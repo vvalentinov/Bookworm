@@ -7,7 +7,6 @@
 
     using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Identity;
     using Microsoft.AspNetCore.Authentication;
@@ -18,17 +17,19 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
-    public class UserController : BaseController
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
+
+    [Route($"{AccountAreaName}/[action]")]
+    public class IdentityController : BaseController
     {
-        private readonly IUsersService usersService;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<LoginViewModel> logger;
         private readonly IEmailSender emailSender;
         private readonly IConfiguration configuration;
 
-        public UserController(
-            IUsersService usersService,
+        public IdentityController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<LoginViewModel> logger,
@@ -38,7 +39,6 @@
             this.logger = logger;
             this.userManager = userManager;
             this.emailSender = emailSender;
-            this.usersService = usersService;
             this.signInManager = signInManager;
             this.configuration = configuration;
         }
@@ -49,13 +49,16 @@
         {
             returnUrl ??= this.Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
             await this.HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            var externalLogins = (await this.signInManager
+                .GetExternalAuthenticationSchemesAsync())
+                .ToList();
 
             var model = new LoginViewModel
             {
                 ReturnUrl = returnUrl,
-                ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList(),
+                ExternalLogins = externalLogins,
             };
 
             return this.View(model);
@@ -63,9 +66,7 @@
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(
-            LoginViewModel model,
-            string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             returnUrl ??= this.Url.Content("~/");
 
@@ -83,10 +84,12 @@
                     return this.LocalRedirect(returnUrl);
                 }
 
-                // if (result.RequiresTwoFactor)
+                /* if (result.RequiresTwoFactor)
                 // {
-                //    return this.RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, this.Input.RememberMe });
-                // }
+                //    return this.RedirectToPage("./LoginWith2fa",
+                new { ReturnUrl = returnUrl, this.Input.RememberMe });
+                /*/
+
                 if (result.IsLockedOut)
                 {
                     this.logger.LogWarning("User account locked out.");
@@ -94,12 +97,12 @@
                 }
                 else
                 {
-                    this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    this.ModelState.AddModelError(string.Empty, LoginError);
                     return this.View(model);
                 }
             }
 
-            this.TempData["ErrorMessage"] = "Login failed! Try again!";
+            this.TempData[TempDataMessageConstant.ErrorMessage] = LoginError;
             return this.View(model);
         }
 
@@ -107,10 +110,14 @@
         [AllowAnonymous]
         public async Task<IActionResult> Register(string returnUrl = null)
         {
+            var externalLogins = (await this.signInManager
+                .GetExternalAuthenticationSchemesAsync())
+                .ToList();
+
             var model = new RegisterViewModel
             {
                 ReturnUrl = returnUrl,
-                ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList(),
+                ExternalLogins = externalLogins,
             };
 
             return this.View(model);
@@ -124,10 +131,9 @@
         {
             returnUrl ??= this.Url.Content("~/");
 
-            // this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (await this.userManager.FindByEmailAsync(model.Email) != null)
             {
-                this.ModelState.AddModelError("Email", "User with given email already exist!");
+                this.ModelState.AddModelError("Email", UserWithEmailError);
                 return this.View(model);
             }
 
@@ -140,7 +146,7 @@
                 };
 
                 var result = await this.userManager.CreateAsync(user, model.Password);
-                await this.userManager.AddToRoleAsync(user, GlobalConstants.UserRoleName);
+                await this.userManager.AddToRoleAsync(user, UserRoleName);
 
                 if (result.Succeeded)
                 {
@@ -148,13 +154,22 @@
 
                     var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = this.Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code, returnUrl },
-                        protocol: this.Request.Scheme);
 
-                    // await this.emailSender.SendEmailAsync(this.Input.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var callbackUrl = this.Url.Action(
+                        "ConfirmEmail",
+                        AccountAreaName,
+                        new { userId = user.Id, code },
+                        this.Request.Scheme);
+
+                    await this.emailSender.SendEmailAsync(
+                        this.GetFromEmail(),
+                        SystemName,
+                        model.Email,
+                        user.UserName,
+                        "Confirm your email",
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
+                        this.GetAppPassword());
+
                     if (this.userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return this.RedirectToPage("RegisterConfirmation", new { email = model.Email, returnUrl });
@@ -172,7 +187,7 @@
                 }
             }
 
-            this.TempData["ErrorMessage"] = "Register failed! Try again!";
+            this.TempData["ErrorMessage"] = RegisterError;
             return this.View(model);
         }
 
@@ -189,12 +204,6 @@
             {
                 return this.RedirectToAction("Index", "Home");
             }
-        }
-
-        public IActionResult Statistics()
-        {
-            var users = this.usersService.GetUsersStatistics();
-            return this.View(users);
         }
 
         [HttpGet]
@@ -224,21 +233,18 @@
 
             var callbackUrl = this.Url.Action(
                 "ResetPassword",
-                "User",
+                "Account",
                 new { code },
                 this.Request.Scheme);
 
-            var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
-            var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
-
             await this.emailSender.SendEmailAsync(
-                fromEmail,
+                this.GetFromEmail(),
                 "Bookworm",
                 model.Email,
                 user.UserName,
                 "Password reset",
                 $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                appPassword);
+                this.GetAppPassword());
 
             this.TempData[TempDataMessageConstant.SuccessMessage] = "Please check your email to reset your password.";
             return this.RedirectToAction("Index", "Home", new { area = string.Empty });
@@ -254,8 +260,7 @@
             }
             else
             {
-                var model = new ResetPasswordInputModel { Code = code };
-                return this.View(model);
+                return this.View(new ResetPasswordInputModel { Code = code });
             }
         }
 
@@ -265,13 +270,13 @@
         {
             if (this.ModelState.IsValid == false)
             {
-                return this.View();
+                return this.View(model);
             }
 
             var user = await this.userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = "There was a problem resetting your password! Please, try again!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ResetPasswordError;
                 return this.RedirectToAction("Index", "Home");
             }
 
@@ -343,7 +348,7 @@
             var user = await this.userManager.FindByIdAsync(userId);
             if (user == null || code == null)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = "There was a problem confirming your email! Try again!";
+                this.TempData[TempDataMessageConstant.ErrorMessage] = ConfirmEmailError;
                 return this.RedirectToAction("Index", "Home", new { area = string.Empty });
             }
 
@@ -356,5 +361,9 @@
                 "Error confirming your email.";
             return this.View();
         }
+
+        private string GetFromEmail() => this.configuration.GetValue<string>("MailKitEmailSender:Email");
+
+        private string GetAppPassword() => this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
     }
 }

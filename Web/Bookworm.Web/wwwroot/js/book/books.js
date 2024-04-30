@@ -1,4 +1,4 @@
-import { updatePagination } from './pagination.js';
+import { updatePagination } from '../pagination.js';
 
 const bookSearchInput = document.querySelector('.bookSearchInput');
 const bookSearchButton = document.getElementById('bookSearchButton');

@@ -6,13 +6,16 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/bookRandom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/book/bookRandom.css" asp-append-version="true" />
 }
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <section class="randomBooksSection">
-    <form method="post" asp-controller="Book" asp-action="Random" class="randomBooksForm">
+    <form method="post"
+          asp-controller="Book"
+          asp-action="Random"
+          class="randomBooksForm">
 
         <div asp-validation-summary="All" class="text-danger"></div>
 

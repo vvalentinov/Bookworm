@@ -6,7 +6,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/quoteUpload.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/quote/quoteUpload.css" asp-append-version="true" />
 }
 
 <section class="uploadQuoteSection">
@@ -33,7 +33,7 @@
                     <i class="fa-solid fa-x btn-modal-close" data-bs-dismiss="modal" aria-label="Close"></i>
                 </div>
                 <div class="modal-body uploadQuoteModalContainer">
-                    <img class="col-4" src="~/images/movieQuote.jpg" />
+                    <img class="col-4" src="~/images/quote/movieQuote.jpg" />
                     <form id="movieQuoteForm" method="post" asp-controller="Quote" asp-action="Upload">
                         <partial name="PartialViews/Quotes/QuotesTypesInputs/_MovieQuoteInputsPartial" />
                         <div class="text-center mt-4 mb-5">
@@ -55,7 +55,7 @@
                     <i class="fa-solid fa-x btn-modal-close" data-bs-dismiss="modal" aria-label="Close"></i>
                 </div>
                 <div class="modal-body uploadQuoteModalContainer">
-                    <img class="img-fluid" src="~/images/bookQuote.jpg" />
+                    <img class="img-fluid" src="~/images/quote/bookQuote.jpg" />
                     <form id="bookQuoteForm" method="post" asp-controller="Quote" asp-action="Upload">
                         <partial name="PartialViews/Quotes/QuotesTypesInputs/_BookQuoteInputsPartial" />
                         <div class="text-center mt-4 mb-5">
@@ -77,7 +77,7 @@
                     <i class="fa-solid fa-x btn-modal-close" data-bs-dismiss="modal" aria-label="Close"></i>
                 </div>
                 <div class="modal-body uploadQuoteModalContainer">
-                    <img class="col-4" src="~/images/generalQuote.jpg" />
+                    <img class="col-4" src="~/images/quote/generalQuote.jpg" />
                     <form id="generalQuoteForm" method="post" asp-controller="Quote" asp-action="Upload">
                         <partial name="PartialViews/Quotes/QuotesTypesInputs/_GeneralQuoteInputsPartial" />
                         <div class="text-center mt-4 mb-5">
@@ -94,5 +94,5 @@
 </section>
 
 @section Scripts {
-    <script src="~/js/quotes/quoteUpload.js"></script>
+    <script src="~/js/quote/quoteUpload.js"></script>
 }

@@ -3,10 +3,18 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/accountLayout.css" asp-append-version="true" />
+    <style>
+        main {
+            margin: 0 !important;
+        }
+
+        .accountLayoutNavbar {
+            width: 100% !important;
+        }
+    </style>
 }
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary userLayoutNavbar">
+<nav class="navbar navbar-expand-lg bg-body-tertiary accountLayoutNavbar">
     <div class="container-fluid">
         <a class="navbar-brand"
            asp-area="Account"

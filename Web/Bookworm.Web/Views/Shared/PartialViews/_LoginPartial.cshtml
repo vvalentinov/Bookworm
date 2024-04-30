@@ -1,18 +1,18 @@
-﻿@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+﻿@using System.Security.Claims
 
-@if (this.SignInManager.IsSignedIn(this.User))
+@if (this.User.Identity.IsAuthenticated)
 {
-    var user = await this.UserManager.GetUserAsync(this.User);
-
     <li class="nav-item dropdown mx-2">
         <a class="nav-link dropdown-toggle"
            role="button"
            data-bs-toggle="dropdown"
            aria-expanded="false">
-            @user.UserName
+            @User.Identity.Name
         </a>
-        <ul class="dropdown-menu animate__animated animate__fadeIn animate__faster fs-5">
+        <ul class="dropdown-menu
+                animate__animated
+                animate__fadeIn
+                animate__faster fs-5">
             @if (this.User.IsInRole(AdministratorRoleName))
             {
                 <li>
@@ -37,15 +37,6 @@
             <li>
                 <a class="dropdown-item py-3"
                    asp-area=""
-                   asp-controller="FavoriteBook"
-                   asp-action="Favorites">
-                    <i class="fas fa-heart me-2"></i>
-                    Favorite Books
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item py-3"
-                   asp-area=""
                    asp-controller="Book"
                    asp-action="UserBooks">
                     <i class="fas fa-book me-2"></i>
@@ -64,17 +55,17 @@
             <li>
                 <a class="dropdown-item py-3"
                    asp-area=""
-                   asp-controller="User"
-                   asp-action="Statistics">
-                    <i class="fas fa-user-graduate me-2"></i>
-                    Users Statistics
+                   asp-controller="FavoriteBook"
+                   asp-action="Favorites">
+                    <i class="fas fa-heart me-2"></i>
+                    Favorite Books
                 </a>
             </li>
         </ul>
     </li>
     <form class="form-inline d-flex"
           asp-area=""
-          asp-controller="User"
+          asp-controller="Account"
           asp-action="Logout">
         <button type="submit" class="nav-link logout-btn px-3">
             Logout<i class="fas fa-sign-out-alt ms-2"></i>
@@ -86,7 +77,7 @@ else
     <li class="nav-item mx-2">
         <a class="nav-link"
            asp-area=""
-           asp-controller="User"
+           asp-controller="Account"
            asp-action="Login">
             Login
         </a>
@@ -94,7 +85,7 @@ else
     <li class="nav-item mx-2">
         <a class="nav-link"
            asp-area=""
-           asp-controller="User"
+           asp-controller="Account"
            asp-action="Register">
             Register
         </a>

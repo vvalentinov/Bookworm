@@ -78,7 +78,6 @@
         "icons/default/icons.min.js",
         "models/dom/model.min.js",
         "plugins/code/plugin.min.js",
-        "plugins/image/plugin.min.js",
         "plugins/lists/plugin.min.js",
         "plugins/preview/plugin.min.js",
         "plugins/wordcount/plugin.min.js",

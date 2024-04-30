@@ -11,8 +11,8 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.UserErrorMessagesConstants;
 
     public class UploadQuoteService : IUploadQuoteService
     {

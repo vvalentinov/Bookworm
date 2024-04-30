@@ -26,18 +26,39 @@
                 <div class="collapse navbar-collapse" id="navbarToggler">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item mx-2">
-                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="me-2 fas fa-book"></i>@GlobalConstants.SystemName
+                            <a class="nav-link"
+                               aria-current="page"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Index">
+                                <i class="me-2 fa fa-book"></i>
+                                @GlobalConstants.SystemName
                             </a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a class="nav-link" aria-current="page" asp-area="" asp-controller="Category" asp-action="All">Categories</a>
+                            <a class="nav-link"
+                               aria-current="page"
+                               asp-area=""
+                               asp-controller="Category"
+                               asp-action="All">
+                                Categories
+                            </a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a class="nav-link" asp-controller="Quote" asp-area="" asp-action="All">Quotes</a>
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="Quote"
+                               asp-action="All">
+                                Quotes
+                            </a>
                         </li>
                         <li class="nav-item mx-2">
-                            <a class="nav-link" asp-area="" asp-controller="Book" asp-action="Random">Random Book</a>
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="Book"
+                               asp-action="Random">
+                                Random Book
+                            </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
@@ -48,13 +69,11 @@
         </nav>
     </header>
 
-    @* <div class="container"> *@
     <main role="main">
         <partial name="PartialViews/_CookieConsentPartial" />
         @this.RenderBody()
         <button class="topArrow"><i class="fa fa-arrow-up"></i></button>
     </main>
-    @* </div> *@
 
     <footer class="bookworm-footer">
         <span>

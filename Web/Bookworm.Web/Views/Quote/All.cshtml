@@ -64,10 +64,14 @@
 
 @if (Model.PagesCount > 1)
 {
-    <vc:pagination controller="Quote" action="All" is-for-books="@false" model="@Model"></vc:pagination>
+    <vc:pagination controller="Quote"
+                   action="All"
+                   is-for-books="@false"
+                   model="@Model">
+    </vc:pagination>
 }
 
 @section Scripts {
-    <script type="module" src="~/js/quotes/allQuotes.js"></script>
-    <script src="~/js/quotes/likeQuote.js"></script>
+    <script type="module" src="~/js/quote/allQuotes.js"></script>
+    <script src="~/js/quote/likeQuote.js"></script>
 }

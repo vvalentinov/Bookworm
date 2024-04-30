@@ -70,25 +70,6 @@
             => await this.userManager.FindByIdAsync(userId) ??
                 throw new InvalidOperationException("No user with given id found!");
 
-        public IEnumerable<UserStatisticsViewModel> GetUsersStatistics()
-        {
-            return this.userManager
-                .Users
-                .Select(u => new UserStatisticsViewModel
-                {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    UploadedBooks = this.bookRepository
-                        .AllAsNoTracking()
-                        .Where(b => b.UserId == u.Id && b.IsApproved == true)
-                        .Count(),
-                    UploadedQuotes = this.quoteRepository
-                        .AllAsNoTracking()
-                        .Where(q => q.UserId == u.Id && q.IsApproved == true)
-                        .Count(),
-                }).ToList();
-        }
-
         public async Task ReduceUserPointsAsync(string userId, byte points)
         {
             var user = await this.GetUserWithIdAsync(userId);
