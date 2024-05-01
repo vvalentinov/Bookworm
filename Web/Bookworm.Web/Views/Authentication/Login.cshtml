@@ -1,0 +1,103 @@
+﻿@model LoginViewModel
+
+@{
+    this.ViewData["Title"] = "Login";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/identity/loginRegister.css" />
+}
+
+<div class="loginRegisterContainer">
+    <div class="imgContainer">
+        <img src="~/images/identity/login.jpg" class="img-fluid" alt="Books Image..." />
+    </div>
+    <div class="formContainer">
+        <form method="post">
+            <h5 class="text-center text-uppercase text-white fs-2">Login</h5>
+            <partial name="PartialViews/_CustomDividerPartial" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="@Model.UserName"
+                       class="form-control"
+                       placeholder="username">
+                <label asp-for="@Model.UserName"></label>
+                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input type="password"
+                       asp-for="@Model.Password"
+                       class="form-control mt-3"
+                       placeholder="Password" />
+                <label asp-for="@Model.Password"></label>
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="my-3 rememberMeContainer">
+                <input type="checkbox" asp-for="@Model.RememberMe" />
+                <label asp-for="@Model.RememberMe"></label>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-lg">
+                    Login<i class="fa fa-right-to-bracket ms-2"></i>
+                </button>
+            </div>
+        </form>
+        @{
+            if ((Model.ExternalLogins?.Count ?? 0) != 0)
+            {
+                <div class="text-center mt-3">
+                    <span class="fs-5 text-white">Or use another service to log in:</span>
+                </div>
+                <form method="post"
+                      id="external-account"
+                      class="form-horizontal"
+                      asp-controller="Account"
+                      asp-action="ExternalLogin"
+                      asp-route-returnUrl="@Model.ReturnUrl">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        <div class="text-center">
+                            <button type="submit"
+                                    class="btn btn-lg my-3"
+                                    name="provider"
+                                    value="@provider.Name"
+                                    title="Log in using your @provider.DisplayName account">
+                                @if (provider.DisplayName == "Google")
+                                {
+                                    <text>@provider.DisplayName</text>
+                                    <i class="fa-brands fa-google"></i>
+                                }
+                                else
+                                {
+                                    @provider.DisplayName
+                                }
+                            </button>
+                        </div>
+                    }
+                </form>
+            }
+        }
+        <div class="text-center">
+            <a class="form-link"
+               asp-controller="Account"
+               asp-action="ForgotPassword">
+                Forgot Password?
+            </a>
+        </div>
+        <div class="text-center">
+            <a class="form-link"
+               asp-controller="Account"
+               asp-action="ResendEmailConfirmation">
+                Resend email confirmation
+            </a>
+        </div>
+        <div class="text-center">
+            <a class="form-link"
+               asp-controller="Account"
+               asp-action="Register"
+               asp-route-returnUrl="@Model.ReturnUrl">
+                You don't have an account? Register here!
+            </a>
+        </div>
+    </div>
+</div>

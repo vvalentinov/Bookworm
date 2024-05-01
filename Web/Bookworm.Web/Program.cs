@@ -15,6 +15,7 @@
                 .AddMvcControllers()
                 .ConfigureCookiePolicy()
                 .ConfigureApplicationCookie()
+                .AddAuthentication(builder.Configuration)
                 .AddApplicationServices(builder.Configuration)
                 .AddApplicationDbContexts(builder.Configuration)
                 .AddDistributedSqlServerCache(builder.Configuration);

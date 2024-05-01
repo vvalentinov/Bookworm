@@ -19,6 +19,8 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
+    using static Bookworm.Data.IdentityOptionsProvider;
+
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationServices(
@@ -62,6 +64,20 @@
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IPublishersService, PublishersService>();
             services.AddScoped<IAuthorsService, AuthorsService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.AddAuthentication()
+                .AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+            });
 
             return services;
         }
@@ -116,7 +132,7 @@
 
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
-            services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
+            services.AddDefaultIdentity<ApplicationUser>(GetIdentityOptions)
                             .AddRoles<ApplicationRole>()
                             .AddEntityFrameworkStores<ApplicationDbContext>();
 

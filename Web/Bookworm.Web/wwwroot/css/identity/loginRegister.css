@@ -1,57 +1,54 @@
 ﻿.loginRegisterContainer {
     display: flex;
-    justify-content: space-evenly;
-    align-items: stretch;
-    min-height: calc(100vh - 200px);
-    border: solid 2px black;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    min-height: calc(100vh - 100px);
+    padding: 1rem 0;
 }
 
     .loginRegisterContainer .imgContainer {
-        border: solid 2px red;
+        flex-basis: 40%;
     }
 
-        .loginRegisterContainer .imgContainer img {
-            height: 10rem;
-        }
-
-    .loginRegisterContainer .loginRegisterFormContainer {
-        flex-basis: 50%;
-    }
-
-    .loginRegisterContainer #account {
+    .loginRegisterContainer .formContainer {
         border: solid 3px var(--clr-secondary);
         padding: 2rem;
         border-radius: 15px;
         background-color: var(--clr-primary);
+        flex-basis: 60%;
     }
 
-        .loginRegisterContainer #account h5,
-        .loginRegisterContainer #account .rememberMe {
+    .loginRegisterContainer form input:not([type='checkbox']) {
+        border: solid 2px var(--clr-secondary);
+        font-size: 1.3rem;
+    }
+
+    .loginRegisterContainer form .rememberMeContainer {
+        display: flex;
+        align-items: center;
+        color: var(--clr-white);
+        gap: 0.5rem;
+    }
+
+    .loginRegisterContainer form button[type="submit"] {
+        background-color: var(--clr-secondary);
+        border: solid 2px black;
+        padding: 0.4rem 3rem;
+        font-size: 2rem;
+    }
+
+        .loginRegisterContainer form button[type="submit"]:hover {
             color: white;
         }
 
-        .loginRegisterContainer #account button[type="submit"] {
-            background-color: var(--clr-secondary);
-            border: solid 2px black;
-            padding: 0.4rem 3rem;
-            font-size: 2rem;
-        }
-
-            .loginRegisterContainer #account button[type="submit"]:hover {
-                color: white;
-            }
-
 @media only screen and (max-width: 1000px) {
-    .loginRegisterFormContainer .imageContainer {
+    .loginRegisterContainer .imgContainer {
         display: none;
     }
 
-    .loginRegisterFormContainer {
-        margin: 1rem;
-    }
-
-    .loginRegisterForm {
-        width: 100%;
+    .loginRegisterContainer form {
+        flex-basis: 100%;
     }
 }
 

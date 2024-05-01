@@ -23,6 +23,8 @@
             this.Quotes = new HashSet<Quote>();
         }
 
+        public int Points { get; set; }
+
         public DateTime CreatedOn { get; set; }
 
         public DateTime? ModifiedOn { get; set; }
@@ -30,8 +32,6 @@
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }
-
-        public int Points { get; set; }
 
         public ICollection<IdentityUserRole<string>> Roles { get; set; }
 
