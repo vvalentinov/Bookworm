@@ -74,10 +74,15 @@
         {
             services.AddAuthentication()
                 .AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-            });
+                {
+                    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+                    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                })
+                .AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = configuration["Authentication:Facebook:ClientId"];
+                    facebookOptions.AppSecret = configuration["Authentication:Facebook:ClientSecret"];
+                });
 
             return services;
         }
