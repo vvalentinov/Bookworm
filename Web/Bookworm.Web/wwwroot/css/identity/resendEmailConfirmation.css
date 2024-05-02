@@ -1,0 +1,34 @@
+﻿.resendEmailConfirmSection {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .resendEmailConfirmSection form {
+        border: solid 2px var(--clr-secondary);
+        width: 70%;
+        padding: 2rem;
+        border-radius: 15px;
+        background-color: var(--clr-primary);
+    }
+
+        .resendEmailConfirmSection form input {
+            border: solid 2px var(--clr-secondary);
+        }
+
+        .resendEmailConfirmSection form button,
+        .resendEmailConfirmSection form button:hover,
+        .resendEmailConfirmSection form button:active {
+            background-color: var(--clr-secondary) !important;
+        }
+
+            .resendEmailConfirmSection form button:hover {
+                color: white;
+            }
+
+@media only screen and (max-width: 1000px) {
+    .resendEmailConfirmSection form {
+        width: 90%;
+    }
+}

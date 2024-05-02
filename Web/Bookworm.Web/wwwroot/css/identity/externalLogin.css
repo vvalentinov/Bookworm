@@ -1,0 +1,32 @@
+﻿.externalLoginSection {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .externalLoginSection form {
+        width: 60%;
+        border: solid 2px var(--clr-secondary);
+        padding: 2rem;
+        border-radius: 15px;
+        background-color: var(--clr-primary);
+    }
+
+    .externalLoginSection form input {
+        border: solid 2px var(--clr-secondary);
+        font-size: 1.3rem;
+    }
+
+        .externalLoginSection form button,
+        .externalLoginSection form button:hover,
+        .externalLoginSection form button:active{
+            background-color: var(--clr-secondary) !important;
+        }
+
+@media only screen and (max-width: 1000px){
+    .externalLoginSection form {
+        width: 90%;
+    }
+}
