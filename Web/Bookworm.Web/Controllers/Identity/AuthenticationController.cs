@@ -86,12 +86,6 @@
                     return this.LocalRedirect(returnUrl);
                 }
 
-                /* if (result.RequiresTwoFactor)
-                // {
-                //    return this.RedirectToPage("./LoginWith2fa",
-                new { ReturnUrl = returnUrl, this.Input.RememberMe });
-                /*/
-
                 if (result.IsLockedOut)
                 {
                     this.logger.LogWarning("User account locked out.");
@@ -333,12 +327,11 @@
                         this.GetAppPassword());
                 }
 
-                // If account confirmation is required, we need to show the link if we don't have a real email sender
-                // if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                // {
-                //    return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                // }
-                await this.signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                await this.signInManager.SignInAsync(
+                    user,
+                    isPersistent: false,
+                    info.LoginProvider);
+
                 return this.LocalRedirect(returnUrl);
             }
 

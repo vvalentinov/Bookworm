@@ -50,13 +50,36 @@
             color: black;
         }
 
-        @media only screen and (max-width: 1000px) {
-            .loginRegisterContainer .imgContainer {
+    .loginRegisterContainer #external-account .facebookBtn {
+        background-color: lightblue;
+    }
+
+        .loginRegisterContainer #external-account .facebookBtn:hover {
+            color: black;
+        }
+
+#external-account .btnsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+    #external-account .btnsContainer button {
+        width: 50%;
+    }
+
+@media only screen and (max-width: 1000px) {
+    .loginRegisterContainer .imgContainer {
         display: none;
     }
 
     .loginRegisterContainer form {
         flex-basis: 100%;
+    }
+
+    #external-account .btnsContainer button {
+        width: 100%;
     }
 }
 
@@ -72,5 +95,9 @@
 
     .loginRegisterForm {
         flex-basis: 80%;
+    }
+
+    #external-account .btnsContainer i {
+        display: none;
     }
 }

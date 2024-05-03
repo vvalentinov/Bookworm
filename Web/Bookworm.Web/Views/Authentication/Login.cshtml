@@ -45,6 +45,7 @@
         @{
             if ((Model.ExternalLogins?.Count ?? 0) != 0)
             {
+                <hr class="text-white" />
                 <div class="text-center mt-3">
                     <span class="fs-5 text-white">Or use another service to log in:</span>
                 </div>
@@ -54,26 +55,31 @@
                       asp-controller="Account"
                       asp-action="ExternalLogin"
                       asp-route-returnUrl="@Model.ReturnUrl">
-                    @foreach (var provider in Model.ExternalLogins!)
-                    {
-                        <div class="text-center">
-                            <button type="submit"
-                                    class="btn btn-lg my-3 @(provider.DisplayName == "Google" ? "googleBtn" : "")"
-                                    name="provider"
-                                    value="@provider.Name"
-                                    title="Log in using your @provider.DisplayName account">
-                                @if (provider.DisplayName == "Google")
-                                {
-                                    <text>@provider.DisplayName</text>
-                                    <i class="fa-brands fa-google"></i>
-                                }
-                                else
-                                {
-                                    @provider.DisplayName
-                                }
-                            </button>
-                        </div>
-                    }
+                    <div class="btnsContainer">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            if (provider.DisplayName == "Google")
+                            {
+                                <button type="submit"
+                                        class="btn btn-lg my-3 googleBtn"
+                                        name="provider"
+                                        value="@provider.Name"
+                                        title="Log in using your @provider.DisplayName account">
+                                    @provider.DisplayName<i class="fa-brands fa-google ms-1"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit"
+                                        class="btn btn-lg my-3 facebookBtn"
+                                        name="provider"
+                                        value="@provider.Name"
+                                        title="Log in using your @provider.DisplayName account">
+                                    @provider.DisplayName<i class="fa-brands fa-facebook ms-1"></i>
+                                </button>
+                            }
+                        }
+                    </div>
                 </form>
             }
         }

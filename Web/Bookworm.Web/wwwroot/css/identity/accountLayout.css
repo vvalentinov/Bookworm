@@ -1,0 +1,42 @@
+﻿main {
+    margin: 0 !important;
+}
+
+.accountLayoutNavbar {
+    width: 100% !important;
+    background-color: #D6F4FF;
+    font-size: 1.3rem;
+    min-height: 60px;
+}
+
+/*Change Password*/
+.changePassSection {
+    min-height: calc(100vh - (var(--nav-minHeight) + var(--footer-minHeight) + 63px));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+    .changePassSection form {
+        border: solid 2px var(--clr-secondary);
+        background-color: var(--clr-primary);
+        padding: 2rem;
+        width: 50%;
+        border-radius: 15px;
+    }
+
+        .changePassSection form input {
+            border: solid 2px var(--clr-secondary);
+            font-size: 1.3rem;
+        }
+
+        .changePassSection form button,
+        .changePassSection form button:hover,
+        .changePassSection form button:active {
+            background-color: var(--clr-secondary) !important;
+        }
+
+            .changePassSection form button:hover {
+                color: var(--clr-white);
+            }
