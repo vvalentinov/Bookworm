@@ -134,5 +134,46 @@
             this.TempData[SuccessMessage] = "Your password has been set.";
             return this.RedirectToAction(nameof(this.Index));
         }
+
+        [HttpGet]
+        public IActionResult ChangeUsername() => this.View();
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUsername(ChangeUsernameInputModel model)
+        {
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(model);
+            }
+
+            var user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                return this.NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            var userWithUsername = await this.userManager.FindByNameAsync(model.UserName);
+            if (userWithUsername != null)
+            {
+                this.ModelState.AddModelError(string.Empty, "Username is taken! Try again!");
+                return this.View(model);
+            }
+
+            var normalizedInputUserName = model.UserName.Trim().ToUpper();
+            if (user.NormalizedUserName != normalizedInputUserName)
+            {
+                var result = await this.userManager.SetUserNameAsync(user, model.UserName.Trim());
+                if (result.Succeeded == false)
+                {
+                    this.TempData[ErrorMessage] = "Unsucessfull operation! Try again!";
+                    return this.View(model);
+                }
+            }
+
+            await this.signInManager.RefreshSignInAsync(user);
+            this.TempData[SuccessMessage] = "Your username has been set.";
+            return this.RedirectToAction(nameof(this.Index));
+        }
     }
 }

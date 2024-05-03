@@ -1,0 +1,17 @@
+﻿@model ChangeUsernameInputModel
+
+<section class="accountLayoutSection">
+    <form method="post">
+        <h3 class="text-center text-white mb-3">Change your username</h3>
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-floating mb-3">
+            <input asp-for="@Model.UserName"
+                   class="form-control"
+                   aria-required="true"
+                   placeholder="Please enter your new username." />
+            <label asp-for="@Model.UserName" class="form-label"></label>
+            <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+        </div>
+        <button type="submit" class="w-100 btn btn-lg">Update password</button>
+    </form>
+</section>
