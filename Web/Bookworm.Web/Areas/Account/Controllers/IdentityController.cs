@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.Controllers.Identity
+﻿namespace Bookworm.Web.Areas.Account.Controllers
 {
     using System.Text;
     using System.Text.Encodings.Web;
@@ -16,7 +16,8 @@
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
 
-    public class IdentityController : BaseIdentityController
+    [Route("[area]/[action]")]
+    public class IdentityController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IEmailSender emailSender;

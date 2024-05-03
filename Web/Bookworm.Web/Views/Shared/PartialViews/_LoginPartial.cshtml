@@ -64,8 +64,8 @@
         </ul>
     </li>
     <form class="form-inline d-flex"
-          asp-area=""
-          asp-controller="Account"
+          asp-area="Account"
+          asp-controller="Authentication"
           asp-action="Logout">
         <button type="submit" class="nav-link logout-btn px-3">
             Logout<i class="fas fa-sign-out-alt ms-2"></i>
@@ -76,16 +76,16 @@ else
 {
     <li class="nav-item mx-2">
         <a class="nav-link"
-           asp-area=""
-           asp-controller="Account"
+           asp-area="Account"
+           asp-controller="Authentication"
            asp-action="Login">
             Login
         </a>
     </li>
     <li class="nav-item mx-2">
         <a class="nav-link"
-           asp-area=""
-           asp-controller="Account"
+           asp-area="Account"
+           asp-controller="Authentication"
            asp-action="Register">
             Register
         </a>

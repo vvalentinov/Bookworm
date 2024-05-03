@@ -85,21 +85,24 @@
         }
         <div class="text-center">
             <a class="form-link"
-               asp-controller="Account"
+               asp-area="Account"
+               asp-controller="Identity"
                asp-action="ForgotPassword">
                 Forgot Password?
             </a>
         </div>
         <div class="text-center">
             <a class="form-link"
-               asp-controller="Account"
+               asp-area="Account"
+               asp-controller="Identity"
                asp-action="ResendEmailConfirmation">
                 Resend email confirmation
             </a>
         </div>
         <div class="text-center">
             <a class="form-link"
-               asp-controller="Account"
+               asp-area="Account"
+               asp-controller="Authentication"
                asp-action="Register"
                asp-route-returnUrl="@Model.ReturnUrl">
                 You don't have an account? Register here!

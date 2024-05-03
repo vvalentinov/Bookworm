@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.Controllers.Identity
+﻿namespace Bookworm.Web.Areas.Account.Controllers
 {
     using System.Linq;
     using System.Security.Claims;
@@ -21,7 +21,7 @@
     using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
     using static Bookworm.Common.Constants.GlobalConstants;
 
-    public class AuthenticationController : BaseIdentityController
+    public class AuthenticationController : BaseController
     {
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
@@ -195,7 +195,7 @@
 
             return returnUrl != null ?
                 this.LocalRedirect(returnUrl) :
-                this.RedirectToAction("Index", "Home");
+                this.RedirectToAction("Index", "Home", new { area = string.Empty });
         }
 
         [HttpPost]

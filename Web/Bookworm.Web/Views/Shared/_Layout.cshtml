@@ -31,7 +31,7 @@
                                asp-area=""
                                asp-controller="Home"
                                asp-action="Index">
-                                <i class="me-2 fa fa-book"></i>
+                                <i class="fa fa-book"></i>
                                 @GlobalConstants.SystemName
                             </a>
                         </li>
@@ -78,7 +78,12 @@
     <footer class="bookworm-footer">
         <span>
             &copy; @DateTime.Now.Year - @GlobalConstants.SystemName -
-            <a class="privacy-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a class="privacy-link"
+               asp-area=""
+               asp-controller="Home"
+               asp-action="Privacy">
+                Privacy
+            </a>
         </span>
     </footer>
 

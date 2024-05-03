@@ -1,0 +1,51 @@
+﻿@model ChangeEmailInputModel
+
+@{
+    this.Layout = "_AccountLayout";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<section class="accountLayoutSection">
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+        @if (Model.IsEmailConfirmed)
+        {
+            <div class="form-floating mb-3 input-group">
+                <input asp-for="Email"
+                       class="form-control"
+                       placeholder="Please enter your email."
+                       disabled />
+                <div class="input-group-append">
+                    <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
+                </div>
+                <label asp-for="Email" class="form-label"></label>
+            </div>
+        }
+        else
+        {
+            <div class="form-floating mb-3">
+                <input asp-for="Email"
+                       class="form-control"
+                       placeholder="Please enter your email."
+                       disabled />
+                <label asp-for="Email" class="form-label"></label>
+                <button type="submit"
+                        asp-page-handler="SendVerificationEmail"
+                        class="btn btn-link">
+                    Send verification email
+                </button>
+            </div>
+        }
+        <div class="form-floating mb-3">
+            <input asp-for="NewEmail"
+                   class="form-control"
+                   autocomplete="email"
+                   aria-required="true"
+                   placeholder="Please enter new email." />
+            <label asp-for="NewEmail" class="form-label"></label>
+            <span asp-validation-for="NewEmail" class="text-danger"></span>
+        </div>
+        <button type="submit" class="w-100 btn btn-lg">Change email</button>
+    </form>
+</section>

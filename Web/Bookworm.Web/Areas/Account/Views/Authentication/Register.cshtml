@@ -42,44 +42,10 @@
                 <button type="submit" class="btn btn-lg">Register<i class="fa-solid fa-user-plus ms-2"></i></button>
             </div>
         </form>
-        @* @{
-            if ((Model.ExternalLogins?.Count ?? 0) != 0)
-            {
-                <div class="text-center mt-3">
-                    <span class="fs-5 text-white">Or use another service to register:</span>
-                </div>
-                <form method="post"
-                      id="external-account"
-                      class="form-horizontal"
-                      asp-controller="Account"
-                      asp-action="ExternalLogin"
-                      asp-route-returnUrl="@Model.ReturnUrl">
-                    @foreach (var provider in Model.ExternalLogins!)
-                    {
-                        <div class="text-center">
-                            <button type="submit"
-                                    class="btn btn-lg my-3"
-                                    name="provider"
-                                    value="@provider.Name"
-                                    title="Log in using your @provider.DisplayName account">
-                                @if (provider.DisplayName == "Google")
-                                {
-                                    <text>@provider.DisplayName</text>
-                                    <i class="fa-brands fa-google"></i>
-                                }
-                                else
-                                {
-                                    @provider.DisplayName
-                                }
-                            </button>
-                        </div>
-                    }
-                </form>
-            }
-        } *@
         <div class="text-center">
             <a class="form-link"
-               asp-controller="Account"
+               asp-area="Account"
+               asp-controller="Authentication"
                asp-action="Login"
                asp-route-returnUrl="@Model.ReturnUrl">
                 Already have an account? Login!
