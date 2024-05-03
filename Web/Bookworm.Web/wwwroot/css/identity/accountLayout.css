@@ -40,3 +40,39 @@
             .changePassSection form button:hover {
                 color: var(--clr-white);
             }
+
+/*Set Password*/
+.setPassSection {
+    min-height: calc(100vh - (var(--nav-minHeight) + var(--footer-minHeight) + 63px));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+    .setPassSection form {
+        border: solid 2px var(--clr-secondary);
+        background-color: var(--clr-primary);
+        padding: 2rem;
+        width: 50%;
+        border-radius: 15px;
+    }
+
+        .setPassSection form input {
+            border: solid 2px var(--clr-secondary);
+            font-size: 1.3rem;
+        }
+
+        .setPassSection form p {
+            margin-bottom: 0 !important;
+        }
+
+        .setPassSection form button,
+        .setPassSection form button:hover,
+        .setPassSection form button:active {
+            background-color: var(--clr-secondary) !important;
+        }
+
+            .setPassSection form button:hover {
+                color: var(--clr-white);
+            }

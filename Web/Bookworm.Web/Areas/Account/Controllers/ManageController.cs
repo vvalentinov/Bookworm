@@ -38,11 +38,11 @@
                 return this.NotFound($"Unable to load user with ID '{userId}'.");
             }
 
-            //var hasPassword = await this.userManager.HasPasswordAsync(user);
-            //if (!hasPassword)
-            //{
-            //    return RedirectToPage("./SetPassword");
-            //}
+            var hasPassword = await this.userManager.HasPasswordAsync(user);
+            if (hasPassword == false)
+            {
+                return this.RedirectToAction(nameof(this.SetPassword));
+            }
 
             var model = new ChangePasswordInputModel();
             return this.View(model);
@@ -81,6 +81,57 @@
             await this.signInManager.RefreshSignInAsync(user);
             this.logger.LogInformation("User changed their password successfully.");
             this.TempData[SuccessMessage] = "Your password has been changed.";
+            return this.RedirectToAction(nameof(this.Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SetPassword()
+        {
+            var user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                return this.NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            var hasPassword = await this.userManager.HasPasswordAsync(user);
+            if (hasPassword)
+            {
+                return this.RedirectToAction(nameof(this.ChangePassword));
+            }
+
+            var model = new SetPasswordInputModel();
+            return this.View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetPassword(SetPasswordInputModel model)
+        {
+            if (this.ModelState.IsValid == false)
+            {
+                return this.View(model);
+            }
+
+            var user = await this.userManager.GetUserAsync(this.User);
+            if (user == null)
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                return this.NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            var addPasswordResult = await this.userManager.AddPasswordAsync(user, model.NewPassword);
+            if (addPasswordResult.Succeeded == false)
+            {
+                foreach (var error in addPasswordResult.Errors)
+                {
+                    this.ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return this.View(model);
+            }
+
+            await this.signInManager.RefreshSignInAsync(user);
+            this.TempData[SuccessMessage] = "Your password has been set.";
             return this.RedirectToAction(nameof(this.Index));
         }
     }
