@@ -15,6 +15,7 @@
                 .AddMvcControllers()
                 .ConfigureCookiePolicy()
                 .ConfigureApplicationCookie()
+                .ConfigureOptions(builder.Configuration)
                 .AddAuthentication(builder.Configuration)
                 .AddApplicationServices(builder.Configuration)
                 .AddApplicationDbContexts(builder.Configuration)

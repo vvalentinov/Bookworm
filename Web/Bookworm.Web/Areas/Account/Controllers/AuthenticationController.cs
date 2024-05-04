@@ -15,7 +15,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
@@ -27,20 +26,17 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<LoginViewModel> logger;
         private readonly IEmailSender emailSender;
-        private readonly IConfiguration configuration;
 
         public AuthenticationController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<LoginViewModel> logger,
-            IEmailSender emailSender,
-            IConfiguration configuration)
+            IEmailSender emailSender)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.logger = logger;
             this.emailSender = emailSender;
-            this.configuration = configuration;
         }
 
         [HttpGet]
@@ -148,23 +144,7 @@
                 {
                     this.logger.LogInformation("User created a new account with password.");
 
-                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                    var callbackUrl = this.Url.Action(
-                        "ConfirmEmail",
-                        AccountAreaName,
-                        new { userId = user.Id, code },
-                        this.Request.Scheme);
-
-                    await this.emailSender.SendEmailAsync(
-                        this.GetFromEmail(),
-                        SystemName,
-                        model.Email,
-                        user.UserName,
-                        "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                        this.GetAppPassword());
+                    await this.SendEmailConfirmationEmailAsync(user, model.Email);
 
                     if (this.userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -308,23 +288,7 @@
 
                 if (user.EmailConfirmed == false)
                 {
-                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                    var callbackUrl = this.Url.Action(
-                        "ConfirmEmail",
-                        AccountAreaName,
-                        new { userId, code },
-                        this.Request.Scheme);
-
-                    await this.emailSender.SendEmailAsync(
-                        this.GetFromEmail(),
-                        SystemName,
-                        model.Email,
-                        user.UserName,
-                        "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                        this.GetAppPassword());
+                    await this.SendEmailConfirmationEmailAsync(user, model.Email);
                 }
 
                 await this.signInManager.SignInAsync(
@@ -346,8 +310,13 @@
             return this.View(nameof(this.ExternalLogin), model);
         }
 
-        private string GetFromEmail() => this.configuration.GetValue<string>("MailKitEmailSender:Email");
+        private async Task SendEmailConfirmationEmailAsync(ApplicationUser user, string email)
+        {
+            var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-        private string GetAppPassword() => this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
+            var callbackUrl = this.Url.Action("ConfirmEmail", AccountAreaName, new { userId = user.Id, code }, this.Request.Scheme);
+            await this.emailSender.SendEmailConfirmationAsync(user.UserName, email, HtmlEncoder.Default.Encode(callbackUrl));
+        }
     }
 }

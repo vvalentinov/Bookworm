@@ -15,6 +15,7 @@
     using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
 
     [Route("[area]/[action]")]
     public class IdentityController : BaseController
@@ -50,7 +51,7 @@
             }
 
             var user = await this.userManager.FindByEmailAsync(model.Email);
-            if (user == null || !await this.userManager.IsEmailConfirmedAsync(user))
+            if (user == null || await this.userManager.IsEmailConfirmedAsync(user) == false)
             {
                 return this.RedirectToAction("Index", "Home", new { area = string.Empty });
             }
@@ -58,22 +59,10 @@
             var code = await this.userManager.GeneratePasswordResetTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-            var callbackUrl = this.Url.Action(
-                "ResetPassword",
-                "Account",
-                new { code },
-                this.Request.Scheme);
+            var callbackUrl = this.Url.Action(nameof(this.ResetPassword), AccountAreaName, new { code }, this.Request.Scheme);
+            await this.emailSender.SendPasswordResetEmailAsync(user.UserName, model.Email, EncodeUrl(callbackUrl));
 
-            await this.emailSender.SendEmailAsync(
-                this.GetFromEmail(),
-                "Bookworm",
-                model.Email,
-                user.UserName,
-                "Password reset",
-                $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                this.GetAppPassword());
-
-            this.TempData[TempDataMessageConstant.SuccessMessage] = "Please check your email to reset your password.";
+            this.TempData[TempDataMessageConstant.SuccessMessage] = "Check your email to reset your password";
             return this.RedirectToAction("Index", "Home", new { area = string.Empty });
         }
 
@@ -102,10 +91,7 @@
 
             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Code));
 
-            var result = await this.userManager.ResetPasswordAsync(
-                user,
-                code,
-                model.Password);
+            var result = await this.userManager.ResetPasswordAsync(user, code, model.Password);
             if (result.Succeeded)
             {
                 return this.View("ResetPasswordConfirmation");
@@ -127,38 +113,23 @@
         [AllowAnonymous]
         public async Task<IActionResult> ResendEmailConfirmation(EmailInputViewModel model)
         {
-            if (this.ModelState.IsValid)
+            var user = await this.userManager.FindByEmailAsync(model.Email);
+
+            if (this.ModelState.IsValid == false || user == null)
             {
-                var user = await this.userManager.FindByEmailAsync(model.Email);
-                if (user == null)
-                {
-                    return this.View(model);
-                }
-
-                var userId = await this.userManager.GetUserIdAsync(user);
-
-                var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                var callbackUrl = this.Url.Action("ConfirmEmail", "User", new { userId, code }, this.Request.Scheme);
-
-                var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
-                var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
-
-                await this.emailSender.SendEmailAsync(
-                    fromEmail,
-                    "Bookworm",
-                    model.Email,
-                    user.UserName,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                    appPassword);
-
-                this.TempData[TempDataMessageConstant.SuccessMessage] = "Verification email sent. Please check your email.";
-                return this.RedirectToAction("Index", "Home", new { area = string.Empty });
+                return this.View(model);
             }
 
-            return this.View(model);
+            var userId = await this.userManager.GetUserIdAsync(user);
+
+            var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var callbackUrl = this.Url.Action(nameof(this.ConfirmEmail), "User", new { userId, code }, this.Request.Scheme);
+            await this.emailSender.SendPasswordResetEmailAsync(user.UserName, model.Email, EncodeUrl(callbackUrl));
+
+            this.TempData[TempDataMessageConstant.SuccessMessage] = "Verification email sent. Please check your email.";
+            return this.RedirectToAction("Index", "Home", new { area = string.Empty });
         }
 
         [HttpGet]
@@ -183,8 +154,6 @@
             return this.View();
         }
 
-        private string GetFromEmail() => this.configuration.GetValue<string>("MailKitEmailSender:Email");
-
-        private string GetAppPassword() => this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
+        private static string EncodeUrl(string url) => HtmlEncoder.Default.Encode(url);
     }
 }

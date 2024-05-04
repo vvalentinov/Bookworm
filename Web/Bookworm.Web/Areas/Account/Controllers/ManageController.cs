@@ -10,7 +10,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     using static Bookworm.Common.Constants.TempDataMessageConstant;
@@ -21,20 +20,17 @@
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ILogger<ChangePasswordInputModel> logger;
         private readonly IEmailSender emailSender;
-        private readonly IConfiguration configuration;
 
         public ManageController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<ChangePasswordInputModel> logger,
-            IEmailSender emailSender,
-            IConfiguration configuration)
+            IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
             this.emailSender = emailSender;
-            this.configuration = configuration;
         }
 
         public IActionResult Index() => this.View();
@@ -206,23 +202,8 @@
 
                 var userId = user.Id;
 
-                var callbackUrl = this.Url.Action(
-                    "ConfirmEmail",
-                    string.Empty,
-                    new { userId, code },
-                    this.Request.Scheme);
-
-                var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
-                var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
-
-                await this.emailSender.SendEmailAsync(
-                    fromEmail,
-                    "Bookworm",
-                    user.Email,
-                    user.UserName,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                    appPassword);
+                var callbackUrl = this.Url.Action("ConfirmEmail", string.Empty, new { userId, code }, this.Request.Scheme);
+                await this.emailSender.SendEmailConfirmationAsync(user.UserName, user.Email, HtmlEncoder.Default.Encode(callbackUrl));
 
                 this.TempData[ErrorMessage] = "You need to confirm your email! Check your inbox!";
                 return this.RedirectToAction(nameof(this.Index));
@@ -256,23 +237,8 @@
                 var code = await this.userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-                var callbackUrl = this.Url.Action(
-                    nameof(this.Index),
-                    "Manage",
-                    new { },
-                    this.Request.Scheme);
-
-                var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
-                var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
-
-                await this.emailSender.SendEmailAsync(
-                    fromEmail,
-                    "Bookworm",
-                    model.NewEmail,
-                    user.UserName,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                    appPassword);
+                var callbackUrl = this.Url.Action(nameof(this.Index), "Manage", new { }, this.Request.Scheme);
+                await this.emailSender.SendEmailConfirmationAsync(user.UserName, model.NewEmail, HtmlEncoder.Default.Encode(callbackUrl));
 
                 this.TempData[SuccessMessage] = "Verification email sent. Please check your email.";
                 return this.RedirectToAction(nameof(this.Index));

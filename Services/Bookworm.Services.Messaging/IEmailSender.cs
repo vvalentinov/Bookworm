@@ -1,18 +1,22 @@
 ﻿namespace Bookworm.Services.Messaging
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IEmailSender
     {
-        Task SendEmailAsync(
-            string fromEmail,
-            string fromName,
-            string toEmail,
+        Task SendPasswordResetEmailAsync(
             string toName,
-            string subject,
-            string htmlContent,
-            string appPassword = null,
-            IEnumerable<EmailAttachment> attachments = null);
+            string toEmail,
+            string callbackUrl);
+
+        Task SendEmailConfirmationAsync(
+            string toName,
+            string toEmail,
+            string callbackUrl);
+
+        Task SendBookApprovedEmailAsync(
+            string toName,
+            string toEmail,
+            string bookTitle);
     }
 }

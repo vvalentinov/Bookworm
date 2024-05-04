@@ -11,7 +11,6 @@
     using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
@@ -25,7 +24,6 @@
         private readonly IValidateUploadedBookService validateUploadedBookService;
         private readonly IUsersService usersService;
         private readonly IEmailSender emailSender;
-        private readonly IConfiguration configuration;
         private readonly IRetrieveBooksService retrieveBooksService;
 
         public UpdateBookService(
@@ -36,7 +34,6 @@
             IValidateUploadedBookService validateUploadedBookService,
             IUsersService usersService,
             IEmailSender emailSender,
-            IConfiguration configuration,
             IRetrieveBooksService retrieveBooksService)
         {
             this.bookRepository = bookRepository;
@@ -46,7 +43,6 @@
             this.validateUploadedBookService = validateUploadedBookService;
             this.usersService = usersService;
             this.emailSender = emailSender;
-            this.configuration = configuration;
             this.retrieveBooksService = retrieveBooksService;
         }
 
@@ -61,16 +57,7 @@
             var bookCreator = await this.usersService.GetUserWithIdAsync(book.UserId);
             await this.usersService.IncreaseUserPointsAsync(book.UserId, BookUploadPoints);
 
-            var fromEmail = this.configuration.GetValue<string>("MailKitEmailSender:Email");
-            var appPassword = this.configuration.GetValue<string>("MailKitEmailSender:AppPassword");
-            await this.emailSender.SendEmailAsync(
-                fromEmail,
-                "Bookworm",
-                bookCreator.Email,
-                bookCreator.UserName,
-                "Approved Book",
-                $"<h1>Your book: {book.Title} has been approved! Congratulations!</h1>",
-                appPassword);
+            await this.emailSender.SendBookApprovedEmailAsync(bookCreator.UserName, bookCreator.Email, book.Title);
         }
 
         public async Task UnapproveBookAsync(int bookId)

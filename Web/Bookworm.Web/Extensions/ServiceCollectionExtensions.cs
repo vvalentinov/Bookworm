@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Web.Extensions
 {
+    using Bookworm.Common.Options;
     using Bookworm.Data;
     using Bookworm.Data.Common;
     using Bookworm.Data.Common.Repositories;
@@ -31,13 +32,12 @@
 
             services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 
-            services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
-
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IEmailSender, MailKitEmailSender>();
+
+            services.AddScoped<IDbQueryRunner, DbQueryRunner>();
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
 
             // Quotes services
             services.AddScoped<IManageQuoteLikesService, ManageQuoteLikesService>();
@@ -83,6 +83,16 @@
                     facebookOptions.AppId = configuration["Authentication:Facebook:ClientId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:ClientSecret"];
                 });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureOptions(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.Configure<MailKitEmailSenderOptions>(
+                configuration.GetSection(MailKitEmailSenderOptions.MailKitEmailSender));
 
             return services;
         }
@@ -146,9 +156,8 @@
 
         public static IServiceCollection AddMvcControllers(this IServiceCollection services)
         {
-            services.AddControllersWithViews(opt =>
-                opt.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
-
+            services.AddControllersWithViews(options =>
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
             return services;
         }
 

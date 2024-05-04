@@ -52,7 +52,8 @@
                 <form method="post"
                       id="external-account"
                       class="form-horizontal"
-                      asp-controller="Account"
+                      asp-area="Account"
+                      asp-controller="Authentication"
                       asp-action="ExternalLogin"
                       asp-route-returnUrl="@Model.ReturnUrl">
                     <div class="btnsContainer">
