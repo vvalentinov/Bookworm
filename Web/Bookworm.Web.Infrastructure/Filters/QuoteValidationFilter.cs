@@ -15,7 +15,9 @@
             var action = (string)context.RouteData.Values["action"];
             var model = context.ActionArguments["model"];
 
-            if (action == "Edit")
+            var isEditAction = action == "Edit";
+
+            if (isEditAction)
             {
                 var id = model.GetType().GetProperty("Id").GetValue(model);
 
@@ -28,13 +30,16 @@
 
             if (context.ModelState.IsValid == false)
             {
-                controller.TempData[ErrorMessage] = string.Join(
-                    ", ",
-                    context
-                    .ModelState
-                    .Values
-                    .SelectMany(v => v.Errors)
-                    .Select(x => x.ErrorMessage));
+                if (isEditAction == false)
+                {
+                    controller.TempData[ErrorMessage] = string.Join(
+                        ", ",
+                        context
+                        .ModelState
+                        .Values
+                        .SelectMany(v => v.Errors)
+                        .Select(x => x.ErrorMessage));
+                }
 
                 context.Result = controller.View(model);
             }
