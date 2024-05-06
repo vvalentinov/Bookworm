@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web.Infrastructure.Attributes
+﻿namespace Bookworm.Web.Infrastructure.ValidationAttributes
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -7,11 +7,11 @@
 
     using Microsoft.AspNetCore.Http;
 
-    public class FileAllowedExtensionsAttribute : ValidationAttribute
+    public class FileAllowedExtensionsValidationAttribute : ValidationAttribute
     {
         private readonly string[] extensions;
 
-        public FileAllowedExtensionsAttribute(string[] extensions)
+        public FileAllowedExtensionsValidationAttribute(string[] extensions)
         {
             this.extensions = extensions;
         }

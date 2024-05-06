@@ -1,14 +1,13 @@
-﻿namespace Bookworm.Web.Infrastructure.Attributes
+﻿namespace Bookworm.Web.Infrastructure.ValidationAttributes
 {
     using System.Collections;
     using System.ComponentModel.DataAnnotations;
 
-    public class NotEmptyCollectionAttribute
-        : ValidationAttribute
+    public class NotEmptyCollectionValidationAttribute : ValidationAttribute
     {
         private readonly string collectionName;
 
-        public NotEmptyCollectionAttribute(string collectionName)
+        public NotEmptyCollectionValidationAttribute(string collectionName)
         {
             this.collectionName = collectionName;
         }

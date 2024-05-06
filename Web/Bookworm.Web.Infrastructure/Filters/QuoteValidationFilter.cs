@@ -12,10 +12,8 @@
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var controller = (Controller)context.Controller;
-            var action = (string)context.RouteData.Values["action"];
             var model = context.ActionArguments["model"];
-
-            var isEditAction = action == "Edit";
+            bool isEditAction = (string)context.RouteData.Values["action"] == "Edit";
 
             if (isEditAction)
             {
@@ -32,13 +30,8 @@
             {
                 if (isEditAction == false)
                 {
-                    controller.TempData[ErrorMessage] = string.Join(
-                        ", ",
-                        context
-                        .ModelState
-                        .Values
-                        .SelectMany(v => v.Errors)
-                        .Select(x => x.ErrorMessage));
+                    var errors = context.ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage);
+                    controller.TempData[ErrorMessage] = string.Join(", ", errors);
                 }
 
                 context.Result = controller.View(model);

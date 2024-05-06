@@ -1,6 +1,6 @@
 ﻿namespace Bookworm.Web.ViewModels.Books
 {
-    using Bookworm.Web.Infrastructure.Attributes;
+    using Bookworm.Web.Infrastructure.ValidationAttributes;
 
     public class RandomBookInputModel
     {

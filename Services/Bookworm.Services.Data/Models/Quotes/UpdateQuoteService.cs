@@ -89,8 +89,10 @@
 
         public async Task UnapproveQuoteAsync(int quoteId)
         {
-            var quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId)
-                ?? throw new InvalidOperationException(QuoteWrongIdError);
+            var quote = await this.quoteRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == quoteId) ??
+                throw new InvalidOperationException(QuoteWrongIdError);
 
             quote.IsApproved = false;
             await this.quoteRepository.SaveChangesAsync();

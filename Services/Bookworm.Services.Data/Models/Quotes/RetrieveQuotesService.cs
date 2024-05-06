@@ -30,7 +30,9 @@
             this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<QuoteListingViewModel> GetAllApprovedAsync(int? page = null, string userId = null)
+        public async Task<QuoteListingViewModel> GetAllApprovedAsync(
+            int? page = null,
+            string userId = null)
         {
             var quotesQuery = this.quoteRepository
                 .AllAsNoTracking()
@@ -40,7 +42,9 @@
 
             if (page.HasValue)
             {
-                quotesQuery = quotesQuery.Skip((page.Value - 1) * QuotesPerPage).Take(QuotesPerPage);
+                quotesQuery = quotesQuery
+                    .Skip((page.Value - 1) * QuotesPerPage)
+                    .Take(QuotesPerPage);
             }
 
             var quotes = await quotesQuery.ToListAsync();
@@ -91,7 +95,7 @@
             var quote = await this.quoteRepository
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == quoteId) ??
-                 throw new InvalidOperationException("No quote with given id found!");
+                 throw new InvalidOperationException(QuoteWrongIdError);
 
             return new QuoteViewModel
             {
@@ -127,13 +131,20 @@
                 Quotes = quotes,
                 ItemsPerPage = QuotesPerPage,
                 PageNumber = page,
-                RecordsCount = await this.quoteRepository.AllAsNoTracking().CountAsync(x => x.UserId == userId),
+                RecordsCount = await this.quoteRepository
+                    .AllAsNoTracking()
+                    .CountAsync(x => x.UserId == userId),
             };
         }
 
-        public async Task<QuoteListingViewModel> GetAllByCriteriaAsync(GetQuotesApiDto getQuotesApiDto, string userId)
+        public async Task<QuoteListingViewModel> GetAllByCriteriaAsync(
+            GetQuotesApiDto getQuotesApiDto,
+            string userId)
         {
-            bool isValidSortCriteria = Enum.TryParse(getQuotesApiDto.SortCriteria, out SortQuotesCriteria sortQuotesCriteria);
+            bool isValidSortCriteria = Enum.TryParse(
+                getQuotesApiDto.SortCriteria,
+                out SortQuotesCriteria sortQuotesCriteria);
+
             if (isValidSortCriteria == false)
             {
                 throw new InvalidOperationException("Invalid sort quote criteria!");
@@ -269,7 +280,9 @@
             return AutoMapperConfig.MapperInstance.Map<UploadQuoteViewModel>(quote);
         }
 
-        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(List<QuoteViewModel> quotes, string userId)
+        private async Task<List<QuoteViewModel>> RetrieveQuoteUserStatusAsync(
+            List<QuoteViewModel> quotes,
+            string userId)
         {
             foreach (var quote in quotes)
             {

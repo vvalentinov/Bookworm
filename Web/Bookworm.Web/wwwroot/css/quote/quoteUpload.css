@@ -1,9 +1,12 @@
-﻿.title-card-container {
-    margin-top: 0rem !important;
+﻿.uploadQuoteSection {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
 }
 
-.uploadQuoteSection {
-    min-height: calc(100vh - 200px);
+.title-card-container {
+    margin: 0 !important;
+    min-height: 80px;
     padding-top: 2rem;
 }
 
@@ -11,7 +14,7 @@
     display: flex;
     justify-content: center;
     gap: 1.5rem;
-    margin-top: 5rem;
+    padding-top: 7rem;
 }
 
     .uploadQuoteBtnsContainer button,

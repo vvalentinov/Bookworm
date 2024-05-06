@@ -1,10 +1,9 @@
-﻿namespace Bookworm.Web.Infrastructure.Attributes
+﻿namespace Bookworm.Web.Infrastructure.ValidationAttributes
 {
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    public class BookYearValidationAttribute
-        : ValidationAttribute
+    public class BookYearValidationAttribute : ValidationAttribute
     {
         private readonly int minYear;
 

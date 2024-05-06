@@ -1,9 +1,8 @@
-﻿namespace Bookworm.Web.Infrastructure.Attributes
+﻿namespace Bookworm.Web.Infrastructure.ValidationAttributes
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class RandomBooksCountValidationAttribute
-        : ValidationAttribute
+    public class RandomBooksCountValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(
             object value,

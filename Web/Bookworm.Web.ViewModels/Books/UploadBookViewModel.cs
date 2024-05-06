@@ -5,7 +5,7 @@
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
-    using Bookworm.Web.Infrastructure.Attributes;
+    using Bookworm.Web.Infrastructure.ValidationAttributes;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Http;
@@ -48,11 +48,11 @@
         public int Year { get; set; }
 
         [Display(Name = "PDF file (Max - 15 MB)")]
-        [FileAllowedExtensionsAttribute([BookFileAllowedExtension])]
+        [FileAllowedExtensionsValidationAttribute([BookFileAllowedExtension])]
         public IFormFile BookFile { get; set; }
 
         [Display(Name = "Image File (Max - 5 MB)")]
-        [FileAllowedExtensionsAttribute([".jpg", ".jpeg", ".png"])]
+        [FileAllowedExtensionsValidationAttribute([".jpg", ".jpeg", ".png"])]
         public IFormFile ImageFile { get; set; }
 
         [Display(Name = nameof(Category))]
@@ -63,7 +63,7 @@
         [Required(ErrorMessage = FieldRequiredError)]
         public int LanguageId { get; set; }
 
-        [NotEmptyCollection(nameof(Authors))]
+        [NotEmptyCollectionValidation(nameof(Authors))]
         public IList<UploadAuthorViewModel> Authors { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Bookworm.Web.Infrastructure.Attributes;
+    using Bookworm.Web.Infrastructure.ValidationAttributes;
     using Xunit;
 
     public class PublishedYearValidationAttributeTests
