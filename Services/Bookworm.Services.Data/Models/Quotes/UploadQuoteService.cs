@@ -8,30 +8,21 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.DTOs;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.IdentityErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
 
     public class UploadQuoteService : IUploadQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
-        private readonly UserManager<ApplicationUser> userManager;
 
-        public UploadQuoteService(
-            IDeletableEntityRepository<Quote> quoteRepository,
-            UserManager<ApplicationUser> userManager)
+        public UploadQuoteService(IDeletableEntityRepository<Quote> quoteRepository)
         {
             this.quoteRepository = quoteRepository;
-            this.userManager = userManager;
         }
 
         public async Task UploadQuoteAsync(QuoteDto quoteDto, string userId)
         {
-            var user = await this.userManager.FindByIdAsync(userId) ??
-                throw new InvalidOperationException(UserWrongIdError);
-
             string content = quoteDto.Content.Trim();
 
             bool quoteExist = await this.quoteRepository
@@ -43,7 +34,7 @@
                 throw new InvalidOperationException(QuoteExistsError);
             }
 
-            var quote = new Quote { Content = content, UserId = user.Id };
+            var quote = new Quote { Content = content, UserId = userId };
 
             switch (quoteDto.Type)
             {

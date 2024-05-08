@@ -13,7 +13,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
 
@@ -92,9 +91,7 @@
             catch (Exception ex)
             {
                 this.TempData[ErrorMessage] = ex.Message;
-                return ex.Message == QuoteWrongIdError ?
-                    this.RedirectToAction(nameof(this.UserQuotes)) :
-                    this.View(await this.retrieveQuotesService.GetQuoteForEditAsync(model.Id, userId));
+                return this.RedirectToAction(nameof(this.UserQuotes));
             }
         }
 
