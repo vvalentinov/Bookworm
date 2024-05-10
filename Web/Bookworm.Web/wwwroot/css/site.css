@@ -180,11 +180,9 @@ main {
 
 .modal .modal-header .btn-modal-close {
     color: red;
-    font-size: 1.3rem;
+    font-size: 2rem;
     cursor: pointer;
 }
-
-
 
 /*Toast*/
 .toast-header-success {

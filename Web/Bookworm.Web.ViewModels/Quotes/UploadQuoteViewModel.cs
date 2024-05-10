@@ -48,24 +48,24 @@
                     yield return new ValidationResult(string.Format(FieldRequiredError, "Book Title"));
                 }
 
-                if (this.AuthorName?.Length < QuoteAuthorNameMinLength ||
-                    this.AuthorName?.Length > QuoteAuthorNameMaxLength)
+                if (this.AuthorName?.Length < QuoteSourceMinLength ||
+                    this.AuthorName?.Length > QuoteContentMaxLength)
                 {
                     yield return new ValidationResult(string.Format(
                         FieldStringLengthError,
                         "Author",
-                        QuoteAuthorNameMaxLength,
-                        QuoteAuthorNameMinLength));
+                        QuoteContentMaxLength,
+                        QuoteSourceMinLength));
                 }
 
-                if (this.BookTitle?.Length < QuoteBookTitleMinLength ||
-                    this.BookTitle?.Length > QuoteBookTitleMaxLength)
+                if (this.BookTitle?.Length < QuoteSourceMinLength ||
+                    this.BookTitle?.Length > QuoteContentMaxLength)
                 {
                     yield return new ValidationResult(string.Format(
                         FieldStringLengthError,
                         "Book Title",
-                        QuoteBookTitleMaxLength,
-                        QuoteBookTitleMinLength));
+                        QuoteContentMaxLength,
+                        QuoteSourceMinLength));
                 }
             }
             else if (this.Type == QuoteType.MovieQuote)
@@ -75,14 +75,14 @@
                     yield return new ValidationResult(string.Format(FieldRequiredError, "Movie Title"));
                 }
 
-                if (this.MovieTitle?.Length < QuoteMovieTitleMinLength ||
-                    this.MovieTitle?.Length > QuoteMovieTitleMaxLength)
+                if (this.MovieTitle?.Length < QuoteSourceMinLength ||
+                    this.MovieTitle?.Length > QuoteContentMaxLength)
                 {
                     yield return new ValidationResult(string.Format(
                         FieldStringLengthError,
                         "Movie Title",
-                        QuoteMovieTitleMaxLength,
-                        QuoteMovieTitleMinLength));
+                        QuoteContentMaxLength,
+                        QuoteSourceMinLength));
                 }
             }
             else if (this.Type == QuoteType.GeneralQuote)
@@ -92,14 +92,14 @@
                     yield return new ValidationResult(string.Format(FieldRequiredError, "Author"));
                 }
 
-                if (this.AuthorName?.Length < QuoteAuthorNameMinLength ||
-                    this.AuthorName?.Length > QuoteAuthorNameMaxLength)
+                if (this.AuthorName?.Length < QuoteSourceMinLength ||
+                    this.AuthorName?.Length > QuoteContentMaxLength)
                 {
                     yield return new ValidationResult(string.Format(
                         FieldStringLengthError,
                         "Author",
-                        QuoteAuthorNameMaxLength,
-                        QuoteAuthorNameMinLength));
+                        QuoteContentMaxLength,
+                        QuoteSourceMinLength));
                 }
             }
             else

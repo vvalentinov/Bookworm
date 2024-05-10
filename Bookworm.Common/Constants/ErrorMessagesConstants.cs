@@ -6,6 +6,7 @@
         public const string FieldStringLengthError = "{0} field must be between {2} and {1} characters long!";
         public const string FieldRangeError = "{0} field's range must be between {1} and {2}!";
         public const string FieldInvalidError = "{0} field is invalid!";
+        public const string FieldMaxLengthError = "{0} field must not exceed {1} characters!";
 
         public static class BookErrorMessagesConstants
         {

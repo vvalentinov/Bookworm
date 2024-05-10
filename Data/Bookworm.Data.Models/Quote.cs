@@ -12,19 +12,19 @@
     public class Quote : BaseDeletableModel<int>
     {
         [Required]
-        [StringLength(
-            QuoteContentMaxLength,
-            MinimumLength = QuoteContentMinLength,
-            ErrorMessage = FieldStringLengthError)]
+        [MaxLength(QuoteContentMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string Content { get; set; }
 
         [Required]
         public bool IsApproved { get; set; }
 
+        [MaxLength(QuoteSourceMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string AuthorName { get; set; }
 
+        [MaxLength(QuoteSourceMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string BookTitle { get; set; }
 
+        [MaxLength(QuoteSourceMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string MovieTitle { get; set; }
 
         [Required]

@@ -35,7 +35,7 @@
 
     .uploadQuoteModalContainer img {
         flex-basis: 20%;
-        height: 30rem;
+        min-height: 35rem;
         width: 20rem;
         border: solid 2px var(--clr-secondary);
     }
