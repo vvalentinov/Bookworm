@@ -4,7 +4,9 @@
 
 @if (isForUserQuotes)
 {
-    <input type="hidden" id="isForUserQuotes" value=@isForUserQuotes.ToString().ToLower() />
+    <input type="hidden"
+           id="isForUserQuotes"
+           value=@isForUserQuotes.ToString().ToLower() />
     <div class="btn-group d-flex justify-content-center my-5 mb-3"
          role="group"
          aria-label="Basic radio toggle button group">
@@ -88,16 +90,14 @@
     <label class="btn border-dark border-2 fs-5" for="likes-count-desc">Sort Likes Count Desc</label>
 </div>
 
-<div class="input-group mb-3">
+<div class="input-group mb-3 searchInputGroup">
     <input type="text"
-           class="form-control border-2 border-black fs-4"
+           class="form-control"
            id="searchQuotesInput"
            placeholder="Search quotes..."
            aria-label="Recipient's username"
            aria-describedby="button-addon2">
-    <button class="btn border border-2 border-black"
-            type="button"
-            id="searchQuotesBtn">
+    <button type="button" id="searchQuotesBtn">
         <i class="fa-solid fa-magnifying-glass fa-xl"></i>
     </button>
 </div>

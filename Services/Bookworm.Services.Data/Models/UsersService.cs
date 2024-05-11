@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Users;
@@ -15,17 +14,10 @@
 
     public class UsersService : IUsersService
     {
-        private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IRepository<Quote> quoteRepository;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public UsersService(
-            IDeletableEntityRepository<Book> bookRepository,
-            IRepository<Quote> quoteRepository,
-            UserManager<ApplicationUser> userManager)
+        public UsersService(UserManager<ApplicationUser> userManager)
         {
-            this.bookRepository = bookRepository;
-            this.quoteRepository = quoteRepository;
             this.userManager = userManager;
         }
 

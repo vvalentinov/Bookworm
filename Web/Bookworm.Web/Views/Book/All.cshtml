@@ -49,10 +49,10 @@ else
     </vc:pagination>
 }
 
-@if (isUserAuthenticated)
-{
-    @section Scripts {
-    <script type="module" src="~/js/book/books.js"></script>
-    <script src="~/lib/select2/js/select2.min.js"></script>
+@section Scripts {
+    @if (isUserAuthenticated)
+    {
+        <script type="module" src="~/js/book/books.js"></script>
+        <script src="~/lib/select2/js/select2.min.js"></script>
     }
 }

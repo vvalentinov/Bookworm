@@ -35,9 +35,7 @@
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
-
                 var quotesApiDto = AutoMapperConfig.MapperInstance.Map<GetQuotesApiDto>(model);
-
                 var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync(quotesApiDto, userId);
 
                 return new JsonResult(quotesModel) { StatusCode = 200 };

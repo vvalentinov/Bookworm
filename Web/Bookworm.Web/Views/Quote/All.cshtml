@@ -23,10 +23,9 @@
                     @if (isUserAuthenticated)
                     {
                         <i onclick="likeQuote(this, @quote.Id, @quote.IsUserQuoteCreator.ToString().ToLower())"
-                           class="@(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
-                        @(quote.IsUserQuoteCreator == false && isUserAuthenticated ? "likeQuote" : "")
-                        fa-thumbs-up">
-                        </i>
+                           class="fa-thumbs-up
+                           @(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
+                           @(quote.IsUserQuoteCreator == false && isUserAuthenticated ? "likeQuote" : "")"></i>
                     }
                     else
                     {
@@ -38,24 +37,20 @@
             <div class="card-body">
                 <blockquote class="blockquote ">
                     <p>@quote.Content</p>
-                    @if (quote.AuthorName != null)
-                    {
-                        <footer class="blockquote-footer text-end">
+                    <footer class="blockquote-footer text-end">
+                        @if (quote.AuthorName != null)
+                        {
                             @quote.AuthorName
-                        </footer>
-                    }
-                    @if (quote.BookTitle != null)
-                    {
-                        <footer class="blockquote-footer text-end">
-                            From the book: @quote.BookTitle
-                        </footer>
-                    }
-                    @if (quote.MovieTitle != null)
-                    {
-                        <footer class="blockquote-footer text-end">
-                            From the movie: @quote.MovieTitle
-                        </footer>
-                    }
+                        }
+                        @if (quote.BookTitle != null)
+                        {
+                            <text>From the book: </text> @quote.BookTitle
+                        }
+                        @if (quote.MovieTitle != null)
+                        {
+                            <text>From the movie: </text> @quote.MovieTitle
+                        }
+                    </footer>
                 </blockquote>
             </div>
         </div>

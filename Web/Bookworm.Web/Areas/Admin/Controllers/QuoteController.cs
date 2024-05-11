@@ -3,13 +3,13 @@
     using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class QuoteController : BaseController
     {
@@ -27,30 +27,23 @@
             this.userManager = userManager;
         }
 
+        [HttpGet]
         public async Task<IActionResult> ApprovedQuotes()
-        {
-            var approvedQuotes = await this.retrieveQuotesService.GetAllApprovedAsync();
-            return this.View(approvedQuotes);
-        }
+            => this.View(await this.retrieveQuotesService.GetAllApprovedAsync());
 
+        [HttpGet]
         public async Task<IActionResult> UnapprovedQuotes()
-        {
-            var unapprovedQuotes = await this.retrieveQuotesService.GetAllUnapprovedAsync();
-            return this.View(unapprovedQuotes);
-        }
+            => this.View(await this.retrieveQuotesService.GetAllUnapprovedAsync());
 
+        [HttpGet]
         public async Task<IActionResult> DeletedQuotes()
-        {
-            var deletedQuotes = await this.retrieveQuotesService.GetAllDeletedAsync();
-            return this.View(deletedQuotes);
-        }
+            => this.View(await this.retrieveQuotesService.GetAllDeletedAsync());
 
         [HttpPost]
         public async Task<IActionResult> ApproveQuote(int quoteId)
         {
-            string userId = this.userManager.GetUserId(this.User);
-            await this.updateQuoteService.ApproveQuoteAsync(quoteId, userId);
-            return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+            await this.updateQuoteService.ApproveQuoteAsync(quoteId);
+            return this.RedirectToAction(nameof(this.UnapprovedQuotes));
         }
 
         [HttpPost]
@@ -59,16 +52,15 @@
             try
             {
                 var userId = this.userManager.GetUserId(this.User);
+                await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId, isCurrUserAdmin: true);
 
-                await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId);
-
-                this.TempData[TempDataMessageConstant.SuccessMessage] = DeleteSuccess;
-                return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+                this.TempData[SuccessMessage] = DeleteSuccess;
+                return this.RedirectToAction(nameof(this.UnapprovedQuotes));
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.UnapprovedQuotes), "Quote");
+                this.TempData[ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.UnapprovedQuotes));
             }
         }
 
@@ -76,14 +68,14 @@
         public async Task<IActionResult> Undelete(int quoteId)
         {
             await this.updateQuoteService.UndeleteQuoteAsync(quoteId);
-            return this.RedirectToAction(nameof(this.DeletedQuotes), "Quote");
+            return this.RedirectToAction(nameof(this.DeletedQuotes));
         }
 
         [HttpPost]
         public async Task<IActionResult> Unapprove(int quoteId)
         {
             await this.updateQuoteService.UnapproveQuoteAsync(quoteId);
-            return this.RedirectToAction(nameof(this.ApprovedQuotes), "Quote");
+            return this.RedirectToAction(nameof(this.ApprovedQuotes));
         }
     }
 }

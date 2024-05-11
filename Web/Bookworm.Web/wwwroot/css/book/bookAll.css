@@ -1,37 +1,5 @@
 ﻿@import 'bookListing.css';
 
-.bookSearchInputGroup input,
-.bookSearchInputGroup input:focus {
-    border: solid 3px black;
-    background-color: var(--clr-primary);
-    color: var(--clr-white);
-}
-
-    .bookSearchInputGroup input::placeholder {
-        color: white;
-    }
-
-.bookSearchInputGroup input,
-.bookSearchInputGroup button {
-    font-size: 1.5rem;
-}
-
-    .bookSearchInputGroup button,
-    .bookSearchInputGroup button:active {
-        width: 10%;
-        background-color: var(--clr-primary);
-        color: var(--clr-secondary);
-        border-start-end-radius: 10px;
-        border-end-end-radius: 10px;
-        border-top: solid 3px black;
-        border-right: solid 3px black;
-        border-bottom: solid 3px black;
-    }
-
-        .bookSearchInputGroup button:hover {
-            color: var(--clr-white);
-        }
-
 .select2-container--default .select2-selection--multiple {
     font-size: 1.5rem;
     border: solid 2px black !important;

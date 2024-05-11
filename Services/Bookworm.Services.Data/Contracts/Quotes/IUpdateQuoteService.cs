@@ -6,9 +6,12 @@
 
     public interface IUpdateQuoteService
     {
-        Task ApproveQuoteAsync(int quoteId, string userId);
+        Task ApproveQuoteAsync(int quoteId);
 
-        Task DeleteQuoteAsync(int quoteId, string userId);
+        Task DeleteQuoteAsync(
+            int quoteId,
+            string userId,
+            bool isCurrUserAdmin = false);
 
         Task UndeleteQuoteAsync(int quoteId);
 

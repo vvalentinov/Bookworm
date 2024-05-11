@@ -40,16 +40,12 @@
                 quoteDto,
                 "0fc3ea28-3165-440e-947e-670c90562320");
 
-            var quotesCount = await this.quoteRepoMock
+            var quote = await this.quoteRepoMock
                 .AllAsNoTracking()
-                .CountAsync();
+                .FirstOrDefaultAsync(q => q.Content == quoteDto.Content);
 
-            var quoteExists = await this.quoteRepoMock
-                .AllAsNoTracking()
-                .AnyAsync(q => q.Content == quoteDto.Content);
-
-            Assert.True(quoteExists);
-            Assert.Equal(2, quotesCount);
+            Assert.NotNull(quote);
+            Assert.Equal("0fc3ea28-3165-440e-947e-670c90562320", quote.UserId);
         }
 
         [Fact]
@@ -69,6 +65,25 @@
 
             Assert.NotNull(exception);
             Assert.Equal(QuoteExistsError, exception.Message);
+        }
+
+        [Fact]
+        public async Task QuoteUploadShouldThrowExceptionIfTypeIsInvalid()
+        {
+            var quoteDto = new QuoteDto
+            {
+                Content = "Some Content Here",
+                AuthorName = "Some Author Name Here",
+                Type = QuoteType.None,
+            };
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await this.uploadQuoteService.UploadQuoteAsync(
+                    quoteDto,
+                    "0fc3ea28-3165-440e-947e-670c90562320"));
+
+            Assert.NotNull(exception);
+            Assert.Equal(QuoteInvalidTypeError, exception.Message);
         }
     }
 }

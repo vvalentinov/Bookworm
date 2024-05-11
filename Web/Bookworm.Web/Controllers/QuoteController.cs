@@ -54,7 +54,7 @@
             catch (Exception ex)
             {
                 this.TempData[ErrorMessage] = ex.Message;
-                return this.View(model);
+                return this.RedirectToAction(nameof(this.Upload));
             }
         }
 

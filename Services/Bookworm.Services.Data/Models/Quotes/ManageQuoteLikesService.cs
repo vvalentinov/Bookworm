@@ -10,14 +10,10 @@
     public class ManageQuoteLikesService : IManageQuoteLikesService
     {
         private readonly IRepository<QuoteLike> quoteLikesRepository;
-        private readonly IDeletableEntityRepository<Quote> quoteRepository;
 
-        public ManageQuoteLikesService(
-            IRepository<QuoteLike> quoteLikesRepository,
-            IDeletableEntityRepository<Quote> quoteRepository)
+        public ManageQuoteLikesService(IRepository<QuoteLike> quoteLikesRepository)
         {
             this.quoteLikesRepository = quoteLikesRepository;
-            this.quoteRepository = quoteRepository;
         }
 
         public async Task<int> LikeAsync(int quoteId, string userId)
@@ -38,7 +34,7 @@
 
         public async Task<int> UnlikeAsync(int quoteId, string userId)
         {
-            QuoteLike quoteLike = await this.quoteLikesRepository
+            var quoteLike = await this.quoteLikesRepository
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(ql => ql.QuoteId == quoteId && ql.UserId == userId);
 
