@@ -31,6 +31,9 @@
         public QuoteType Type { get; set; }
 
         [Required]
+        public int Likes { get; set; }
+
+        [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
