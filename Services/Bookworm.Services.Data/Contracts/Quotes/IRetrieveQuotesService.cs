@@ -9,7 +9,7 @@
     {
         Task<QuoteViewModel> GetByIdAsync(int quoteId);
 
-        Task<QuoteListingViewModel> GetAllByCriteriaAsync(GetQuotesApiDto getQuotesApiDto, string userId);
+        Task<QuoteListingViewModel> GetAllByCriteriaAsync(string userId, GetQuotesApiDto getQuotesApiDto);
 
         Task<QuoteListingViewModel> GetAllApprovedAsync(int? page = null, string userId = null);
 

@@ -1,7 +1,6 @@
 function likeQuote(icon, quoteId, isUserQuoteCreator) {
     if (isUserQuoteCreator == false) {
-        const tokenInput = document.getElementById('RequestVerificationToken');
-        const token = tokenInput.value;
+        const token = document.getElementById('RequestVerificationToken').value;
 
         if (icon.classList.contains('fa-solid')) {
             fetch(`/ApiQuote/UnlikeQuote?quoteId=${quoteId}`,
@@ -15,8 +14,7 @@ function likeQuote(icon, quoteId, isUserQuoteCreator) {
                     const iconParentEl = icon.parentElement;
                     const span = iconParentEl.children[1];
                     span.textContent = `(${res})`;
-                })
-                .catch(err => console.log(err.message));
+                }).catch(err => console.log(err.message));
         } else {
             fetch(`/ApiQuote/LikeQuote?quoteId=${quoteId}`,
                 {
@@ -29,8 +27,7 @@ function likeQuote(icon, quoteId, isUserQuoteCreator) {
                     const iconParentEl = icon.parentElement;
                     const span = iconParentEl.children[1];
                     span.textContent = `(${res})`;
-                })
-                .catch(err => console.log(err.message));
+                }).catch(err => console.log(err.message));
         }
     }
 }

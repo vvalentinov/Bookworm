@@ -8,23 +8,25 @@
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
 
-    [Authorize]
     public class ApiQuoteController : ApiBaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IManageQuoteLikesService manageQuoteLikesService;
+        private readonly ILogger logger;
 
         public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
-            IManageQuoteLikesService manageQuoteLikesService)
+            IManageQuoteLikesService manageQuoteLikesService,
+            ILogger<QuoteViewModel> logger)
         {
             this.userManager = userManager;
+            this.logger = logger;
             this.retrieveQuotesService = retrieveQuotesService;
             this.manageQuoteLikesService = manageQuoteLikesService;
         }
@@ -36,12 +38,13 @@
             {
                 string userId = this.userManager.GetUserId(this.User);
                 var quotesApiDto = AutoMapperConfig.MapperInstance.Map<GetQuotesApiDto>(model);
-                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync(quotesApiDto, userId);
+                var quotesModel = await this.retrieveQuotesService.GetAllByCriteriaAsync(userId, quotesApiDto);
 
                 return new JsonResult(quotesModel) { StatusCode = 200 };
             }
             catch (Exception ex)
             {
+                this.logger.LogError(ex.Message);
                 return this.BadRequest(ex.Message);
             }
         }

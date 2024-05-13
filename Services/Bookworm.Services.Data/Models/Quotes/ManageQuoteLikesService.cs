@@ -40,7 +40,7 @@
 
             if (quoteLike != null)
             {
-                this.quoteLikesRepository.Update(quoteLike);
+                this.quoteLikesRepository.Delete(quoteLike);
                 await this.quoteLikesRepository.SaveChangesAsync();
             }
 

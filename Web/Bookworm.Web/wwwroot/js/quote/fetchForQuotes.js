@@ -5,8 +5,8 @@ import { getCheckedRadioBtn, constructUrl, getSearchTextFromQuoteTypeId } from '
 
 export const fetchForQuotes = (page) => {
     let isForUserRecords = document.getElementById('isForUserQuotes')?.value;
-    if (!isForUserRecords) {
-        isForUserRecords = false;
+    if (isForUserRecords) {
+        isForUserRecords = true;
     }
 
     let url;
