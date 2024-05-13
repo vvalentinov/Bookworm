@@ -1,9 +1,15 @@
 ﻿@model QuoteListingViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
     this.ViewData["Title"] = "All Quotes";
     var titleCardModel = new TitleCardPartialViewModel { Title = "All Quotes", Count = Model.RecordsCount };
     var isUserAuthenticated = this.User.Identity.IsAuthenticated;
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/quote/quoteAll.css"/>
 }
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
@@ -12,6 +18,8 @@
 {
     <partial name="PartialViews/Quotes/_QuotesButtonsPartial" />
 }
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 <div class="quotesContainer">
     @foreach (var quote in Model.Quotes)

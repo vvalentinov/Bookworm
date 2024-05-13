@@ -1,0 +1,75 @@
+﻿.quotesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    border: solid 2px black;
+    border-radius: 15px;
+    padding: 2rem 0.5rem;
+    margin-bottom: 2rem;
+    background-color: #34495E;
+}
+
+    .quotesContainer .card {
+        flex-basis: 32%;
+        border: solid 3px var(--clr-secondary);
+        display: flex;
+        flex-direction: column;
+        height: 17rem;
+    }
+
+        .quotesContainer .card .card-header {
+            border-bottom: solid 3px var(--clr-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .quotesContainer .card .card-header span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.3rem;
+            }
+
+                .quotesContainer .card .card-header span i {
+                    font-size: 1.7rem;
+                }
+
+        .quotesContainer .card .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quotesContainer .card blockquote {
+            margin: 0 !important;
+        }
+
+            .quotesContainer .card blockquote p {
+                text-align: justify;
+                word-break: break-word !important;
+            }
+
+@media only screen and (max-width: 1000px) {
+    .btn-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .quotesContainer {
+        flex-direction: column;
+    }
+
+    .quotesContainer .card {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .searchInputGroup button {
+        width: 30%;
+    }
+}
