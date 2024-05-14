@@ -1,42 +1,7 @@
 export function getCheckedRadioBtn(name) {
     return [...document.getElementsByName(name)].find(button => button.checked);
 }
-export function getQuoteTypeFromId(id) {
-    switch (id) {
-        case 'movie-quotes':
-            return 'MovieQuote';
-        case 'book-quotes':
-            return 'BookQuote';
-        case 'general-quotes':
-            return 'GeneralQuote';
-        case 'liked-quotes':
-            return 'LikedQuote';
-        default:
-            return null;
-    }
-}
-export function getQuoteStatusFromId(id) {
-    switch (id) {
-        case 'approvedQuotesRadio':
-            return 'Approved';
-        case 'unapprovedQuotesRadio':
-            return 'Unapproved';
-        default:
-            return null;
-    }
-}
-export function getQuoteSortCriteriaFromId(id) {
-    switch (id) {
-        case 'newest-to-oldest':
-            return 'NewestToOldest';
-        case 'oldest-to-newest':
-            return 'OldestToNewest';
-        case 'likes-count-desc':
-            return 'LikesCountDesc';
-        default:
-            return null;
-    }
-}
+
 export function getSearchTextFromQuoteTypeId(id) {
     if (id) {
         switch (id) {
@@ -49,24 +14,71 @@ export function getSearchTextFromQuoteTypeId(id) {
             case 'liked-quotes':
                 return 'Search in liked quotes...';
         }
-    } else {
-        return 'Search in quotes...';
     }
-}
-export function constructUrlParams(page, isForUserQuotes) {
-    const searchContent = searchQuotesInput.value;
-    const quoteType = getQuoteTypeFromId(getCheckedRadioBtn('btnradio')?.id);
-    const quoteStatus = getQuoteStatusFromId(getCheckedRadioBtn('quoteStatusRadio')?.id);
-    const sortCriteria = getQuoteSortCriteriaFromId(getCheckedRadioBtn('sortBtnRadio').id);
 
-    let urlParams = `sortCriteria=${sortCriteria}&content=${searchContent}&page=${page}&isForUserQuotes=${isForUserQuotes}`;
+    return 'Search in quotes...';
+}
+
+export const constructUrl = (page, isForUserQuotes) => {
+    // Get Quote Sort Criteria
+    let sortCriteria;
+    switch (getCheckedRadioBtn('sortBtnRadio')?.id) {
+        case 'newest-to-oldest':
+            sortCriteria = 'NewestToOldest';
+            break;
+        case 'oldest-to-newest':
+            sortCriteria = 'OldestToNewest';
+            break;
+        case 'likes-count-desc':
+            sortCriteria = 'LikesCountDesc';
+            break;
+        default:
+            sortCriteria = null;
+    }
+
+    let urlParams = `sortCriteria=${sortCriteria}
+        &content=${searchQuotesInput.value}
+        &page=${page}
+        &isForUserQuotes=${isForUserQuotes}`;
+
+    // Get Quote Type
+    let quoteType;
+    switch (getCheckedRadioBtn('btnradio')?.id) {
+        case 'movie-quotes':
+            quoteType = 'MovieQuote';
+            break;
+        case 'book-quotes':
+            quoteType = 'BookQuote';
+            break;
+        case 'general-quotes':
+            quoteType = 'GeneralQuote';
+            break;
+        case 'liked-quotes':
+            quoteType = 'LikedQuote';
+            break;
+        default:
+            quoteType = null;
+    }
+
     if (quoteType) {
         urlParams += `&type=${quoteType}`;
     }
+
+    // Get Quote Status
+    let quoteStatus;
+    switch (getCheckedRadioBtn('quoteStatusRadio')?.id) {
+        case 'approvedQuotesRadio':
+            quoteStatus = 'Approved';
+            break;
+        case 'unapprovedQuotesRadio':
+            quoteStatus = 'Unapproved';
+            break;
+        default: quoteStatus = null;
+    }
+
     if (quoteStatus) {
         urlParams += `&quoteStatus=${quoteStatus}`;
     }
-    return urlParams;
-}
 
-export const constructUrl = (page, isForUserQuotes) => `/ApiQuote/GetQuotes?${constructUrlParams(page, isForUserQuotes)}`;
+    return `/ApiQuote/GetQuotes?${urlParams}`;
+};

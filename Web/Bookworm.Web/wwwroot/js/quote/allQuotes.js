@@ -18,21 +18,14 @@ const quoteStatusButtons = [
     document.getElementById('unapprovedQuotesRadio')
 ];
 
-quoteTypeButtons.forEach(btn => btn.addEventListener('click', () => fetchForQuotes()));
-sortRadioButtons.forEach(btn => btn.addEventListener('click', () => fetchForQuotes()));
+quoteTypeButtons.forEach(btn => btn?.addEventListener('click', () => fetchForQuotes()));
+sortRadioButtons.forEach(btn => btn?.addEventListener('click', () => fetchForQuotes()));
 quoteStatusButtons.forEach(btn => btn?.addEventListener('click', () => fetchForQuotes()));
 
-const searchQuotesInput = document.getElementById('searchQuotesInput');
-const searchQuotesButton = document.getElementById('searchQuotesBtn');
+document.getElementById('searchQuotesBtn')?.addEventListener('click', () => fetchForQuotes());
 
-if (searchQuotesButton) {
-    searchQuotesButton.addEventListener('click', () => fetchForQuotes());
-}
-
-if (searchQuotesInput) {
-    searchQuotesInput.addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            fetchForQuotes();
-        }
-    });
-}
+document.getElementById('searchQuotesInput')?.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+        fetchForQuotes();
+    }
+});

@@ -1,5 +1,5 @@
 ﻿@{
-    var isForUserQuotes = this.ViewData["IsUserQuotes"] as bool? ?? false;
+    bool isForUserQuotes = this.ViewData["Title"].ToString() == "My Quotes";
 }
 
 @if (isForUserQuotes)

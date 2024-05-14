@@ -5,28 +5,18 @@ import { getCheckedRadioBtn, constructUrl, getSearchTextFromQuoteTypeId } from '
 
 export const fetchForQuotes = (page) => {
     let isForUserRecords = document.getElementById('isForUserQuotes')?.value;
-    if (isForUserRecords) {
-        isForUserRecords = true;
-    }
 
-    let url;
-    if (page) {
-        url = constructUrl(page, isForUserRecords);
-    } else {
-        url = constructUrl(1, isForUserRecords);
-    }
+    const url = constructUrl(page ? page : 1, isForUserRecords ? true : false);
 
-    const checkedQuoteTypeBtnId = getCheckedRadioBtn('btnradio')?.id;
-    const searchText = getSearchTextFromQuoteTypeId(checkedQuoteTypeBtnId);
+    const searchText = getSearchTextFromQuoteTypeId(getCheckedRadioBtn('btnradio')?.id);
 
     fetch(url)
         .then(res => res.json())
         .then(res => {
-            if (isForUserRecords === "true") {
-                updateQuotesTable(res.quotes, res.pageNumber, searchText);
-            } else {
+            isForUserRecords === 'true' ?
+                updateQuotesTable(res.quotes, res.pageNumber, searchText) :
                 filterQuotes(res.quotes, searchText);
-            }
+
             updatePagination(res, fetchForQuotes);
         }).catch(err => console.log(err));
 };
