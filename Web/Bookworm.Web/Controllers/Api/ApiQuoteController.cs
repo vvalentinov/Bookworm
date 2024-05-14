@@ -10,23 +10,19 @@
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
 
     public class ApiQuoteController : ApiBaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IManageQuoteLikesService manageQuoteLikesService;
-        private readonly ILogger logger;
 
         public ApiQuoteController(
             UserManager<ApplicationUser> userManager,
             IRetrieveQuotesService retrieveQuotesService,
-            IManageQuoteLikesService manageQuoteLikesService,
-            ILogger<QuoteViewModel> logger)
+            IManageQuoteLikesService manageQuoteLikesService)
         {
             this.userManager = userManager;
-            this.logger = logger;
             this.retrieveQuotesService = retrieveQuotesService;
             this.manageQuoteLikesService = manageQuoteLikesService;
         }
@@ -44,23 +40,36 @@
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex.Message);
                 return this.BadRequest(ex.Message);
             }
         }
 
         [HttpPost(nameof(LikeQuote))]
-        public async Task<int> LikeQuote(int quoteId)
+        public async Task<ActionResult<int>> LikeQuote(int quoteId)
         {
-            string userId = this.userManager.GetUserId(this.User);
-            return await this.manageQuoteLikesService.LikeAsync(quoteId, userId);
+            try
+            {
+                string userId = this.userManager.GetUserId(this.User);
+                return await this.manageQuoteLikesService.LikeAsync(quoteId, userId);
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete(nameof(UnlikeQuote))]
-        public async Task<int> UnlikeQuote(int quoteId)
+        public async Task<ActionResult<int>> UnlikeQuote(int quoteId)
         {
-            string userId = this.userManager.GetUserId(this.User);
-            return await this.manageQuoteLikesService.UnlikeAsync(quoteId, userId);
+            try
+            {
+                string userId = this.userManager.GetUserId(this.User);
+                return await this.manageQuoteLikesService.UnlikeAsync(quoteId, userId);
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
         }
     }
 }

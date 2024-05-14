@@ -3,7 +3,7 @@
     using Xunit;
 
     [CollectionDefinition("Database")]
-    public class DatabaseCollection : ICollectionFixture<DatabaseFixture>
+    public class DatabaseCollection : ICollectionFixture<DbContextFixture>
     {
     }
 }

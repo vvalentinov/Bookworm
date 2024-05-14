@@ -1,26 +1,23 @@
 ﻿namespace Bookworm.Services.Data.Tests.Shared
 {
     using System;
-    using System.Linq;
 
     using Bookworm.Common.Enums;
     using Bookworm.Data;
-    using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
-    using Moq;
 
-    public class DatabaseFixture : IDisposable
+    public class DbContextFixture : IDisposable
     {
-        public DatabaseFixture()
+        public DbContextFixture()
         {
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "BookwormDb")
-                .Options;
+                .UseInMemoryDatabase(databaseName: "BookwormDb").Options;
 
             this.DbContext = new ApplicationDbContext(dbContextOptionsBuilder);
             this.DbContext.Quotes.AddRange(GetQuotes());
+            this.DbContext.QuotesLikes.AddRange(GetQuoteLikes());
             this.DbContext.Users.AddRange(GetUsers());
             this.DbContext.Roles.AddRange(GetRoles());
             this.DbContext.UserRoles.AddRange(GetUserRoles());
@@ -28,44 +25,6 @@
         }
 
         public ApplicationDbContext DbContext { get; private set; }
-
-        public Mock<IDeletableEntityRepository<Quote>> QuoteRepositoryMock
-        {
-            get
-            {
-                var quoteRepoMock = new Mock<IDeletableEntityRepository<Quote>>();
-
-                quoteRepoMock.Setup(x => x.AllAsNoTracking())
-                    .Returns(this.DbContext.Quotes.AsNoTracking().Where(q => !q.IsDeleted));
-
-                quoteRepoMock.Setup(x => x.All())
-                    .Returns(this.DbContext.Quotes.Where(q => !q.IsDeleted));
-
-                quoteRepoMock.Setup(x => x.AllAsNoTrackingWithDeleted())
-                    .Returns(this.DbContext.Quotes.IgnoreQueryFilters());
-
-                quoteRepoMock.Setup(x => x.AddAsync(It.IsAny<Quote>()))
-                    .Callback(async (Quote quote) => await this.DbContext.AddAsync(quote));
-
-                quoteRepoMock.Setup(x => x.SaveChangesAsync())
-                    .Callback(async () => await this.DbContext.SaveChangesAsync());
-
-                quoteRepoMock.Setup(x => x.Delete(It.IsAny<Quote>()))
-                    .Callback((Quote quote) =>
-                    {
-                        quote.IsDeleted = true;
-                        quote.DeletedOn = DateTime.UtcNow;
-                    });
-
-                quoteRepoMock.Setup(x => x.Undelete(It.IsAny<Quote>()))
-                    .Callback((Quote quote) => { quote.IsDeleted = false; });
-
-                quoteRepoMock.Setup(x => x.AllWithDeleted())
-                    .Returns(this.DbContext.Quotes.IgnoreQueryFilters());
-
-                return quoteRepoMock;
-            }
-        }
 
         public void Dispose()
         {
@@ -142,6 +101,20 @@
             return users;
         }
 
+        private static QuoteLike[] GetQuoteLikes()
+        {
+            var quoteLikes = new QuoteLike[1]
+            {
+                new ()
+                {
+                    QuoteId = 7,
+                    UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                },
+            };
+
+            return quoteLikes;
+        }
+
         private static Quote[] GetQuotes()
         {
             var quotes = new Quote[10]
@@ -208,6 +181,7 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     IsApproved = true,
+                    Likes = 1,
                 },
                 new ()
                 {

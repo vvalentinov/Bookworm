@@ -5,6 +5,10 @@
     var titleCardModel = new TitleCardPartialViewModel { Title = "Edit Quote", IconClass = "fas fa-pen icon ms-3" };
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/quote/quoteEdit.css"/>
+}
+
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <div class="editQuoteContainer">
@@ -13,15 +17,43 @@
         <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
         @if (Model.Type == QuoteType.GeneralQuote)
         {
-            <partial name="PartialViews/Quotes/QuotesTypesInputs/_GeneralQuoteInputsPartial" />
+            <input type="hidden" asp-for="@Model.Type" value="@QuoteType.GeneralQuote" />
+            <div class="form-group justify-content-center">
+                <label asp-for="@Model.Content"><strong>Content</strong></label>
+                <textarea asp-for="@Model.Content" class="form-control" rows="6"></textarea>
+            </div>
+            <div class="form-group my-3">
+                <label asp-for="@Model.AuthorName"><strong>Author's Name</strong></label>
+                <input value="@Model.AuthorName" asp-for="@Model.AuthorName" type="text" class="form-control">
+            </div>
         }
         else if (Model.Type == QuoteType.BookQuote)
         {
-            <partial name="PartialViews/Quotes/QuotesTypesInputs/_BookQuoteInputsPartial" />
+            <input type="hidden" asp-for="@Model.Type" value="@QuoteType.BookQuote" />
+            <div class="form-group justify-content-center">
+                <label asp-for="@Model.Content"><strong>Content</strong></label>
+                <textarea asp-for="@Model.Content" class="form-control" rows="6"></textarea>
+            </div>
+            <div class="form-group my-3">
+                <label asp-for="@Model.BookTitle"><strong>Book Title</strong></label>
+                <input asp-for="@Model.BookTitle" value="@Model.BookTitle" type="text" class="form-control">
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.AuthorName"><strong>Author's Name</strong></label>
+                <input value="@Model.AuthorName" asp-for="@Model.AuthorName" type="text" class="form-control">
+            </div>
         }
         else if (Model.Type == QuoteType.MovieQuote)
         {
-            <partial name="PartialViews/Quotes/QuotesTypesInputs/_MovieQuoteInputsPartial"/>
+            <input type="hidden" asp-for="@Model.Type" value="@QuoteType.MovieQuote" />
+            <div class="form-group justify-content-center">
+                <label asp-for="@Model.Content"><strong>Content</strong></label>
+                <textarea asp-for="@Model.Content" class="form-control" rows="6"></textarea>
+            </div>
+            <div class="form-group my-3">
+                <label asp-for="@Model.MovieTitle"><strong>Movie Title</strong></label>
+                <input asp-for="@Model.MovieTitle" value="@Model.MovieTitle" type="text" class="form-control">
+            </div>
         }
         <div class="editQuoteFormBtnContainer mt-3">
             <button type="submit" class="btn">

@@ -8,6 +8,7 @@
     using Bookworm.Data;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Data.Tests.Shared;
@@ -24,14 +25,14 @@
     public class UpdateQuoteServiceTests
     {
         private readonly UpdateQuoteService updateQuoteService;
-        private readonly IDeletableEntityRepository<Quote> quoteRepoMock;
+        private readonly IDeletableEntityRepository<Quote> quoteRepo;
         private readonly Mock<UserManager<ApplicationUser>> userManagerMock;
         private readonly ApplicationDbContext dbContext;
 
-        public UpdateQuoteServiceTests(DatabaseFixture dbFixture)
+        public UpdateQuoteServiceTests(DbContextFixture dbContextFixture)
         {
-            this.dbContext = dbFixture.DbContext;
-            this.quoteRepoMock = dbFixture.QuoteRepositoryMock.Object;
+            this.dbContext = dbContextFixture.DbContext;
+            this.quoteRepo = new EfDeletableEntityRepository<Quote>(dbContextFixture.DbContext);
 
             var store = new Mock<IUserStore<ApplicationUser>>();
             this.userManagerMock = new Mock<UserManager<ApplicationUser>>(
@@ -41,7 +42,7 @@
 
             var usersServiceMock = new Mock<UsersService>(this.userManagerMock.Object).Object;
 
-            this.updateQuoteService = new UpdateQuoteService(this.quoteRepoMock, usersServiceMock);
+            this.updateQuoteService = new UpdateQuoteService(this.quoteRepo, usersServiceMock);
         }
 
         [Fact]
@@ -54,7 +55,7 @@
 
             await this.updateQuoteService.ApproveQuoteAsync(1);
 
-            var quote = await this.quoteRepoMock.AllAsNoTracking().FirstAsync(q => q.Id == 1);
+            var quote = await this.quoteRepo.AllAsNoTracking().FirstAsync(q => q.Id == 1);
 
             Assert.True(quote.IsApproved);
             Assert.Equal(expectedUserPoints, user.Points);
@@ -70,7 +71,7 @@
 
             await this.updateQuoteService.ApproveQuoteAsync(5);
 
-            var quote = await this.quoteRepoMock.AllAsNoTracking().FirstAsync(q => q.Id == 5);
+            var quote = await this.quoteRepo.AllAsNoTracking().FirstAsync(q => q.Id == 5);
 
             Assert.True(quote.IsApproved);
             Assert.Equal(expectedUserPoints, user.Points);
@@ -97,7 +98,7 @@
 
             await this.updateQuoteService.DeleteQuoteAsync(2, "0fc3ea28-3165-440e-947e-670c90562320");
 
-            var quote = await this.quoteRepoMock.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 2);
+            var quote = await this.quoteRepo.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 2);
             Assert.True(quote.IsDeleted);
             Assert.Equal(expectedPoints, user.Points);
         }
@@ -111,7 +112,7 @@
 
             await this.updateQuoteService.DeleteQuoteAsync(3, "0fc3ea28-3165-440e-947e-670c90562320", true);
 
-            var quote = await this.quoteRepoMock.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 3);
+            var quote = await this.quoteRepo.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 3);
             Assert.True(quote.IsDeleted);
             Assert.Equal(expectedPoints, user.Points);
         }
@@ -125,7 +126,7 @@
 
             await this.updateQuoteService.DeleteQuoteAsync(4, "a84ea5dc-a89e-442f-8e53-c874675bb114");
 
-            var quote = await this.quoteRepoMock.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 4);
+            var quote = await this.quoteRepo.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 4);
             Assert.True(quote.IsDeleted);
             Assert.Equal(expectedPoints, user.Points);
         }
@@ -151,9 +152,10 @@
         [Fact]
         public async Task UndeleteQuoteShouldWorkCorrectly()
         {
-            var quote = await this.quoteRepoMock.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 6);
-
             await this.updateQuoteService.UndeleteQuoteAsync(6);
+
+            var quote = await this.quoteRepo
+                .AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 6);
 
             Assert.False(quote.IsDeleted);
         }
@@ -177,7 +179,7 @@
 
             await this.updateQuoteService.UnapproveQuoteAsync(7);
 
-            var quote = await this.quoteRepoMock.AllAsNoTracking().FirstAsync(q => q.Id == 7);
+            var quote = await this.quoteRepo.AllAsNoTracking().FirstAsync(q => q.Id == 7);
 
             Assert.False(quote.IsApproved);
             Assert.Equal(expectedUserPoints, user.Points);
@@ -214,7 +216,7 @@
             await this.updateQuoteService.EditQuoteAsync(
                 quoteDto, "0fc3ea28-3165-440e-947e-670c90562320");
 
-            var quote = await this.quoteRepoMock
+            var quote = await this.quoteRepo
                 .AllAsNoTracking().FirstAsync(q => q.Id == quoteDto.Id);
 
             Assert.False(quote.IsApproved);
@@ -242,7 +244,7 @@
             await this.updateQuoteService.EditQuoteAsync(
                 quoteDto, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
 
-            var quote = await this.quoteRepoMock
+            var quote = await this.quoteRepo
                 .AllAsNoTracking().FirstAsync(q => q.Id == quoteDto.Id);
 
             Assert.False(quote.IsApproved);

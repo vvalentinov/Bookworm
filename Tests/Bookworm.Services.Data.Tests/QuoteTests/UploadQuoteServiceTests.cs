@@ -6,6 +6,7 @@
     using Bookworm.Common.Enums;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Data.Tests.Shared;
     using Bookworm.Web.ViewModels.DTOs;
@@ -18,12 +19,12 @@
     public class UploadQuoteServiceTests
     {
         private readonly UploadQuoteService uploadQuoteService;
-        private readonly IDeletableEntityRepository<Quote> quoteRepoMock;
+        private readonly IDeletableEntityRepository<Quote> quoteRepo;
 
-        public UploadQuoteServiceTests(DatabaseFixture dbFixture)
+        public UploadQuoteServiceTests(DbContextFixture dbContextFixture)
         {
-            this.quoteRepoMock = dbFixture.QuoteRepositoryMock.Object;
-            this.uploadQuoteService = new UploadQuoteService(this.quoteRepoMock);
+            this.quoteRepo = new EfDeletableEntityRepository<Quote>(dbContextFixture.DbContext);
+            this.uploadQuoteService = new UploadQuoteService(this.quoteRepo);
         }
 
         [Fact]
@@ -40,7 +41,7 @@
                 quoteDto,
                 "0fc3ea28-3165-440e-947e-670c90562320");
 
-            var quote = await this.quoteRepoMock
+            var quote = await this.quoteRepo
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(q => q.Content == quoteDto.Content);
 
@@ -51,17 +52,14 @@
         [Fact]
         public async Task QuoteUploadShouldThrowExceptionIfQuoteExist()
         {
-            var quoteDto = new QuoteDto
-            {
-                Content = "Knowledge is power",
-                AuthorName = "Sir Francis Bacon",
-                Type = QuoteType.GeneralQuote,
-            };
-
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await this.uploadQuoteService.UploadQuoteAsync(
-                    quoteDto,
-                    "0fc3ea28-3165-440e-947e-670c90562320"));
+                    new QuoteDto
+                    {
+                        Content = "Knowledge is power",
+                        AuthorName = "Sir Francis Bacon",
+                        Type = QuoteType.GeneralQuote,
+                    }, "0fc3ea28-3165-440e-947e-670c90562320"));
 
             Assert.NotNull(exception);
             Assert.Equal(QuoteExistsError, exception.Message);
@@ -70,17 +68,14 @@
         [Fact]
         public async Task QuoteUploadShouldThrowExceptionIfTypeIsInvalid()
         {
-            var quoteDto = new QuoteDto
-            {
-                Content = "Some Content Here",
-                AuthorName = "Some Author Name Here",
-                Type = QuoteType.None,
-            };
-
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await this.uploadQuoteService.UploadQuoteAsync(
-                    quoteDto,
-                    "0fc3ea28-3165-440e-947e-670c90562320"));
+                    new QuoteDto
+                    {
+                        Content = "Some Content Here",
+                        AuthorName = "Some Author Name Here",
+                        Type = QuoteType.None,
+                    }, "0fc3ea28-3165-440e-947e-670c90562320"));
 
             Assert.NotNull(exception);
             Assert.Equal(QuoteInvalidTypeError, exception.Message);
