@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common.Enums;
-    using Bookworm.Data.Common.Repositories;
+    using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models.Quotes;
@@ -15,21 +15,21 @@
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
 
-    [Collection("Database")]
-    public class UploadQuoteServiceTests
+    public class UploadQuoteServiceTests : IClassFixture<DbContextFixture>
     {
-        private readonly UploadQuoteService uploadQuoteService;
-        private readonly IDeletableEntityRepository<Quote> quoteRepo;
+        private readonly ApplicationDbContext dbContext;
 
         public UploadQuoteServiceTests(DbContextFixture dbContextFixture)
         {
-            this.quoteRepo = new EfDeletableEntityRepository<Quote>(dbContextFixture.DbContext);
-            this.uploadQuoteService = new UploadQuoteService(this.quoteRepo);
+            this.dbContext = dbContextFixture.DbContext;
         }
 
         [Fact]
         public async Task QuoteUploadShouldWorkCorrectly()
         {
+            var quoteRepo = this.GetQuoteRepo();
+            var uploadQuoteService = this.GetUploadQuoteService();
+
             var quoteDto = new QuoteDto
             {
                 Content = "May the Force be with you",
@@ -37,11 +37,11 @@
                 Type = QuoteType.MovieQuote,
             };
 
-            await this.uploadQuoteService.UploadQuoteAsync(
+            await uploadQuoteService.UploadQuoteAsync(
                 quoteDto,
                 "0fc3ea28-3165-440e-947e-670c90562320");
 
-            var quote = await this.quoteRepo
+            var quote = await quoteRepo
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(q => q.Content == quoteDto.Content);
 
@@ -52,8 +52,10 @@
         [Fact]
         public async Task QuoteUploadShouldThrowExceptionIfQuoteExist()
         {
+            var uploadQuoteService = this.GetUploadQuoteService();
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await this.uploadQuoteService.UploadQuoteAsync(
+                await uploadQuoteService.UploadQuoteAsync(
                     new QuoteDto
                     {
                         Content = "Knowledge is power",
@@ -68,8 +70,10 @@
         [Fact]
         public async Task QuoteUploadShouldThrowExceptionIfTypeIsInvalid()
         {
+            var uploadQuoteService = this.GetUploadQuoteService();
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await this.uploadQuoteService.UploadQuoteAsync(
+                await uploadQuoteService.UploadQuoteAsync(
                     new QuoteDto
                     {
                         Content = "Some Content Here",
@@ -80,5 +84,9 @@
             Assert.NotNull(exception);
             Assert.Equal(QuoteInvalidTypeError, exception.Message);
         }
+
+        private EfDeletableEntityRepository<Quote> GetQuoteRepo() => new (this.dbContext);
+
+        private UploadQuoteService GetUploadQuoteService() => new (this.GetQuoteRepo());
     }
 }

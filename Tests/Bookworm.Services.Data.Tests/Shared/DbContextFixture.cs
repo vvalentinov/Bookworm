@@ -13,7 +13,8 @@
         public DbContextFixture()
         {
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "BookwormDb").Options;
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
 
             this.DbContext = new ApplicationDbContext(dbContextOptionsBuilder);
             this.DbContext.Quotes.AddRange(GetQuotes());

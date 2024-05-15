@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Common.Repositories;
+    using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models.Quotes;
@@ -13,27 +13,25 @@
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
 
-    [Collection("Database")]
-    public class ManageQuoteLikesServiceTests
+    public class ManageQuoteLikesServiceTests : IClassFixture<DbContextFixture>
     {
-        private readonly IRepository<QuoteLike> quoteLikeRepository;
-        private readonly ManageQuoteLikesService manageQuoteLikesService;
-        private readonly IDeletableEntityRepository<Quote> quoteRepository;
+        private readonly ApplicationDbContext dbContext;
 
         public ManageQuoteLikesServiceTests(DbContextFixture dbContextFixture)
         {
-            this.quoteLikeRepository = new EfRepository<QuoteLike>(dbContextFixture.DbContext);
-            this.quoteRepository = new EfDeletableEntityRepository<Quote>(dbContextFixture.DbContext);
-            this.manageQuoteLikesService = new ManageQuoteLikesService(this.quoteLikeRepository, this.quoteRepository);
+            this.dbContext = dbContextFixture.DbContext;
         }
 
         [Fact]
         public async Task LikeQuoteShouldWorkCorrectly()
         {
-            var quoteLikesCount = await this.manageQuoteLikesService
+            var quoteLikeRepo = this.GetQuoteLikeRepo();
+            var manageQuoteLikesService = this.GetManageQuoteLikesService();
+
+            var quoteLikesCount = await manageQuoteLikesService
                 .LikeAsync(10, "0fc3ea28-3165-440e-947e-670c90562320");
 
-            var quoteLike = await this.quoteLikeRepository
+            var quoteLike = await quoteLikeRepo
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(
                     ql => ql.UserId == "0fc3ea28-3165-440e-947e-670c90562320" && ql.QuoteId == 10);
@@ -45,8 +43,10 @@
         [Fact]
         public async Task LikeQuoteShouldThrowExceptionIfIdIsInvalid()
         {
+            var manageQuoteLikesService = this.GetManageQuoteLikesService();
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await this.manageQuoteLikesService.LikeAsync(
+                async () => await manageQuoteLikesService.LikeAsync(
                     100, "0fc3ea28-3165-440e-947e-670c90562320"));
 
             Assert.Equal(QuoteWrongIdError, exception.Message);
@@ -55,8 +55,10 @@
         [Fact]
         public async Task LikeQuoteShouldThrowExceptionIfUserIsQuoteCreator()
         {
+            var manageQuoteLikesService = this.GetManageQuoteLikesService();
+
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await this.manageQuoteLikesService.LikeAsync(
+                async () => await manageQuoteLikesService.LikeAsync(
                     10, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7"));
 
             Assert.Equal("User cannot like or unlike his or her quotes!", exception.Message);
@@ -65,10 +67,13 @@
         [Fact]
         public async Task UnlikeQuoteShouldWorkCorrectly()
         {
-            var quoteLikes = await this.manageQuoteLikesService
+            var quoteLikeRepo = this.GetQuoteLikeRepo();
+            var manageQuoteLikesService = this.GetManageQuoteLikesService();
+
+            var quoteLikes = await manageQuoteLikesService
                 .UnlikeAsync(7, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
 
-            var quoteLike = await this.quoteLikeRepository
+            var quoteLike = await quoteLikeRepo
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(
                     ql => ql.QuoteId == 8 && ql.UserId == "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
@@ -76,5 +81,14 @@
             Assert.Equal(0, quoteLikes);
             Assert.Null(quoteLike);
         }
+
+        private EfRepository<QuoteLike> GetQuoteLikeRepo()
+            => new (this.dbContext);
+
+        private EfDeletableEntityRepository<Quote> GetQuoteRepo()
+            => new (this.dbContext);
+
+        private ManageQuoteLikesService GetManageQuoteLikesService()
+            => new (this.GetQuoteLikeRepo(), this.GetQuoteRepo());
     }
 }
