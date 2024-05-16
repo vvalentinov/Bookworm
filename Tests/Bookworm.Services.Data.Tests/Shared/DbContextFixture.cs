@@ -43,11 +43,12 @@
 
         private static IdentityUserRole<string>[] GetUserRoles()
         {
-            var usersRoles = new IdentityUserRole<string>[3]
+            var usersRoles = new IdentityUserRole<string>[4]
             {
                 new () { UserId = "0fc3ea28-3165-440e-947e-670c90562320", RoleId = "fcea6658-70d4-4dac-a582-bb836b493323" },
                 new () { UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7", RoleId = "b302b17d-1464-4346-9b53-3e64b76e46b0" },
                 new () { UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114", RoleId = "b302b17d-1464-4346-9b53-3e64b76e46b0" },
+                new () { UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5", RoleId = "b302b17d-1464-4346-9b53-3e64b76e46b0" },
             };
 
             return usersRoles;
@@ -74,52 +75,61 @@
 
         private static ApplicationUser[] GetUsers()
         {
-            var users = new ApplicationUser[3]
-            {
+            return
+            [
                 new ()
                 {
                     Id = "0fc3ea28-3165-440e-947e-670c90562320",
                     UserName = "Valentin",
-                    NormalizedUserName = "VALENTIN",
-                    Points = 4,
+                    Points = 8,
                 },
                 new ()
                 {
                     Id = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                     UserName = "Mike",
-                    NormalizedUserName = "MIKE",
-                    Points = 2,
+                    Points = 4,
                 },
                 new ()
                 {
                     Id = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     UserName = "John",
-                    NormalizedUserName = "JOHN",
                     Points = 4,
                 },
-            };
-
-            return users;
+                new ()
+                {
+                    Id = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
+                    UserName = "Tom",
+                    Points = 2,
+                },
+            ];
         }
 
         private static QuoteLike[] GetQuoteLikes()
         {
-            var quoteLikes = new QuoteLike[1]
-            {
+            return
+            [
                 new ()
                 {
                     QuoteId = 7,
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                 },
-            };
-
-            return quoteLikes;
+                new ()
+                {
+                    QuoteId = 7,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                },
+                new ()
+                {
+                    QuoteId = 10,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                },
+            ];
         }
 
         private static Quote[] GetQuotes()
         {
-            var quotes = new Quote[10]
-            {
+            return
+            [
                 new ()
                 {
                     Id = 1,
@@ -128,6 +138,7 @@
                     Type = QuoteType.GeneralQuote,
                     UserId = "0fc3ea28-3165-440e-947e-670c90562320",
                     IsApproved = false,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -137,6 +148,7 @@
                     Type = QuoteType.GeneralQuote,
                     UserId = "0fc3ea28-3165-440e-947e-670c90562320",
                     IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -146,6 +158,7 @@
                     Type = QuoteType.GeneralQuote,
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                     IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -155,6 +168,7 @@
                     Type = QuoteType.GeneralQuote,
                     UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     IsApproved = false,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -164,6 +178,7 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -173,6 +188,7 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     IsDeleted = true,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -182,7 +198,8 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     IsApproved = true,
-                    Likes = 1,
+                    Likes = 2,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -192,6 +209,7 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "0fc3ea28-3165-440e-947e-670c90562320",
                     IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -201,6 +219,7 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                     IsApproved = false,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -210,10 +229,54 @@
                     Type = QuoteType.MovieQuote,
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                     IsApproved = true,
+                    Likes = 1,
+                    CreatedOn = DateTime.UtcNow,
                 },
-            };
-
-            return quotes;
+                new ()
+                {
+                    Id = 11,
+                    Content = "We accept the love we think we deserve.",
+                    BookTitle = "The Perks of Being a Wallflower",
+                    AuthorName = "Stephen Chbosky",
+                    Type = QuoteType.BookQuote,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
+                },
+                new ()
+                {
+                    Id = 12,
+                    Content = "I took a deep breath and listened to the old brag of my heart: I am, I am, I am.",
+                    BookTitle = "The Bell Jar",
+                    AuthorName = "Sylvia Plath",
+                    Type = QuoteType.BookQuote,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
+                },
+                new ()
+                {
+                    Id = 13,
+                    Content = "Love is or it ain’t. Thin love ain’t love at all.",
+                    BookTitle = "Beloved",
+                    AuthorName = "Toni Morrison",
+                    Type = QuoteType.BookQuote,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    IsDeleted = true,
+                    CreatedOn = DateTime.UtcNow,
+                },
+                new ()
+                {
+                    Id = 14,
+                    Content = "It is nothing to die; it is dreadful not to live.",
+                    BookTitle = "Les Misérables",
+                    AuthorName = "Victor Hugo",
+                    Type = QuoteType.BookQuote,
+                    UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
+                    IsApproved = true,
+                    CreatedOn = DateTime.UtcNow,
+                },
+            ];
         }
     }
 }

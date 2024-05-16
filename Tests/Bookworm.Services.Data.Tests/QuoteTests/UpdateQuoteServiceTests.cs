@@ -49,19 +49,19 @@
         }
 
         [Fact]
-        public async Task ApproveQuoteShouldNotIncreaseUserPointsIfQuoteIsNotApproved()
+        public async Task ApproveQuoteShouldNotIncreaseUserPointsIfQuoteIsApproved()
         {
             var quoteRepo = this.GetQuoteRepo();
             var userManager = this.GetUserManager();
             var updateQuoteService = this.GetUpdateQuoteService();
 
-            var user = await userManager.FindByIdAsync("a84ea5dc-a89e-442f-8e53-c874675bb114");
+            var user = await userManager.FindByIdAsync("b1a9a91f-f7b1-4459-9864-4a4fdd6077c5");
 
             var expectedUserPoints = user.Points;
 
-            await updateQuoteService.ApproveQuoteAsync(5);
+            await updateQuoteService.ApproveQuoteAsync(14);
 
-            var quote = await quoteRepo.AllAsNoTracking().FirstAsync(q => q.Id == 5);
+            var quote = await quoteRepo.AllAsNoTracking().FirstAsync(q => q.Id == 14);
 
             Assert.True(quote.IsApproved);
             Assert.Equal(expectedUserPoints, user.Points);
@@ -70,7 +70,7 @@
         [Theory]
         [InlineData(0)]
         [InlineData(-10)]
-        [InlineData(11)]
+        [InlineData(20)]
         public async Task ApproveQuoteShouldThrowExceptionIfIdIsInvalid(int id)
         {
             var updateQuoteService = this.GetUpdateQuoteService();
@@ -84,16 +84,16 @@
         [Fact]
         public async Task DeleteQuoteShouldWorkCorrectlyIfUserIsCreator()
         {
-            var quoteRepo = this.GetQuoteRepo();
-            var userManager = this.GetUserManager();
-            var updateQuoteService = this.GetUpdateQuoteService();
-
-            var user = await userManager.FindByIdAsync("0fc3ea28-3165-440e-947e-670c90562320");
+            var userId = "a84ea5dc-a89e-442f-8e53-c874675bb114";
+            var user = await this.GetUserManager().FindByIdAsync(userId);
             var expectedPoints = user.Points - QuoteUploadPoints;
 
-            await updateQuoteService.DeleteQuoteAsync(2, "0fc3ea28-3165-440e-947e-670c90562320");
+            await this.GetUpdateQuoteService().DeleteQuoteAsync(5, userId);
 
-            var quote = await quoteRepo.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 2);
+            var quote = await this.GetQuoteRepo()
+                .AllAsNoTrackingWithDeleted()
+                .FirstAsync(q => q.Id == 5);
+
             Assert.True(quote.IsDeleted);
             Assert.Equal(expectedPoints, user.Points);
         }
@@ -123,12 +123,12 @@
             var updateQuoteService = this.GetUpdateQuoteService();
 
             var user = await userManager
-               .FindByIdAsync("a84ea5dc-a89e-442f-8e53-c874675bb114");
+               .FindByIdAsync("f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
             var expectedPoints = user.Points;
 
-            await updateQuoteService.DeleteQuoteAsync(4, "a84ea5dc-a89e-442f-8e53-c874675bb114");
+            await updateQuoteService.DeleteQuoteAsync(9, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
 
-            var quote = await quoteRepo.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 4);
+            var quote = await quoteRepo.AllAsNoTrackingWithDeleted().FirstAsync(q => q.Id == 9);
             Assert.True(quote.IsDeleted);
             Assert.Equal(expectedPoints, user.Points);
         }
@@ -139,7 +139,7 @@
             var updateQuoteService = this.GetUpdateQuoteService();
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async ()
-                => await updateQuoteService.DeleteQuoteAsync(0, "0fc3ea28-3165-440e-947e-670c90562320"));
+                => await updateQuoteService.DeleteQuoteAsync(0, string.Empty));
 
             Assert.Equal(QuoteWrongIdError, exception.Message);
         }
@@ -150,7 +150,10 @@
             var updateQuoteService = this.GetUpdateQuoteService();
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async ()
-                => await updateQuoteService.DeleteQuoteAsync(2, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7"));
+                => await updateQuoteService.DeleteQuoteAsync(
+                    quoteId: 2,
+                    userId: "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    isCurrUserAdmin: false));
         }
 
         [Fact]
@@ -172,7 +175,7 @@
             var updateQuoteService = this.GetUpdateQuoteService();
 
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async ()
-                => await updateQuoteService.UndeleteQuoteAsync(11));
+                => await updateQuoteService.UndeleteQuoteAsync(20));
 
             Assert.Equal(QuoteWrongIdError, exception.Message);
         }
@@ -198,7 +201,7 @@
 
         [Theory]
         [InlineData(0)]
-        [InlineData(11)]
+        [InlineData(20)]
         [InlineData(-17)]
         public async Task UnapproveQuoteShouldThrowExceptionIfIdIsInvalid(int id)
         {
@@ -210,34 +213,47 @@
             Assert.Equal(QuoteWrongIdError, exception.Message);
         }
 
-        [Fact]
-        public async Task EditQuoteShouldWorkCorrectlyWhenQuoteIsApproved()
+        [Theory]
+        [InlineData(QuoteType.BookQuote, 11)]
+        [InlineData(QuoteType.MovieQuote, 8)]
+        [InlineData(QuoteType.GeneralQuote, 2)]
+        public async Task EditQuoteShouldWorkCorrectlyWhenQuoteIsApproved(QuoteType type, int quoteId)
         {
-            var quoteRepo = this.GetQuoteRepo();
-            var userManager = this.GetUserManager();
-            var updateQuoteService = this.GetUpdateQuoteService();
-
-            var user = await userManager.FindByIdAsync("0fc3ea28-3165-440e-947e-670c90562320");
-
+            string userId = "0fc3ea28-3165-440e-947e-670c90562320";
+            var user = await this.GetUserManager().FindByIdAsync(userId);
             var expectedUserPoints = user.Points - QuoteUploadPoints;
-
             var quoteDto = new QuoteDto
             {
-                Id = 8,
+                Id = quoteId,
                 Content = "Updated!",
-                MovieTitle = "Updated!",
-                Type = QuoteType.MovieQuote,
+                Type = type,
             };
 
-            await updateQuoteService.EditQuoteAsync(
-                quoteDto, "0fc3ea28-3165-440e-947e-670c90562320");
+            switch (type)
+            {
+                case QuoteType.BookQuote:
+                    quoteDto.AuthorName = "Updated Author Name!";
+                    quoteDto.BookTitle = "Updated Book Title!";
+                    break;
+                case QuoteType.MovieQuote:
+                    quoteDto.MovieTitle = "Updated Movie Title!";
+                    break;
+                case QuoteType.GeneralQuote:
+                    quoteDto.AuthorName = "Updated Author Name!";
+                    break;
+            }
 
-            var quote = await quoteRepo.AllAsNoTracking().FirstAsync(q => q.Id == quoteDto.Id);
+            await this.GetUpdateQuoteService().EditQuoteAsync(quoteDto, userId);
+
+            var quote = await this.GetQuoteRepo().AllAsNoTracking()
+                .FirstAsync(q => q.Id == quoteDto.Id);
 
             Assert.False(quote.IsApproved);
             Assert.Equal(expectedUserPoints, user.Points);
             Assert.Equal(quoteDto.Content, quote.Content);
             Assert.Equal(quoteDto.MovieTitle, quote.MovieTitle);
+            Assert.Equal(quoteDto.AuthorName, quote.AuthorName);
+            Assert.Equal(quoteDto.BookTitle, quote.BookTitle);
         }
 
         [Fact]
@@ -272,7 +288,7 @@
         }
 
         [Theory]
-        [InlineData(11)]
+        [InlineData(0)]
         [InlineData(-15)]
         [InlineData(100)]
         public async Task EditQuoteShouldThrowExceptionIfIdIsInvalid(int id)
@@ -322,7 +338,8 @@
             Assert.Equal(QuoteInvalidTypeError, exception.Message);
         }
 
-        private EfDeletableEntityRepository<Quote> GetQuoteRepo() => new (this.dbContext);
+        private EfDeletableEntityRepository<Quote> GetQuoteRepo()
+            => new EfDeletableEntityRepository<Quote>(this.dbContext);
 
         private UserManager<ApplicationUser> GetUserManager()
         {
@@ -336,6 +353,6 @@
         }
 
         private UpdateQuoteService GetUpdateQuoteService()
-            => new (this.GetQuoteRepo(), new Mock<UsersService>(this.GetUserManager()).Object);
+            => new UpdateQuoteService(this.GetQuoteRepo(), new Mock<UsersService>(this.GetUserManager()).Object);
     }
 }

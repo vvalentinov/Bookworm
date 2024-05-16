@@ -25,29 +25,34 @@
         [Fact]
         public async Task LikeQuoteShouldWorkCorrectly()
         {
-            var quoteLikeRepo = this.GetQuoteLikeRepo();
-            var manageQuoteLikesService = this.GetManageQuoteLikesService();
+            int quoteId = 2;
+            string userId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7";
 
-            var quoteLikesCount = await manageQuoteLikesService
-                .LikeAsync(10, "0fc3ea28-3165-440e-947e-670c90562320");
+            var quoteLikesCount = await this.GetManageQuoteLikesService()
+                .LikeAsync(quoteId, userId);
 
-            var quoteLike = await quoteLikeRepo
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(
-                    ql => ql.UserId == "0fc3ea28-3165-440e-947e-670c90562320" && ql.QuoteId == 10);
+            var quoteLike = this.GetQuoteLikeRepo().AllAsNoTracking()
+                .FirstOrDefaultAsync(ql => ql.UserId == userId && ql.QuoteId == quoteId);
 
             Assert.Equal(1, quoteLikesCount);
             Assert.NotNull(quoteLike);
         }
 
         [Fact]
+        public async Task LikeQuoteShouldWorkCorrectlyWhenQuoteIsAlreadyLiked()
+        {
+            var quoteLikesCount = await this.GetManageQuoteLikesService()
+                .LikeAsync(10, "0fc3ea28-3165-440e-947e-670c90562320");
+
+            Assert.Equal(1, quoteLikesCount);
+        }
+
+        [Fact]
         public async Task LikeQuoteShouldThrowExceptionIfIdIsInvalid()
         {
-            var manageQuoteLikesService = this.GetManageQuoteLikesService();
-
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await manageQuoteLikesService.LikeAsync(
-                    100, "0fc3ea28-3165-440e-947e-670c90562320"));
+                async () => await this.GetManageQuoteLikesService()
+                    .LikeAsync(100, string.Empty));
 
             Assert.Equal(QuoteWrongIdError, exception.Message);
         }
@@ -55,11 +60,9 @@
         [Fact]
         public async Task LikeQuoteShouldThrowExceptionIfUserIsQuoteCreator()
         {
-            var manageQuoteLikesService = this.GetManageQuoteLikesService();
-
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await manageQuoteLikesService.LikeAsync(
-                    10, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7"));
+                async () => await this.GetManageQuoteLikesService()
+                    .LikeAsync(10, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7"));
 
             Assert.Equal("User cannot like or unlike his or her quotes!", exception.Message);
         }
@@ -67,28 +70,37 @@
         [Fact]
         public async Task UnlikeQuoteShouldWorkCorrectly()
         {
-            var quoteLikeRepo = this.GetQuoteLikeRepo();
-            var manageQuoteLikesService = this.GetManageQuoteLikesService();
+            var quoteId = 7;
+            var userId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7";
 
-            var quoteLikes = await manageQuoteLikesService
-                .UnlikeAsync(7, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
+            var quoteLikes = await this.GetManageQuoteLikesService()
+                .UnlikeAsync(quoteId, userId);
 
-            var quoteLike = await quoteLikeRepo
+            var quoteLike = await this.GetQuoteLikeRepo()
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(
-                    ql => ql.QuoteId == 8 && ql.UserId == "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7");
+                .FirstOrDefaultAsync(ql => ql.QuoteId == quoteId && ql.UserId == userId);
 
-            Assert.Equal(0, quoteLikes);
+            Assert.Equal(1, quoteLikes);
             Assert.Null(quoteLike);
         }
 
+        [Fact]
+        public async Task UnlikeQuoteShouldThrowExceptionIfUserIsCreator()
+        {
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await this.GetManageQuoteLikesService()
+                    .UnlikeAsync(10, "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7"));
+
+            Assert.Equal("User cannot like or unlike his or her quotes!", exception.Message);
+        }
+
         private EfRepository<QuoteLike> GetQuoteLikeRepo()
-            => new (this.dbContext);
+            => new EfRepository<QuoteLike>(this.dbContext);
 
         private EfDeletableEntityRepository<Quote> GetQuoteRepo()
-            => new (this.dbContext);
+            => new EfDeletableEntityRepository<Quote>(this.dbContext);
 
         private ManageQuoteLikesService GetManageQuoteLikesService()
-            => new (this.GetQuoteLikeRepo(), this.GetQuoteRepo());
+            => new ManageQuoteLikesService(this.GetQuoteLikeRepo(), this.GetQuoteRepo());
     }
 }

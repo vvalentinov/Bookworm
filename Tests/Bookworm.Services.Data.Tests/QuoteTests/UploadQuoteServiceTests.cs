@@ -14,6 +14,7 @@
     using Xunit;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Enums.QuoteType;
 
     public class UploadQuoteServiceTests : IClassFixture<DbContextFixture>
     {
@@ -24,29 +25,41 @@
             this.dbContext = dbContextFixture.DbContext;
         }
 
-        [Fact]
-        public async Task QuoteUploadShouldWorkCorrectly()
+        [Theory]
+        [InlineData(MovieQuote)]
+        [InlineData(BookQuote)]
+        [InlineData(GeneralQuote)]
+        public async Task QuoteUploadShouldWorkCorrectly(QuoteType type)
         {
-            var quoteRepo = this.GetQuoteRepo();
-            var uploadQuoteService = this.GetUploadQuoteService();
+            string userId = "0fc3ea28-3165-440e-947e-670c90562320";
 
             var quoteDto = new QuoteDto
             {
-                Content = "May the Force be with you",
-                MovieTitle = "Star Wars",
-                Type = QuoteType.MovieQuote,
+                Type = type,
+                Content = Guid.NewGuid().ToString(),
             };
 
-            await uploadQuoteService.UploadQuoteAsync(
-                quoteDto,
-                "0fc3ea28-3165-440e-947e-670c90562320");
+            switch (type)
+            {
+                case BookQuote:
+                    quoteDto.AuthorName = Guid.NewGuid().ToString();
+                    quoteDto.BookTitle = Guid.NewGuid().ToString();
+                    break;
+                case MovieQuote:
+                    quoteDto.MovieTitle = Guid.NewGuid().ToString();
+                    break;
+                case GeneralQuote:
+                    quoteDto.AuthorName = Guid.NewGuid().ToString();
+                    break;
+            }
 
-            var quote = await quoteRepo
-                .AllAsNoTracking()
+            await this.GetUploadQuoteService().UploadQuoteAsync(quoteDto, userId);
+
+            var quote = await this.GetQuoteRepo().AllAsNoTracking()
                 .FirstOrDefaultAsync(q => q.Content == quoteDto.Content);
 
             Assert.NotNull(quote);
-            Assert.Equal("0fc3ea28-3165-440e-947e-670c90562320", quote.UserId);
+            Assert.Equal(userId, quote.UserId);
         }
 
         [Fact]
@@ -60,8 +73,8 @@
                     {
                         Content = "Knowledge is power",
                         AuthorName = "Sir Francis Bacon",
-                        Type = QuoteType.GeneralQuote,
-                    }, "0fc3ea28-3165-440e-947e-670c90562320"));
+                        Type = GeneralQuote,
+                    }, string.Empty));
 
             Assert.NotNull(exception);
             Assert.Equal(QuoteExistsError, exception.Message);
@@ -78,8 +91,8 @@
                     {
                         Content = "Some Content Here",
                         AuthorName = "Some Author Name Here",
-                        Type = QuoteType.None,
-                    }, "0fc3ea28-3165-440e-947e-670c90562320"));
+                        Type = None,
+                    }, string.Empty));
 
             Assert.NotNull(exception);
             Assert.Equal(QuoteInvalidTypeError, exception.Message);

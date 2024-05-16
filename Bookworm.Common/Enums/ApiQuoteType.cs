@@ -2,6 +2,7 @@
 {
     public enum ApiQuoteType
     {
+        None,
         BookQuote,
         MovieQuote,
         GeneralQuote,

@@ -61,16 +61,15 @@
         }
 
         public async Task<QuoteListingViewModel> GetAllUnapprovedAsync()
-        {
-            var quotes = await this.quoteRepository
-              .AllAsNoTracking()
-              .Where(x => x.IsApproved == false)
-              .OrderByDescending(x => x.CreatedOn)
-              .To<QuoteViewModel>()
-              .ToListAsync();
-
-            return new QuoteListingViewModel { Quotes = quotes };
-        }
+            => new QuoteListingViewModel
+               {
+                   Quotes = await this.quoteRepository
+                            .AllAsNoTracking()
+                            .Where(x => x.IsApproved == false)
+                            .OrderByDescending(x => x.CreatedOn)
+                            .To<QuoteViewModel>()
+                            .ToListAsync(),
+               };
 
         public async Task<int> GetUnapprovedCountAsync() =>
             await this.quoteRepository
@@ -216,19 +215,19 @@
                 quotesQuery = quoteType switch
                 {
                     ApiQuoteType.BookQuote => quotesQuery.Where(q =>
-                                                EF.Functions.Like(q.Content, '%' + content + '%') ||
-                                                EF.Functions.Like(q.BookTitle, '%' + content + '%') ||
-                                                EF.Functions.Like(q.AuthorName, '%' + content + '%')),
+                                                EF.Functions.Like(q.Content, $"%{content}%") ||
+                                                EF.Functions.Like(q.BookTitle, $"%{content}%") ||
+                                                EF.Functions.Like(q.AuthorName, $"%{content}%")),
                     ApiQuoteType.MovieQuote => quotesQuery.Where(q =>
-                                                EF.Functions.Like(q.Content, '%' + content + '%') ||
-                                                EF.Functions.Like(q.MovieTitle, '%' + content + '%')),
+                                                EF.Functions.Like(q.Content, $"%{content}%") ||
+                                                EF.Functions.Like(q.MovieTitle, $"%{content}%")),
                     ApiQuoteType.GeneralQuote => quotesQuery.Where(q =>
-                                                EF.Functions.Like(q.Content, '%' + content + '%') ||
-                                                EF.Functions.Like(q.AuthorName, '%' + content + '%')),
-                    _ => quotesQuery.Where(q => EF.Functions.Like(q.Content, '%' + content + '%') ||
-                                                EF.Functions.Like(q.BookTitle, '%' + content + '%') ||
-                                                EF.Functions.Like(q.AuthorName, '%' + content + '%') ||
-                                                EF.Functions.Like(q.MovieTitle, '%' + content + '%')),
+                                                EF.Functions.Like(q.Content, $"%{content}%") ||
+                                                EF.Functions.Like(q.AuthorName, $"%{content}%")),
+                    _ => quotesQuery.Where(q => EF.Functions.Like(q.Content, $"%{content}%") ||
+                                                EF.Functions.Like(q.BookTitle, $"%{content}%") ||
+                                                EF.Functions.Like(q.AuthorName, $"%{content}%") ||
+                                                EF.Functions.Like(q.MovieTitle, $"%{content}%")),
                 };
             }
 
@@ -251,11 +250,11 @@
                 .Skip((getQuotesApiDto.Page - 1) * QuotesPerPage)
                 .Take(QuotesPerPage);
 
-            var quotes = await this.RetrieveQuoteUserStatusAsync(await quotesQuery.ToListAsync(), userId);
+            var quotes = await quotesQuery.ToListAsync();
 
             return new QuoteListingViewModel
             {
-                Quotes = quotes,
+                Quotes = userId != null ? await this.RetrieveQuoteUserStatusAsync(quotes, userId) : quotes,
                 ItemsPerPage = QuotesPerPage,
                 PageNumber = getQuotesApiDto.Page,
                 RecordsCount = recordsCount,

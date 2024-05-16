@@ -27,7 +27,7 @@
 
             bool quoteExist = await this.quoteRepository
                 .AllAsNoTrackingWithDeleted()
-                .AnyAsync(x => x.Content.ToLower() == content.ToLower());
+                .AnyAsync(x => EF.Functions.Like(x.Content, $"%{content}%"));
 
             if (quoteExist)
             {
