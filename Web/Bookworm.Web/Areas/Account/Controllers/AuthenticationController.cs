@@ -3,7 +3,6 @@
     using System.Linq;
     using System.Security.Claims;
     using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
     using Bookworm.Common.Constants;
@@ -25,13 +24,13 @@
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<LoginViewModel> logger;
-        private readonly IEmailSender emailSender;
+        private readonly IMailGunEmailSender emailSender;
 
         public AuthenticationController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<LoginViewModel> logger,
-            IEmailSender emailSender)
+            IMailGunEmailSender emailSender)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
@@ -315,8 +314,16 @@
             var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-            var callbackUrl = this.Url.Action("ConfirmEmail", AccountAreaName, new { userId = user.Id, code }, this.Request.Scheme);
-            await this.emailSender.SendEmailConfirmationAsync(user.UserName, email, HtmlEncoder.Default.Encode(callbackUrl));
+            var callbackUrl = this.Url.Action(
+                "ConfirmEmail",
+                AccountAreaName,
+                new { userId = user.Id, code },
+                this.Request.Scheme);
+
+            await this.emailSender.SendEmailAsync(
+                email,
+                "Confirm your email",
+                $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
         }
     }
 }

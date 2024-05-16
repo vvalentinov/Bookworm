@@ -23,8 +23,8 @@
         private readonly IBlobService blobService;
         private readonly IValidateUploadedBookService validateUploadedBookService;
         private readonly IUsersService usersService;
-        private readonly IEmailSender emailSender;
         private readonly IRetrieveBooksService retrieveBooksService;
+        private readonly IMailGunEmailSender emailSender;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
@@ -33,8 +33,8 @@
             IBlobService blobService,
             IValidateUploadedBookService validateUploadedBookService,
             IUsersService usersService,
-            IEmailSender emailSender,
-            IRetrieveBooksService retrieveBooksService)
+            IRetrieveBooksService retrieveBooksService,
+            IMailGunEmailSender emailSender)
         {
             this.bookRepository = bookRepository;
             this.publishersRepository = publishersRepository;
@@ -42,8 +42,8 @@
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
             this.usersService = usersService;
-            this.emailSender = emailSender;
             this.retrieveBooksService = retrieveBooksService;
+            this.emailSender = emailSender;
         }
 
         public async Task ApproveBookAsync(int bookId)
@@ -57,7 +57,10 @@
             var bookCreator = await this.usersService.GetUserWithIdAsync(book.UserId);
             await this.usersService.IncreaseUserPointsAsync(book.UserId, BookUploadPoints);
 
-            await this.emailSender.SendBookApprovedEmailAsync(bookCreator.UserName, bookCreator.Email, book.Title);
+            await this.emailSender.SendEmailAsync(
+                bookCreator.Email,
+                "Approved Book",
+                "<h1>Your book has been approved!</h1>");
         }
 
         public async Task UnapproveBookAsync(int bookId)

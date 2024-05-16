@@ -33,7 +33,7 @@
             services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
 
             services.AddTransient<ISettingsService, SettingsService>();
-            services.AddTransient<IEmailSender, MailKitEmailSender>();
+            services.AddTransient<IMailGunEmailSender, MailGunEmailSender>();
 
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -91,8 +91,8 @@
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<MailKitEmailSenderOptions>(
-                configuration.GetSection(MailKitEmailSenderOptions.MailKitEmailSender));
+            services.Configure<MailGunEmailSenderOptions>(
+                configuration.GetSection(MailGunEmailSenderOptions.MailGunEmailSender));
 
             return services;
         }

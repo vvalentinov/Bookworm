@@ -21,13 +21,13 @@
     public class IdentityController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IEmailSender emailSender;
         private readonly IConfiguration configuration;
+        private readonly IMailGunEmailSender emailSender;
 
         public IdentityController(
             UserManager<ApplicationUser> userManager,
-            IEmailSender emailSender,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMailGunEmailSender emailSender)
         {
             this.userManager = userManager;
             this.emailSender = emailSender;
@@ -60,7 +60,10 @@
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
             var callbackUrl = this.Url.Action(nameof(this.ResetPassword), AccountAreaName, new { code }, this.Request.Scheme);
-            await this.emailSender.SendPasswordResetEmailAsync(user.UserName, model.Email, EncodeUrl(callbackUrl));
+            await this.emailSender.SendEmailAsync(
+                model.Email,
+                "Password Reset",
+                $"Please reset your password by <a href='{callbackUrl}'>clicking here</a>.");
 
             this.TempData[TempDataMessageConstant.SuccessMessage] = "Check your email to reset your password";
             return this.RedirectToAction("Index", "Home", new { area = string.Empty });
@@ -126,7 +129,10 @@
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
             var callbackUrl = this.Url.Action(nameof(this.ConfirmEmail), "User", new { userId, code }, this.Request.Scheme);
-            await this.emailSender.SendPasswordResetEmailAsync(user.UserName, model.Email, EncodeUrl(callbackUrl));
+            await this.emailSender.SendEmailAsync(
+                model.Email,
+                "Password Reset",
+                $"Please reset your password by <a href='{callbackUrl}'>clicking here</a>.");
 
             this.TempData[TempDataMessageConstant.SuccessMessage] = "Verification email sent. Please check your email.";
             return this.RedirectToAction("Index", "Home", new { area = string.Empty });

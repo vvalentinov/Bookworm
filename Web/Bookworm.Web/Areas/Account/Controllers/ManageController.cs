@@ -1,7 +1,6 @@
 ﻿namespace Bookworm.Web.Areas.Account.Controllers
 {
     using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
@@ -19,13 +18,13 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ILogger<ChangePasswordInputModel> logger;
-        private readonly IEmailSender emailSender;
+        private readonly IMailGunEmailSender emailSender;
 
         public ManageController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<ChangePasswordInputModel> logger,
-            IEmailSender emailSender)
+            IMailGunEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -203,7 +202,11 @@
                 var userId = user.Id;
 
                 var callbackUrl = this.Url.Action("ConfirmEmail", string.Empty, new { userId, code }, this.Request.Scheme);
-                await this.emailSender.SendEmailConfirmationAsync(user.UserName, user.Email, HtmlEncoder.Default.Encode(callbackUrl));
+
+                await this.emailSender.SendEmailAsync(
+                    user.Email,
+                    "Confirm your email",
+                    $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
 
                 this.TempData[ErrorMessage] = "You need to confirm your email! Check your inbox!";
                 return this.RedirectToAction(nameof(this.Index));
@@ -238,7 +241,11 @@
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
                 var callbackUrl = this.Url.Action(nameof(this.Index), "Manage", new { }, this.Request.Scheme);
-                await this.emailSender.SendEmailConfirmationAsync(user.UserName, model.NewEmail, HtmlEncoder.Default.Encode(callbackUrl));
+
+                await this.emailSender.SendEmailAsync(
+                    model.NewEmail,
+                    "Confirm your email",
+                    $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
 
                 this.TempData[SuccessMessage] = "Verification email sent. Please check your email.";
                 return this.RedirectToAction(nameof(this.Index));

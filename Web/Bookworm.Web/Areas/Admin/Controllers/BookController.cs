@@ -8,7 +8,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.Books;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -23,7 +22,6 @@
         private readonly IUpdateBookService updateBookService;
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly IEmailSender emailSender;
         private readonly UserManager<ApplicationUser> userManager;
 
         public BookController(
@@ -31,14 +29,12 @@
             IUpdateBookService updateBookService,
             IDeletableEntityRepository<Book> bookRepository,
             IDeletableEntityRepository<ApplicationUser> userRepository,
-            IEmailSender emailSender,
             UserManager<ApplicationUser> userManager)
         {
             this.retrieveBooksService = retrieveBooksService;
             this.updateBookService = updateBookService;
             this.bookRepository = bookRepository;
             this.userRepository = userRepository;
-            this.emailSender = emailSender;
             this.userManager = userManager;
         }
 
