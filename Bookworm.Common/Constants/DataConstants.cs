@@ -65,5 +65,10 @@
             public const byte RatingValueMin = 1;
             public const byte RatingValueMax = 5;
         }
+
+        public static class ApplicationUser
+        {
+            public const byte UserMaxDailyBookDownloadsCount = 10;
+        }
     }
 }

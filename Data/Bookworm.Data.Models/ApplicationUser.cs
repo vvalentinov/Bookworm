@@ -2,10 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     using Bookworm.Data.Common.Models;
 
     using Microsoft.AspNetCore.Identity;
+
+    using static Bookworm.Common.Constants.DataConstants.ApplicationUser;
 
     public class ApplicationUser : IdentityUser, IAuditInfo, IDeletableEntity
     {
@@ -24,6 +27,9 @@
         }
 
         public int Points { get; set; }
+
+        [Range(0, UserMaxDailyBookDownloadsCount)]
+        public byte DailyDownloadsCount { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
