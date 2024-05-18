@@ -16,16 +16,19 @@
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IBlobService blobService;
+        private readonly IUsersService usersService;
 
         public DownloadBookService(
             IDeletableEntityRepository<Book> bookRepository,
-            IBlobService blobService)
+            IBlobService blobService,
+            IUsersService usersService)
         {
             this.bookRepository = bookRepository;
             this.blobService = blobService;
+            this.usersService = usersService;
         }
 
-        public async Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId)
+        public async Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, string userId)
         {
             var book = await this.bookRepository
                 .AllAsNoTracking()
@@ -37,6 +40,8 @@
                 book.DownloadsCount++;
                 this.bookRepository.Update(book);
                 await this.bookRepository.SaveChangesAsync();
+
+                await this.usersService.IncreaseUserDailyDownloadsCountAsync(userId);
             }
 
             return await this.blobService.DownloadBlobAsync(book.FileUrl);

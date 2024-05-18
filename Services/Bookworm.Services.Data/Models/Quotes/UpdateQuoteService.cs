@@ -7,6 +7,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
+    using Bookworm.Services.Messaging;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.EntityFrameworkCore;
 
@@ -29,8 +30,7 @@
 
         public async Task ApproveQuoteAsync(int quoteId)
         {
-            var quote = await this.quoteRepository
-                .All()
+            var quote = await this.quoteRepository.All()
                 .FirstOrDefaultAsync(x => x.Id == quoteId) ??
                 throw new InvalidOperationException(QuoteWrongIdError);
 

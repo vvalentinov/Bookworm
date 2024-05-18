@@ -21,5 +21,9 @@
         Task ReduceUserPointsAsync(string userId, byte points);
 
         Task IncreaseUserPointsAsync(string userId, byte points);
+
+        Task IncreaseUserDailyDownloadsCountAsync(string userId);
+
+        Task ResetDailyDownloadsCountAsync();
     }
 }

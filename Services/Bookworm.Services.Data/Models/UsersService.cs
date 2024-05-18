@@ -5,20 +5,27 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Users;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Constants.DataConstants.ApplicationUser;
     using static Bookworm.Common.Constants.GlobalConstants;
 
     public class UsersService : IUsersService
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ApplicationDbContext dbContext;
 
-        public UsersService(UserManager<ApplicationUser> userManager)
+        public UsersService(
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext dbContext)
         {
             this.userManager = userManager;
+            this.dbContext = dbContext;
         }
 
         public async Task EditUser(string userId, string username)
@@ -80,5 +87,20 @@
             => await this.userManager.IsInRoleAsync(
                 await this.GetUserWithIdAsync(userId),
                 AdministratorRoleName);
+
+        public async Task IncreaseUserDailyDownloadsCountAsync(string userId)
+        {
+            var user = await this.GetUserWithIdAsync(userId);
+            if (user.DailyDownloadsCount < UserMaxDailyBookDownloadsCount)
+            {
+                user.DailyDownloadsCount++;
+                await this.userManager.UpdateAsync(user);
+            }
+        }
+
+        public async Task ResetDailyDownloadsCountAsync()
+            => await this.dbContext
+                    .Database
+                    .ExecuteSqlRawAsync("UPDATE AspNetUsers SET DailyDownloadsCount = 0");
     }
 }

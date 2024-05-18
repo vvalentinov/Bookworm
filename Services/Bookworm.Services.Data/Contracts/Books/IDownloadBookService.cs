@@ -6,6 +6,6 @@
 
     public interface IDownloadBookService
     {
-        Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId);
+        Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, string userId);
     }
 }

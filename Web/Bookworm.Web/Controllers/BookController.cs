@@ -242,9 +242,11 @@
         {
             try
             {
+                string userId = this.userManager.GetUserId(this.User);
+
                 (Stream stream,
                  string contentType,
-                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id);
+                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id, userId);
 
                 return this.File(stream, contentType, downloadName);
             }
