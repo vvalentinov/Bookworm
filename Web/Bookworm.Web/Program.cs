@@ -11,6 +11,7 @@
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services
+                .AddQuartz()
                 .AddIdentity()
                 .AddMvcControllers()
                 .ConfigureCookiePolicy()

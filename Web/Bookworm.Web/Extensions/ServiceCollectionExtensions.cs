@@ -13,12 +13,14 @@
     using Bookworm.Services.Data.Models.Books;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Messaging;
+    using Bookworm.Web.BackgroundJobs;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Quartz;
 
     using static Bookworm.Data.IdentityOptionsProvider;
 
@@ -87,6 +89,22 @@
             return services;
         }
 
+        public static IServiceCollection AddQuartz(this IServiceCollection services)
+        {
+            services.AddQuartz(options =>
+            {
+                string jobKey = nameof(ResetDailyDownloadsCountJob);
+
+                options
+                    .AddJob<ResetDailyDownloadsCountJob>(JobKey.Create(jobKey))
+                    .AddTrigger(triggerConfig => triggerConfig.ForJob(jobKey).WithCronSchedule("0 0 0 * * ?"));
+            });
+
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureOptions(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -141,7 +159,9 @@
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(GetSqlServerConnection(config)));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
+
             return services;
         }
 
@@ -158,6 +178,7 @@
         {
             services.AddControllersWithViews(options =>
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+
             return services;
         }
 
