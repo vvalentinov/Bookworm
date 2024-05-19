@@ -4,17 +4,19 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Web.Infrastructure.Filters;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Constants.GlobalConstants;
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class BookController : BaseController
@@ -78,12 +80,12 @@
             try
             {
                 await this.uploadBookService.UploadBookAsync(uploadBookDto);
-                this.TempData[TempDataMessageConstant.SuccessMessage] = UploadSuccess;
+                this.TempData[SuccessMessage] = UploadSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.View(model);
             }
         }
@@ -101,7 +103,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction("Index", "Home");
             }
         }
@@ -124,12 +126,12 @@
             try
             {
                 await this.updateBookService.EditBookAsync(editBookDto, userId);
-                this.TempData[TempDataMessageConstant.SuccessMessage] = EditSuccess;
+                this.TempData[SuccessMessage] = EditSuccess;
                 return this.RedirectToAction(nameof(this.UserBooks), "Book");
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.View(nameof(this.Upload), model);
             }
         }
@@ -142,12 +144,12 @@
             try
             {
                 await this.updateBookService.DeleteBookAsync(bookId, userId);
-                this.TempData[TempDataMessageConstant.SuccessMessage] = DeleteSuccess;
+                this.TempData[SuccessMessage] = DeleteSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Details), "Book", new { id = bookId });
             }
         }
@@ -175,21 +177,16 @@
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Random));
             }
         }
 
         [HttpGet]
         [AllowAnonymous]
+        [PageValidationFilter]
         public async Task<IActionResult> All(string category, int page = 1)
         {
-            if (page < 1)
-            {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = "Invalid page number!";
-                return this.RedirectToAction(nameof(this.All), new { category, id = 1 });
-            }
-
             try
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
@@ -200,20 +197,15 @@
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.All), "Category");
             }
         }
 
         [HttpGet]
+        [PageValidationFilter]
         public async Task<IActionResult> UserBooks(int page = 1)
         {
-            if (page < 1)
-            {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = "Invalid page number!";
-                return this.RedirectToAction(nameof(this.UserBooks), new { id = 1 });
-            }
-
             var userId = this.userManager.GetUserId(this.User);
             var books = await this.retrieveBooksService.GetUserBooksAsync(userId, page);
 
@@ -232,7 +224,7 @@
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction("Index", "Home");
             }
         }
@@ -242,17 +234,18 @@
         {
             try
             {
-                string userId = this.userManager.GetUserId(this.User);
+                var user = await this.userManager.GetUserAsync(this.User);
+                bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
 
                 (Stream stream,
                  string contentType,
-                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id, userId);
+                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id, user, isAdmin);
 
                 return this.File(stream, contentType, downloadName);
             }
             catch (Exception ex)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
+                this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Details), new { id });
             }
         }

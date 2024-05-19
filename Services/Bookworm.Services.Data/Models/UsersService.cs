@@ -88,9 +88,8 @@
                 await this.GetUserWithIdAsync(userId),
                 AdministratorRoleName);
 
-        public async Task IncreaseUserDailyDownloadsCountAsync(string userId)
+        public async Task IncreaseUserDailyDownloadsCountAsync(ApplicationUser user)
         {
-            var user = await this.GetUserWithIdAsync(userId);
             if (user.DailyDownloadsCount < UserMaxDailyBookDownloadsCount)
             {
                 user.DailyDownloadsCount++;

@@ -97,7 +97,8 @@
 
                 options
                     .AddJob<ResetDailyDownloadsCountJob>(JobKey.Create(jobKey))
-                    .AddTrigger(triggerConfig => triggerConfig.ForJob(jobKey).WithCronSchedule("0 0 0 * * ?"));
+                    .AddTrigger(triggerConfig => triggerConfig.ForJob(jobKey)
+                    .WithCronSchedule("0 0 0 * * ?"));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

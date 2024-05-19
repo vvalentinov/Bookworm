@@ -22,7 +22,7 @@
 
         Task IncreaseUserPointsAsync(string userId, byte points);
 
-        Task IncreaseUserDailyDownloadsCountAsync(string userId);
+        Task IncreaseUserDailyDownloadsCountAsync(ApplicationUser user);
 
         Task ResetDailyDownloadsCountAsync();
     }

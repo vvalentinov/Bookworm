@@ -23,6 +23,7 @@
             public const string BookWithTitleExistsError = "Book with given title already exist!";
             public const string BookDeleteError = "You have to be either the book's owner or an administrator to delete it!";
             public const string BookEditError = "You have to be the book's owner to edit it!";
+            public const string BookNotApprovedError = "This book is not approved!";
         }
 
         public static class QuoteErrorMessagesConstants
@@ -49,6 +50,11 @@
             public const string UserWithEmailError = "Email is already taken! Please, try again!";
             public const string LoginError = "Login failed! Try again!";
             public const string RegisterError = "Register failed! Try again!";
+        }
+
+        public static class UserErrorMessagesConstants
+        {
+            public const string UserDailyCountError = "You have reached your daily book download count of 10 books! Try again, tomorrow!";
         }
     }
 }
