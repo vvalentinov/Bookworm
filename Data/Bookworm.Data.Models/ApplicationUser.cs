@@ -21,6 +21,7 @@
             this.FavoriteBooks = new HashSet<FavoriteBook>();
             this.Comments = new HashSet<Comment>();
             this.Quotes = new HashSet<Quote>();
+            this.Notifications = new HashSet<Notification>();
         }
 
         public int Points { get; set; }
@@ -52,5 +53,7 @@
         public ICollection<Comment> Comments { get; set; }
 
         public ICollection<Quote> Quotes { get; set; }
+
+        public ICollection<Notification> Notifications { get; set; }
     }
 }
