@@ -57,6 +57,7 @@
             services.AddScoped<IDownloadBookService, DownloadBookService>();
 
             // Other services
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICategoriesService, CategoriesService>();
             services.AddScoped<ILanguagesService, LanguagesService>();
             services.AddScoped<ICommentsService, CommentsService>();
@@ -93,12 +94,18 @@
         {
             services.AddQuartz(options =>
             {
-                string jobKey = nameof(ResetDailyDownloadsCountJob);
+                string resetDailyDownloadsJobKey = nameof(ResetDailyDownloadsCountJob);
+                //string deleteOldNotificationsJobKey = nameof(MarkOldNotificationsAsDeletedJob);
 
                 options
-                    .AddJob<ResetDailyDownloadsCountJob>(JobKey.Create(jobKey))
-                    .AddTrigger(triggerConfig => triggerConfig.ForJob(jobKey)
+                    .AddJob<ResetDailyDownloadsCountJob>(JobKey.Create(resetDailyDownloadsJobKey))
+                    .AddTrigger(triggerConfig => triggerConfig.ForJob(resetDailyDownloadsJobKey)
                     .WithCronSchedule("0 0 0 * * ?"));
+
+                //options
+                //    .AddJob<MarkOldNotificationsAsDeletedJob>(JobKey.Create(deleteOldNotificationsJobKey))
+                //    .AddTrigger(triggerConfig => triggerConfig.ForJob(deleteOldNotificationsJobKey)
+                //    .WithCronSchedule("0 */2 * ? * *"));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
