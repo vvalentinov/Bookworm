@@ -1,5 +1,6 @@
 ﻿namespace Bookworm.Web
 {
+    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,8 @@
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddSignalR();
 
             builder.Services
                 .AddQuartz()
@@ -29,6 +32,8 @@
                 .SeedDatabase()
                 .ConfigurePipeline()
                 .MapRoutes();
+
+            app.MapHub<NotificationHub>("/hubs/notification");
 
             app.Run();
         }

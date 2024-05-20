@@ -98,8 +98,7 @@
         }
 
         public async Task ResetDailyDownloadsCountAsync()
-            => await this.dbContext
-                    .Database
+            => await this.dbContext.Database
                     .ExecuteSqlRawAsync("UPDATE AspNetUsers SET DailyDownloadsCount = 0");
     }
 }

@@ -8,11 +8,14 @@
     using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
+    using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Models;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Data.Tests.Shared;
+    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
     using Moq;
     using Xunit;
@@ -353,6 +356,10 @@
         }
 
         private UpdateQuoteService GetUpdateQuoteService()
-            => new UpdateQuoteService(this.GetQuoteRepo(), new Mock<UsersService>(this.GetUserManager()).Object);
+            => new UpdateQuoteService(
+                this.GetQuoteRepo(),
+                new Mock<UsersService>(this.GetUserManager()).Object,
+                new Mock<IHubContext<NotificationHub>>().Object,
+                new Mock<INotificationService>().Object);
     }
 }

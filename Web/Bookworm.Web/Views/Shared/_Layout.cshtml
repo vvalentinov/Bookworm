@@ -60,7 +60,19 @@
                                 Random Book
                             </a>
                         </li>
+
+                        @if (this.User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item mx-2">
+                                <a asp-area="" asp-controller="Notification" asp-action="Index"
+                                   type="button" class="btn position-relative notificationBtn">
+                                    Notifications
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
+                                </a>
+                            </li>
+                        }
                     </ul>
+
                     <ul class="navbar-nav">
                         <partial class="login-partial" name="PartialViews/_LoginPartial" />
                     </ul>
@@ -78,10 +90,7 @@
     <footer class="bookworm-footer">
         <span>
             &copy; @DateTime.Now.Year - @GlobalConstants.SystemName -
-            <a class="privacy-link"
-               asp-area=""
-               asp-controller="Home"
-               asp-action="Privacy">
+            <a class="privacy-link" asp-area="" asp-controller="Home" asp-action="Privacy">
                 Privacy
             </a>
         </span>
@@ -92,7 +101,11 @@
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    @if (this.User.Identity.IsAuthenticated)
+    {
+        <script src="~/js/signalR/signalr.min.js"></script>
+        <script src="~/js/signalR/notification.js"></script>
+    }
     <partial name="PartialViews/_UserMessagesPartial" />
 
     @await this.RenderSectionAsync("Scripts", required: false)

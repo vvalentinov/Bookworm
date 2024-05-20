@@ -7,25 +7,33 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Services.Messaging;
+    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels.DTOs;
+    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Common.Enums.QuoteType;
 
     public class UpdateQuoteService : IUpdateQuoteService
     {
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
         private readonly IUsersService usersService;
+        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly INotificationService notificationService;
 
         public UpdateQuoteService(
             IDeletableEntityRepository<Quote> quoteRepository,
-            IUsersService usersService)
+            IUsersService usersService,
+            IHubContext<NotificationHub> notificationHub,
+            INotificationService notificationService)
         {
-            this.quoteRepository = quoteRepository;
             this.usersService = usersService;
+            this.quoteRepository = quoteRepository;
+            this.notificationHub = notificationHub;
+            this.notificationService = notificationService;
         }
 
         public async Task ApproveQuoteAsync(int quoteId)
@@ -34,13 +42,15 @@
                 .FirstOrDefaultAsync(x => x.Id == quoteId) ??
                 throw new InvalidOperationException(QuoteWrongIdError);
 
-            if (quote.IsApproved == false)
+            if (!quote.IsApproved)
             {
                 quote.IsApproved = true;
                 this.quoteRepository.Update(quote);
                 await this.quoteRepository.SaveChangesAsync();
 
                 await this.usersService.IncreaseUserPointsAsync(quote.UserId, QuoteUploadPoints);
+                await this.notificationService.AddApprovedQuoteNotificationAsync(quote.Content, quote.UserId);
+                await this.notificationHub.Clients.User(quote.UserId).SendAsync("notification", ApprovedQuoteMessage);
             }
         }
 

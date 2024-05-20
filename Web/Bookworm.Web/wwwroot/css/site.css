@@ -90,6 +90,17 @@ main {
     border-bottom: solid 2px var(--clr-secondary);
 }
 
+    .mainLayoutNavbar .notificationBtn,
+    .mainLayoutNavbar .notificationBtn:active {
+        font-size: 1.5rem;
+        background-color: var(--clr-secondary) !important;
+        color: var(--clr-white);
+    }
+
+        .mainLayoutNavbar .notificationBtn:hover {
+            color: var(--clr-black);
+        }
+
     .mainLayoutNavbar .nav-item .nav-link {
         color: var(--clr-white);
     }

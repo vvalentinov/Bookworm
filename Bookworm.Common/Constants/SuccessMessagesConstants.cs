@@ -8,5 +8,10 @@
             public const string EditSuccess = "Successful edit! When an admin approves your edit, it will become visible on the site!";
             public const string DeleteSuccess = "Successful delete!";
         }
+
+        public static class NotificationsMessagesConstants
+        {
+            public const string ApprovedQuoteNotification = "Congratulations! Your quote: \"{0}\" has been approved by an administrator! You have earned yourself {1} extra points!";
+        }
     }
 }

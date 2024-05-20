@@ -9,6 +9,13 @@
       "wwwroot/lib/admin-lte/dist/css/adminlte.css"
     ]
   },
+  //{
+  //  "outputFileName": "wwwroot/js/signalR/notification.min.js",
+  //  // An array of relative input file paths. Globbing patterns supported
+  //  "inputFiles": [
+  //    "wwwroot/js/signalR/notification.js"
+  //  ]
+  //},
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
