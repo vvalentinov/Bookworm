@@ -14,6 +14,9 @@
         public string Content { get; set; }
 
         [Required]
+        public bool IsRead { get; set; }
+
+        [Required]
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
 
