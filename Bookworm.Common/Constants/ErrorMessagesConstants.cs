@@ -56,5 +56,10 @@
         {
             public const string UserDailyCountError = "You have reached your daily book download count of 10 books! Try again, tomorrow!";
         }
+
+        public static class NotificationsMessagesConstants
+        {
+            public const string UnapprovedQuoteNotification = "Oops! Your quote: \"{0}\" has been unapproved by an administrator! You have lost {1} points!";
+        }
     }
 }

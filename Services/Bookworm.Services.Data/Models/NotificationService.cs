@@ -11,9 +11,6 @@
     using Bookworm.Web.ViewModels.Notification;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
-    using static Bookworm.Common.Constants.SuccessMessagesConstants.NotificationsMessagesConstants;
-
     public class NotificationService : INotificationService
     {
         private readonly IDeletableEntityRepository<Notification> notificationRepo;
@@ -23,14 +20,9 @@
             this.notificationRepo = notificationRepo;
         }
 
-        public async Task AddApprovedQuoteNotificationAsync(string quoteContent, string userId)
+        public async Task AddNotificationAsync(string content, string userId)
         {
-            var notification = new Notification
-            {
-                UserId = userId,
-                Content = string.Format(ApprovedQuoteNotification, quoteContent, QuoteUploadPoints),
-            };
-
+            var notification = new Notification { UserId = userId, Content = content };
             await this.notificationRepo.AddAsync(notification);
             await this.notificationRepo.SaveChangesAsync();
         }

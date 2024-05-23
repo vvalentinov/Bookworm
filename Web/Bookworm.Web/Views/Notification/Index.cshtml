@@ -14,7 +14,8 @@
 <section class="notificationsSection">
     @foreach (var notification in Model.Notifications)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert @((notification.Content.StartsWith("Oops") ? "alert-danger" : "alert-success")) alert-success alert-dismissible fade show"
+             role="alert">
             @notification.Content
             <button type="button"
                     class="btn-close"

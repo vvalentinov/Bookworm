@@ -13,7 +13,9 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.NotificationsMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Constants.SuccessMessagesConstants.NotificationsMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Common.Enums.QuoteType;
 
@@ -49,7 +51,9 @@
                 await this.quoteRepository.SaveChangesAsync();
 
                 await this.usersService.IncreaseUserPointsAsync(quote.UserId, QuoteUploadPoints);
-                await this.notificationService.AddApprovedQuoteNotificationAsync(quote.Content, quote.UserId);
+
+                var notificationContent = string.Format(ApprovedQuoteNotification, quote.Content, QuoteUploadPoints);
+                await this.notificationService.AddNotificationAsync(notificationContent, quote.UserId);
                 await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", ApprovedQuoteMessage);
             }
         }
@@ -102,7 +106,12 @@
             {
                 quote.IsApproved = false;
                 await this.quoteRepository.SaveChangesAsync();
+
                 await this.usersService.ReduceUserPointsAsync(quote.UserId, QuoteUploadPoints);
+
+                var notificationContent = string.Format(UnapprovedQuoteNotification, quote.Content, QuoteUploadPoints);
+                await this.notificationService.AddNotificationAsync(notificationContent, quote.UserId);
+                await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", UnapprovedQuoteMessage);
             }
         }
 

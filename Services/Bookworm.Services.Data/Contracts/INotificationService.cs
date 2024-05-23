@@ -6,7 +6,7 @@
 
     public interface INotificationService
     {
-        Task AddApprovedQuoteNotificationAsync(string quoteContent, string userId);
+        Task AddNotificationAsync(string content, string userId);
 
         Task<NotificationListViewModel> GetUserNotificationsAsync(string userId);
 
