@@ -50,7 +50,7 @@
 
                 await this.usersService.IncreaseUserPointsAsync(quote.UserId, QuoteUploadPoints);
                 await this.notificationService.AddApprovedQuoteNotificationAsync(quote.Content, quote.UserId);
-                await this.notificationHub.Clients.User(quote.UserId).SendAsync("notification", ApprovedQuoteMessage);
+                await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", ApprovedQuoteMessage);
             }
         }
 

@@ -15,5 +15,7 @@
         Task<int> GetUserNotificationsCountAsync(string userId);
 
         Task<int> DeleteUserNotificationAsync(string userId, int notificationId);
+
+        Task MarkUnreadUserNotificationsAsReadAsync(string userId);
     }
 }

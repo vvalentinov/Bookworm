@@ -1,11 +1,15 @@
-﻿var connectionNotification = new signalR.HubConnectionBuilder().withUrl('/hubs/notification').build();
+﻿var connectionNotification = new signalR.HubConnectionBuilder()
+    .withUrl('/hubs/notification')
+    .build();
 
-connectionNotification.on('notification', (message) => {
-    createToast(message);
-    increaseNotificationsCount();
-});
+connectionNotification.on('notify', (message) => showToast(message));
 
-function createToast(message) {
+function fulfilled() { }
+function rejected() { }
+
+connectionNotification.start().then(fulfilled, rejected);
+
+function showToast(message) {
     const toastContainerDiv = document.createElement('div');
     toastContainerDiv.className = 'toast-container position-fixed top-0 end-0 p-3 fs-5';
 
@@ -46,9 +50,8 @@ function createToast(message) {
     const toastLiveExample = document.getElementById('liveToast');
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
     toastBootstrap.show();
-}
 
-function increaseNotificationsCount() {
+    // Increase notifications count
     const spanEl = document.querySelector('.notificationBtn .badge');
     if (spanEl.textContent == '') {
         spanEl.textContent = 1;
@@ -59,20 +62,3 @@ function increaseNotificationsCount() {
         }
     }
 }
-
-function fulfilled() { }
-function rejected() { }
-
-connectionNotification.start().then(fulfilled, rejected);
-
-document.querySelector('.notificationBtn')?.addEventListener('click', (e) => {
-    e.currentTarget.querySelector('.badge').textContent = '';
-});
-
-fetch('/ApiNotification/GetUserNotificationsCount')
-    .then(res => res.json())
-    .then(res => {
-        if (res > 0) {
-            document.querySelector('.notificationBtn .badge').textContent = res;
-        }
-    }).catch(err => console.log(err.message));

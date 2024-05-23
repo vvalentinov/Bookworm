@@ -95,7 +95,7 @@
             services.AddQuartz(options =>
             {
                 string resetDailyDownloadsJobKey = nameof(ResetDailyDownloadsCountJob);
-                //string deleteOldNotificationsJobKey = nameof(MarkOldNotificationsAsDeletedJob);
+                string deleteOldNotificationsJobKey = nameof(MarkOldNotificationsAsDeletedJob);
 
                 options
                     .AddJob<ResetDailyDownloadsCountJob>(JobKey.Create(resetDailyDownloadsJobKey))
@@ -105,7 +105,7 @@
                 //options
                 //    .AddJob<MarkOldNotificationsAsDeletedJob>(JobKey.Create(deleteOldNotificationsJobKey))
                 //    .AddTrigger(triggerConfig => triggerConfig.ForJob(deleteOldNotificationsJobKey)
-                //    .WithCronSchedule("0 */2 * ? * *"));
+                //    .WithCronSchedule("0 */10 * ? * *"));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

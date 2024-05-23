@@ -28,6 +28,21 @@
             return await this.notificationService.GetUserNotificationsCountAsync(userId);
         }
 
+        [HttpPut(nameof(MarkUserNotificationsAsRead))]
+        public async Task<IActionResult> MarkUserNotificationsAsRead()
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                await this.notificationService.MarkUnreadUserNotificationsAsReadAsync(userId);
+                return this.Ok("Successfully marked notifications as read!");
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete(nameof(DeleteNotification))]
         public async Task<ActionResult<int>> DeleteNotification(int id)
         {
@@ -38,7 +53,7 @@
             }
             catch (Exception ex)
             {
-                return this.BadRequest(ex.Message);
+                return this.BadRequest(new { error = ex.Message });
             }
         }
     }

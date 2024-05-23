@@ -65,11 +65,11 @@
         }
 
         public async Task<int> GetUserNotificationsCountAsync(string userId)
-            => await this.notificationRepo.AllAsNoTracking().CountAsync(n => n.UserId == userId);
+            => await this.notificationRepo.AllAsNoTracking().CountAsync(n => n.UserId == userId && !n.IsRead);
 
         public async Task MarkOldNotificationsAsDeletedAsync()
         {
-            var cutoffTime = DateTime.UtcNow.AddMinutes(-2);
+            var cutoffTime = DateTime.UtcNow.AddDays(-3);
 
             var notifications = await this.notificationRepo.AllAsNoTracking()
                 .Where(n => !n.IsDeleted && n.CreatedOn <= cutoffTime).ToListAsync();
@@ -80,6 +80,23 @@
             }
 
             await this.notificationRepo.SaveChangesAsync();
+        }
+
+        public async Task MarkUnreadUserNotificationsAsReadAsync(string userId)
+        {
+            var userNotifications = await this.notificationRepo.All()
+                .Where(n => n.UserId == userId && !n.IsRead).ToListAsync();
+
+            foreach (var notification in userNotifications)
+            {
+                notification.IsRead = true;
+                this.notificationRepo.Update(notification);
+            }
+
+            if (userNotifications.Count > 0)
+            {
+                await this.notificationRepo.SaveChangesAsync();
+            }
         }
     }
 }
