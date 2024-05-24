@@ -11,6 +11,8 @@
     using Bookworm.Web.ViewModels.Notification;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.NotificationsMessagesConstants;
+
     public class NotificationService : INotificationService
     {
         private readonly IDeletableEntityRepository<Notification> notificationRepo;
@@ -31,11 +33,11 @@
         {
             var notification = await this.notificationRepo.All()
                 .FirstOrDefaultAsync(n => n.Id == notificationId) ??
-                throw new InvalidOperationException("No notification found with given id!");
+                throw new InvalidOperationException(WrongNotificationIdError);
 
             if (notification.UserId != userId)
             {
-                throw new InvalidOperationException("Only the notification's owner can delete it!");
+                throw new InvalidOperationException(DeleteNotificationError);
             }
 
             this.notificationRepo.Delete(notification);
@@ -63,8 +65,9 @@
         {
             var cutoffTime = DateTime.UtcNow.AddDays(-3);
 
-            var notifications = await this.notificationRepo.AllAsNoTracking()
-                .Where(n => !n.IsDeleted && n.CreatedOn <= cutoffTime).ToListAsync();
+            var notifications = await this.notificationRepo.All()
+                .Where(n => !n.IsDeleted && n.CreatedOn <= cutoffTime)
+                .ToListAsync();
 
             foreach (var notification in notifications)
             {

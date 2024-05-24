@@ -4,6 +4,6 @@
 
     public class NotificationListViewModel
     {
-        public IEnumerable<NotificationViewModel> Notifications { get; set; }
+        public IList<NotificationViewModel> Notifications { get; set; }
     }
 }

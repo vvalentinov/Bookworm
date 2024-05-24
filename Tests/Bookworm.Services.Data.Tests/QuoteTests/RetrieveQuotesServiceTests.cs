@@ -2,7 +2,6 @@
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
 
     using Bookworm.Data;
@@ -10,8 +9,6 @@
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Data.Tests.Shared;
-    using Bookworm.Services.Mapping;
-    using Bookworm.Web.ViewModels;
     using Bookworm.Web.ViewModels.DTOs;
     using Xunit;
 
@@ -23,7 +20,6 @@
 
         public RetrieveQuotesServiceTests(DbContextFixture dbContextFixture)
         {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
             this.dbContext = dbContextFixture.DbContext;
         }
 
