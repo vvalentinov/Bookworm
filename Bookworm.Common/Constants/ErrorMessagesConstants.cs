@@ -8,6 +8,10 @@
         public const string FieldInvalidError = "{0} field is invalid!";
         public const string FieldMaxLengthError = "{0} field must not exceed {1} characters!";
 
+        public const string EmptyCollectionError = "{0} collection cannot be empty!";
+
+        public const string FileIncorrectExtensionError = "File extension is incorrect! Valid extensions: {0}";
+
         public static class BookErrorMessagesConstants
         {
             public const string BookFileRequiredError = "PDF file is required!";
@@ -16,14 +20,25 @@
             public const string BookInvalidPdfSizeError = "Book PDF file must not exceed 15 MB!";
             public const string BookInvalidImageSizeError = "Book image file must not exceed 5 MB!";
             public const string BookImageFileEmptyError = "Book image file is empty!";
-            public const string BookInvalidFileExtensionError = "Invalid book file extension. Allowed extension: .pdf!";
-            public const string BookInvalidImageFileError = "Invalid image file extension. Allowed extensions: .jpg, .jpeg, .png!";
             public const string BookMissingAuthorsError = "You must add at least one author!";
             public const string BookWrongIdError = "No book with given id found!";
             public const string BookWithTitleExistsError = "Book with given title already exist!";
             public const string BookDeleteError = "You have to be either the book's owner or an administrator to delete it!";
             public const string BookEditError = "You have to be the book's owner to edit it!";
             public const string BookNotApprovedError = "This book is not approved!";
+            public const string BookInvalidYearError = "Invalid year value!";
+            public const string BookRandomCountError = "The number of random books must be 5, 10, 15 or 20!";
+            public const string BookAuthorsCountError = "Book author's count must be between 1 and 5!";
+        }
+
+        public static class CategoryErrorMessagesConstants
+        {
+            public const string CategoryNotFoundError = "The given category doesn't exist!";
+        }
+
+        public static class LanguageErrorMessagesConstants
+        {
+            public const string LanguageNotFoundError = "The given language doesn't exist!";
         }
 
         public static class QuoteErrorMessagesConstants

@@ -64,8 +64,6 @@
                     .ToListAsync();
 
         public async Task<bool> CheckIfIdIsValidAsync(int languageId)
-            => await this.languagesRepository
-                    .AllAsNoTracking()
-                    .AnyAsync(l => l.Id == languageId);
+            => await this.languagesRepository.AllAsNoTracking().AnyAsync(l => l.Id == languageId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
@@ -10,7 +11,10 @@
     using Bookworm.Web.ViewModels.DTOs;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.AuthorErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.LanguageErrorMessagesConstants;
 
     public class UploadBookService : IUploadBookService
     {
@@ -19,7 +23,9 @@
         private readonly IPublishersService publishersService;
         private readonly ISearchBooksService searchBooksService;
         private readonly IDeletableEntityRepository<Book> booksRepository;
-        private readonly IValidateUploadedBookService validateUploadedBookService;
+        private readonly IValidateBookFilesSizesService validateUploadedBookService;
+        private readonly ICategoriesService categoriesService;
+        private readonly ILanguagesService languagesService;
 
         public UploadBookService(
             IBlobService blobService,
@@ -27,7 +33,9 @@
             IPublishersService publishersService,
             ISearchBooksService searchBooksService,
             IDeletableEntityRepository<Book> booksRepository,
-            IValidateUploadedBookService validateUploadedBookService)
+            IValidateBookFilesSizesService validateUploadedBookService,
+            ICategoriesService categoriesService,
+            ILanguagesService languagesService)
         {
             this.blobService = blobService;
             this.authorsService = authorsService;
@@ -35,37 +43,46 @@
             this.publishersService = publishersService;
             this.searchBooksService = searchBooksService;
             this.validateUploadedBookService = validateUploadedBookService;
+            this.categoriesService = categoriesService;
+            this.languagesService = languagesService;
         }
 
         public async Task UploadBookAsync(BookDto uploadBookDto)
         {
-            var bookExists = await this.searchBooksService
-                .CheckIfBookWithTitleExistsAsync(uploadBookDto.Title);
+            var bookTitle = uploadBookDto.Title.Trim();
+            var publisherName = uploadBookDto.Publisher.Trim();
 
-            if (bookExists)
+            if (await this.searchBooksService.CheckIfBookWithTitleExistsAsync(bookTitle))
             {
                 throw new InvalidOperationException(BookWithTitleExistsError);
             }
 
-            await this.validateUploadedBookService.ValidateUploadedBookAsync(
-                false,
-                uploadBookDto.CategoryId,
-                uploadBookDto.LanguageId,
-                uploadBookDto.BookFile,
-                uploadBookDto.ImageFile,
-                uploadBookDto.Authors);
+            if (!await this.categoriesService.CheckIfIdIsValidAsync(uploadBookDto.CategoryId))
+            {
+                throw new InvalidOperationException(CategoryNotFoundError);
+            }
 
-            string bookBlobUrl = await this.blobService.UploadBlobAsync(
-                uploadBookDto.BookFile,
-                BookFileUploadPath);
+            if (!await this.languagesService.CheckIfIdIsValidAsync(uploadBookDto.LanguageId))
+            {
+                throw new InvalidOperationException(LanguageNotFoundError);
+            }
 
-            string imageBlobUrl = await this.blobService.UploadBlobAsync(
-                uploadBookDto.ImageFile,
-                BookImageFileUploadPath);
+            if (this.authorsService.HasDuplicates(uploadBookDto.Authors))
+            {
+                throw new InvalidOperationException(AuthorDuplicatesError);
+            }
+
+            this.validateUploadedBookService.ValidateUploadedBookFileSizes(
+                isForEdit: false,
+                uploadBookDto.BookFile,
+                uploadBookDto.ImageFile);
+
+            string bookBlobUrl = await this.blobService.UploadBlobAsync(uploadBookDto.BookFile, BookFileUploadPath);
+            string imageBlobUrl = await this.blobService.UploadBlobAsync(uploadBookDto.ImageFile, BookImageFileUploadPath);
 
             var book = new Book
             {
-                Title = uploadBookDto.Title.Trim(),
+                Title = bookTitle,
                 FileUrl = bookBlobUrl,
                 ImageUrl = imageBlobUrl,
                 Year = uploadBookDto.Year,
@@ -76,19 +93,13 @@
                 Description = uploadBookDto.Description,
             };
 
-            await this.booksRepository.AddAsync(book);
-
             if (!string.IsNullOrWhiteSpace(uploadBookDto.Publisher))
             {
-                var publisher = await this.publishersService
-                    .GetPublisherWithNameAsync(uploadBookDto.Publisher);
+                var publisher = await this.publishersService.GetPublisherWithNameAsync(publisherName);
 
                 if (publisher == null)
                 {
-                    book.Publisher = new Publisher
-                    {
-                        Name = uploadBookDto.Publisher.Trim(),
-                    };
+                    book.Publisher = new Publisher { Name = publisherName };
                 }
                 else
                 {
@@ -96,25 +107,18 @@
                 }
             }
 
-            foreach (var authorModel in uploadBookDto.Authors)
-            {
-                var author = await this.authorsService
-                    .GetAuthorWithNameAsync(authorModel.Name);
+            var trimmedAuthorNames = uploadBookDto.Authors.Select(x => x.Name.Trim()).ToList();
 
-                if (author == null)
-                {
-                    book.AuthorsBooks.Add(new AuthorBook
-                    {
-                        Book = book,
-                        Author = new Author { Name = authorModel.Name.Trim() },
-                    });
-                }
-                else
-                {
-                    book.AuthorsBooks.Add(new AuthorBook { Author = author, Book = book });
-                }
+            foreach (var authorName in trimmedAuthorNames)
+            {
+                var author = await this.authorsService.GetAuthorWithNameAsync(authorName);
+
+                book.AuthorsBooks.Add(author != null ?
+                    new AuthorBook { Book = book, Author = author } :
+                    new AuthorBook { Book = book, Author = new Author { Name = authorName } });
             }
 
+            await this.booksRepository.AddAsync(book);
             await this.booksRepository.SaveChangesAsync();
         }
     }

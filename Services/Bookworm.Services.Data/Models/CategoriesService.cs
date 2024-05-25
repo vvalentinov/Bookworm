@@ -37,10 +37,8 @@
             return category.Id;
         }
 
-        public async Task<bool> CheckIfIdIsValidAsync(int? categoryId)
-            => await this.categoriesRepository
-                    .AllAsNoTracking()
-                    .AnyAsync(c => c.Id == categoryId);
+        public async Task<bool> CheckIfIdIsValidAsync(int categoryId)
+            => await this.categoriesRepository.AllAsNoTracking().AnyAsync(c => c.Id == categoryId);
 
         public async Task<string> GetCategoryNameAsync(int categoryId)
         {

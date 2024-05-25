@@ -48,7 +48,7 @@
             services.AddScoped<IUploadQuoteService, UploadQuoteService>();
 
             // Books services
-            services.AddScoped<IValidateUploadedBookService, ValidateUploadedBookService>();
+            services.AddScoped<IValidateBookFilesSizesService, ValidateBookFilesSizesService>();
             services.AddScoped<IRetrieveBooksService, RetrieveBooksService>();
             services.AddScoped<IUploadBookService, UploadBookService>();
             services.AddScoped<IFavoriteBooksService, FavoriteBookService>();

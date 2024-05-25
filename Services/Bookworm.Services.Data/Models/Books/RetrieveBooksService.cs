@@ -47,7 +47,7 @@
 
             if (categoryId != null)
             {
-                if (!await this.categoriesService.CheckIfIdIsValidAsync(categoryId))
+                if (!await this.categoriesService.CheckIfIdIsValidAsync((int)categoryId))
                 {
                     throw new InvalidOperationException("The given category doesn't exist!");
                 }

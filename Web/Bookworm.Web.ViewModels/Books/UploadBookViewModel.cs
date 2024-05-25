@@ -44,15 +44,15 @@
             ErrorMessage = FieldRangeError)]
         public int PagesCount { get; set; }
 
-        [BookYearValidationAttribute(BookPublishedYearMin)]
+        [BookYearValidation(BookPublishedYearMin)]
         public int Year { get; set; }
 
         [Display(Name = "PDF file (Max - 15 MB)")]
-        [FileAllowedExtensionsValidationAttribute([BookFileAllowedExtension])]
+        [FileAllowedExtensionsValidation([BookFileAllowedExtension])]
         public IFormFile BookFile { get; set; }
 
         [Display(Name = "Image File (Max - 5 MB)")]
-        [FileAllowedExtensionsValidationAttribute([".jpg", ".jpeg", ".png"])]
+        [FileAllowedExtensionsValidation([".jpg", ".jpeg", ".png"])]
         public IFormFile ImageFile { get; set; }
 
         [Display(Name = nameof(Category))]
@@ -63,7 +63,7 @@
         [Required(ErrorMessage = FieldRequiredError)]
         public int LanguageId { get; set; }
 
-        [NotEmptyCollectionValidation(nameof(Authors))]
+        [BookAuthorsCountValidation]
         public IList<UploadAuthorViewModel> Authors { get; set; }
     }
 }

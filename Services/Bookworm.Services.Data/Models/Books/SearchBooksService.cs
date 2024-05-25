@@ -21,9 +21,7 @@
         }
 
         public async Task<bool> CheckIfBookWithTitleExistsAsync(string title)
-            => await this.bookRepository
-                 .AllAsNoTrackingWithDeleted()
-                 .AnyAsync(b => b.Title == title.Trim());
+            => await this.bookRepository.AllAsNoTrackingWithDeleted().AnyAsync(b => b.Title == title);
 
         public async Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model)
         {

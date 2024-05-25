@@ -13,37 +13,46 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.AuthorErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.LanguageErrorMessagesConstants;
 
     public class UpdateBookService : IUpdateBookService
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IRepository<Publisher> publishersRepository;
-        private readonly IRepository<Author> authorsRepository;
         private readonly IBlobService blobService;
-        private readonly IValidateUploadedBookService validateUploadedBookService;
+        private readonly IValidateBookFilesSizesService validateUploadedBookService;
         private readonly IUsersService usersService;
         private readonly IRetrieveBooksService retrieveBooksService;
         private readonly IMailGunEmailSender emailSender;
+        private readonly ICategoriesService categoriesService;
+        private readonly ILanguagesService languagesService;
+        private readonly IAuthorsService authorsService;
+        private readonly IPublishersService publishersService;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
-            IRepository<Publisher> publishersRepository,
-            IRepository<Author> authorsRepository,
             IBlobService blobService,
-            IValidateUploadedBookService validateUploadedBookService,
+            IValidateBookFilesSizesService validateUploadedBookService,
             IUsersService usersService,
             IRetrieveBooksService retrieveBooksService,
-            IMailGunEmailSender emailSender)
+            IMailGunEmailSender emailSender,
+            ICategoriesService categoriesService,
+            ILanguagesService languagesService,
+            IAuthorsService authorsService,
+            IPublishersService publishersService)
         {
             this.bookRepository = bookRepository;
-            this.publishersRepository = publishersRepository;
-            this.authorsRepository = authorsRepository;
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
             this.usersService = usersService;
             this.retrieveBooksService = retrieveBooksService;
             this.emailSender = emailSender;
+            this.categoriesService = categoriesService;
+            this.languagesService = languagesService;
+            this.authorsService = authorsService;
+            this.publishersService = publishersService;
         }
 
         public async Task ApproveBookAsync(int bookId)
@@ -99,8 +108,7 @@
 
         public async Task EditBookAsync(BookDto editBookDto, string userId)
         {
-            var book = await this.bookRepository
-                .All()
+            var book = await this.bookRepository.All()
                 .Include(x => x.Publisher)
                 .Include(b => b.AuthorsBooks)
                 .FirstOrDefaultAsync(x => x.Id == editBookDto.Id) ??
@@ -111,13 +119,25 @@
                 throw new InvalidOperationException(BookEditError);
             }
 
-            await this.validateUploadedBookService.ValidateUploadedBookAsync(
-                true,
-                editBookDto.CategoryId,
-                editBookDto.LanguageId,
+            if (!await this.categoriesService.CheckIfIdIsValidAsync(editBookDto.CategoryId))
+            {
+                throw new InvalidOperationException(CategoryNotFoundError);
+            }
+
+            if (!await this.languagesService.CheckIfIdIsValidAsync(editBookDto.LanguageId))
+            {
+                throw new InvalidOperationException(LanguageNotFoundError);
+            }
+
+            if (this.authorsService.HasDuplicates(editBookDto.Authors))
+            {
+                throw new InvalidOperationException(AuthorDuplicatesError);
+            }
+
+            this.validateUploadedBookService.ValidateUploadedBookFileSizes(
+                isForEdit: true,
                 editBookDto.BookFile,
-                editBookDto.ImageFile,
-                editBookDto.Authors);
+                editBookDto.ImageFile);
 
             if (editBookDto.BookFile != null)
             {
@@ -137,15 +157,14 @@
                     BookImageFileUploadPath);
             }
 
-            var publisherName = editBookDto.Publisher.Trim();
-
-            if (editBookDto.Publisher != null && book.Publisher.Name != publisherName)
+            if (!string.IsNullOrWhiteSpace(editBookDto.Publisher))
             {
-                var publisher = await this.publishersRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(p => p.Name == publisherName);
-
-                book.Publisher = publisher ?? new Publisher { Name = publisherName };
+                var publisherName = editBookDto.Publisher.Trim();
+                if (book.Publisher.Name != publisherName)
+                {
+                    var publisher = await this.publishersService.GetPublisherWithNameAsync(publisherName);
+                    book.Publisher = publisher ?? new Publisher { Name = publisherName };
+                }
             }
 
             book.Title = editBookDto.Title;
@@ -156,32 +175,17 @@
             book.Year = editBookDto.Year;
             book.IsApproved = false;
 
-            var authorsNames = editBookDto.Authors.Select(x => x.Name.Trim()).ToList();
-
             book.AuthorsBooks.Clear();
 
-            foreach (var name in authorsNames)
-            {
-                var author = await this.authorsRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(a => a.Name == name);
+            var authorsNames = editBookDto.Authors.Select(x => x.Name.Trim()).ToList();
 
-                if (author == null)
-                {
-                    book.AuthorsBooks.Add(new AuthorBook
-                    {
-                        Author = new Author { Name = name },
-                        Book = book,
-                    });
-                }
-                else
-                {
-                    book.AuthorsBooks.Add(new AuthorBook
-                    {
-                        Author = author,
-                        Book = book,
-                    });
-                }
+            foreach (var authorName in authorsNames)
+            {
+                var author = await this.authorsService.GetAuthorWithNameAsync(authorName);
+
+                book.AuthorsBooks.Add(author != null ?
+                    new AuthorBook { Book = book, Author = author } :
+                    new AuthorBook { Book = book, Author = new Author { Name = authorName } });
             }
 
             this.bookRepository.Update(book);

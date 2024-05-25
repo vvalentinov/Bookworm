@@ -17,8 +17,6 @@
         }
 
         public async Task<Publisher> GetPublisherWithNameAsync(string name)
-            => await this.publisherRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(p => p.Name == name.Trim());
+            => await this.publisherRepository.AllAsNoTracking().FirstOrDefaultAsync(p => p.Name == name);
     }
 }

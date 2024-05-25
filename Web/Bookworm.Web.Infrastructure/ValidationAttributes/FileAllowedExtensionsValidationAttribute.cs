@@ -7,6 +7,8 @@
 
     using Microsoft.AspNetCore.Http;
 
+    using static Bookworm.Common.Constants.ErrorMessagesConstants;
+
     public class FileAllowedExtensionsValidationAttribute : ValidationAttribute
     {
         private readonly string[] extensions;
@@ -16,21 +18,18 @@
             this.extensions = extensions;
         }
 
-        protected override ValidationResult IsValid(
-            object value,
-            ValidationContext validationContext)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (value is IFormFile file)
             {
-                string extension = Path.GetExtension(file.FileName);
-                if (!this.extensions.Contains(extension.ToLower()))
+                string fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (this.extensions.Contains(fileExtension))
                 {
-                    var allowedExtensions = string.Join(", ", this.extensions);
-                    return new ValidationResult($"File extension is incorrect! Valid extensions: {allowedExtensions}");
+                    return ValidationResult.Success;
                 }
             }
 
-            return ValidationResult.Success;
+            return new ValidationResult(string.Format(FileIncorrectExtensionError, string.Join(", ", this.extensions)));
         }
     }
 }
