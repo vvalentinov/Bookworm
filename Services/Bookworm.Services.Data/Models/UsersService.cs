@@ -12,7 +12,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Constants.DataConstants.ApplicationUser;
     using static Bookworm.Common.Constants.GlobalConstants;
 
     public class UsersService : IUsersService
@@ -41,8 +40,7 @@
 
         public IEnumerable<UsersListViewModel> GetUsers()
         {
-            return this.userManager
-                .Users
+            return this.userManager.Users
                 .Select(x => new UsersListViewModel
                 {
                     Id = x.Id,
@@ -69,13 +67,6 @@
             => await this.userManager.FindByIdAsync(userId) ??
                 throw new InvalidOperationException("No user with given id found!");
 
-        public async Task ReduceUserPointsAsync(string userId, byte points)
-        {
-            var user = await this.GetUserWithIdAsync(userId);
-            user.Points = user.Points - points < 0 ? 0 : user.Points - points;
-            await this.userManager.UpdateAsync(user);
-        }
-
         public async Task IncreaseUserPointsAsync(string userId, byte points)
         {
             var user = await this.GetUserWithIdAsync(userId);
@@ -83,14 +74,19 @@
             await this.userManager.UpdateAsync(user);
         }
 
+        public async Task ReduceUserPointsAsync(string userId, byte points)
+        {
+            var user = await this.GetUserWithIdAsync(userId);
+            user.Points = user.Points - points < 0 ? 0 : user.Points - points;
+            await this.userManager.UpdateAsync(user);
+        }
+
         public async Task<bool> IsUserAdminAsync(string userId)
-            => await this.userManager.IsInRoleAsync(
-                await this.GetUserWithIdAsync(userId),
-                AdministratorRoleName);
+            => await this.userManager.IsInRoleAsync(await this.GetUserWithIdAsync(userId), AdministratorRoleName);
 
         public async Task IncreaseUserDailyDownloadsCountAsync(ApplicationUser user)
         {
-            if (user.DailyDownloadsCount < UserMaxDailyBookDownloadsCount)
+            if (user.DailyDownloadsCount < this.GetUserDailyMaxDownloadsCount(user.Points))
             {
                 user.DailyDownloadsCount++;
                 await this.userManager.UpdateAsync(user);
@@ -98,7 +94,18 @@
         }
 
         public async Task ResetDailyDownloadsCountAsync()
-            => await this.dbContext.Database
-                    .ExecuteSqlRawAsync("UPDATE AspNetUsers SET DailyDownloadsCount = 0");
+            => await this.dbContext.Database.ExecuteSqlRawAsync("UPDATE AspNetUsers SET DailyDownloadsCount = 0");
+
+        public byte GetUserDailyMaxDownloadsCount(int userPoints)
+        {
+            return userPoints switch
+            {
+                < 100 => 10,
+                >= 100 and < 200 => 15,
+                >= 200 and < 300 => 20,
+                >= 300 and < 400 => 25,
+                _ => 30,
+            };
+        }
     }
 }

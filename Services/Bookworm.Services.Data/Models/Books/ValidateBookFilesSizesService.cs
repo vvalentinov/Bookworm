@@ -42,16 +42,6 @@
                 CheckFileSize(bookFile, BookPdfMaxSize, isForPdf: true);
                 CheckFileSize(imageFile, BookImageMaxSize, isForPdf: false);
             }
-
-            //bool hasDuplicates = authors
-            //    .Select(x => x.Name.Trim())
-            //    .GroupBy(author => author)
-            //    .Any(group => group.Count() > 1);
-
-            //if (hasDuplicates)
-            //{
-            //    throw new Exception(AuthorDuplicatesError);
-            //}
         }
 
         private static void CheckFileSize(IFormFile file, int maxSize, bool isForPdf)

@@ -4,9 +4,13 @@
 
 .accountLayoutNavbar {
     width: 100% !important;
-    background-color: #D6F4FF;
+    background-color: #95DF82;
     font-size: 1.3rem;
     min-height: 60px;
+}
+
+.accountLayoutNavbar .nav-link:hover {
+    color: var(--clr-white);
 }
 
 .accountLayoutSection {

@@ -17,6 +17,7 @@
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
     using static Bookworm.Common.Constants.GlobalConstants;
 
     public class RetrieveBooksService : IRetrieveBooksService
@@ -49,7 +50,7 @@
             {
                 if (!await this.categoriesService.CheckIfIdIsValidAsync((int)categoryId))
                 {
-                    throw new InvalidOperationException("The given category doesn't exist!");
+                    throw new InvalidOperationException(CategoryNotFoundError);
                 }
 
                 query = query.Where(b => b.CategoryId == categoryId);
@@ -261,28 +262,28 @@
                         UserId = book.UserId,
                     }).ToListAsync();
 
-        public async Task<Book> GetBookWithIdAsync(
-            int bookId,
-            bool withTracking = false)
+        public async Task<Book> GetBookWithIdAsync(int bookId, bool withTracking = false)
         {
             var bookQuery = withTracking ?
                 this.bookRepository.All() :
                 this.bookRepository.AllAsNoTracking();
 
-            return await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
+            var book = await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
                 throw new InvalidOperationException(BookWrongIdError);
+
+            return book;
         }
 
-        public async Task<Book> GetDeletedBookWithIdAsync(
-            int bookId,
-            bool withTracking = false)
+        public async Task<Book> GetDeletedBookWithIdAsync(int bookId, bool withTracking = false)
         {
             var bookQuery = withTracking ?
                 this.bookRepository.AllWithDeleted() :
                 this.bookRepository.AllAsNoTrackingWithDeleted();
 
-            return await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
+            var book = await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
                 throw new InvalidOperationException(BookWrongIdError);
+
+            return book;
         }
     }
 }

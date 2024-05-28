@@ -50,7 +50,6 @@
         public async Task UploadBookAsync(BookDto uploadBookDto)
         {
             var bookTitle = uploadBookDto.Title.Trim();
-            var publisherName = uploadBookDto.Publisher.Trim();
 
             if (await this.searchBooksService.CheckIfBookWithTitleExistsAsync(bookTitle))
             {
@@ -95,6 +94,8 @@
 
             if (!string.IsNullOrWhiteSpace(uploadBookDto.Publisher))
             {
+                var publisherName = uploadBookDto.Publisher.Trim();
+
                 var publisher = await this.publishersService.GetPublisherWithNameAsync(publisherName);
 
                 if (publisher == null)

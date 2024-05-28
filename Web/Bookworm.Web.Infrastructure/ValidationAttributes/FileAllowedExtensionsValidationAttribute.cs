@@ -20,7 +20,7 @@
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value is IFormFile file)
+            if (value != null && value is IFormFile file)
             {
                 string fileExtension = Path.GetExtension(file.FileName).ToLower();
                 if (this.extensions.Contains(fileExtension))

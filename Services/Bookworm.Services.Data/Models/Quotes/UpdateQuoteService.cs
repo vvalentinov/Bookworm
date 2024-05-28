@@ -13,9 +13,8 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.NotificationsMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
-    using static Bookworm.Common.Constants.SuccessMessagesConstants.NotificationsMessagesConstants;
+    using static Bookworm.Common.Constants.NotificationConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Common.Enums.QuoteType;
 
@@ -40,8 +39,7 @@
 
         public async Task ApproveQuoteAsync(int quoteId)
         {
-            var quote = await this.quoteRepository.All()
-                .FirstOrDefaultAsync(x => x.Id == quoteId) ??
+            var quote = await this.quoteRepository.All().FirstOrDefaultAsync(x => x.Id == quoteId) ??
                 throw new InvalidOperationException(QuoteWrongIdError);
 
             if (!quote.IsApproved)

@@ -13,11 +13,7 @@
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
 <section class="uploadBookSection">
-    <form id="uploadBookForm"
-          asp-controller="Book"
-          asp-action="@action"
-          method="post"
-          enctype="multipart/form-data">
+    <form asp-controller="Book" asp-action="@action" method="post" enctype="multipart/form-data">
 
         @if (action == "Edit")
         {
@@ -89,9 +85,9 @@
             <button type="button" id="addAuthorBtn" class="btn">
                 Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
-            @if (action == "Edit")
+            @if (Model.Authors?.Count > 0)
             {
-                @for (int i = 0; i < Model.Authors.Count(); i++)
+                @for (int i = 0; i < Model.Authors.Count; i++)
                 {
                     <div class="authorContainer">
                         <div class="input-group mt-4">

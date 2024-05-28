@@ -8,8 +8,9 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Services.Messaging;
+    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels.DTOs;
+    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
@@ -17,6 +18,8 @@
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.LanguageErrorMessagesConstants;
+    using static Bookworm.Common.Constants.NotificationConstants;
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class UpdateBookService : IUpdateBookService
     {
@@ -25,11 +28,12 @@
         private readonly IValidateBookFilesSizesService validateUploadedBookService;
         private readonly IUsersService usersService;
         private readonly IRetrieveBooksService retrieveBooksService;
-        private readonly IMailGunEmailSender emailSender;
         private readonly ICategoriesService categoriesService;
         private readonly ILanguagesService languagesService;
         private readonly IAuthorsService authorsService;
         private readonly IPublishersService publishersService;
+        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly INotificationService notificationService;
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
@@ -37,53 +41,59 @@
             IValidateBookFilesSizesService validateUploadedBookService,
             IUsersService usersService,
             IRetrieveBooksService retrieveBooksService,
-            IMailGunEmailSender emailSender,
             ICategoriesService categoriesService,
             ILanguagesService languagesService,
             IAuthorsService authorsService,
-            IPublishersService publishersService)
+            IPublishersService publishersService,
+            IHubContext<NotificationHub> notificationHub,
+            INotificationService notificationService)
         {
             this.bookRepository = bookRepository;
             this.blobService = blobService;
             this.validateUploadedBookService = validateUploadedBookService;
             this.usersService = usersService;
             this.retrieveBooksService = retrieveBooksService;
-            this.emailSender = emailSender;
             this.categoriesService = categoriesService;
             this.languagesService = languagesService;
             this.authorsService = authorsService;
             this.publishersService = publishersService;
+            this.notificationHub = notificationHub;
+            this.notificationService = notificationService;
         }
 
         public async Task ApproveBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, true);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, withTracking: true);
 
             book.IsApproved = true;
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            var bookCreator = await this.usersService.GetUserWithIdAsync(book.UserId);
             await this.usersService.IncreaseUserPointsAsync(book.UserId, BookUploadPoints);
 
-            await this.emailSender.SendEmailAsync(
-                bookCreator.Email,
-                "Approved Book",
-                "<h1>Your book has been approved!</h1>");
+            var notificationContent = string.Format(ApprovedBookNotification, book.Title, BookUploadPoints);
+            await this.notificationService.AddNotificationAsync(notificationContent, book.UserId);
+            await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", ApprovedBookMessage);
         }
 
         public async Task UnapproveBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, true);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, withTracking: true);
+
             book.IsApproved = false;
+            this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
             await this.usersService.ReduceUserPointsAsync(book.UserId, BookUploadPoints);
+
+            var notificationContent = string.Format(UnapprovedBookNotification, book.Title, BookUploadPoints);
+            await this.notificationService.AddNotificationAsync(notificationContent, book.UserId);
+            await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", UnapprovedBookMessage);
         }
 
         public async Task DeleteBookAsync(int bookId, string userId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, true);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, withTracking: true);
 
             bool isUserAdmin = await this.usersService.IsUserAdminAsync(userId);
 
@@ -101,7 +111,7 @@
 
         public async Task UndeleteBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetDeletedBookWithIdAsync(bookId, true);
+            var book = await this.retrieveBooksService.GetDeletedBookWithIdAsync(bookId, withTracking: true);
             this.bookRepository.Undelete(book);
             await this.bookRepository.SaveChangesAsync();
         }

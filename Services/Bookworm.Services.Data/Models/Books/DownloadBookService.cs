@@ -10,7 +10,6 @@
     using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.EntityFrameworkCore;
 
-    using static Bookworm.Common.Constants.DataConstants.ApplicationUser;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.UserErrorMessagesConstants;
 
@@ -30,14 +29,14 @@
             this.usersService = usersService;
         }
 
-        public async Task<Tuple<Stream, string, string>> DownloadBookAsync(
-            int bookId,
-            ApplicationUser user,
-            bool isCurrUserAdmin = false)
+        public async Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, ApplicationUser user)
         {
-            if (user.DailyDownloadsCount == UserMaxDailyBookDownloadsCount && !isCurrUserAdmin)
+            var isUserAdmin = await this.usersService.IsUserAdminAsync(user.Id);
+            var userMaxDailyDownloadsCount = this.usersService.GetUserDailyMaxDownloadsCount(user.Points);
+
+            if (user.DailyDownloadsCount == userMaxDailyDownloadsCount && !isUserAdmin)
             {
-                throw new InvalidOperationException(UserDailyCountError);
+                throw new InvalidOperationException(string.Format(UserDailyCountError, userMaxDailyDownloadsCount));
             }
 
             var book = await this.bookRepository.AllAsNoTracking()

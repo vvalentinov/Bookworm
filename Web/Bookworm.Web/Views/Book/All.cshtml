@@ -27,18 +27,6 @@
 {
     <partial name="PartialViews/_BookListingPartial" model="@Model.Books" />
 }
-else
-{
-    <h3 class="display-4 text-center mt-5">
-        Sorry, no books in @this.ViewData["Title"] category yet!
-    </h3>
-    <h4 class="display-4 text-center">
-        Want to change that?
-        <a asp-controller="Book" asp-action="Upload">
-            Click here
-        </a>
-    </h4>
-}
 
 @if (Model.PagesCount > 1)
 {

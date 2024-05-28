@@ -14,7 +14,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Constants.GlobalConstants;
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
@@ -66,13 +65,13 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
+            this.ViewData["Title"] = "Upload Book";
+            this.ViewData["Action"] = nameof(this.Upload);
+
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
-
-            this.ViewData["Title"] = "Upload Book";
-            this.ViewData["Action"] = nameof(this.Upload);
 
             var uploadBookDto = MapperInstance.Map<BookDto>(model);
             uploadBookDto.BookCreatorId = this.userManager.GetUserId(this.User);
@@ -112,20 +111,20 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Edit(UploadBookViewModel model)
         {
+            this.ViewData["Title"] = "Edit Book";
+            this.ViewData["Action"] = nameof(this.Edit);
+
             if (!this.ModelState.IsValid)
             {
                 return this.View(nameof(this.Upload), model);
             }
 
-            this.ViewData["Title"] = "Edit Book";
-            this.ViewData["Action"] = nameof(this.Edit);
-
-            var user = await this.userManager.GetUserAsync(this.User);
+            var userId = this.userManager.GetUserId(this.User);
             var editBookDto = MapperInstance.Map<BookDto>(model);
 
             try
             {
-                await this.updateBookService.EditBookAsync(editBookDto, user.Id);
+                await this.updateBookService.EditBookAsync(editBookDto, userId);
                 this.TempData[SuccessMessage] = EditSuccess;
                 return this.RedirectToAction(nameof(this.UserBooks), "Book");
             }
@@ -234,11 +233,10 @@
             try
             {
                 var user = await this.userManager.GetUserAsync(this.User);
-                bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
 
                 (Stream stream,
                  string contentType,
-                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id, user, isAdmin);
+                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id, user);
 
                 return this.File(stream, contentType, downloadName);
             }

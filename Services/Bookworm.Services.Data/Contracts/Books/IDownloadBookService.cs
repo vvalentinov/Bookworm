@@ -8,9 +8,6 @@
 
     public interface IDownloadBookService
     {
-        Task<Tuple<Stream, string, string>> DownloadBookAsync(
-            int bookId,
-            ApplicationUser user,
-            bool isCurrUserAdmin = false);
+        Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, ApplicationUser user);
     }
 }
