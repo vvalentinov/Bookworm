@@ -14,9 +14,9 @@
 
         Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
 
-        Task<BookDetailsViewModel> GetBookDetails(int bookId, string userId);
+        Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string userId);
 
-        Task<UploadBookViewModel> GetEditBookAsync(int bookId);
+        Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId);
 
         Task<List<BookViewModel>> GetPopularBooksAsync();
 
@@ -33,5 +33,7 @@
         Task<Book> GetBookWithIdAsync(int bookId, bool withTracking = false);
 
         Task<Book> GetDeletedBookWithIdAsync(int bookId, bool withTracking = false);
+
+        Task<IEnumerable<BookDetailsViewModel>> GetUserFavoriteBooksAsync(string userId);
     }
 }

@@ -48,13 +48,13 @@
             services.AddScoped<IUploadQuoteService, UploadQuoteService>();
 
             // Books services
-            services.AddScoped<IValidateBookFilesSizesService, ValidateBookFilesSizesService>();
+            services.AddScoped<IValidateBookService, ValidateBookService>();
             services.AddScoped<IRetrieveBooksService, RetrieveBooksService>();
             services.AddScoped<IUploadBookService, UploadBookService>();
-            services.AddScoped<IFavoriteBooksService, FavoriteBookService>();
             services.AddScoped<IUpdateBookService, UpdateBookService>();
             services.AddScoped<ISearchBooksService, SearchBooksService>();
             services.AddScoped<IDownloadBookService, DownloadBookService>();
+            services.AddScoped<IFavoriteBookService, FavoriteBookService>();
 
             // Other services
             services.AddScoped<INotificationService, NotificationService>();
@@ -102,10 +102,10 @@
                     .AddTrigger(triggerConfig => triggerConfig.ForJob(resetDailyDownloadsJobKey)
                     .WithCronSchedule("0 0 0 * * ?"));
 
-                //options
-                //    .AddJob<MarkOldNotificationsAsDeletedJob>(JobKey.Create(deleteOldNotificationsJobKey))
-                //    .AddTrigger(triggerConfig => triggerConfig.ForJob(deleteOldNotificationsJobKey)
-                //    .WithCronSchedule("0 */10 * ? * *"));
+                options
+                    .AddJob<MarkOldNotificationsAsDeletedJob>(JobKey.Create(deleteOldNotificationsJobKey))
+                    .AddTrigger(triggerConfig => triggerConfig.ForJob(deleteOldNotificationsJobKey)
+                    .WithCronSchedule("0 */10 * ? * *"));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

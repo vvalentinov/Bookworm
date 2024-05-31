@@ -36,10 +36,12 @@
 
             if (user.DailyDownloadsCount == userMaxDailyDownloadsCount && !isUserAdmin)
             {
-                throw new InvalidOperationException(string.Format(UserDailyCountError, userMaxDailyDownloadsCount));
+                string errMsg = string.Format(UserDailyCountError, userMaxDailyDownloadsCount);
+                throw new InvalidOperationException(errMsg);
             }
 
-            var book = await this.bookRepository.AllAsNoTracking()
+            var book = await this.bookRepository
+                .AllAsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == bookId) ??
                 throw new InvalidOperationException(BookWrongIdError);
 

@@ -27,8 +27,6 @@
 
         public int LanguageId { get; set; }
 
-        public string BookCreatorId { get; set; }
-
         public IList<UploadAuthorViewModel> Authors { get; set; }
     }
 }

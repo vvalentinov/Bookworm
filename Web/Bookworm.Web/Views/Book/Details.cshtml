@@ -67,12 +67,16 @@
            asp-route-id="@Model.Id">
             Download<i class="fas fa-download icon ms-2"></i>
         </a>
-        @if (Model.IsUserBook == false && Model.IsApproved)
+        @if (!Model.IsUserBook && Model.IsApproved)
         {
             <button class="btn btn-lg button"
                     data-bs-toggle="modal"
                     data-bs-target="#ratingModal">
                 Rate Book<i class="fas fa-star icon ms-2"></i>
+            </button>
+
+            <button id="addToFavoritesBtn" class="btn btn-lg button">
+                Add to Favourites<i class="fas fa-heart icon ms-2"></i>
             </button>
         }
         else if (Model.IsUserBook)
@@ -80,7 +84,7 @@
             <a class="btn btn-lg button"
                asp-controller="Book"
                asp-action="Edit"
-               asp-route-bookId="@Model.Id">
+               asp-route-id="@Model.Id">
                 Edit<i class="fas fa-user-pen icon ms-2"></i>
             </a>
             <a class="btn btn-lg button"
@@ -201,6 +205,12 @@
     <script src="~/js/book/vote.js"></script>
     <script src="~/js/book/rating.js"></script>
     <script src="~/js/book/comments.js"></script>
+    <script type="module">
+        import { addToFavorites } from '/js/book/addToFavorites.js';
+        document
+            .getElementById('addToFavoritesBtn')
+            .addEventListener('click', () => addToFavorites(@Model.Id));
+    </script>
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         tinymce.init({

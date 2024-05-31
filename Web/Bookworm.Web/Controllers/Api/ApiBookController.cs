@@ -18,21 +18,24 @@
         private readonly ICategoriesService categoriesService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
+        private readonly IFavoriteBookService favoriteBookService;
 
         public ApiBookController(
             ISearchBooksService searchBooksService,
             ICategoriesService categoriesService,
             UserManager<ApplicationUser> userManager,
-            ILanguagesService languagesService)
+            ILanguagesService languagesService,
+            IFavoriteBookService favoriteBookService)
         {
             this.searchBooksService = searchBooksService;
             this.categoriesService = categoriesService;
             this.userManager = userManager;
             this.languagesService = languagesService;
+            this.favoriteBookService = favoriteBookService;
         }
 
         [HttpPost(nameof(SearchBooks))]
-        public async Task<ActionResult<BookListingViewModel>> SearchBooks([FromBody]SearchBookInputModel model)
+        public async Task<ActionResult<BookListingViewModel>> SearchBooks([FromBody] SearchBookInputModel model)
         {
             try
             {
@@ -76,6 +79,36 @@
         {
             var userId = this.userManager.GetUserId(this.User);
             return await this.languagesService.GetAllInUserBooksAsync(userId);
+        }
+
+        [HttpPost(nameof(AddToFavorites))]
+        public async Task<IActionResult> AddToFavorites([FromQuery] int id)
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                await this.favoriteBookService.AddBookToFavoritesAsync(id, userId);
+                return new JsonResult("Successfully added to favorites list!");
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpDelete(nameof(DeleteFromFavorites))]
+        public async Task<IActionResult> DeleteFromFavorites(int bookId)
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                await this.favoriteBookService.DeleteBookFromFavoritesAsync(bookId, userId);
+                return this.Ok("Successfully removed book from favorites list!");
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
         }
     }
 }

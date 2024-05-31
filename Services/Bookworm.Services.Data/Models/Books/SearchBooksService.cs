@@ -20,8 +20,17 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<bool> CheckIfBookWithTitleExistsAsync(string title)
-            => await this.bookRepository.AllAsNoTrackingWithDeleted().AnyAsync(b => b.Title == title);
+        public async Task<bool> CheckIfBookWithTitleExistsAsync(string title, int? bookId = null)
+        {
+            var query = this.bookRepository.AllAsNoTrackingWithDeleted().Where(b => b.Title == title);
+
+            if (bookId.HasValue)
+            {
+                query = query.Where(b => b.Id != bookId.Value);
+            }
+
+            return await query.AnyAsync();
+        }
 
         public async Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model)
         {

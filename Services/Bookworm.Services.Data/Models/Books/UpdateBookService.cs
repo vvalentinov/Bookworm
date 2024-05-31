@@ -14,22 +14,18 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.AuthorErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.LanguageErrorMessagesConstants;
     using static Bookworm.Common.Constants.NotificationConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class UpdateBookService : IUpdateBookService
     {
         private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IRepository<FavoriteBook> favBooksRepository;
         private readonly IBlobService blobService;
-        private readonly IValidateBookFilesSizesService validateUploadedBookService;
+        private readonly IValidateBookService validateBookService;
         private readonly IUsersService usersService;
         private readonly IRetrieveBooksService retrieveBooksService;
-        private readonly ICategoriesService categoriesService;
-        private readonly ILanguagesService languagesService;
         private readonly IAuthorsService authorsService;
         private readonly IPublishersService publishersService;
         private readonly IHubContext<NotificationHub> notificationHub;
@@ -37,28 +33,26 @@
 
         public UpdateBookService(
             IDeletableEntityRepository<Book> bookRepository,
+            IRepository<FavoriteBook> favoriteBooksRepository,
             IBlobService blobService,
-            IValidateBookFilesSizesService validateUploadedBookService,
+            IValidateBookService validateBookService,
             IUsersService usersService,
             IRetrieveBooksService retrieveBooksService,
-            ICategoriesService categoriesService,
-            ILanguagesService languagesService,
             IAuthorsService authorsService,
             IPublishersService publishersService,
             IHubContext<NotificationHub> notificationHub,
             INotificationService notificationService)
         {
-            this.bookRepository = bookRepository;
             this.blobService = blobService;
-            this.validateUploadedBookService = validateUploadedBookService;
             this.usersService = usersService;
-            this.retrieveBooksService = retrieveBooksService;
-            this.categoriesService = categoriesService;
-            this.languagesService = languagesService;
             this.authorsService = authorsService;
-            this.publishersService = publishersService;
+            this.bookRepository = bookRepository;
+            this.favBooksRepository = favoriteBooksRepository;
             this.notificationHub = notificationHub;
+            this.publishersService = publishersService;
+            this.validateBookService = validateBookService;
             this.notificationService = notificationService;
+            this.retrieveBooksService = retrieveBooksService;
         }
 
         public async Task ApproveBookAsync(int bookId)
@@ -118,7 +112,8 @@
 
         public async Task EditBookAsync(BookDto editBookDto, string userId)
         {
-            var book = await this.bookRepository.All()
+            var book = await this.bookRepository
+                .All()
                 .Include(x => x.Publisher)
                 .Include(b => b.AuthorsBooks)
                 .FirstOrDefaultAsync(x => x.Id == editBookDto.Id) ??
@@ -129,29 +124,15 @@
                 throw new InvalidOperationException(BookEditError);
             }
 
-            if (!await this.categoriesService.CheckIfIdIsValidAsync(editBookDto.CategoryId))
-            {
-                throw new InvalidOperationException(CategoryNotFoundError);
-            }
-
-            if (!await this.languagesService.CheckIfIdIsValidAsync(editBookDto.LanguageId))
-            {
-                throw new InvalidOperationException(LanguageNotFoundError);
-            }
-
-            if (this.authorsService.HasDuplicates(editBookDto.Authors))
-            {
-                throw new InvalidOperationException(AuthorDuplicatesError);
-            }
-
-            this.validateUploadedBookService.ValidateUploadedBookFileSizes(
-                isForEdit: true,
-                editBookDto.BookFile,
-                editBookDto.ImageFile);
+            await this.validateBookService.ValidateAsync(
+                editBookDto.Title,
+                editBookDto.LanguageId,
+                editBookDto.CategoryId,
+                book.Id);
 
             if (editBookDto.BookFile != null)
             {
-                string bookBlobName = book.FileUrl[book.FileUrl.IndexOf("Books") ..];
+                string bookBlobName = book.FileUrl[book.FileUrl.IndexOf("Books")..];
                 book.FileUrl = await this.blobService.ReplaceBlobAsync(
                     editBookDto.BookFile,
                     bookBlobName,
@@ -160,7 +141,7 @@
 
             if (editBookDto.ImageFile != null)
             {
-                string imageBlobName = book.ImageUrl[book.ImageUrl.IndexOf("BooksImages") ..];
+                string imageBlobName = book.ImageUrl[book.ImageUrl.IndexOf("BooksImages")..];
                 book.ImageUrl = await this.blobService.ReplaceBlobAsync(
                     editBookDto.ImageFile,
                     imageBlobName,
@@ -177,13 +158,13 @@
                 }
             }
 
+            book.IsApproved = false;
+            book.Year = editBookDto.Year;
             book.Title = editBookDto.Title;
-            book.Description = editBookDto.Description;
+            book.PagesCount = editBookDto.PagesCount;
             book.CategoryId = editBookDto.CategoryId;
             book.LanguageId = editBookDto.LanguageId;
-            book.PagesCount = editBookDto.PagesCount;
-            book.Year = editBookDto.Year;
-            book.IsApproved = false;
+            book.Description = editBookDto.Description;
 
             book.AuthorsBooks.Clear();
 

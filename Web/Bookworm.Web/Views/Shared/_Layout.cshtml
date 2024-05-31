@@ -85,6 +85,7 @@
         <partial name="PartialViews/_CookieConsentPartial" />
         @this.RenderBody()
         <button class="topArrow"><i class="fa fa-arrow-up"></i></button>
+        <div class="toast-container top-0 end-0 p-3"></div>
     </main>
 
     <footer class="bookworm-footer">
@@ -104,7 +105,7 @@
     @if (this.User.Identity.IsAuthenticated)
     {
         <script src="~/js/signalr.min.js"></script>
-        <script src="~/js/notification/notification.js"></script>
+        <script type="module" src="~/js/notification/notification.js"></script>
         <script src="~/js/notification/getUserNotificationCount.js"></script>
     }
     <partial name="PartialViews/_UserMessagesPartial" />

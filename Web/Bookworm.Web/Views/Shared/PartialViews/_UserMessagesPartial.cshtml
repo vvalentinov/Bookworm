@@ -1,24 +1,31 @@
-﻿@if (TempData[TempDataMessageConstant.ErrorMessage] != null)
-{
-    this.ViewData["Toast-Header-Class"] = "toast-header-error";
-    this.ViewData["Toast-Title"] = "Error Message";
-    this.ViewData["Toast-Message"] = TempData[TempDataMessageConstant.ErrorMessage];
-    <partial name="PartialViews/_ToastNotificationPartial" />
-    <script src="~/js/toast.js"></script>
-}
-@if (TempData[TempDataMessageConstant.WarningMessage] != null)
-{
-    this.ViewData["Toast-Header-Class"] = "toast-header-warning";
-    this.ViewData["Toast-Title"] = "Warning Message";
-    this.ViewData["Toast-Message"] = TempData[TempDataMessageConstant.WarningMessage];
-    <partial name="PartialViews/_ToastNotificationPartial" />
-    <script src="~/js/toast.js"></script>
-}
-@if (TempData[TempDataMessageConstant.SuccessMessage] != null)
-{
-    this.ViewData["Toast-Header-Class"] = "toast-header-success";
-    this.ViewData["Toast-Title"] = "Success Message";
-    this.ViewData["Toast-Message"] = TempData[TempDataMessageConstant.SuccessMessage];
-    <partial name="PartialViews/_ToastNotificationPartial" />
-    <script src="~/js/toast.js"></script>
+﻿@{
+    if (TempData[ErrorMessage] != null)
+    {
+        <script type="module">
+            import { createToast } from '/js/toast.js';
+            let message = '@Html.Raw(Json.Serialize(TempData[ErrorMessage]))';
+            message = message.substring(1, message.length - 1);
+            createToast('Error Message', message, 'bg-danger');
+        </script>
+    }
+
+    if (TempData[WarningMessage] != null)
+    {
+        <script type="module">
+            import { createToast } from '/js/toast.js';
+            let message = '@Html.Raw(Json.Serialize(TempData[WarningMessage]))';
+            message = message.substring(1, message.length - 1);
+            createToast('Warning Message', message, 'bg-warning');
+        </script>
+    }
+
+    if (TempData[SuccessMessage] != null)
+    {
+        <script type="module">
+            import { createToast } from '/js/toast.js';
+            let message = '@Html.Raw(Json.Serialize(TempData[SuccessMessage]))';
+            message = message.substring(1, message.length - 1);
+            createToast('Success Message', message, 'bg-success');
+        </script>
+    }
 }

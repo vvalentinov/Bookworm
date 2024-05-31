@@ -9,7 +9,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.AspNetCore.Identity;
@@ -19,6 +18,7 @@
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
     using static Bookworm.Common.Constants.GlobalConstants;
+    using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class RetrieveBooksService : IRetrieveBooksService
     {
@@ -27,19 +27,22 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly ICategoriesService categoriesService;
+        private readonly IRepository<FavoriteBook> favoriteBooksRepository;
 
         public RetrieveBooksService(
             IRatingsService ratingsService,
             IRepository<Comment> commentRepository,
             UserManager<ApplicationUser> userManager,
             IDeletableEntityRepository<Book> bookRepository,
-            ICategoriesService categoriesService)
+            ICategoriesService categoriesService,
+            IRepository<FavoriteBook> favoriteBooksRepository)
         {
             this.ratingsService = ratingsService;
             this.commentRepository = commentRepository;
             this.userManager = userManager;
             this.bookRepository = bookRepository;
             this.categoriesService = categoriesService;
+            this.favoriteBooksRepository = favoriteBooksRepository;
         }
 
         public async Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId)
@@ -65,7 +68,7 @@
             return books;
         }
 
-        public async Task<BookDetailsViewModel> GetBookDetails(int bookId, string currentUserId)
+        public async Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string currentUserId)
         {
             var bookViewModel = await this.bookRepository
                 .AllAsNoTracking()
@@ -91,8 +94,8 @@
                     Language = x.Language.Name,
                     CategoryName = x.Category.Name,
                     Authors = x.AuthorsBooks.Select(ab => ab.Author.Name),
-                }).FirstOrDefaultAsync(book => book.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+                })
+                .FirstOrDefaultAsync(book => book.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
 
             var currentUser = await this.userManager
                         .Users
@@ -146,24 +149,23 @@
             return bookViewModel;
         }
 
-        public async Task<UploadBookViewModel> GetEditBookAsync(int bookId)
-            => await this.bookRepository
+        public async Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId)
+        {
+            var book = await this.bookRepository
                 .AllAsNoTracking()
                 .Include(b => b.Publisher)
                 .Include(b => b.AuthorsBooks)
                 .ThenInclude(b => b.Author)
-                .Select(b => new UploadBookViewModel
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Year = b.Year,
-                    CategoryId = b.CategoryId,
-                    LanguageId = b.LanguageId,
-                    PagesCount = b.PagesCount,
-                    Description = b.Description,
-                    Publisher = b.Publisher.Name,
-                    Authors = b.AuthorsBooks.Select(a => new UploadAuthorViewModel { Name = a.Author.Name }).ToList(),
-                }).FirstOrDefaultAsync(b => b.Id == bookId) ?? throw new InvalidOperationException(BookWrongIdError);
+                .FirstOrDefaultAsync(b => b.Id == bookId) ??
+                throw new InvalidOperationException(BookWrongIdError);
+
+            if (book.UserId != userId)
+            {
+                throw new InvalidOperationException(BookEditError);
+            }
+
+            return MapperInstance.Map<UploadBookViewModel>(book);
+        }
 
         public async Task<BookListingViewModel> GetBooksAsync(int categoryId, int page)
         {
@@ -284,6 +286,25 @@
                 throw new InvalidOperationException(BookWrongIdError);
 
             return book;
+        }
+
+        public async Task<IEnumerable<BookDetailsViewModel>> GetUserFavoriteBooksAsync(string userId)
+        {
+            var bookIds = await this.favoriteBooksRepository
+                .AllAsNoTracking()
+                .Where(x => x.UserId == userId)
+                .Select(x => x.BookId)
+                .ToListAsync();
+
+            return await this.bookRepository
+                .AllAsNoTracking()
+                .Where(x => bookIds.Contains(x.Id))
+                .Select(x => new BookDetailsViewModel
+                {
+                    Id = x.Id,
+                    ImageUrl = x.ImageUrl,
+                    Title = x.Title,
+                }).ToListAsync();
         }
     }
 }

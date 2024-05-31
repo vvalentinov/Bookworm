@@ -1,70 +1,58 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Web.ViewModels.Books;
+    using Microsoft.EntityFrameworkCore;
 
-    public class FavoriteBookService : IFavoriteBooksService
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+
+    public class FavoriteBookService : IFavoriteBookService
     {
-        private readonly IRepository<FavoriteBook> favoriteBooksRepository;
-        private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IRepository<FavoriteBook> favBookRepo;
+        private readonly IDeletableEntityRepository<Book> bookRepo;
 
         public FavoriteBookService(
-            IRepository<FavoriteBook> favoriteBooksRepository,
-            IDeletableEntityRepository<Book> bookRepository)
+            IRepository<FavoriteBook> favBookRepo,
+            IDeletableEntityRepository<Book> bookRepo)
         {
-            this.favoriteBooksRepository = favoriteBooksRepository;
-            this.bookRepository = bookRepository;
+            this.bookRepo = bookRepo;
+            this.favBookRepo = favBookRepo;
         }
 
         public async Task AddBookToFavoritesAsync(int bookId, string userId)
         {
-            var book = this.favoriteBooksRepository
-                .AllAsNoTracking()
-                .FirstOrDefault(x => x.UserId == userId && x.BookId == bookId);
+            await this.CheckBookIdAsync(bookId);
 
-            if (book != null)
+            if (await this.favBookRepo.AllAsNoTracking().AnyAsync(x => x.BookId == bookId && x.UserId == userId))
             {
-                throw new Exception("This book is already present in favorites!");
+                throw new InvalidOperationException("This book is already present in favorites!");
             }
 
-            await this.favoriteBooksRepository.AddAsync(new FavoriteBook() { BookId = bookId, UserId = userId });
-            await this.favoriteBooksRepository.SaveChangesAsync();
+            await this.favBookRepo.AddAsync(new FavoriteBook { BookId = bookId, UserId = userId });
+            await this.favBookRepo.SaveChangesAsync();
         }
 
-        public async Task DeleteFromFavoritesAsync(int bookId, string userId)
+        public async Task DeleteBookFromFavoritesAsync(int bookId, string userId)
         {
-            FavoriteBook book = this.favoriteBooksRepository
-                .All()
-                .FirstOrDefault(x => x.UserId == userId && x.BookId == bookId);
+            await this.CheckBookIdAsync(bookId);
 
-            this.favoriteBooksRepository.Delete(book);
-            await this.favoriteBooksRepository.SaveChangesAsync();
+            var favBook = await this.favBookRepo.All().FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId) ??
+                throw new InvalidOperationException("This book does not present in favorites!");
+
+            this.favBookRepo.Delete(favBook);
+            await this.favBookRepo.SaveChangesAsync();
         }
 
-        public IEnumerable<BookDetailsViewModel> GetUserFavoriteBooks(string userId)
+        private async Task CheckBookIdAsync(int id)
         {
-            List<int> bookIds = this.favoriteBooksRepository
-                .AllAsNoTracking()
-                .Where(x => x.UserId == userId)
-                .Select(x => x.BookId)
-                .ToList();
-
-            return this.bookRepository
-                .AllAsNoTracking()
-                .Where(x => bookIds.Contains(x.Id))
-                .Select(x => new BookDetailsViewModel
-                {
-                    Id = x.Id,
-                    ImageUrl = x.ImageUrl,
-                    Title = x.Title,
-                }).ToList();
+            if (!await this.bookRepo.AllAsNoTracking().AnyAsync(b => b.Id == id && b.IsApproved))
+            {
+                throw new InvalidOperationException(BookWrongIdError);
+            }
         }
     }
 }

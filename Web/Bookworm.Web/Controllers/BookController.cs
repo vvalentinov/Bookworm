@@ -14,6 +14,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
@@ -27,7 +28,7 @@
         private readonly ILanguagesService languagesService;
         private readonly IBlobService blobService;
         private readonly IUpdateBookService updateBookService;
-        private readonly IValidateBookFilesSizesService validateBookService;
+        private readonly IValidateBookService validateBookService;
         private readonly IDownloadBookService downloadBookService;
 
         public BookController(
@@ -38,7 +39,7 @@
             ILanguagesService languagesService,
             IBlobService blobService,
             IUpdateBookService updateBookService,
-            IValidateBookFilesSizesService validateBookService,
+            IValidateBookService validateBookService,
             IDownloadBookService downloadBookService)
         {
             this.retrieveBooksService = retrieveBooksService;
@@ -55,7 +56,7 @@
         [HttpGet]
         public IActionResult Upload()
         {
-            this.ViewData["Title"] = "Upload Book";
+            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
             this.ViewData["Action"] = nameof(this.Upload);
 
             return this.View(new UploadBookViewModel());
@@ -65,39 +66,50 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
-            this.ViewData["Title"] = "Upload Book";
+            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
             this.ViewData["Action"] = nameof(this.Upload);
+
+            if (model.BookFile == null || model.BookFile.Length == 0)
+            {
+                this.ModelState.AddModelError(nameof(model.BookFile), BookFileRequiredError);
+            }
+
+            if (model.ImageFile == null || model.ImageFile.Length == 0)
+            {
+                this.ModelState.AddModelError(nameof(model.ImageFile), BookImageFileRequiredError);
+            }
 
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
 
+            var userId = this.userManager.GetUserId(this.User);
             var uploadBookDto = MapperInstance.Map<BookDto>(model);
-            uploadBookDto.BookCreatorId = this.userManager.GetUserId(this.User);
 
             try
             {
-                await this.uploadBookService.UploadBookAsync(uploadBookDto);
+                await this.uploadBookService.UploadBookAsync(uploadBookDto, userId);
                 this.TempData[SuccessMessage] = UploadSuccess;
                 return this.RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
                 this.TempData[ErrorMessage] = ex.Message;
-                return this.View(model);
+                return this.RedirectToAction(nameof(this.Upload));
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int bookId)
+        public async Task<IActionResult> Edit(int id)
         {
-            this.ViewData["Title"] = "Edit Book";
+            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
             this.ViewData["Action"] = nameof(this.Edit);
 
             try
             {
-                var model = await this.retrieveBooksService.GetEditBookAsync(bookId);
+                var userId = this.userManager.GetUserId(this.User);
+                var model = await this.retrieveBooksService.GetEditBookAsync(id, userId);
                 return this.View(nameof(this.Upload), model);
             }
             catch (Exception ex)
@@ -111,7 +123,7 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Edit(UploadBookViewModel model)
         {
-            this.ViewData["Title"] = "Edit Book";
+            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
             this.ViewData["Action"] = nameof(this.Edit);
 
             if (!this.ModelState.IsValid)
@@ -131,7 +143,7 @@
             catch (Exception ex)
             {
                 this.TempData[ErrorMessage] = ex.Message;
-                return this.View(nameof(this.Upload), model);
+                return this.RedirectToAction(nameof(this.UserBooks), "Book");
             }
         }
 
@@ -217,7 +229,7 @@
             try
             {
                 string userId = this.userManager.GetUserId(this.User);
-                var model = await this.retrieveBooksService.GetBookDetails(id, userId);
+                var model = await this.retrieveBooksService.GetBookDetailsAsync(id, userId);
                 return this.View(model);
             }
             catch (Exception ex)
@@ -245,6 +257,14 @@
                 this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Details), new { id });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Favorites()
+        {
+            var userId = this.userManager.GetUserId(this.User);
+            var books = await this.retrieveBooksService.GetUserFavoriteBooksAsync(userId);
+            return this.View(books);
         }
     }
 }

@@ -8,6 +8,6 @@
     {
         Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model);
 
-        Task<bool> CheckIfBookWithTitleExistsAsync(string title);
+        Task<bool> CheckIfBookWithTitleExistsAsync(string title, int? bookId = null);
     }
 }

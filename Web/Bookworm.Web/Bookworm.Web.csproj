@@ -18,6 +18,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="wwwroot\js\book\addToFavorites.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="wwwroot\js\book\addToFavorites.js" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<AdditionalFiles Include="..\..\stylecop.json" />
 	</ItemGroup>
 
@@ -59,5 +67,9 @@
 	<ItemGroup>
 	  <Folder Include="wwwroot\images\categories\" />
 	  <Folder Include="wwwroot\lib\admin-lte\dist\css\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\js\book\addToFavorites.js" />
 	</ItemGroup>
 </Project>

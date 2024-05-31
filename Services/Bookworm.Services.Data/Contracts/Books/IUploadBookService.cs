@@ -6,6 +6,6 @@
 
     public interface IUploadBookService
     {
-        Task UploadBookAsync(BookDto uploadBookDto);
+        Task UploadBookAsync(BookDto uploadBookDto, string userId);
     }
 }
