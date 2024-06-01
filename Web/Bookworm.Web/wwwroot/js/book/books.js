@@ -44,7 +44,14 @@ const fetchForBooks = (page) => {
 
     const languagesIds = getLanguagesIds();
 
-    const model = { input, page, category, isForUserBooks, languagesIds };
+    const model = {
+        input,
+        page,
+        category,
+        isForUserBooks,
+        isForUserFavBooks,
+        languagesIds
+    };
 
     const token = document.getElementById('RequestVerificationToken').value;
 
@@ -64,30 +71,31 @@ const updateBooks = (books) => {
     const bookSection = document.querySelector('.booksSection');
     bookSection.innerHTML = '';
 
-    if (books?.length > 0) {
-        books.forEach(book => {
-            const divElement = document.createElement('div');
-
-            const anchorElement = document.createElement('a');
-            anchorElement.href = `/Book/Details/${book.id}`;
-
-            const imageElement = document.createElement('img');
-            imageElement.title = book.title;
-            imageElement.src = book.imageUrl;
-            imageElement.alt = book.title;
-            imageElement.className = 'imageZoom';
-            imageElement.height = 300;
-
-            anchorElement.appendChild(imageElement);
-            divElement.appendChild(anchorElement);
-            bookSection.appendChild(divElement);
-        });
-    } else {
+    if (books?.length == 0) {
         const h2Element = document.createElement('h2');
         h2Element.textContent = 'No books found based on search!';
         h2Element.style = 'color: white';
         bookSection.appendChild(h2Element);
+        return;
     }
+
+    books.forEach(book => {
+        const divElement = document.createElement('div');
+
+        const anchorElement = document.createElement('a');
+        anchorElement.href = `/Book/Details/${book.id}`;
+
+        const imageElement = document.createElement('img');
+        imageElement.title = book.title;
+        imageElement.src = book.imageUrl;
+        imageElement.alt = book.title;
+        imageElement.className = 'imageZoom';
+        imageElement.height = 300;
+
+        anchorElement.appendChild(imageElement);
+        divElement.appendChild(anchorElement);
+        bookSection.appendChild(divElement);
+    });
 };
 
 const getLanguagesIds = () => $('.languagesSelect').select2('data').map(x => x.id);

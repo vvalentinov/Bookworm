@@ -18,11 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\js\book\addToFavorites.js" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="wwwroot\js\book\addToFavorites.js" />
+	  <Content Remove="wwwroot\js\book\favorites.js" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -70,6 +66,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="wwwroot\js\book\addToFavorites.js" />
+	  <None Include="wwwroot\js\book\favorites.js" />
 	</ItemGroup>
 </Project>

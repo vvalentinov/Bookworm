@@ -34,6 +34,6 @@
 
         Task<Book> GetDeletedBookWithIdAsync(int bookId, bool withTracking = false);
 
-        Task<IEnumerable<BookDetailsViewModel>> GetUserFavoriteBooksAsync(string userId);
+        Task<BookListingViewModel> GetUserFavoriteBooksAsync(string userId, int page);
     }
 }

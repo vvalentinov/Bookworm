@@ -188,6 +188,35 @@
             };
         }
 
+        public async Task<BookListingViewModel> GetUserFavoriteBooksAsync(string userId, int page)
+        {
+            var bookIds = await this.favoriteBooksRepository
+                .AllAsNoTracking()
+                .Where(x => x.UserId == userId)
+                .Select(x => x.BookId)
+                .ToListAsync();
+
+            var itemsPerPage = 8;
+
+            return new BookListingViewModel
+            {
+                Books = await this.bookRepository
+                                .AllAsNoTracking()
+                                .Where(x => bookIds.Contains(x.Id) && x.IsApproved)
+                                .Select(x => new BookViewModel { Id = x.Id, Title = x.Title, ImageUrl = x.ImageUrl })
+                                .OrderByDescending(x => x.Id)
+                                .Skip((page - 1) * itemsPerPage)
+                                .Take(itemsPerPage)
+                                .ToListAsync(),
+                PageNumber = page,
+                RecordsCount = await this.bookRepository
+                                    .AllAsNoTracking()
+                                    .Where(x => bookIds.Contains(x.Id) && x.IsApproved)
+                                    .CountAsync(),
+                ItemsPerPage = itemsPerPage,
+            };
+        }
+
         public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page)
             => new BookListingViewModel
             {
@@ -286,25 +315,6 @@
                 throw new InvalidOperationException(BookWrongIdError);
 
             return book;
-        }
-
-        public async Task<IEnumerable<BookDetailsViewModel>> GetUserFavoriteBooksAsync(string userId)
-        {
-            var bookIds = await this.favoriteBooksRepository
-                .AllAsNoTracking()
-                .Where(x => x.UserId == userId)
-                .Select(x => x.BookId)
-                .ToListAsync();
-
-            return await this.bookRepository
-                .AllAsNoTracking()
-                .Where(x => bookIds.Contains(x.Id))
-                .Select(x => new BookDetailsViewModel
-                {
-                    Id = x.Id,
-                    ImageUrl = x.ImageUrl,
-                    Title = x.Title,
-                }).ToListAsync();
         }
     }
 }

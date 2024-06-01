@@ -30,9 +30,9 @@
 
 @if (Model.PagesCount > 1)
 {
-    <vc:pagination controller="Book"
-                   action="All"
-                   is-for-books="@true"
+    <vc:pagination action="All"
+                   controller="Book"
+                   is-for-books-in-category="@true"
                    model="@Model">
     </vc:pagination>
 }

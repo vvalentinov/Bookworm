@@ -6,14 +6,14 @@
     public class PaginationViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke(
-            string controller,
             string action,
-            bool isForBooks,
-            BaseListingViewModel model)
+            string controller,
+            BaseListingViewModel model,
+            bool isForBooksInCategory = false)
         {
-            this.ViewData["Controller"] = controller;
             this.ViewData["Action"] = action;
-            this.ViewData["IsForBooks"] = isForBooks;
+            this.ViewData["Controller"] = controller;
+            this.ViewData["IsForBooksInCategory"] = isForBooksInCategory;
             return this.View(model);
         }
     }

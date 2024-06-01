@@ -1,0 +1,42 @@
+﻿@import '../select2.css';
+
+.booksSection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    padding: 1rem 0;
+    border: solid 2px black;
+    margin: 2rem 0;
+    border-radius: 15px;
+    background-color: var(--clr-primary);
+}
+
+    .booksSection .card {
+        flex-basis: 20%;
+        border: solid 2px black;
+    }
+
+        .booksSection .card .card-body {
+            background-color: var(--clr-primary);
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .booksSection .card .card-body .viewFavoriteBookBtn {
+                background-color: var(--clr-secondary);
+                flex-basis: 50%;
+                font-size: 1.5rem;
+            }
+
+            .booksSection .card .card-body .removeFromListBtn {
+                background-color: red;
+                flex-basis: 50%;
+                font-size: 1.5rem;
+            }
+
+                .booksSection .card .card-body .viewFavoriteBookBtn:hover,
+                .booksSection .card .card-body .removeFromListBtn:hover {
+                    color: black !important;
+                }

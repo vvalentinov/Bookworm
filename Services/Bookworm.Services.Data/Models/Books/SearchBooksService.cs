@@ -35,7 +35,7 @@
         public async Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model)
         {
             var booksQuery = (IQueryable<Book>)this.bookRepository
-                .AllWithDeleted()
+                .AllAsNoTracking()
                 .Include(b => b.Publisher)
                 .Include(b => b.AuthorsBooks)
                 .ThenInclude(b => b.Author);

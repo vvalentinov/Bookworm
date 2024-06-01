@@ -30,6 +30,7 @@
         private readonly IUpdateBookService updateBookService;
         private readonly IValidateBookService validateBookService;
         private readonly IDownloadBookService downloadBookService;
+        private readonly IFavoriteBookService favoriteBookService;
 
         public BookController(
             IRetrieveBooksService retrieveBooksService,
@@ -40,7 +41,8 @@
             IBlobService blobService,
             IUpdateBookService updateBookService,
             IValidateBookService validateBookService,
-            IDownloadBookService downloadBookService)
+            IDownloadBookService downloadBookService,
+            IFavoriteBookService favoriteBookService)
         {
             this.retrieveBooksService = retrieveBooksService;
             this.categoriesService = categoriesService;
@@ -51,6 +53,7 @@
             this.updateBookService = updateBookService;
             this.validateBookService = validateBookService;
             this.downloadBookService = downloadBookService;
+            this.favoriteBookService = favoriteBookService;
         }
 
         [HttpGet]
@@ -180,8 +183,9 @@
 
             try
             {
-                var books = await this.retrieveBooksService
-                    .GetRandomBooksAsync(model.CountBooks, model.CategoryId);
+                var books = await this.retrieveBooksService.GetRandomBooksAsync(
+                    model.CountBooks,
+                    model.CategoryId);
 
                 return this.View("GeneratedBooks", books);
             }
@@ -209,6 +213,31 @@
             {
                 this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.All), "Category");
+            }
+        }
+
+        [HttpGet]
+        [PageValidationFilter]
+        public async Task<IActionResult> Favorites(int page = 1)
+        {
+            var userId = this.userManager.GetUserId(this.User);
+            var model = await this.retrieveBooksService.GetUserFavoriteBooksAsync(userId, page);
+            return this.View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteFromFavorites(int id)
+        {
+            try
+            {
+                var userId = this.userManager.GetUserId(this.User);
+                await this.favoriteBookService.DeleteBookFromFavoritesAsync(id, userId);
+                return this.RedirectToAction(nameof(this.Favorites));
+            }
+            catch (Exception ex)
+            {
+                this.TempData[ErrorMessage] = ex.Message;
+                return this.RedirectToAction(nameof(this.Favorites));
             }
         }
 
@@ -257,14 +286,6 @@
                 this.TempData[ErrorMessage] = ex.Message;
                 return this.RedirectToAction(nameof(this.Details), new { id });
             }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Favorites()
-        {
-            var userId = this.userManager.GetUserId(this.User);
-            var books = await this.retrieveBooksService.GetUserFavoriteBooksAsync(userId);
-            return this.View(books);
         }
     }
 }

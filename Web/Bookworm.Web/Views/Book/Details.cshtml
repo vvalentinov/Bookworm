@@ -206,7 +206,7 @@
     <script src="~/js/book/rating.js"></script>
     <script src="~/js/book/comments.js"></script>
     <script type="module">
-        import { addToFavorites } from '/js/book/addToFavorites.js';
+        import { addToFavorites } from '/js/book/favorites.js';
         document
             .getElementById('addToFavoritesBtn')
             .addEventListener('click', () => addToFavorites(@Model.Id));

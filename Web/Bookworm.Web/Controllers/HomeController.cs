@@ -21,7 +21,6 @@
             this.retrieveBooksService = booksService;
         }
 
-        [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {

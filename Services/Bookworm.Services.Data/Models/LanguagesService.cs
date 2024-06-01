@@ -56,7 +56,7 @@
                     .ToListAsync();
 
         public async Task<List<LanguageViewModel>> GetAllInUserBooksAsync(string userId)
-         => await this.bookRepository
+            => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.UserId == userId)
                     .Select(x => new LanguageViewModel { Id = x.LanguageId, Name = x.Language.Name })

@@ -1,15 +1,15 @@
 ﻿@model BaseListingViewModel
 
 @{
-    var isPaginationForBooks = (bool)this.ViewData["IsForBooks"];
-    var controller = this.ViewData["Controller"].ToString();
     var action = this.ViewData["Action"].ToString();
+    var controller = this.ViewData["Controller"].ToString();
+    var isPaginationForBooksInCategory = (bool)this.ViewData["IsForBooksInCategory"];
 }
 
 <nav id="pagination" aria-label="...">
     <ul class="pagination pagination-lg justify-content-center">
         <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-            @if (isPaginationForBooks)
+            @if (isPaginationForBooksInCategory)
             {
                 <a class="page-link"
                    asp-controller=@controller
@@ -34,7 +34,7 @@
             if (i > 0)
             {
                 <li class="page-item">
-                    @if (isPaginationForBooks)
+                    @if (isPaginationForBooksInCategory)
                     {
                         <a class="page-link"
                            asp-controller=@controller
@@ -67,7 +67,7 @@
             if (i <= Model.PagesCount)
             {
                 <li class="page-item">
-                    @if (isPaginationForBooks)
+                    @if (isPaginationForBooksInCategory)
                     {
                         <a class="page-link"
                            asp-controller=@controller
@@ -90,7 +90,7 @@
             }
         }
         <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-            @if (isPaginationForBooks)
+            @if (isPaginationForBooksInCategory)
             {
                 <a class="page-link"
                    asp-controller=@controller

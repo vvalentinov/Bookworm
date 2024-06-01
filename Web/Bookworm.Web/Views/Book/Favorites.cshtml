@@ -1,0 +1,51 @@
+﻿@model BookListingViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+    this.ViewData["Title"] = "Favorite Books";
+    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, IconClass = "fa-book" };
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/book/bookFavorites.css" />
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+}
+
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
+
+@if (Model.Books.Any())
+{
+    <section class="booksSection">
+        @foreach (var book in Model.Books)
+        {
+            <div class="card">
+                <img title="@book.Title" src="@book.ImageUrl" alt="Book" height="300">
+                <div class="card-body">
+                    <a asp-area=""
+                       asp-controller="Book"
+                       asp-action="Details"
+                       asp-route-id="@book.Id"
+                       class="btn viewFavoriteBookBtn text-white">
+                        Details
+                    </a>
+                    <a asp-area=""
+                       asp-controller="Book"
+                       asp-action="DeleteFromFavorites"
+                       asp-route-id="@book.Id"
+                       class="btn removeFromListBtn text-white">
+                        Remove
+                    </a>
+                </div>
+            </div>
+        }
+    </section>
+}
+
+@if (Model.PagesCount > 1)
+{
+    <vc:pagination controller="Book" action="Favorites" model="@Model"></vc:pagination>
+}
+
