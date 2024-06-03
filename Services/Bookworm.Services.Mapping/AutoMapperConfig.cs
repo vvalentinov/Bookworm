@@ -25,6 +25,7 @@
             var types = assemblies.SelectMany(a => a.GetExportedTypes()).ToList();
 
             var config = new MapperConfigurationExpression();
+
             config.CreateProfile(
                 "ReflectionProfile",
                 configuration =>

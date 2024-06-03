@@ -8,25 +8,25 @@
 
     public interface IRetrieveBooksService
     {
-        Task<BookListingViewModel> GetBooksAsync(int categoryId, int page);
+        Task<BookListingViewModel> GetBooksInCategoryAsync(string category, int page);
 
         Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
 
         Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
 
-        Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string userId);
+        Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string currentUserId, bool isAdmin);
 
         Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId);
 
-        Task<List<BookViewModel>> GetPopularBooksAsync();
+        Task<IEnumerable<BookViewModel>> GetPopularBooksAsync();
 
-        Task<List<BookViewModel>> GetRecentBooksAsync();
+        Task<IEnumerable<BookViewModel>> GetRecentBooksAsync();
 
-        Task<List<BookDetailsViewModel>> GetUnapprovedBooksAsync();
+        Task<IEnumerable<BookDetailsViewModel>> GetUnapprovedBooksAsync();
 
-        Task<List<BookDetailsViewModel>> GetApprovedBooksAsync();
+        Task<IEnumerable<BookDetailsViewModel>> GetApprovedBooksAsync();
 
-        Task<List<BookDetailsViewModel>> GetDeletedBooksAsync();
+        Task<IEnumerable<BookDetailsViewModel>> GetDeletedBooksAsync();
 
         Task<int> GetUnapprovedBooksCountAsync();
 

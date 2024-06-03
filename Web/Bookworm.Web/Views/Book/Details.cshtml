@@ -75,7 +75,9 @@
                 Rate Book<i class="fas fa-star icon ms-2"></i>
             </button>
 
-            <button id="addToFavoritesBtn" class="btn btn-lg button">
+            <button asp-bookId="@Model.Id"
+                    id="addToFavoritesBtn"
+                    class="btn btn-lg button">
                 Add to Favourites<i class="fas fa-heart icon ms-2"></i>
             </button>
         }
@@ -85,12 +87,14 @@
                asp-controller="Book"
                asp-action="Edit"
                asp-route-id="@Model.Id">
-                Edit<i class="fas fa-user-pen icon ms-2"></i>
+                Edit
+                <i class="fas fa-user-pen icon ms-2"></i>
             </a>
             <a class="btn btn-lg button"
                data-bs-toggle="modal"
                data-bs-target="#deleteBookModal">
-                Delete<i class="fas fa-trash-can icon ms-2"></i>
+                Delete
+                <i class="fas fa-trash-can icon ms-2"></i>
             </a>
         }
     </section>
@@ -114,7 +118,7 @@
             <form method="post" asp-controller="Comment" asp-action="Post">
                 <input type="hidden" asp-for="PostComment.BookId" value="@Model.Id" />
                 <div class="form-group">
-                    <textarea asp-for="PostComment.Content" class="form-control" rows="15"></textarea>
+                    <textarea asp-for="PostComment.Content" class="form-control bookComment" rows="15"></textarea>
                     <span asp-validation-for="PostComment.Content" class="text-danger"></span>
                 </div>
                 <div class="text-center mt-4">
@@ -205,16 +209,11 @@
     <script src="~/js/book/vote.js"></script>
     <script src="~/js/book/rating.js"></script>
     <script src="~/js/book/comments.js"></script>
-    <script type="module">
-        import { addToFavorites } from '/js/book/favorites.js';
-        document
-            .getElementById('addToFavoritesBtn')
-            .addEventListener('click', () => addToFavorites(@Model.Id));
-    </script>
+    <script type="module" src="~/js/book/addToFavorites.js"></script>
     <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         tinymce.init({
-            selector: "textarea",
+            selector: "textarea.bookComment",
             placeholder: 'Type your comment here...',
             plugins: "code wordcount lists preview searchreplace",
             content_style: 'body { font-size: 14pt;}',

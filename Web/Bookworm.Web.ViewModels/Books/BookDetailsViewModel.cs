@@ -1,13 +1,18 @@
 ﻿namespace Bookworm.Web.ViewModels.Books
 {
     using System.Collections.Generic;
+    using System.Linq;
 
+    using AutoMapper;
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Comments;
     using Ganss.Xss;
 
-    public class BookDetailsViewModel : BookViewModel, IMapFrom<Book>
+    public class BookDetailsViewModel :
+        BookViewModel,
+        IMapFrom<Book>,
+        IHaveCustomMappings
     {
         public string Description { get; set; }
 
@@ -48,5 +53,15 @@
         public IEnumerable<string> Authors { get; set; }
 
         public IEnumerable<CommentViewModel> Comments { get; set; }
+
+        public void CreateMappings(IProfileExpression configuration)
+        {
+            configuration
+                .CreateMap<Book, BookDetailsViewModel>()
+                .ForMember(dest => dest.Language, opt => opt.MapFrom(b => b.Language.Name))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(b => b.Category.Name))
+                .ForMember(dest => dest.PublisherName, opt => opt.MapFrom(b => b.Publisher.Name))
+                .ForMember(dest => dest.Authors, opt => opt.MapFrom(b => b.AuthorsBooks.Select(x => x.Author.Name)));
+        }
     }
 }

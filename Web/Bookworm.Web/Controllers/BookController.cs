@@ -15,22 +15,23 @@
     using Microsoft.AspNetCore.Mvc;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+    using static Bookworm.Common.Constants.GlobalConstants;
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class BookController : BaseController
     {
-        private readonly IRetrieveBooksService retrieveBooksService;
+        private readonly IBlobService blobService;
+        private readonly ILanguagesService languagesService;
         private readonly ICategoriesService categoriesService;
         private readonly IUploadBookService uploadBookService;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly ILanguagesService languagesService;
-        private readonly IBlobService blobService;
         private readonly IUpdateBookService updateBookService;
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly IValidateBookService validateBookService;
         private readonly IDownloadBookService downloadBookService;
         private readonly IFavoriteBookService favoriteBookService;
+        private readonly IRetrieveBooksService retrieveBooksService;
 
         public BookController(
             IRetrieveBooksService retrieveBooksService,
@@ -201,12 +202,11 @@
         [PageValidationFilter]
         public async Task<IActionResult> All(string category, int page = 1)
         {
+            this.ViewData["Title"] = category;
+
             try
             {
-                int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-                var model = await this.retrieveBooksService.GetBooksAsync(categoryId, page);
-
-                this.ViewData["Title"] = category;
+                var model = await this.retrieveBooksService.GetBooksInCategoryAsync(category, page);
                 return this.View(model);
             }
             catch (Exception ex)
@@ -257,8 +257,9 @@
         {
             try
             {
-                string userId = this.userManager.GetUserId(this.User);
-                var model = await this.retrieveBooksService.GetBookDetailsAsync(id, userId);
+                var user = await this.userManager.GetUserAsync(this.User);
+                var isAdmin = user != null && await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+                var model = await this.retrieveBooksService.GetBookDetailsAsync(id, user?.Id, isAdmin);
                 return this.View(model);
             }
             catch (Exception ex)

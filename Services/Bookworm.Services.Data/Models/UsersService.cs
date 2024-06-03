@@ -16,8 +16,8 @@
 
     public class UsersService : IUsersService
     {
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UsersService(
             UserManager<ApplicationUser> userManager,
@@ -106,6 +106,16 @@
                 >= 300 and < 400 => 25,
                 _ => 30,
             };
+        }
+
+        public async Task<string> GetUserNameByIdAsync(string userId)
+        {
+            var user = await this.userManager
+                .Users
+                .FirstOrDefaultAsync(u => u.Id == userId) ??
+                throw new InvalidOperationException("No user with id found!");
+
+            return user.UserName;
         }
     }
 }

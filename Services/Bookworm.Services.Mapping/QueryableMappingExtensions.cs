@@ -6,30 +6,23 @@
 
     using AutoMapper.QueryableExtensions;
 
+    using static Bookworm.Services.Mapping.AutoMapperConfig;
+
     public static class QueryableMappingExtensions
     {
         public static IQueryable<TDestination> To<TDestination>(
             this IQueryable source,
-            params Expression<Func<TDestination, object>>[] membersToExpand)
+            params Expression<Func<TDestination,
+            object>>[] membersToExpand)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            return source.ProjectTo(AutoMapperConfig.MapperInstance.ConfigurationProvider, null, membersToExpand);
+            ArgumentNullException.ThrowIfNull(source);
+            return source.ProjectTo(MapperInstance.ConfigurationProvider, null, membersToExpand);
         }
 
-        public static IQueryable<TDestination> To<TDestination>(
-            this IQueryable source,
-            object parameters)
+        public static IQueryable<TDestination> To<TDestination>(this IQueryable source, object parameters)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            return source.ProjectTo<TDestination>(AutoMapperConfig.MapperInstance.ConfigurationProvider, parameters);
+            ArgumentNullException.ThrowIfNull(source);
+            return source.ProjectTo<TDestination>(MapperInstance.ConfigurationProvider, parameters);
         }
     }
 }

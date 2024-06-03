@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Remove="wwwroot\js\book\favorites.js" />
+	  <Content Remove="wwwroot\js\book\addToFavorites.js" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +66,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="wwwroot\js\book\favorites.js" />
+	  <None Include="wwwroot\js\book\addToFavorites.js" />
 	</ItemGroup>
 </Project>

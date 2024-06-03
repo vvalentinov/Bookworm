@@ -11,45 +11,36 @@
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Comments;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
-
-    using static Bookworm.Common.Constants.GlobalConstants;
 
     public class CommentsService : ICommentsService
     {
-        private readonly IRepository<Comment> commentRepository;
+        private readonly IUsersService usersService;
         private readonly IRepository<Vote> voteRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IRepository<Comment> commentRepository;
 
         public CommentsService(
-            IRepository<Comment> commentRepository,
+            IUsersService usersService,
             IRepository<Vote> voteRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository,
-            UserManager<ApplicationUser> userManager)
+            IRepository<Comment> commentRepository)
         {
-            this.commentRepository = commentRepository;
+            this.usersService = usersService;
             this.voteRepository = voteRepository;
-            this.userRepository = userRepository;
-            this.userManager = userManager;
+            this.commentRepository = commentRepository;
         }
 
-        public async Task CreateAsync(
-            string userId,
-            string content,
-            int bookId)
+        public async Task CreateAsync(string userId, string content, int bookId)
         {
             if (string.IsNullOrWhiteSpace(content))
             {
                 throw new InvalidOperationException("Comment's content must not be empty!");
             }
 
-            Comment comment = new Comment()
+            var comment = new Comment()
             {
                 UserId = userId,
-                Content = content,
                 BookId = bookId,
+                Content = content,
             };
 
             await this.commentRepository.AddAsync(comment);
@@ -63,27 +54,16 @@
                 throw new InvalidOperationException("Comment's content must not be empty!");
             }
 
-            Comment comment = await this.commentRepository
+            var comment = await this.commentRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == commentId);
-
-            if (comment == null)
-            {
+                .FirstOrDefaultAsync(x => x.Id == commentId) ??
                 throw new InvalidOperationException("Comment with given id not found!");
-            }
 
-            ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
-
-            if (user == null)
-            {
-                throw new InvalidOperationException("No user with given id found!");
-            }
-
-            bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+            bool isAdmin = await this.usersService.IsUserAdminAsync(userId);
 
             if (!isAdmin && comment.UserId != userId)
             {
-                throw new InvalidOperationException("You have to be either the comment's author or an administrator to edit it!");
+                throw new InvalidOperationException("You don't have permission to edit this comment!");
             }
 
             comment.Content = content;
@@ -93,21 +73,16 @@
 
         public async Task DeleteAsync(int commentId, string userId)
         {
-            Comment comment = await this.commentRepository
+            var comment = await this.commentRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == commentId);
-
-            if (comment == null)
-            {
+                .FirstOrDefaultAsync(x => x.Id == commentId) ??
                 throw new InvalidOperationException("Comment with given id not found!");
-            }
 
-            ApplicationUser user = await this.userRepository.AllAsNoTracking().FirstOrDefaultAsync(x => x.Id == userId);
-            bool isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+            bool isAdmin = await this.usersService.IsUserAdminAsync(userId);
 
             if (!isAdmin && comment.UserId != userId)
             {
-                throw new InvalidOperationException("You have to be either the comment's author or an administrator to delete!");
+                throw new InvalidOperationException("You don't have permission to edit this comment!");
             }
 
             List<Vote> votes = await this.voteRepository.All().Where(v => v.CommentId == commentId).ToListAsync();
@@ -127,11 +102,9 @@
             return comment.UserId;
         }
 
-        public async Task<SortedCommentsResponseModel> GetSortedCommentsAsync(
-            ApplicationUser user,
-            SortCommentsCriteria criteria)
+        public async Task<SortedCommentsResponseModel> GetSortedCommentsAsync(ApplicationUser user, SortCommentsCriteria criteria)
         {
-            List<CommentViewModel> comments = new List<CommentViewModel>();
+            var comments = new List<CommentViewModel>();
 
             switch (criteria)
             {
@@ -160,9 +133,9 @@
 
             if (user != null)
             {
-                foreach (CommentViewModel comment in comments)
+                foreach (var comment in comments)
                 {
-                    Vote vote = await this.voteRepository
+                    var vote = await this.voteRepository
                             .AllAsNoTracking()
                             .FirstOrDefaultAsync(v =>
                                 v.UserId == user.Id && v.CommentId == comment.Id);
@@ -174,9 +147,9 @@
             }
 
             bool isUserSignedIn = user != null;
-            bool isUserAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+            bool isUserAdmin = await this.usersService.IsUserAdminAsync(user.Id);
 
-            SortedCommentsResponseModel model = new SortedCommentsResponseModel()
+            var model = new SortedCommentsResponseModel()
             {
                 Comments = comments,
                 IsUserSignedIn = isUserSignedIn,
