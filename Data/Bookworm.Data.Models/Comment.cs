@@ -17,10 +17,7 @@
         }
 
         [Required]
-        [StringLength(
-            CommentContentMaxLength,
-            MinimumLength = CommentContentMinLength,
-            ErrorMessage = FieldStringLengthError)]
+        [MaxLength(CommentContentMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string Content { get; set; }
 
         [Required]

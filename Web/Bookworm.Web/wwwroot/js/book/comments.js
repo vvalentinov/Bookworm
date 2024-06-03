@@ -13,22 +13,8 @@ function onEditCommentBtnClick(e) {
     commentIdInput.value = modelId;
 };
 
-function getSortedCommentsByDateAsc() {
-    fetch('/ApiComment/GetSortedComments?criteria=CreatedOnAsc')
-        .then(res => res.json())
-        .then(res => updateComments(res))
-        .catch(err => console.log(err));
-}
-
-function getSortedCommentsByDateDesc() {
-    fetch('/ApiComment/GetSortedComments?criteria=CreatedOnDesc')
-        .then(res => res.json())
-        .then(res => updateComments(res))
-        .catch(err => console.log(err));
-}
-
-function getSortedCommentsByNetWorthDesc() {
-    fetch('/ApiComment/GetSortedComments?criteria=NetWorthDesc')
+function getSortedComments(criteria, bookId) {
+    fetch(`/ApiComment/GetSortedComments?criteria=${criteria}&bookId=${bookId}`)
         .then(res => res.json())
         .then(res => updateComments(res))
         .catch(err => console.log(err));

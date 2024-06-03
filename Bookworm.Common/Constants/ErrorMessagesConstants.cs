@@ -57,6 +57,15 @@
             public const string AuthorsCountError = "Authors count must be between 1 and 5!";
         }
 
+        public static class CommentErrorMessagesConstants
+        {
+            public const string CommentWrongIdError = "Comment with given id not found!";
+            public const string CommentInvalidSortCriteria = "Invalid comment sort criteria";
+            public const string CommentContentEmptyError = "Comment's content must not be empty!";
+            public const string CommentEditError = "You don't have permission to edit this comment!";
+            public const string CommentDeleteError = "You don't have permission to delete this comment!";
+        }
+
         public static class IdentityErrorMessagesConstants
         {
             public const string UserWrongIdError = "No user with given id found!";

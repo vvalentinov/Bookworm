@@ -1,14 +1,12 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Common.Constants;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Web.ViewModels.Books;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -18,11 +16,11 @@
     [Authorize(Roles = AdministratorRoleName)]
     public class BookController : BaseController
     {
-        private readonly IRetrieveBooksService retrieveBooksService;
         private readonly IUpdateBookService updateBookService;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IRetrieveBooksService retrieveBooksService;
         private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
-        private readonly UserManager<ApplicationUser> userManager;
 
         public BookController(
             IRetrieveBooksService retrieveBooksService,
@@ -58,14 +56,14 @@
         [HttpGet]
         public async Task<IActionResult> UnapprovedBooks()
         {
-            List<BookDetailsViewModel> books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
+            var books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
             return this.View(books);
         }
 
         [HttpGet]
         public async Task<IActionResult> DeletedBooks()
         {
-            List<BookDetailsViewModel> books = await this.retrieveBooksService.GetDeletedBooksAsync();
+            var books = await this.retrieveBooksService.GetDeletedBooksAsync();
             return this.View(books);
         }
 

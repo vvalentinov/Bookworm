@@ -14,23 +14,23 @@
 
     public class ApiBookController : ApiBaseController
     {
-        private readonly ISearchBooksService searchBooksService;
-        private readonly ICategoriesService categoriesService;
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly ILanguagesService languagesService;
+        private readonly ICategoriesService categoriesService;
+        private readonly ISearchBooksService searchBooksService;
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly IFavoriteBookService favoriteBookService;
 
         public ApiBookController(
-            ISearchBooksService searchBooksService,
-            ICategoriesService categoriesService,
-            UserManager<ApplicationUser> userManager,
             ILanguagesService languagesService,
+            ICategoriesService categoriesService,
+            ISearchBooksService searchBooksService,
+            UserManager<ApplicationUser> userManager,
             IFavoriteBookService favoriteBookService)
         {
-            this.searchBooksService = searchBooksService;
-            this.categoriesService = categoriesService;
             this.userManager = userManager;
             this.languagesService = languagesService;
+            this.categoriesService = categoriesService;
+            this.searchBooksService = searchBooksService;
             this.favoriteBookService = favoriteBookService;
         }
 

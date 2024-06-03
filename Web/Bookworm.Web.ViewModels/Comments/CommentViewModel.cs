@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.ViewModels.Comments
 {
     using System;
+    using System.Collections.Generic;
 
     using Bookworm.Data.Models;
     using Bookworm.Services.Mapping;
@@ -16,8 +17,6 @@
 
         public int NetWorth { get; set; }
 
-        public string SanitizedContent => new HtmlSanitizer().Sanitize(this.Content);
-
         public string UserUserName { get; set; }
 
         public string UserId { get; set; }
@@ -25,5 +24,9 @@
         public int UserVoteValue { get; set; }
 
         public bool IsCommentOwner { get; set; }
+
+        public string SanitizedContent => new HtmlSanitizer().Sanitize(this.Content);
+
+        public ICollection<Vote> Votes { get; set; }
     }
 }

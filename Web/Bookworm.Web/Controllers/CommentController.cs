@@ -3,21 +3,22 @@
     using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Constants;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
+
     public class CommentController : BaseController
     {
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly ICommentsService commentsService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public CommentController(
-            UserManager<ApplicationUser> userManager,
-            ICommentsService commentsService)
+            ICommentsService commentsService,
+            UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
             this.commentsService = commentsService;
@@ -32,9 +33,9 @@
                 await this.commentsService.CreateAsync(userId, model.Content, model.BookId);
                 return this.RedirectToAction("Details", "Book", new { id = model.BookId });
             }
-            catch (InvalidOperationException exception)
+            catch (Exception exception)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[ErrorMessage] = exception.Message;
                 return this.RedirectToAction("Details", "Book", new { id = model.BookId });
             }
         }
@@ -46,12 +47,12 @@
             {
                 string userId = this.userManager.GetUserId(this.User);
                 await this.commentsService.DeleteAsync(deleteCommentId, userId);
-                this.TempData[TempDataMessageConstant.SuccessMessage] = "Successfully deleted comment!";
+                this.TempData[SuccessMessage] = "Successfully deleted comment!";
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
-            catch (InvalidOperationException exception)
+            catch (Exception exception)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[ErrorMessage] = exception.Message;
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
         }
@@ -65,9 +66,9 @@
                 await this.commentsService.EditAsync(editCommentId, content, userId);
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
-            catch (InvalidOperationException exception)
+            catch (Exception exception)
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = exception.Message;
+                this.TempData[ErrorMessage] = exception.Message;
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
         }

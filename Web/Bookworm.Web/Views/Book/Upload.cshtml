@@ -115,7 +115,7 @@
 
         <div class="mt-4">
             <label asp-for="Description"></label>
-            <textarea asp-for="Description"></textarea>
+            <textarea class="bookDescription" asp-for="Description"></textarea>
             <span asp-validation-for="Description" class="small text-danger"></span>
         </div>
 
@@ -131,12 +131,5 @@
 @section Scripts {
     <script src="~/js/book/authors.js"></script>
     <script src="~/lib/tinymce/tinymce.min.js"></script>
-    <script>
-        tinymce.init({
-            selector: "textarea",
-            placeholder: 'Type book description here...',
-            plugins: "code wordcount lists preview searchreplace",
-            content_style: 'body { font-size: 14pt;}',
-        });
-    </script>
+    <script src="~/js/tinyMce.js"></script>
 }

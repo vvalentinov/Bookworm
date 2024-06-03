@@ -3,7 +3,6 @@
     using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Enums;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Comments;
@@ -19,23 +18,22 @@
             ICommentsService commentsService,
             UserManager<ApplicationUser> userManager)
         {
-            this.commentsService = commentsService;
             this.userManager = userManager;
+            this.commentsService = commentsService;
         }
 
         [HttpGet(nameof(this.GetSortedComments))]
-        public async Task<SortedCommentsResponseModel> GetSortedComments(string criteria)
+        public async Task<ActionResult<SortedCommentsResponseModel>> GetSortedComments(string criteria, int bookId)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            if (Enum.TryParse(criteria, out SortCommentsCriteria sortCriteria))
+            var userId = this.userManager.GetUserId(this.User);
+
+            try
             {
-                SortedCommentsResponseModel responseModel = await this.commentsService.GetSortedCommentsAsync(user, sortCriteria);
-                return responseModel;
+                return await this.commentsService.GetSortedCommentsAsync(bookId, userId, criteria);
             }
-            else
+            catch (Exception ex)
             {
-                SortedCommentsResponseModel responseModel = await this.commentsService.GetSortedCommentsAsync(user, SortCommentsCriteria.CreatedOnDesc);
-                return responseModel;
+                return this.BadRequest(ex.Message);
             }
         }
     }

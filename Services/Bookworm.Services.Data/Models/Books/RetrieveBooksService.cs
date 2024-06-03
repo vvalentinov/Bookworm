@@ -164,10 +164,12 @@
         {
             var itemsPerPage = 8;
 
+            var approvedBooks = this.bookRepository.AllAsNoTracking().Where(b => b.IsApproved);
+
             var query = this.favBooksRepository.AllAsNoTracking()
                 .Where(fb => fb.UserId == userId)
                 .Join(
-                        this.bookRepository.AllAsNoTracking().Where(b => b.IsApproved),
+                        approvedBooks,
                         fb => new { fb.BookId, fb.UserId },
                         b => new { BookId = b.Id, UserId = userId },
                         (fb, b) => new BookViewModel

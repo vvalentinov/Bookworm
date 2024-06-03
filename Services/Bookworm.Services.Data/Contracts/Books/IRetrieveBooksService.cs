@@ -8,32 +8,32 @@
 
     public interface IRetrieveBooksService
     {
-        Task<BookListingViewModel> GetBooksInCategoryAsync(string category, int page);
-
-        Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
-
-        Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
-
-        Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string currentUserId, bool isAdmin);
-
-        Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId);
-
-        Task<IEnumerable<BookViewModel>> GetPopularBooksAsync();
+        Task<int> GetUnapprovedBooksCountAsync();
 
         Task<IEnumerable<BookViewModel>> GetRecentBooksAsync();
 
-        Task<IEnumerable<BookDetailsViewModel>> GetUnapprovedBooksAsync();
-
-        Task<IEnumerable<BookDetailsViewModel>> GetApprovedBooksAsync();
+        Task<IEnumerable<BookViewModel>> GetPopularBooksAsync();
 
         Task<IEnumerable<BookDetailsViewModel>> GetDeletedBooksAsync();
 
-        Task<int> GetUnapprovedBooksCountAsync();
+        Task<IEnumerable<BookDetailsViewModel>> GetApprovedBooksAsync();
+
+        Task<IEnumerable<BookDetailsViewModel>> GetUnapprovedBooksAsync();
 
         Task<Book> GetBookWithIdAsync(int bookId, bool withTracking = false);
+
+        Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId);
+
+        Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
 
         Task<Book> GetDeletedBookWithIdAsync(int bookId, bool withTracking = false);
 
         Task<BookListingViewModel> GetUserFavoriteBooksAsync(string userId, int page);
+
+        Task<BookListingViewModel> GetBooksInCategoryAsync(string category, int page);
+
+        Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
+
+        Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string currentUserId, bool isAdmin);
     }
 }

@@ -34,34 +34,34 @@
         private readonly IRetrieveBooksService retrieveBooksService;
 
         public BookController(
-            IRetrieveBooksService retrieveBooksService,
+            IBlobService blobService,
+            ILanguagesService languagesService,
             ICategoriesService categoriesService,
             IUploadBookService uploadBookService,
-            UserManager<ApplicationUser> userManager,
-            ILanguagesService languagesService,
-            IBlobService blobService,
             IUpdateBookService updateBookService,
+            UserManager<ApplicationUser> userManager,
             IValidateBookService validateBookService,
             IDownloadBookService downloadBookService,
-            IFavoriteBookService favoriteBookService)
+            IFavoriteBookService favoriteBookService,
+            IRetrieveBooksService retrieveBooksService)
         {
-            this.retrieveBooksService = retrieveBooksService;
-            this.categoriesService = categoriesService;
-            this.uploadBookService = uploadBookService;
+            this.blobService = blobService;
             this.userManager = userManager;
             this.languagesService = languagesService;
-            this.blobService = blobService;
+            this.categoriesService = categoriesService;
+            this.uploadBookService = uploadBookService;
             this.updateBookService = updateBookService;
             this.validateBookService = validateBookService;
             this.downloadBookService = downloadBookService;
             this.favoriteBookService = favoriteBookService;
+            this.retrieveBooksService = retrieveBooksService;
         }
 
         [HttpGet]
         public IActionResult Upload()
         {
-            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
             this.ViewData["Action"] = nameof(this.Upload);
+            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
 
             return this.View(new UploadBookViewModel());
         }
@@ -70,8 +70,8 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
-            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
             this.ViewData["Action"] = nameof(this.Upload);
+            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
 
             if (model.BookFile == null || model.BookFile.Length == 0)
             {
@@ -88,11 +88,10 @@
                 return this.View(model);
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-            var uploadBookDto = MapperInstance.Map<BookDto>(model);
-
             try
             {
+                var userId = this.userManager.GetUserId(this.User);
+                var uploadBookDto = MapperInstance.Map<BookDto>(model);
                 await this.uploadBookService.UploadBookAsync(uploadBookDto, userId);
                 this.TempData[SuccessMessage] = UploadSuccess;
                 return this.RedirectToAction("Index", "Home");
@@ -107,8 +106,8 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
             this.ViewData["Action"] = nameof(this.Edit);
+            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
 
             try
             {
@@ -127,19 +126,18 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Edit(UploadBookViewModel model)
         {
-            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
             this.ViewData["Action"] = nameof(this.Edit);
+            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
 
             if (!this.ModelState.IsValid)
             {
                 return this.View(nameof(this.Upload), model);
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-            var editBookDto = MapperInstance.Map<BookDto>(model);
-
             try
             {
+                var userId = this.userManager.GetUserId(this.User);
+                var editBookDto = MapperInstance.Map<BookDto>(model);
                 await this.updateBookService.EditBookAsync(editBookDto, userId);
                 this.TempData[SuccessMessage] = EditSuccess;
                 return this.RedirectToAction(nameof(this.UserBooks), "Book");
@@ -247,7 +245,6 @@
         {
             var userId = this.userManager.GetUserId(this.User);
             var books = await this.retrieveBooksService.GetUserBooksAsync(userId, page);
-
             return this.View(books);
         }
 

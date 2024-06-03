@@ -49,7 +49,6 @@ const fetchForBooks = (page) => {
         page,
         category,
         isForUserBooks,
-        isForUserFavBooks,
         languagesIds
     };
 
