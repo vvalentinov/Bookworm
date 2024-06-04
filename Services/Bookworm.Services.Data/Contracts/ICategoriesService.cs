@@ -5,12 +5,10 @@
 
     public interface ICategoriesService
     {
-        Task<List<T>> GetAllAsync<T>();
+        Task<IEnumerable<T>> GetAllAsync<T>();
 
         Task<int> GetCategoryIdAsync(string categoryName);
 
         Task<bool> CheckIfIdIsValidAsync(int categoryId);
-
-        Task<string> GetCategoryNameAsync(int categoryId);
     }
 }

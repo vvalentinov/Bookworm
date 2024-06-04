@@ -12,15 +12,15 @@
 
     public class CategoryController : BaseController
     {
-        private readonly ICategoriesService categoriesService;
         private readonly IDistributedCache cache;
+        private readonly ICategoriesService categoriesService;
 
         public CategoryController(
-            ICategoriesService categoriesService,
-            IDistributedCache cache)
+            IDistributedCache cache,
+            ICategoriesService categoriesService)
         {
-            this.categoriesService = categoriesService;
             this.cache = cache;
+            this.categoriesService = categoriesService;
         }
 
         [HttpGet]

@@ -11,6 +11,8 @@
     using Bookworm.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
+
     public class CategoriesService : ICategoriesService
     {
         private readonly IRepository<Category> categoriesRepository;
@@ -20,7 +22,7 @@
             this.categoriesRepository = categoriesRepository;
         }
 
-        public async Task<List<T>> GetAllAsync<T>()
+        public async Task<IEnumerable<T>> GetAllAsync<T>()
             => await this.categoriesRepository
                     .AllAsNoTracking()
                     .OrderBy(x => x.Name)
@@ -32,7 +34,7 @@
             var category = await this.categoriesRepository
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(c => c.Name == categoryName.Trim()) ??
-                throw new InvalidOperationException("The given category doesn't exist!");
+                throw new InvalidOperationException(CategoryNotFoundError);
 
             return category.Id;
         }
