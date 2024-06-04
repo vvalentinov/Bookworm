@@ -61,12 +61,12 @@
         }
 
         [HttpGet(nameof(GetLanguagesInBookCategory))]
-        public async Task<ActionResult<List<LanguageViewModel>>> GetLanguagesInBookCategory(string category)
+        public async Task<ActionResult<IEnumerable<LanguageViewModel>>> GetLanguagesInBookCategory(string category)
         {
             try
             {
                 int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-                return await this.languagesService.GetAllInBookCategoryAsync(categoryId);
+                return this.Ok(await this.languagesService.GetAllInBookCategoryAsync(categoryId));
             }
             catch (Exception ex)
             {
@@ -75,10 +75,10 @@
         }
 
         [HttpGet(nameof(GetLanguagesInUserBooks))]
-        public async Task<List<LanguageViewModel>> GetLanguagesInUserBooks()
+        public async Task<ActionResult<IEnumerable<LanguageViewModel>>> GetLanguagesInUserBooks()
         {
             var userId = this.userManager.GetUserId(this.User);
-            return await this.languagesService.GetAllInUserBooksAsync(userId);
+            return this.Ok(await this.languagesService.GetAllInUserBooksAsync(userId));
         }
 
         [HttpPost(nameof(AddToFavorites))]
@@ -93,21 +93,6 @@
             catch (Exception ex)
             {
                 return this.BadRequest(new { error = ex.Message });
-            }
-        }
-
-        [HttpDelete(nameof(DeleteFromFavorites))]
-        public async Task<IActionResult> DeleteFromFavorites(int bookId)
-        {
-            try
-            {
-                var userId = this.userManager.GetUserId(this.User);
-                await this.favoriteBookService.DeleteBookFromFavoritesAsync(bookId, userId);
-                return this.Ok("Successfully removed book from favorites list!");
-            }
-            catch (Exception ex)
-            {
-                return this.BadRequest(ex.Message);
             }
         }
     }

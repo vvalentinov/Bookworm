@@ -7,14 +7,12 @@
 
     public interface ILanguagesService
     {
-        Task<List<LanguageViewModel>> GetAllAsync();
-
-        Task<string> GetLanguageNameAsync(int languageId);
-
-        Task<List<LanguageViewModel>> GetAllInUserBooksAsync(string userId);
-
-        Task<List<LanguageViewModel>> GetAllInBookCategoryAsync(int categoryId);
-
         Task<bool> CheckIfIdIsValidAsync(int languageId);
+
+        Task<IEnumerable<LanguageViewModel>> GetAllAsync();
+
+        Task<IEnumerable<LanguageViewModel>> GetAllInUserBooksAsync(string userId);
+
+        Task<IEnumerable<LanguageViewModel>> GetAllInBookCategoryAsync(int categoryId);
     }
 }

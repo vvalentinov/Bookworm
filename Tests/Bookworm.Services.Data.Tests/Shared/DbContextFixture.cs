@@ -34,6 +34,7 @@
             this.DbContext.Authors.AddRange(GetAuthors());
             this.DbContext.Categories.AddRange(GetCategories());
             this.DbContext.Publishers.AddRange(GetPublishers());
+            this.DbContext.Languages.AddRange(GetLanguages());
             this.DbContext.Books.AddRange(GetBooks());
             this.DbContext.SaveChanges();
         }
@@ -391,6 +392,20 @@
             };
 
             return categories;
+        }
+
+        private static Language[] GetLanguages()
+        {
+            var languages = new Language[5]
+            {
+                new () { Id = 1, Name = "Language One" },
+                new () { Id = 2, Name = "Language Two" },
+                new () { Id = 3, Name = "Language Three" },
+                new () { Id = 4, Name = "Language Four" },
+                new () { Id = 5, Name = "Language Five" },
+            };
+
+            return languages;
         }
 
         private static Book[] GetBooks()

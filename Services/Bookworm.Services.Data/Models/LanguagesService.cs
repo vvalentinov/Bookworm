@@ -1,6 +1,5 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -21,33 +20,17 @@
             IRepository<Language> langugesRepository,
             IDeletableEntityRepository<Book> bookRepository)
         {
-            this.languagesRepository = langugesRepository;
             this.bookRepository = bookRepository;
+            this.languagesRepository = langugesRepository;
         }
 
-        public async Task<List<LanguageViewModel>> GetAllAsync()
-        {
-            return await this.languagesRepository
-                .AllAsNoTracking()
-                .To<LanguageViewModel>()
-                .ToListAsync();
-        }
+        public async Task<IEnumerable<LanguageViewModel>> GetAllAsync()
+            => await this.languagesRepository
+                    .AllAsNoTracking()
+                    .To<LanguageViewModel>()
+                    .ToListAsync();
 
-        public async Task<string> GetLanguageNameAsync(int languageId)
-        {
-            if (!await this.CheckIfIdIsValidAsync(languageId))
-            {
-                throw new InvalidOperationException("The given language doesn't exist!");
-            }
-
-            var language = await this.languagesRepository
-                .AllAsNoTracking()
-                .FirstAsync(l => l.Id == languageId);
-
-            return language.Name;
-        }
-
-        public async Task<List<LanguageViewModel>> GetAllInBookCategoryAsync(int categoryId)
+        public async Task<IEnumerable<LanguageViewModel>> GetAllInBookCategoryAsync(int categoryId)
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.CategoryId == categoryId)
@@ -55,7 +38,7 @@
                     .Distinct()
                     .ToListAsync();
 
-        public async Task<List<LanguageViewModel>> GetAllInUserBooksAsync(string userId)
+        public async Task<IEnumerable<LanguageViewModel>> GetAllInUserBooksAsync(string userId)
             => await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.UserId == userId)
