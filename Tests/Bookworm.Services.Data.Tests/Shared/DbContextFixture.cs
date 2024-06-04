@@ -12,8 +12,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants.NotificationsMessagesConstants;
-    using static Bookworm.Common.Constants.SuccessMessagesConstants.NotificationsMessagesConstants;
+    using static Bookworm.Common.Constants.NotificationConstants;
 
     public class DbContextFixture : IDisposable
     {
@@ -32,6 +31,10 @@
             this.DbContext.Roles.AddRange(GetRoles());
             this.DbContext.UserRoles.AddRange(GetUserRoles());
             this.DbContext.Notifications.AddRange(GetNotifications());
+            this.DbContext.Authors.AddRange(GetAuthors());
+            this.DbContext.Categories.AddRange(GetCategories());
+            this.DbContext.Publishers.AddRange(GetPublishers());
+            this.DbContext.Books.AddRange(GetBooks());
             this.DbContext.SaveChanges();
         }
 
@@ -171,37 +174,6 @@
             };
 
             return roles;
-        }
-
-        private static ApplicationUser[] GetUsers()
-        {
-            return
-            [
-                new ()
-                {
-                    Id = "0fc3ea28-3165-440e-947e-670c90562320",
-                    UserName = "Valentin",
-                    Points = 8,
-                },
-                new ()
-                {
-                    Id = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
-                    UserName = "Mike",
-                    Points = 4,
-                },
-                new ()
-                {
-                    Id = "a84ea5dc-a89e-442f-8e53-c874675bb114",
-                    UserName = "John",
-                    Points = 4,
-                },
-                new ()
-                {
-                    Id = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
-                    UserName = "Tom",
-                    Points = 2,
-                },
-            ];
         }
 
         private static QuoteLike[] GetQuoteLikes()
@@ -375,6 +347,250 @@
                     UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
                     IsApproved = true,
                     CreatedOn = DateTime.UtcNow,
+                },
+            ];
+        }
+
+        private static Author[] GetAuthors()
+        {
+            var authors = new Author[5]
+            {
+                new () { Id = 1, Name = "Author One" },
+                new () { Id = 2, Name = "Author Two" },
+                new () { Id = 3, Name = "Author Three" },
+                new () { Id = 4, Name = "Author Four" },
+                new () { Id = 5, Name = "Author Five" },
+            };
+
+            return authors;
+        }
+
+        private static Publisher[] GetPublishers()
+        {
+            var publishers = new Publisher[5]
+            {
+                new () { Id = 1, Name = "Publisher One" },
+                new () { Id = 2, Name = "Publisher Two" },
+                new () { Id = 3, Name = "Publisher Three" },
+                new () { Id = 4, Name = "Publisher Four" },
+                new () { Id = 5, Name = "Publisher Five" },
+            };
+
+            return publishers;
+        }
+
+        private static Category[] GetCategories()
+        {
+            var categories = new Category[5]
+            {
+                new () { Id = 1, Name = "Category One" },
+                new () { Id = 2, Name = "Category Two" },
+                new () { Id = 3, Name = "Category Three" },
+                new () { Id = 4, Name = "Category Four" },
+                new () { Id = 5, Name = "Category Five" },
+            };
+
+            return categories;
+        }
+
+        private static Book[] GetBooks()
+        {
+            var books = new Book[10]
+            {
+                new ()
+                {
+                    Id = 1,
+                    Title = "Book One",
+                    Description = "Book One Description",
+                    Year = 2010,
+                    PagesCount = 150,
+                    DownloadsCount = 2,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 3,
+                    LanguageId = 1,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    IsApproved = true,
+                    PublisherId = 5,
+                },
+                new ()
+                {
+                    Id = 2,
+                    Title = "Book Two",
+                    Description = "Book Two Description",
+                    Year = 2015,
+                    PagesCount = 200,
+                    DownloadsCount = 0,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 1,
+                    LanguageId = 3,
+                    UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    IsApproved = true,
+                    PublisherId = 4,
+                },
+                new ()
+                {
+                    Id = 3,
+                    Title = "Book Three",
+                    Description = "Book Three Description",
+                    Year = 1998,
+                    PagesCount = 1000,
+                    DownloadsCount = 12,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 5,
+                    LanguageId = 3,
+                    UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
+                    IsApproved = false,
+                    PublisherId = 2,
+                },
+                new ()
+                {
+                    Id = 4,
+                    Title = "Book Four",
+                    Description = "Book Four Description",
+                    Year = 2000,
+                    PagesCount = 20,
+                    DownloadsCount = 0,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 5,
+                    LanguageId = 2,
+                    UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
+                    IsApproved = true,
+                    PublisherId = 1,
+                },
+                new ()
+                {
+                    Id = 5,
+                    Title = "Book Five",
+                    Description = "Book Five Description",
+                    Year = 2004,
+                    PagesCount = 202,
+                    DownloadsCount = 4,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 5,
+                    LanguageId = 3,
+                    UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
+                    IsApproved = true,
+                    PublisherId = 1,
+                },
+                new ()
+                {
+                    Id = 6,
+                    Title = "Book Six",
+                    Description = "Book Six Description",
+                    Year = 2013,
+                    PagesCount = 500,
+                    DownloadsCount = 45,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 4,
+                    LanguageId = 2,
+                    UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
+                    IsApproved = false,
+                    PublisherId = 3,
+                },
+                new ()
+                {
+                    Id = 7,
+                    Title = "Book Seven",
+                    Description = "Book Seven Description",
+                    Year = 2015,
+                    PagesCount = 505,
+                    DownloadsCount = 12,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 4,
+                    LanguageId = 2,
+                    UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
+                    IsApproved = false,
+                    IsDeleted = true,
+                    PublisherId = 3,
+                },
+                new ()
+                {
+                    Id = 8,
+                    Title = "Book Eight",
+                    Description = "Book Eight Description",
+                    Year = 1912,
+                    PagesCount = 200,
+                    DownloadsCount = 0,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 3,
+                    LanguageId = 1,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    IsApproved = false,
+                    IsDeleted = true,
+                    PublisherId = 3,
+                },
+                new ()
+                {
+                    Id = 9,
+                    Title = "Book Nine",
+                    Description = "Book Nine Description",
+                    Year = 2008,
+                    PagesCount = 300,
+                    DownloadsCount = 5,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 4,
+                    LanguageId = 5,
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    IsApproved = false,
+                    PublisherId = 5,
+                },
+                new ()
+                {
+                    Id = 10,
+                    Title = "Book Ten",
+                    Description = "Book Ten Description",
+                    Year = 2009,
+                    PagesCount = 305,
+                    DownloadsCount = 12,
+                    ImageUrl = "http://some-url-here",
+                    FileUrl = "http://some-url-here",
+                    CategoryId = 5,
+                    LanguageId = 5,
+                    UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    IsApproved = true,
+                    PublisherId = 5,
+                },
+            };
+
+            return books;
+        }
+
+        private static ApplicationUser[] GetUsers()
+        {
+            return
+            [
+                new ()
+                {
+                    Id = "0fc3ea28-3165-440e-947e-670c90562320",
+                    UserName = "Valentin",
+                    Points = 8,
+                },
+                new ()
+                {
+                    Id = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    UserName = "Mike",
+                    Points = 4,
+                },
+                new ()
+                {
+                    Id = "a84ea5dc-a89e-442f-8e53-c874675bb114",
+                    UserName = "John",
+                    Points = 4,
+                },
+                new ()
+                {
+                    Id = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
+                    UserName = "Tom",
+                    Points = 2,
                 },
             ];
         }

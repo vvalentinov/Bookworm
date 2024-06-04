@@ -35,4 +35,8 @@
     <ProjectReference Include="..\..\Services\Bookworm.Services.Data\Bookworm.Services.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BookTests\" />
+  </ItemGroup>
+
 </Project>
