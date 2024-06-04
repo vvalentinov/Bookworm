@@ -60,6 +60,7 @@
         public static class CommentErrorMessagesConstants
         {
             public const string CommentWrongIdError = "Comment with given id not found!";
+            public const string CommentVoteError = "You cannot vote on your own comment!";
             public const string CommentInvalidSortCriteria = "Invalid comment sort criteria";
             public const string CommentContentEmptyError = "Comment's content must not be empty!";
             public const string CommentEditError = "You don't have permission to edit this comment!";

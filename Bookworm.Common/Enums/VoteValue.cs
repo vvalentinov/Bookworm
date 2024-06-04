@@ -2,7 +2,7 @@
 {
     public enum VoteValue
     {
-        DownVote = -1,
         UpVote = 1,
+        DownVote = -1,
     }
 }
