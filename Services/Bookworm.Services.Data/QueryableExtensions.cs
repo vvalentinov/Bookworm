@@ -36,5 +36,27 @@
         {
             return book.Select(x => new BookDetailsViewModel { Id = x.Id, Title = x.Title, UserId = x.UserId });
         }
+
+        public static IQueryable<Book> FilterUserBooksBasedOnSearch(
+            this IQueryable<Book> book,
+            string search,
+            string userId)
+        {
+            return book.Where(x => x.UserId == userId &&
+                            (x.Title.Contains(search) ||
+                            x.Publisher.Name.Contains(search) ||
+                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(search))));
+        }
+
+        public static IQueryable<Book> FilterBooksInCategoryBasedOnSearch(
+            this IQueryable<Book> book,
+            string search,
+            int categoryId)
+        {
+            return book.Where(b => b.IsApproved && b.CategoryId == categoryId &&
+                            (b.Title.Contains(search) ||
+                            b.Publisher.Name.Contains(search) ||
+                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(search))));
+        }
     }
 }

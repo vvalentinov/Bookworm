@@ -3,11 +3,8 @@
     using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Common.Repositories;
-    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
@@ -18,18 +15,15 @@
         private readonly ILanguagesService languagesService;
         private readonly ICategoriesService categoriesService;
         private readonly ISearchBooksService searchBooksService;
-        private readonly IDeletableEntityRepository<Book> bookRepo;
 
         public ValidateBookService(
             ILanguagesService languagesService,
             ICategoriesService categoriesService,
-            ISearchBooksService searchBooksService,
-            IDeletableEntityRepository<Book> bookRepo)
+            ISearchBooksService searchBooksService)
         {
             this.languagesService = languagesService;
             this.categoriesService = categoriesService;
             this.searchBooksService = searchBooksService;
-            this.bookRepo = bookRepo;
         }
 
         public async Task ValidateAsync(
