@@ -12,23 +12,21 @@
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.EntityFrameworkCore;
 
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.CommentErrorMessagesConstants;
     using static Bookworm.Common.Enums.SortCommentsCriteria;
 
     public class CommentsService : ICommentsService
     {
-        private readonly IUsersService usersService;
         private readonly IRepository<Vote> voteRepository;
         private readonly IRepository<Comment> commentRepository;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public CommentsService(
-            IUsersService usersService,
             IRepository<Vote> voteRepository,
             IRepository<Comment> commentRepository,
             IDeletableEntityRepository<Book> bookRepository)
         {
-            this.usersService = usersService;
             this.bookRepository = bookRepository;
             this.voteRepository = voteRepository;
             this.commentRepository = commentRepository;
@@ -41,13 +39,21 @@
                 throw new InvalidOperationException(CommentContentEmptyError);
             }
 
-            var comment = new Comment { UserId = userId, BookId = bookId, Content = content };
+            if (!await this.CheckIfBookIdIsValidAsync(bookId))
+            {
+                throw new InvalidOperationException(BookWrongIdError);
+            }
 
+            var comment = new Comment { UserId = userId, BookId = bookId, Content = content };
             await this.commentRepository.AddAsync(comment);
             await this.commentRepository.SaveChangesAsync();
         }
 
-        public async Task EditAsync(int commentId, string content, string userId)
+        public async Task EditAsync(
+            int commentId,
+            string content,
+            string userId,
+            bool isAdmin)
         {
             if (string.IsNullOrWhiteSpace(content))
             {
@@ -59,8 +65,6 @@
                 .FirstOrDefaultAsync(x => x.Id == commentId) ??
                 throw new InvalidOperationException(CommentWrongIdError);
 
-            bool isAdmin = await this.usersService.IsUserAdminAsync(userId);
-
             if (!isAdmin && comment.UserId != userId)
             {
                 throw new InvalidOperationException(CommentEditError);
@@ -71,15 +75,16 @@
             await this.commentRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int commentId, string userId)
+        public async Task DeleteAsync(
+            int commentId,
+            string userId,
+            bool isAdmin)
         {
             var comment = await this.commentRepository
                 .All()
                 .Include(x => x.Votes)
                 .FirstOrDefaultAsync(x => x.Id == commentId) ??
                 throw new InvalidOperationException(CommentWrongIdError);
-
-            bool isAdmin = await this.usersService.IsUserAdminAsync(userId);
 
             if (!isAdmin && comment.UserId != userId)
             {
@@ -94,22 +99,19 @@
         public async Task<SortedCommentsResponseModel> GetSortedCommentsAsync(
             int bookId,
             string userId,
-            string criteria)
+            string criteria,
+            bool isAdmin)
         {
-            var bookIsValid = await this.bookRepository
-                .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == bookId && x.IsApproved) != null;
-
-            if (!bookIsValid)
+            if (!await this.CheckIfBookIdIsValidAsync(bookId))
             {
-                throw new InvalidOperationException("No book found with id!");
+                throw new InvalidOperationException(BookWrongIdError);
             }
 
             var isCriteriaValid = Enum.TryParse(criteria, out SortCommentsCriteria parsedCriteria);
 
             if (!isCriteriaValid)
             {
-                throw new InvalidOperationException("Invalid sort criteria!");
+                throw new InvalidOperationException(CommentInvalidSortCriteria);
             }
 
             var query = this.commentRepository
@@ -138,8 +140,8 @@
 
                 foreach (var comment in comments)
                 {
-                    var userVote = comment.Votes.FirstOrDefault(v => Predicate(v, comment.Id));
                     comment.IsCommentOwner = comment.UserId == userId;
+                    var userVote = comment.Votes.FirstOrDefault(v => Predicate(v, comment.Id));
                     comment.UserVoteValue = userVote == null ? 0 : (int)userVote.Value;
                 }
             }
@@ -147,11 +149,16 @@
             var model = new SortedCommentsResponseModel
             {
                 Comments = comments,
+                IsUserAdmin = isAdmin,
                 IsUserSignedIn = userId != null,
-                IsUserAdmin = await this.usersService.IsUserAdminAsync(userId),
             };
 
             return model;
         }
+
+        private async Task<bool> CheckIfBookIdIsValidAsync(int bookId)
+            => await this.bookRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == bookId && x.IsApproved) != null;
     }
 }

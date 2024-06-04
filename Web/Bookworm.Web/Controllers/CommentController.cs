@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Common.Constants.GlobalConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class CommentController : BaseController
@@ -45,8 +46,9 @@
         {
             try
             {
-                string userId = this.userManager.GetUserId(this.User);
-                await this.commentsService.DeleteAsync(deleteCommentId, userId);
+                var user = await this.userManager.GetUserAsync(this.User);
+                var isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+                await this.commentsService.DeleteAsync(deleteCommentId, user.Id, isAdmin);
                 this.TempData[SuccessMessage] = "Successfully deleted comment!";
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
@@ -62,8 +64,9 @@
         {
             try
             {
-                string userId = this.userManager.GetUserId(this.User);
-                await this.commentsService.EditAsync(editCommentId, content, userId);
+                var user = await this.userManager.GetUserAsync(this.User);
+                var isAdmin = await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
+                await this.commentsService.EditAsync(editCommentId, content, user.Id, isAdmin);
                 return this.RedirectToAction("Details", "Book", new { id = bookId });
             }
             catch (Exception exception)
