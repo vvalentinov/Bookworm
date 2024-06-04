@@ -433,6 +433,7 @@
                     Content = "Comment One",
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                     NetWorth = 2,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -441,6 +442,7 @@
                     Content = "Comment Two",
                     UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     NetWorth = -1,
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -448,6 +450,7 @@
                     BookId = 2,
                     Content = "Comment Three",
                     UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -455,6 +458,7 @@
                     BookId = 2,
                     Content = "Comment Four",
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    CreatedOn = DateTime.UtcNow,
                 },
                 new ()
                 {
@@ -463,6 +467,7 @@
                     Content = "Comment Five",
                     UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
                     IsDeleted = true,
+                    CreatedOn = DateTime.UtcNow,
                 },
             };
 

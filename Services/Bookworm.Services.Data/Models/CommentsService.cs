@@ -19,12 +19,12 @@
     public class CommentsService : ICommentsService
     {
         private readonly IRepository<Vote> voteRepository;
-        private readonly IRepository<Comment> commentRepository;
+        private readonly IDeletableEntityRepository<Comment> commentRepository;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public CommentsService(
             IRepository<Vote> voteRepository,
-            IRepository<Comment> commentRepository,
+            IDeletableEntityRepository<Comment> commentRepository,
             IDeletableEntityRepository<Book> bookRepository)
         {
             this.bookRepository = bookRepository;
