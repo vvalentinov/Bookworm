@@ -14,9 +14,9 @@
 
     public class VotesService : IVoteService
     {
-        private readonly IRepository<Comment> commentRepository;
+        private readonly IDeletableEntityRepository<Comment> commentRepository;
 
-        public VotesService(IRepository<Comment> commentRepository)
+        public VotesService(IDeletableEntityRepository<Comment> commentRepository)
         {
             this.commentRepository = commentRepository;
         }

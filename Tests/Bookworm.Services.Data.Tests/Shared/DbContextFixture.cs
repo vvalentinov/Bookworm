@@ -36,6 +36,8 @@
             this.DbContext.Publishers.AddRange(GetPublishers());
             this.DbContext.Languages.AddRange(GetLanguages());
             this.DbContext.Books.AddRange(GetBooks());
+            this.DbContext.Votes.AddRange(GetVotes());
+            this.DbContext.Comments.AddRange(GetComments());
             this.DbContext.SaveChanges();
         }
 
@@ -406,6 +408,65 @@
             };
 
             return languages;
+        }
+
+        private static Vote[] GetVotes()
+        {
+            var votes = new Vote[3]
+            {
+                new () { Id = 1, CommentId = 1, UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114", Value = VoteValue.UpVote },
+                new () { Id = 2, CommentId = 1, UserId = "0fc3ea28-3165-440e-947e-670c90562320", Value = VoteValue.UpVote },
+                new () { Id = 3, CommentId = 2, UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7", Value = VoteValue.DownVote },
+            };
+
+            return votes;
+        }
+
+        private static Comment[] GetComments()
+        {
+            var comments = new Comment[5]
+            {
+                new ()
+                {
+                    Id = 1,
+                    BookId = 1,
+                    Content = "Comment One",
+                    UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    NetWorth = 2,
+                },
+                new ()
+                {
+                    Id = 2,
+                    BookId = 1,
+                    Content = "Comment Two",
+                    UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114",
+                    NetWorth = -1,
+                },
+                new ()
+                {
+                    Id = 3,
+                    BookId = 2,
+                    Content = "Comment Three",
+                    UserId = "0fc3ea28-3165-440e-947e-670c90562320",
+                },
+                new ()
+                {
+                    Id = 4,
+                    BookId = 2,
+                    Content = "Comment Four",
+                    UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                },
+                new ()
+                {
+                    Id = 5,
+                    BookId = 4,
+                    Content = "Comment Five",
+                    UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7",
+                    IsDeleted = true,
+                },
+            };
+
+            return comments;
         }
 
         private static Book[] GetBooks()
