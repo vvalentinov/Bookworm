@@ -20,16 +20,16 @@
 
     public class UpdateQuoteService : IUpdateQuoteService
     {
-        private readonly IDeletableEntityRepository<Quote> quoteRepository;
         private readonly IUsersService usersService;
-        private readonly IHubContext<NotificationHub> notificationHub;
         private readonly INotificationService notificationService;
+        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IDeletableEntityRepository<Quote> quoteRepository;
 
         public UpdateQuoteService(
-            IDeletableEntityRepository<Quote> quoteRepository,
             IUsersService usersService,
+            INotificationService notificationService,
             IHubContext<NotificationHub> notificationHub,
-            INotificationService notificationService)
+            IDeletableEntityRepository<Quote> quoteRepository)
         {
             this.usersService = usersService;
             this.quoteRepository = quoteRepository;

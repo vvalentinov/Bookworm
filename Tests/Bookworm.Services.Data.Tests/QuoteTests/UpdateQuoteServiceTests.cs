@@ -357,8 +357,7 @@
             return mockHubContext.Object;
         }
 
-        private EfDeletableEntityRepository<Quote> GetQuoteRepo()
-            => new EfDeletableEntityRepository<Quote>(this.dbContext);
+        private EfDeletableEntityRepository<Quote> GetQuoteRepo() => new(this.dbContext);
 
         private UserManager<ApplicationUser> GetUserManager()
         {
@@ -372,16 +371,13 @@
         }
 
         private NotificationService GetNotificationService()
-        {
-            var notificationRepo = new EfDeletableEntityRepository<Notification>(this.dbContext);
-            return new NotificationService(notificationRepo);
-        }
+            => new(new EfDeletableEntityRepository<Notification>(this.dbContext));
 
         private UpdateQuoteService GetUpdateQuoteService()
-            => new UpdateQuoteService(
-                this.GetQuoteRepo(),
-                new Mock<UsersService>(this.GetUserManager(), this.dbContext).Object,
+            => new(
+                new Mock<UsersService>(this.GetUserManager()).Object,
+                this.GetNotificationService(),
                 GetNotificationHubContext(),
-                this.GetNotificationService());
+                this.GetQuoteRepo());
     }
 }
