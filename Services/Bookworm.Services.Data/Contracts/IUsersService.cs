@@ -24,8 +24,6 @@
 
         Task IncreaseUserDailyDownloadsCountAsync(ApplicationUser user);
 
-        Task ResetDailyDownloadsCountAsync();
-
         byte GetUserDailyMaxDownloadsCount(int userPoints);
 
         Task<string> GetUserNameByIdAsync(string userId);
