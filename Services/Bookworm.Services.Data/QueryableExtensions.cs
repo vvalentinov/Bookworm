@@ -5,6 +5,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Comments;
+    using Microsoft.EntityFrameworkCore;
 
     public static class QueryableExtensions
     {
@@ -42,21 +43,23 @@
             string search,
             string userId)
         {
-            return book.Where(x => x.UserId == userId &&
-                            (x.Title.Contains(search) ||
-                            x.Publisher.Name.Contains(search) ||
-                            x.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(search))));
+            search = $"%{search}%";
+
+            return book.Where(b => b.UserId == userId &&
+                            (EF.Functions.Like(b.Title, search) ||
+                            EF.Functions.Like(b.Publisher.Name, search) ||
+                            b.AuthorsBooks.Any(ab => EF.Functions.Like(ab.Author.Name, search))));
         }
 
         public static IQueryable<Book> FilterBooksInCategoryBasedOnSearch(
-            this IQueryable<Book> book,
-            string search,
-            int categoryId)
+            this IQueryable<Book> book, string search, int categoryId)
         {
+            search = $"%{search}%";
+
             return book.Where(b => b.IsApproved && b.CategoryId == categoryId &&
-                            (b.Title.Contains(search) ||
-                            b.Publisher.Name.Contains(search) ||
-                            b.AuthorsBooks.Select(b => b.Author).Any(x => x.Name.Contains(search))));
+                            (EF.Functions.Like(b.Title, search) ||
+                            EF.Functions.Like(b.Publisher.Name, search) ||
+                            b.AuthorsBooks.Any(ab => EF.Functions.Like(ab.Author.Name, search))));
         }
     }
 }

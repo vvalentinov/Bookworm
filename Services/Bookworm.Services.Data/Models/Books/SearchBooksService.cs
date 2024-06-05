@@ -46,8 +46,8 @@
             }
 
             query = model.IsForUserBooks ?
-                query.FilterUserBooksBasedOnSearch(model.Input, model.UserId) :
-                query.FilterBooksInCategoryBasedOnSearch(model.Input, model.CategoryId);
+                query.FilterUserBooksBasedOnSearch(model.Input.Trim(), model.UserId) :
+                query.FilterBooksInCategoryBasedOnSearch(model.Input.Trim(), model.CategoryId);
 
             int recordsCount = await query.CountAsync();
 
