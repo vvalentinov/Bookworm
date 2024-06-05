@@ -10,10 +10,7 @@
 
     public class Rating : BaseModel<int>
     {
-        [Range(
-            RatingValueMin,
-            RatingValueMax,
-            ErrorMessage = FieldRangeError)]
+        [Range(RatingValueMin, RatingValueMax, ErrorMessage = FieldRangeError)]
         public byte Value { get; set; }
 
         [Required]

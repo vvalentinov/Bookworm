@@ -19,6 +19,8 @@ rateButton.addEventListener('click', function () {
     const bookId = this.getAttribute('data-model-id');
     var token = document.getElementById("RequestVerificationToken").value;
 
+    console.log(token);
+
     const model = {
         BookId: bookId,
         Value: parseInt(checkedInputValue)
@@ -32,7 +34,13 @@ rateButton.addEventListener('click', function () {
         },
         body: JSON.stringify(model)
     })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(res.error);
+            }
+
+            return res.json();
+        })
         .then(res => {
             const bookAvgRating = document.querySelector('.bookAvgRating');
             const bookRatingsCount = document.querySelector('.bookRatingsCount');

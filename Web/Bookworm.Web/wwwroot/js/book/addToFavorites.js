@@ -1,9 +1,9 @@
 ﻿import { createToast } from '../toast.js';
 
 const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
-const bookId = addToFavoritesBtn.getAttribute('asp-bookId');
+const bookId = addToFavoritesBtn?.getAttribute('asp-bookId');
 
-addToFavoritesBtn.addEventListener('click', () => {
+addToFavoritesBtn?.addEventListener('click', () => {
     var token = document.getElementById("RequestVerificationToken").value;
     fetch(`/ApiBook/AddToFavorites?id=${bookId}`, {
         method: 'POST',

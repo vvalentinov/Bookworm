@@ -87,5 +87,10 @@
             public const string WrongNotificationIdError = "No notification found with given id!";
             public const string DeleteNotificationError = "Only the notification's owner can delete it!";
         }
+
+        public static class RatingErrorMessagesConstants
+        {
+            public const string RateBookError = "You cannot rate your own book!";
+        }
     }
 }
