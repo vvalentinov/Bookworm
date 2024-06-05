@@ -63,9 +63,9 @@
             else if (rating.Value != value)
             {
                 rating.Value = value;
+                this.bookRepository.Update(book);
             }
 
-            this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
         }
 
@@ -76,6 +76,7 @@
                 this.bookRepository.AllAsNoTracking();
 
             var book = await query
+                .Where(b => b.IsApproved)
                 .Include(x => x.Ratings)
                 .FirstOrDefaultAsync(x => x.Id == bookId) ??
                 throw new InvalidOperationException(BookWrongIdError);

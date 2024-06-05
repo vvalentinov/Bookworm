@@ -35,6 +35,7 @@
             this.DbContext.Categories.AddRange(GetCategories());
             this.DbContext.Publishers.AddRange(GetPublishers());
             this.DbContext.Languages.AddRange(GetLanguages());
+            this.DbContext.Ratings.AddRange(GetRatings());
             this.DbContext.Books.AddRange(GetBooks());
             this.DbContext.Votes.AddRange(GetVotes());
             this.DbContext.Comments.AddRange(GetComments());
@@ -472,6 +473,20 @@
             };
 
             return comments;
+        }
+
+        private static Rating[] GetRatings()
+        {
+            var ratings = new Rating[5]
+            {
+                new () { Id = 1, UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7", Value = 2, BookId = 1 },
+                new () { Id = 2, UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114", Value = 5, BookId = 1 },
+                new () { Id = 3, UserId = "0fc3ea28-3165-440e-947e-670c90562320", Value = 2, BookId = 5 },
+                new () { Id = 4, UserId = "a84ea5dc-a89e-442f-8e53-c874675bb114", Value = 1, BookId = 10 },
+                new () { Id = 5, UserId = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5", Value = 5, BookId = 10 },
+            };
+
+            return ratings;
         }
 
         private static Book[] GetBooks()
