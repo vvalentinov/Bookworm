@@ -20,34 +20,31 @@
 
     public class UpdateBookService : IUpdateBookService
     {
-        private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IRepository<FavoriteBook> favBooksRepository;
         private readonly IBlobService blobService;
-        private readonly IValidateBookService validateBookService;
         private readonly IUsersService usersService;
-        private readonly IRetrieveBooksService retrieveBooksService;
         private readonly IAuthorsService authorsService;
         private readonly IPublishersService publishersService;
-        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IValidateBookService validateBookService;
         private readonly INotificationService notificationService;
+        private readonly IRetrieveBooksService retrieveBooksService;
+        private readonly IHubContext<NotificationHub> notificationHub;
+        private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public UpdateBookService(
-            IDeletableEntityRepository<Book> bookRepository,
-            IRepository<FavoriteBook> favoriteBooksRepository,
             IBlobService blobService,
-            IValidateBookService validateBookService,
             IUsersService usersService,
-            IRetrieveBooksService retrieveBooksService,
             IAuthorsService authorsService,
             IPublishersService publishersService,
+            IValidateBookService validateBookService,
+            INotificationService notificationService,
+            IRetrieveBooksService retrieveBooksService,
             IHubContext<NotificationHub> notificationHub,
-            INotificationService notificationService)
+            IDeletableEntityRepository<Book> bookRepository)
         {
             this.blobService = blobService;
             this.usersService = usersService;
             this.authorsService = authorsService;
             this.bookRepository = bookRepository;
-            this.favBooksRepository = favoriteBooksRepository;
             this.notificationHub = notificationHub;
             this.publishersService = publishersService;
             this.validateBookService = validateBookService;

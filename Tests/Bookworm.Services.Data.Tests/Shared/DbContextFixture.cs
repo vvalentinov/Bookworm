@@ -36,6 +36,7 @@
             this.DbContext.Publishers.AddRange(GetPublishers());
             this.DbContext.Languages.AddRange(GetLanguages());
             this.DbContext.Ratings.AddRange(GetRatings());
+            this.DbContext.FavoriteBooks.AddRange(GetFavoriteBooks());
             this.DbContext.Books.AddRange(GetBooks());
             this.DbContext.Votes.AddRange(GetVotes());
             this.DbContext.Comments.AddRange(GetComments());
@@ -487,6 +488,18 @@
             };
 
             return ratings;
+        }
+
+        private static FavoriteBook[] GetFavoriteBooks()
+        {
+            var favBooks = new FavoriteBook[3]
+            {
+                new () { UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7", BookId = 1 },
+                new () { UserId = "f19d077c-ceb8-4fe2-b369-45abd5ffa8f7", BookId = 4 },
+                new () { UserId = "0fc3ea28-3165-440e-947e-670c90562320", BookId = 2 },
+            };
+
+            return favBooks;
         }
 
         private static Book[] GetBooks()

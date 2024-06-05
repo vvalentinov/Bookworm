@@ -9,6 +9,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
+    using static Bookworm.Common.Constants.ErrorMessagesConstants.FavoriteBookMessagesConstants;
 
     public class FavoriteBookService : IFavoriteBookService
     {
@@ -29,7 +30,7 @@
 
             if (await this.favBookRepo.AllAsNoTracking().AnyAsync(x => x.BookId == bookId && x.UserId == userId))
             {
-                throw new InvalidOperationException("This book is already present in favorites!");
+                throw new InvalidOperationException(FavoriteBookIsAlreadyPresentError);
             }
 
             await this.favBookRepo.AddAsync(new FavoriteBook { BookId = bookId, UserId = userId });
@@ -40,8 +41,10 @@
         {
             await this.CheckBookIdAsync(bookId);
 
-            var favBook = await this.favBookRepo.All().FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId) ??
-                throw new InvalidOperationException("This book does not present in favorites!");
+            var favBook = await this.favBookRepo
+                .All()
+                .FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId) ??
+                throw new InvalidOperationException(FavoriteBookIsNotPresentError);
 
             this.favBookRepo.Delete(favBook);
             await this.favBookRepo.SaveChangesAsync();

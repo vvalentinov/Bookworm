@@ -92,5 +92,11 @@
         {
             public const string RateBookError = "You cannot rate your own book!";
         }
+
+        public static class FavoriteBookMessagesConstants
+        {
+            public const string FavoriteBookIsNotPresentError = "This book does not present in favorites!";
+            public const string FavoriteBookIsAlreadyPresentError = "This book is already present in favorites!";
+        }
     }
 }
