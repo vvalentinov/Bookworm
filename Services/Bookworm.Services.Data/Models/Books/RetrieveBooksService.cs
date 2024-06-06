@@ -61,7 +61,7 @@
 
             if (!bookViewModel.IsApproved && !isAdmin && !bookViewModel.IsUserBook)
             {
-                throw new InvalidOperationException("You don't have permission to view this book!");
+                throw new InvalidOperationException(BookDetailsError);
             }
 
             bookViewModel.Username = await this.usersService.GetUserNameByIdAsync(bookViewModel.UserId);
@@ -95,7 +95,7 @@
 
         public async Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId)
         {
-            var query = this.bookRepository.AllAsNoTracking();
+            var query = this.bookRepository.AllAsNoTracking().Where(x => x.IsApproved);
 
             if (categoryId.HasValue)
             {
@@ -263,28 +263,16 @@
                     .SelectBookDetailsViewModel()
                     .ToListAsync();
 
-        public async Task<Book> GetBookWithIdAsync(int bookId, bool withTracking = false)
-        {
-            var bookQuery = withTracking ?
-                this.bookRepository.All() :
-                this.bookRepository.AllAsNoTracking();
+        public async Task<Book> GetBookWithIdAsync(int bookId)
+            => await this.bookRepository
+                    .AllAsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == bookId && x.IsApproved) ??
+                    throw new InvalidOperationException(BookWrongIdError);
 
-            var book = await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
-
-            return book;
-        }
-
-        public async Task<Book> GetDeletedBookWithIdAsync(int bookId, bool withTracking = false)
-        {
-            var bookQuery = withTracking ?
-                this.bookRepository.AllWithDeleted() :
-                this.bookRepository.AllAsNoTrackingWithDeleted();
-
-            var book = await bookQuery.FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
-
-            return book;
-        }
+        public async Task<Book> GetDeletedBookWithIdAsync(int bookId)
+            => await this.bookRepository
+                    .AllAsNoTrackingWithDeleted()
+                    .FirstOrDefaultAsync(x => x.Id == bookId && x.IsDeleted) ??
+                    throw new InvalidOperationException(BookWrongIdError);
     }
 }

@@ -54,7 +54,7 @@
 
         public async Task ApproveBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, withTracking: true);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
 
             book.IsApproved = true;
             this.bookRepository.Update(book);
@@ -69,7 +69,7 @@
 
         public async Task UnapproveBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, withTracking: true);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
 
             book.IsApproved = false;
             this.bookRepository.Update(book);
@@ -84,7 +84,7 @@
 
         public async Task DeleteBookAsync(int bookId, string userId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId, withTracking: true);
+            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
 
             bool isUserAdmin = await this.usersService.IsUserAdminAsync(userId);
 
@@ -102,7 +102,7 @@
 
         public async Task UndeleteBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetDeletedBookWithIdAsync(bookId, withTracking: true);
+            var book = await this.retrieveBooksService.GetDeletedBookWithIdAsync(bookId);
             this.bookRepository.Undelete(book);
             await this.bookRepository.SaveChangesAsync();
         }
