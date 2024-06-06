@@ -15,18 +15,18 @@
 
     public class DownloadBookService : IDownloadBookService
     {
-        private readonly IDeletableEntityRepository<Book> bookRepository;
         private readonly IBlobService blobService;
         private readonly IUsersService usersService;
+        private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public DownloadBookService(
-            IDeletableEntityRepository<Book> bookRepository,
             IBlobService blobService,
-            IUsersService usersService)
+            IUsersService usersService,
+            IDeletableEntityRepository<Book> bookRepository)
         {
-            this.bookRepository = bookRepository;
             this.blobService = blobService;
             this.usersService = usersService;
+            this.bookRepository = bookRepository;
         }
 
         public async Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, ApplicationUser user)

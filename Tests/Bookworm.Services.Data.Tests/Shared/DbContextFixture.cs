@@ -709,12 +709,14 @@
                     Id = "a84ea5dc-a89e-442f-8e53-c874675bb114",
                     UserName = "John",
                     Points = 4,
+                    DailyDownloadsCount = 1,
                 },
                 new ()
                 {
                     Id = "b1a9a91f-f7b1-4459-9864-4a4fdd6077c5",
                     UserName = "Tom",
                     Points = 2,
+                    DailyDownloadsCount = 10,
                 },
             ];
         }
