@@ -29,6 +29,7 @@
             public const string BookInvalidYearError = "Invalid year value!";
             public const string BookRandomCountError = "The number of random books must be 5, 10, 15 or 20!";
             public const string BookAuthorsCountError = "Book author's count must be between 1 and 5!";
+            public const string BookDetailsError = "You don't have permission to view this book!";
         }
 
         public static class CategoryErrorMessagesConstants

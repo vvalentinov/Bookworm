@@ -1,7 +1,9 @@
 ﻿namespace Bookworm.Services.Data.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     using Bookworm.Data;
@@ -9,6 +11,9 @@
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models;
+    using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels;
+    using Bookworm.Web.ViewModels.Settings;
     using Microsoft.EntityFrameworkCore;
     using Moq;
     using Xunit;
@@ -31,7 +36,7 @@
         public async Task GetCountShouldReturnCorrectNumberUsingDbContext()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "SettingsTestDb").Options;
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             using var dbContext = new ApplicationDbContext(options);
             dbContext.Settings.Add(new Setting());
             dbContext.Settings.Add(new Setting());
@@ -41,6 +46,27 @@
             using var repository = new EfDeletableEntityRepository<Setting>(dbContext);
             var service = new SettingsService(repository);
             Assert.Equal(3, service.GetCount());
+        }
+
+        [Fact]
+        public async Task GetAllShouldWorkCorrectly()
+        {
+            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
+            using var dbContext = new ApplicationDbContext(options);
+            dbContext.Settings.Add(new Setting { Id = 1, Name = "Setting One", Value = "Value One" });
+            dbContext.Settings.Add(new Setting { Id = 2, Name = "Setting Two", Value = "Value Two" });
+            dbContext.Settings.Add(new Setting { Id = 3, Name = "Setting Three", Value = "Value Three" });
+            await dbContext.SaveChangesAsync();
+
+            using var repository = new EfDeletableEntityRepository<Setting>(dbContext);
+            var service = new SettingsService(repository);
+
+            var settings = service.GetAll<SettingViewModel>();
+
+            Assert.Equal(3, settings.Count());
         }
     }
 }
