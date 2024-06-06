@@ -172,8 +172,8 @@
                 var author = await this.authorsService.GetAuthorWithNameAsync(authorName);
 
                 book.AuthorsBooks.Add(author != null ?
-                    new AuthorBook { Book = book, Author = author } :
-                    new AuthorBook { Book = book, Author = new Author { Name = authorName } });
+                    new AuthorBook { AuthorId = author.Id } :
+                    new AuthorBook { Author = new Author { Name = authorName } });
             }
 
             this.bookRepository.Update(book);

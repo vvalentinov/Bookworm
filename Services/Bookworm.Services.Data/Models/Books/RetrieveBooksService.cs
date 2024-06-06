@@ -266,7 +266,7 @@
         public async Task<Book> GetBookWithIdAsync(int bookId)
             => await this.bookRepository
                     .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == bookId && x.IsApproved) ??
+                    .FirstOrDefaultAsync(x => x.Id == bookId) ??
                     throw new InvalidOperationException(BookWrongIdError);
 
         public async Task<Book> GetDeletedBookWithIdAsync(int bookId)

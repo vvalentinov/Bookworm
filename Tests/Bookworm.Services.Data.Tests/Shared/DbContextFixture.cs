@@ -40,7 +40,11 @@
             this.DbContext.Books.AddRange(GetBooks());
             this.DbContext.Votes.AddRange(GetVotes());
             this.DbContext.Comments.AddRange(GetComments());
+            this.DbContext.AuthorsBooks.AddRange(GetAuthorBooks());
             this.DbContext.SaveChanges();
+
+            // Detach entities from the context
+            this.DbContext.ChangeTracker.Clear();
         }
 
         public ApplicationDbContext DbContext { get; private set; }
@@ -356,6 +360,17 @@
             ];
         }
 
+        private static AuthorBook[] GetAuthorBooks()
+        {
+            var authorBook = new AuthorBook[2]
+            {
+                new () { BookId = 1, AuthorId = 1 },
+                new () { BookId = 1, AuthorId = 2 },
+            };
+
+            return authorBook;
+        }
+
         private static Author[] GetAuthors()
         {
             var authors = new Author[5]
@@ -514,8 +529,8 @@
                     Year = 2010,
                     PagesCount = 150,
                     DownloadsCount = 2,
-                    ImageUrl = "http://some-url-here",
-                    FileUrl = "http://some-url-here",
+                    ImageUrl = "http://BooksImages/",
+                    FileUrl = "http://Books/",
                     CategoryId = 3,
                     LanguageId = 1,
                     UserId = "0fc3ea28-3165-440e-947e-670c90562320",
