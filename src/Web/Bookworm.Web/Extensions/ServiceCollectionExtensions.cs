@@ -105,7 +105,7 @@
                 options
                     .AddJob<MarkOldNotificationsAsDeletedJob>(JobKey.Create(deleteOldNotificationsJobKey))
                     .AddTrigger(triggerConfig => triggerConfig.ForJob(deleteOldNotificationsJobKey)
-                    .WithCronSchedule("0 */10 * ? * *"));
+                    .WithCronSchedule("0 0 */3 * *"));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
