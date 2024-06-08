@@ -23,10 +23,7 @@
     using Moq;
     using Xunit;
 
-    using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
-    using static Bookworm.Common.Constants.NotificationConstants;
-    using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class UpdateBookServiceTests : IClassFixture<DbContextFixture>
     {
