@@ -5,6 +5,7 @@
     using Bookworm.Data;
     using Bookworm.Data.Seeding;
     using Bookworm.Services.Mapping;
+    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +13,19 @@
 
     public static class WebApplicationExtensions
     {
-        public static WebApplication ConfigurePipeline(this WebApplication app)
+        public static WebApplication Configure(this WebApplication app)
+        {
+            app
+                .RegisterMappings()
+                .SeedDatabase()
+                .ConfigurePipeline()
+                .MapRoutes()
+                .MapHubs();
+
+            return app;
+        }
+
+        private static WebApplication ConfigurePipeline(this WebApplication app)
         {
             if (app.Environment.IsDevelopment())
             {
@@ -34,26 +47,26 @@
             return app;
         }
 
-        public static WebApplication MapRoutes(this WebApplication app)
+        private static WebApplication MapRoutes(this WebApplication app)
         {
-            app.MapControllerRoute(
-                name: "areaRoute",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            app.MapControllerRoute(
+                name: "areaRoute",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
             return app;
         }
 
-        public static WebApplication RegisterMappings(this WebApplication app)
+        private static WebApplication RegisterMappings(this WebApplication app)
         {
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
             return app;
         }
 
-        public static WebApplication SeedDatabase(this WebApplication app)
+        private static WebApplication SeedDatabase(this WebApplication app)
         {
             using (IServiceScope serviceScope = app.Services.CreateScope())
             {
@@ -66,6 +79,13 @@
                     .GetAwaiter()
                     .GetResult();
             }
+
+            return app;
+        }
+
+        private static WebApplication MapHubs(this WebApplication app)
+        {
+            app.MapHub<NotificationHub>("/hubs/notification");
 
             return app;
         }

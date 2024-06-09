@@ -1,6 +1,5 @@
 ﻿namespace Bookworm.Web
 {
-    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
@@ -11,29 +10,11 @@
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddSignalR();
-
-            builder.Services
-                .AddQuartz()
-                .AddIdentity()
-                .AddMvcControllers()
-                .ConfigureCookiePolicy()
-                .ConfigureApplicationCookie()
-                .ConfigureOptions(builder.Configuration)
-                .AddAuthentication(builder.Configuration)
-                .AddApplicationServices(builder.Configuration)
-                .AddApplicationDbContexts(builder.Configuration)
-                .AddDistributedSqlServerCache(builder.Configuration);
+            builder.Services.Configure(builder.Configuration);
 
             var app = builder.Build();
 
-            app
-                .RegisterMappings()
-                .SeedDatabase()
-                .ConfigurePipeline()
-                .MapRoutes();
-
-            app.MapHub<NotificationHub>("/hubs/notification");
+            app.Configure();
 
             app.Run();
         }

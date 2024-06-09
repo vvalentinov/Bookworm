@@ -26,7 +26,27 @@
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddApplicationServices(
+        public static IServiceCollection Configure(
+            this IServiceCollection services,
+            IConfiguration config)
+        {
+            services
+                .AddQuartz()
+                .AddRealTime()
+                .AddIdentity()
+                .AddMvcControllers()
+                .ConfigureCookiePolicy()
+                .ConfigureOptions(config)
+                .AddAuthentication(config)
+                .ConfigureApplicationCookie()
+                .AddApplicationServices(config)
+                .AddApplicationDbContexts(config)
+                .AddDistributedSqlServerCache(config);
+
+            return services;
+        }
+
+        private static IServiceCollection AddApplicationServices(
             this IServiceCollection services,
             IConfiguration config)
         {
@@ -71,7 +91,7 @@
             return services;
         }
 
-        public static IServiceCollection AddAuthentication(
+        private static IServiceCollection AddAuthentication(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -90,7 +110,7 @@
             return services;
         }
 
-        public static IServiceCollection AddQuartz(this IServiceCollection services)
+        private static IServiceCollection AddQuartz(this IServiceCollection services)
         {
             services.AddQuartz(options =>
             {
@@ -105,7 +125,7 @@
                 options
                     .AddJob<MarkOldNotificationsAsDeletedJob>(JobKey.Create(deleteOldNotificationsJobKey))
                     .AddTrigger(triggerConfig => triggerConfig.ForJob(deleteOldNotificationsJobKey)
-                    .WithCronSchedule("0 0 */3 * *"));
+                    .WithCronSchedule("0 */10 * ? * *"));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -113,7 +133,7 @@
             return services;
         }
 
-        public static IServiceCollection ConfigureOptions(
+        private static IServiceCollection ConfigureOptions(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -123,7 +143,7 @@
             return services;
         }
 
-        public static IServiceCollection ConfigureCookiePolicy(this IServiceCollection services)
+        private static IServiceCollection ConfigureCookiePolicy(this IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -134,20 +154,20 @@
             return services;
         }
 
-        public static IServiceCollection ConfigureApplicationCookie(this IServiceCollection services)
+        private static IServiceCollection ConfigureApplicationCookie(this IServiceCollection services)
         {
             services.ConfigureApplicationCookie(options =>
             {
+                options.Cookie.HttpOnly = true;
+                options.AccessDeniedPath = new PathString("/Account/AccessDenied");
                 options.LoginPath = new PathString("/Account/Authentication/Login");
                 options.LogoutPath = new PathString("/Account/Authentication/Logout");
-                options.AccessDeniedPath = new PathString("/Account/AccessDenied");
-                options.Cookie.HttpOnly = true;
             });
 
             return services;
         }
 
-        public static IServiceCollection AddDistributedSqlServerCache(
+        private static IServiceCollection AddDistributedSqlServerCache(
             this IServiceCollection services,
             IConfiguration config)
         {
@@ -161,7 +181,7 @@
             return services;
         }
 
-        public static IServiceCollection AddApplicationDbContexts(
+        private static IServiceCollection AddApplicationDbContexts(
             this IServiceCollection services,
             IConfiguration config)
         {
@@ -173,7 +193,7 @@
             return services;
         }
 
-        public static IServiceCollection AddIdentity(this IServiceCollection services)
+        private static IServiceCollection AddIdentity(this IServiceCollection services)
         {
             services.AddDefaultIdentity<ApplicationUser>(GetIdentityOptions)
                             .AddRoles<ApplicationRole>()
@@ -182,10 +202,17 @@
             return services;
         }
 
-        public static IServiceCollection AddMvcControllers(this IServiceCollection services)
+        private static IServiceCollection AddMvcControllers(this IServiceCollection services)
         {
             services.AddControllersWithViews(options =>
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+
+            return services;
+        }
+
+        private static IServiceCollection AddRealTime(this IServiceCollection services)
+        {
+            services.AddSignalR();
 
             return services;
         }
