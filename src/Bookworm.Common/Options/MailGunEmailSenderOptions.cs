@@ -2,7 +2,7 @@
 {
     public class MailGunEmailSenderOptions
     {
-        public const string MailGunEmailSender = "MailGunEmailSender";
+        public const string MailGunEmailSender = nameof(MailGunEmailSender);
 
         public string ApiKey { get; set; }
 

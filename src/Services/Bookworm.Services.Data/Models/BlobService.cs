@@ -6,18 +6,18 @@
 
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
+    using Bookworm.Common.Options;
     using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Options;
 
     public class BlobService : IBlobService
     {
-        private readonly IConfiguration configuration;
+        private readonly AzureBlobStorageOptions azureBlobStorageOptions;
 
-        public BlobService(IConfiguration configuration)
+        public BlobService(IOptions<AzureBlobStorageOptions> options)
         {
-            this.configuration = configuration;
+            this.azureBlobStorageOptions = options.Value;
         }
 
         public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string fileUrl)
@@ -104,8 +104,8 @@
         private static string GenerateUniqueName(IFormFile file, string path)
             => $"{path}{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
-        private BlobServiceClient GetBlobServiceClient() => new (this.configuration.GetConnectionString("StorageConnection"));
+        private BlobServiceClient GetBlobServiceClient() => new (this.azureBlobStorageOptions.StorageConnection);
 
-        private string GetContainerName() => this.configuration.GetConnectionString("ContainerName");
+        private string GetContainerName() => this.azureBlobStorageOptions.ContainerName;
     }
 }

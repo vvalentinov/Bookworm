@@ -1,6 +1,7 @@
 ﻿namespace Bookworm.Web.Extensions
 {
     using Bookworm.Common.Options;
+    using Bookworm.Common.Options.Authentication;
     using Bookworm.Data;
     using Bookworm.Data.Common;
     using Bookworm.Data.Common.Repositories;
@@ -26,33 +27,28 @@
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection Configure(
-            this IServiceCollection services,
-            IConfiguration config)
+        public static IServiceCollection Configure(this IServiceCollection services, IConfiguration config)
         {
             services
                 .AddQuartz()
-                .AddRealTime()
                 .AddIdentity()
                 .AddMvcControllers()
                 .ConfigureCookiePolicy()
                 .ConfigureOptions(config)
                 .AddAuthentication(config)
+                .AddRealTimeCommunication()
                 .ConfigureApplicationCookie()
                 .AddApplicationServices(config)
-                .AddApplicationDbContexts(config)
-                .AddDistributedSqlServerCache(config);
+                .AddApplicationDbContexts(config);
 
             return services;
         }
 
-        private static IServiceCollection AddApplicationServices(
-            this IServiceCollection services,
-            IConfiguration config)
+        private static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton(config);
 
-            services.AddAntiforgery(options => { options.HeaderName = "X-CSRF-TOKEN"; });
+            services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
 
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IMailGunEmailSender, MailGunEmailSender>();
@@ -62,49 +58,50 @@
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
 
             // Quotes services
-            services.AddScoped<IManageQuoteLikesService, ManageQuoteLikesService>();
-            services.AddScoped<IRetrieveQuotesService, RetrieveQuotesService>();
-            services.AddScoped<IUpdateQuoteService, UpdateQuoteService>();
             services.AddScoped<IUploadQuoteService, UploadQuoteService>();
+            services.AddScoped<IUpdateQuoteService, UpdateQuoteService>();
+            services.AddScoped<IRetrieveQuotesService, RetrieveQuotesService>();
+            services.AddScoped<IManageQuoteLikesService, ManageQuoteLikesService>();
 
             // Books services
-            services.AddScoped<IValidateBookService, ValidateBookService>();
-            services.AddScoped<IRetrieveBooksService, RetrieveBooksService>();
             services.AddScoped<IUploadBookService, UploadBookService>();
             services.AddScoped<IUpdateBookService, UpdateBookService>();
             services.AddScoped<ISearchBooksService, SearchBooksService>();
             services.AddScoped<IDownloadBookService, DownloadBookService>();
+            services.AddScoped<IValidateBookService, ValidateBookService>();
             services.AddScoped<IFavoriteBookService, FavoriteBookService>();
+            services.AddScoped<IRetrieveBooksService, RetrieveBooksService>();
 
             // Other services
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<ICategoriesService, CategoriesService>();
-            services.AddScoped<ILanguagesService, LanguagesService>();
-            services.AddScoped<ICommentsService, CommentsService>();
             services.AddScoped<IBlobService, BlobService>();
-            services.AddScoped<IRatingsService, RatingsService>();
             services.AddScoped<IVoteService, VotesService>();
             services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<IPublishersService, PublishersService>();
             services.AddScoped<IAuthorsService, AuthorsService>();
+            services.AddScoped<IRatingsService, RatingsService>();
+            services.AddScoped<ICommentsService, CommentsService>();
+            services.AddScoped<ILanguagesService, LanguagesService>();
+            services.AddScoped<ICategoriesService, CategoriesService>();
+            services.AddScoped<IPublishersService, PublishersService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             return services;
         }
 
-        private static IServiceCollection AddAuthentication(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        private static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var authOptions = new AuthenticationOptions();
+            configuration.GetSection(AuthenticationOptions.Authentication).Bind(authOptions);
+
             services.AddAuthentication()
                 .AddGoogle(googleOptions =>
                 {
-                    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-                    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                    googleOptions.ClientId = authOptions.Google.ClientId;
+                    googleOptions.ClientSecret = authOptions.Google.ClientSecret;
                 })
                 .AddFacebook(facebookOptions =>
                 {
-                    facebookOptions.AppId = configuration["Authentication:Facebook:ClientId"];
-                    facebookOptions.AppSecret = configuration["Authentication:Facebook:ClientSecret"];
+                    facebookOptions.AppId = authOptions.Facebook.ClientId;
+                    facebookOptions.AppSecret = authOptions.Facebook.ClientSecret;
                 });
 
             return services;
@@ -133,12 +130,15 @@
             return services;
         }
 
-        private static IServiceCollection ConfigureOptions(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        private static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<MailGunEmailSenderOptions>(
-                configuration.GetSection(MailGunEmailSenderOptions.MailGunEmailSender));
+            var authConfigSection = configuration.GetSection(AuthenticationOptions.Authentication);
+            var mailGunConfigSection = configuration.GetSection(MailGunEmailSenderOptions.MailGunEmailSender);
+            var azureBlobStorageConfigSection = configuration.GetSection(AzureBlobStorageOptions.AzureBlobStorage);
+
+            services.Configure<AuthenticationOptions>(authConfigSection);
+            services.Configure<MailGunEmailSenderOptions>(mailGunConfigSection);
+            services.Configure<AzureBlobStorageOptions>(azureBlobStorageConfigSection);
 
             return services;
         }
@@ -167,27 +167,10 @@
             return services;
         }
 
-        private static IServiceCollection AddDistributedSqlServerCache(
-            this IServiceCollection services,
-            IConfiguration config)
+        private static IServiceCollection AddApplicationDbContexts(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDistributedSqlServerCache(options =>
-            {
-                options.ConnectionString = GetSqlServerConnection(config);
-                options.SchemaName = "dbo";
-                options.TableName = "Cache";
-            });
-
-            return services;
-        }
-
-        private static IServiceCollection AddApplicationDbContexts(
-            this IServiceCollection services,
-            IConfiguration config)
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(GetSqlServerConnection(config)));
-
+            var connectionString = GetSqlServerConnection(config);
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;
@@ -205,19 +188,20 @@
         private static IServiceCollection AddMvcControllers(this IServiceCollection services)
         {
             services.AddControllersWithViews(options =>
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
 
             return services;
         }
 
-        private static IServiceCollection AddRealTime(this IServiceCollection services)
+        private static IServiceCollection AddRealTimeCommunication(this IServiceCollection services)
         {
             services.AddSignalR();
 
             return services;
         }
 
-        private static string GetSqlServerConnection(IConfiguration config)
-            => config.GetConnectionString("SqlServerConnection");
+        private static string GetSqlServerConnection(IConfiguration config) => config.GetValue<string>("SqlServerConnection");
     }
 }

@@ -24,18 +24,23 @@
             string htmlContent,
             IEnumerable<EmailAttachment> attachments = null)
         {
-            if (string.IsNullOrWhiteSpace(subject) && string.IsNullOrWhiteSpace(htmlContent))
+            if (string.IsNullOrWhiteSpace(subject))
             {
-                throw new ArgumentException("Subject and message should be provided.");
+                throw new ArgumentException("Subject should be provided.");
             }
 
-            var options = new RestClientOptions()
+            if (string.IsNullOrWhiteSpace(htmlContent))
+            {
+                throw new ArgumentException("Html content should be provided.");
+            }
+
+            var restClientOptions = new RestClientOptions
             {
                 BaseUrl = new Uri("https://api.mailgun.net/v3"),
                 Authenticator = new HttpBasicAuthenticator("api", this.options.ApiKey),
             };
 
-            var client = new RestClient(options);
+            var client = new RestClient(restClientOptions);
 
             var request = new RestRequest();
             request.AddParameter("domain", this.options.Domain, ParameterType.UrlSegment);
