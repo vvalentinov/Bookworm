@@ -1,18 +1,25 @@
 ﻿namespace Bookworm.Web.Controllers
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Caching.Memory;
 
     public class CategoryController : BaseController
     {
+        private readonly IMemoryCache memoryCache;
         private readonly ICategoriesService categoriesService;
 
-        public CategoryController(ICategoriesService categoriesService)
+        public CategoryController(
+            IMemoryCache memoryCache,
+            ICategoriesService categoriesService)
         {
+            this.memoryCache = memoryCache;
             this.categoriesService = categoriesService;
         }
 
@@ -20,7 +27,20 @@
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var categories = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+            bool categoriesAreCached = this.memoryCache
+                .TryGetValue(CacheKeys.Categories, out IEnumerable<CategoryViewModel> categories);
+
+            if (!categoriesAreCached)
+            {
+                categories = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+
+                this.memoryCache.Set(CacheKeys.Categories, categories, cacheEntryOptions);
+            }
+
             return this.View(categories);
         }
     }

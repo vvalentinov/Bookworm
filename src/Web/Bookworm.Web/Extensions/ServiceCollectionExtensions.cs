@@ -32,6 +32,7 @@
             services
                 .AddQuartz()
                 .AddIdentity()
+                .AddInMemoryCache()
                 .AddMvcControllers()
                 .ConfigureCookiePolicy()
                 .ConfigureOptions(config)
@@ -198,6 +199,13 @@
         private static IServiceCollection AddRealTimeCommunication(this IServiceCollection services)
         {
             services.AddSignalR();
+
+            return services;
+        }
+
+        private static IServiceCollection AddInMemoryCache(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
 
             return services;
         }
