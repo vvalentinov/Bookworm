@@ -10,6 +10,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Memory;
 
+    using static CacheKeys;
+
     public class CategoryController : BaseController
     {
         private readonly IMemoryCache memoryCache;
@@ -28,7 +30,7 @@
         public async Task<IActionResult> All()
         {
             bool categoriesAreCached = this.memoryCache
-                .TryGetValue(CacheKeys.Categories, out IEnumerable<CategoryViewModel> categories);
+                .TryGetValue(Languages, out IEnumerable<CategoryViewModel> categories);
 
             if (!categoriesAreCached)
             {
@@ -38,7 +40,7 @@
                     .SetSlidingExpiration(TimeSpan.FromMinutes(5))
                     .SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
-                this.memoryCache.Set(CacheKeys.Categories, categories, cacheEntryOptions);
+                this.memoryCache.Set(Languages, categories, cacheEntryOptions);
             }
 
             return this.View(categories);
