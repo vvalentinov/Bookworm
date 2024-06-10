@@ -35,7 +35,7 @@
         }
 
         [HttpPost(nameof(SearchBooks))]
-        public async Task<ActionResult<BookListingViewModel>> SearchBooks([FromBody] SearchBookInputModel model)
+        public async Task<ActionResult<BookListingViewModel>> SearchBooks(SearchBookInputModel model)
         {
             try
             {
@@ -52,7 +52,7 @@
 
                 var books = await this.searchBooksService.SearchBooksAsync(model);
 
-                return books;
+                return this.Ok(books);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@
         }
 
         [HttpPost(nameof(AddToFavorites))]
-        public async Task<IActionResult> AddToFavorites([FromQuery] int id)
+        public async Task<IActionResult> AddToFavorites(int id)
         {
             try
             {

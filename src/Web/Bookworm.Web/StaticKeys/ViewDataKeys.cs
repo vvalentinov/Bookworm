@@ -7,5 +7,9 @@
         public const string Title = nameof(Title);
 
         public const string ControllerAction = "Action";
+
+        public const string BooksCount = nameof(BooksCount);
+
+        public const string QuotesCount = nameof(QuotesCount);
     }
 }

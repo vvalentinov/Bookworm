@@ -1,102 +1,76 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.ViewModels.Users;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
+
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class UserController : BaseController
     {
         private readonly IUsersService usersService;
         private readonly RoleManager<ApplicationRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IDeletableEntityRepository<ApplicationRole> rolesRepository;
 
         public UserController(
             IUsersService usersService,
             RoleManager<ApplicationRole> roleManager,
-            UserManager<ApplicationUser> userManager,
-            IDeletableEntityRepository<ApplicationRole> rolesRepository)
+            UserManager<ApplicationUser> userManager)
         {
-            this.usersService = usersService;
-            this.roleManager = roleManager;
             this.userManager = userManager;
-            this.rolesRepository = rolesRepository;
+            this.roleManager = roleManager;
+            this.usersService = usersService;
         }
 
-        public IActionResult Index()
-        {
-            var model = this.usersService.GetUsers();
-            return this.View(model);
-        }
+        [HttpGet]
+        public async Task<IActionResult> Index() => this.View(await this.usersService.GetUsersAsync());
 
-        public async Task<IActionResult> Roles(string userId)
-        {
-            ApplicationUser user = await this.usersService.GetUserWithIdAsync(userId);
-            IList<string> userRoles = await this.userManager.GetRolesAsync(user);
-
-            IEnumerable<SelectListItem> roles = this.roleManager
-                .Roles
-                .ToList()
-                .Select(x => new SelectListItem()
-                {
-                    Text = x.Name,
-                    Value = x.Name,
-                    Selected = this.userManager.IsInRoleAsync(user, x.Name).Result,
-                });
-
-            UserRolesViewModel model = new UserRolesViewModel()
-            {
-                UserId = userId,
-                Username = user.UserName,
-                UserRoles = userRoles,
-            };
-
-            this.ViewBag.RoleItems = this.roleManager.Roles
-                .ToList()
-                .Select(r => new SelectListItem()
-                {
-                    Text = r.Name,
-                    Value = r.Name,
-                    Selected = this.userManager.IsInRoleAsync(user, r.Name).Result,
-                }).ToList();
-
-            return this.View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Roles(UserRolesViewModel model)
-        {
-            ApplicationUser user = await this.usersService.GetUserWithIdAsync(model.UserId);
-            IList<string> userRoles = await this.userManager.GetRolesAsync(user);
-            await this.userManager.RemoveFromRolesAsync(user, userRoles);
-
-            if (model.Roles.Any())
-            {
-                await this.userManager.AddToRolesAsync(user, model.Roles);
-            }
-
-            return this.RedirectToAction(nameof(this.Index));
-        }
-
+        [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            UserViewModel model = await this.usersService.GetUserModelWithId(id);
-            return this.View(model);
+            try
+            {
+                var user = await this.usersService.GetUserWithIdAsync(id);
+                var roles = await this.roleManager.Roles.ToListAsync();
+
+                this.ViewData["Roles"] = roles;
+
+                var model = new UserViewModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Roles = await this.userManager.GetRolesAsync(user),
+                };
+
+                return this.View(model);
+            }
+            catch (Exception ex)
+            {
+                this.TempData[ErrorMessage] = ex.Message;
+                return this.RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(UserViewModel model)
         {
-            await this.usersService.EditUser(model.Id, model.UserName);
-            return this.RedirectToAction(nameof(this.Edit), new { model.Id });
+            try
+            {
+                await this.usersService.EditUserAsync(model.Id, model.UserName, model.Roles);
+                return this.RedirectToAction(nameof(this.Index));
+            }
+            catch (Exception ex)
+            {
+                this.TempData[ErrorMessage] = ex.Message;
+                return this.RedirectToAction("Index", "Home");
+            }
         }
     }
 }

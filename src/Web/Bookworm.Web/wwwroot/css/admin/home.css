@@ -1,0 +1,32 @@
+﻿.home {
+    height: calc(100vh - 56.8px);
+}
+
+.home .cardsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+    .home .cardsContainer div {
+        margin-bottom: 0!important;
+        width: 35%;
+    }
+
+        .home .cardsContainer .info-box {
+            padding: 1rem !important;
+        }
+
+            .home .cardsContainer .info-box .info-box-number {
+                font-size: 2rem!important;
+            }
+
+            .home .cardsContainer div .info-box-icon {
+                width: 30% !important;
+                padding: 2rem;
+            }
+
+        .home .cardsContainer div .info-box-content {
+            font-size: 1.5rem;
+        }

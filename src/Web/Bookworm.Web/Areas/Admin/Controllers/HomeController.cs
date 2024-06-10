@@ -6,6 +6,8 @@
     using Bookworm.Services.Data.Contracts.Quotes;
     using Microsoft.AspNetCore.Mvc;
 
+    using static Bookworm.Web.StaticKeys.ViewDataKeys;
+
     public class HomeController : BaseController
     {
         private readonly IRetrieveBooksService booksService;
@@ -21,11 +23,8 @@
 
         public async Task<IActionResult> Index()
         {
-            int unapprovedBooksCount = await this.booksService.GetUnapprovedBooksCountAsync();
-            int unapprovedQuotesCount = await this.retrieveQuotesService.GetUnapprovedCountAsync();
-
-            this.ViewData["BooksCount"] = unapprovedBooksCount;
-            this.ViewData["QuotesCount"] = unapprovedQuotesCount;
+            this.ViewData[BooksCount] = await this.booksService.GetUnapprovedBooksCountAsync();
+            this.ViewData[QuotesCount] = await this.retrieveQuotesService.GetUnapprovedCountAsync();
 
             return this.View();
         }

@@ -1,32 +1,30 @@
 ﻿@{
-    this.ViewData["Title"] = "Home Admin";
-    var unapprovedBooksCount = this.ViewData["BooksCount"];
-    var unapprovedQuotesCount = this.ViewData["QuotesCount"];
+    this.ViewData[Title] = "Admin";
 }
 
-<h1 class="text-center pt-5">Welcome to Admin Area!</h1>
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin/home.css"/>
+}
 
-<div class="row justify-content-center mt-5">
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
-            <div class="inner">
-                <h3>@unapprovedBooksCount</h3>
-                <p>Pending Book Requests</p>
+<section class="home">
+    <h1 class="text-center pt-5">Welcome to Admin Area!</h1>
+
+    <div class="cardsContainer">
+        <div class="info-box bg-dark">
+            <span class="info-box-icon bg-info"><i class="fas fa-book fa-2x"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Pending Book Requests</span>
+                <span class="info-box-number">@this.ViewData[BooksCount]</span>
             </div>
-            <div class="icon">
-                <i class="fas fa-book fa-2x"></i>
+        </div>
+
+        <div class="info-box bg-dark">
+            <span class="info-box-icon bg-info"><i class="fas fa-pen fa-2x"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Pending Quote Requests</span>
+                <span class="info-box-number">@this.ViewData[QuotesCount]</span>
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
-            <div class="inner">
-                <h3>@unapprovedQuotesCount</h3>
-                <p>Pending Quote Requests</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-pen fa-2x"></i>
-            </div>
-        </div>
-    </div>
-</div>
+    
+</section>

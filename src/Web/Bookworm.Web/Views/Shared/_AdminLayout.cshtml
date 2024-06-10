@@ -3,149 +3,99 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@ViewData["Title"] - Bookworm</title>
+    <title>@ViewData[Title] - Bookworm</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"> 
+    <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="/lib/admin-lte/dist/css/adminlte.min.css">
+    @await this.RenderSectionAsync("Styles", required: false)
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
-        <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img
-                class="animation__shake"
-                src="/lib/admin-lte/dist/img/AdminLTELogo.png"
-                alt="AdminLTELogo"
-                height="60"
-                width="60">
-        </div>
-
-        <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                        <i class="fas fa-bars"></i>
-                    </a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a asp-area="admin" asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
-                </li>
-            </ul>
-
-            <!-- Right navbar link -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- /.navbar -->
-
-        <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
             <a asp-area="" asp-controller="Home" asp-action="Index" class="brand-link">
-                 <img src="/favicon.ico" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> 
+                <img src="/favicon.ico" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Bookworm</span>
             </a>
 
-            <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul
-                        class="nav nav-pills nav-sidebar flex-column"
+                    <ul class="nav nav-pills nav-sidebar flex-column"
                         data-widget="treeview"
                         role="menu"
                         data-accordion="false">
+
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Home" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-house"></i>
+                                <p>Home</p>
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a asp-area="admin" asp-controller="User" asp-action="Index" class="nav-link">
                                 <i class="nav-icon fas fa-user"></i>
-                                <p>Manage Users</p>
+                                <p>Users</p>
                             </a>
-                        </li>
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>Books<i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="admin" asp-controller="Book" asp-action="ApprovedBooks" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manage Approved</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="admin" asp-controller="Book" asp-action="UnapprovedBooks" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manage Unapproved</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="admin" asp-controller="Book" asp-action="DeletedBooks" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manage Deleted</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
 
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-pen icon"></i>
-                                <p>Quotes<i class="right fas fa-angle-left"></i></p>
+
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Book" asp-action="ApprovedBooks" class="nav-link">
+                                <i class="fa-solid fa-circle-check nav-icon"></i>
+                                <p>Approved Books</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-area="admin" asp-controller="Quote" asp-action="ApprovedQuotes" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manage Approved</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="admin" asp-controller="Quote" asp-action="UnapprovedQuotes" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manage Unapproved</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a asp-area="admin" asp-controller="Quote" asp-action="DeletedQuotes" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manage Deleted</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-               
-                        
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Book" asp-action="UnapprovedBooks" class="nav-link">
+                                <i class="fa-solid fa-circle-xmark nav-icon"></i>
+                                <p>Unapproved Books</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Book" asp-action="DeletedBooks" class="nav-link">
+                                <i class="fa-solid fa-trash-can nav-icon"></i>
+                                <p>Deleted Books</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Quote" asp-action="ApprovedQuotes" class="nav-link">
+                                <i class="fa-solid fa-circle-check nav-icon"></i>
+                                <p>Approved Quotes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Quote" asp-action="UnapprovedQuotes" class="nav-link">
+                                <i class="fa-solid fa-circle-xmark nav-icon"></i>
+                                <p>Unapproved Quotes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="admin" asp-controller="Quote" asp-action="DeletedQuotes" class="nav-link">
+                                <i class="fa-solid fa-trash-can nav-icon"></i>
+                                <p>Deleted Quotes</p>
+                            </a>
+                        </li>
+
                     </ul>
                 </nav>
-                <!-- /.sidebar-menu -->
             </div>
-            <!-- /.sidebar -->
         </aside>
 
-       
         <div class="content-wrapper">
-            <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
                     @this.RenderBody()
-                </div>  
+                    <div class="toast-container top-0 end-0 p-3"></div>
+                </div>
             </section>
         </div>
 
-        <footer class="main-footer">
+        <footer class="main-footer bg-dark text-center">
             <strong>Copyright &copy; Bookworm @DateTime.UtcNow.Year</strong>
             All rights reserved.
         </footer>
@@ -155,5 +105,6 @@
     <script src="/lib/admin-lte/dist/js/adminlte.min.js"></script>
     <script src="/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     @await this.RenderSectionAsync("Scripts", required: false)
+    <partial name="PartialViews/_UserMessagesPartial" />
 </body>
 </html>

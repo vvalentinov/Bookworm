@@ -1,6 +1,4 @@
-﻿using Bookworm.Web.StaticKeys;
-
-namespace Bookworm.Web.ViewComponents
+﻿namespace Bookworm.Web.ViewComponents
 {
     using System;
     using System.Collections.Generic;
@@ -11,8 +9,8 @@ namespace Bookworm.Web.ViewComponents
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Memory;
 
-    using static CacheKeys;
-    using static ViewDataKeys;
+    using static Bookworm.Web.StaticKeys.CacheKeys;
+    using static Bookworm.Web.StaticKeys.ViewDataKeys;
 
     public class LanguagesViewComponent : ViewComponent
     {

@@ -23,41 +23,45 @@
             this.userManager = userManager;
         }
 
-        public async Task EditUser(string userId, string username)
+        public async Task EditUserAsync(
+            string userId,
+            string username,
+            IEnumerable<string> roles)
         {
-            var user = await this.userManager.FindByIdAsync(userId);
-            if (username != null && user.UserName != username)
+            var user = await this.GetUserWithIdAsync(userId);
+
+            if (!string.IsNullOrWhiteSpace(username) && user.UserName != username)
             {
                 user.UserName = username;
             }
 
-            await this.userManager.UpdateAsync(user);
-        }
+            var userRolesToBeRemoved = (await this.userManager.GetRolesAsync(user))
+                .Where(role => !roles.Contains(role)).ToList();
 
-        public IEnumerable<UsersListViewModel> GetUsers()
-        {
-            return this.userManager.Users
-                .Select(x => new UsersListViewModel
-                {
-                    Id = x.Id,
-                    Email = x.Email,
-                    Username = x.UserName,
-                }).ToList();
-        }
-
-        public async Task<UserViewModel> GetUserModelWithId(string id)
-        {
-            var user = await this.userManager.FindByIdAsync(id);
-            var roles = await this.userManager.GetRolesAsync(user);
-
-            return new UserViewModel
+            if (userRolesToBeRemoved.Count > 0)
             {
-                Id = id,
-                UserName = user.UserName,
-                Email = user.Email,
-                Roles = roles,
-            };
+                await this.userManager.RemoveFromRolesAsync(user, userRolesToBeRemoved);
+            }
+
+            foreach (var role in roles)
+            {
+                if (!await this.userManager.IsInRoleAsync(user, role))
+                {
+                    await this.userManager.AddToRoleAsync(user, role);
+                }
+            }
+
+            var result = await this.userManager.UpdateAsync(user);
         }
+
+        public async Task<IEnumerable<UsersListViewModel>> GetUsersAsync()
+            => await this.userManager.Users
+                    .Select(x => new UsersListViewModel
+                    {
+                        Id = x.Id,
+                        Email = x.Email,
+                        Username = x.UserName,
+                    }).ToListAsync();
 
         public async Task<ApplicationUser> GetUserWithIdAsync(string userId)
             => await this.userManager.FindByIdAsync(userId) ??

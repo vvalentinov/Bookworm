@@ -10,13 +10,11 @@
     {
         Task<bool> IsUserAdminAsync(string userId);
 
-        IEnumerable<UsersListViewModel> GetUsers();
-
-        Task<UserViewModel> GetUserModelWithId(string userId);
+        Task<IEnumerable<UsersListViewModel>> GetUsersAsync();
 
         Task<ApplicationUser> GetUserWithIdAsync(string userId);
 
-        Task EditUser(string userId, string username);
+        Task EditUserAsync(string userId, string username, IEnumerable<string> roles);
 
         Task ReduceUserPointsAsync(string userId, byte points);
 
