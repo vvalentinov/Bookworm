@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<LanguageViewModel>
 
 @{
-    int? selectedLanguageId = ViewData["SelectedLanguageId"] as int?;
+    int? selectedLanguageId = ViewData[SelectedLanguageId] as int?;
 }
 
 @foreach (var language in Model)

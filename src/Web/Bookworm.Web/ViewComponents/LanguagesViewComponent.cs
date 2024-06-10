@@ -1,4 +1,6 @@
-﻿namespace Bookworm.Web.ViewComponents
+﻿using Bookworm.Web.StaticKeys;
+
+namespace Bookworm.Web.ViewComponents
 {
     using System;
     using System.Collections.Generic;
@@ -10,6 +12,7 @@
     using Microsoft.Extensions.Caching.Memory;
 
     using static CacheKeys;
+    using static ViewDataKeys;
 
     public class LanguagesViewComponent : ViewComponent
     {
@@ -26,7 +29,7 @@
 
         public async Task<IViewComponentResult> InvokeAsync(int? selectedLanguageId)
         {
-            this.ViewData["SelectedLanguageId"] = selectedLanguageId;
+            this.ViewData[SelectedLanguageId] = selectedLanguageId;
 
             bool languagesAreCached = this.memoryCache
                 .TryGetValue(Languages, out IEnumerable<LanguageViewModel> languages);

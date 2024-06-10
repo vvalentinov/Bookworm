@@ -18,21 +18,21 @@
 
     public class QuoteController : BaseController
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
         private readonly IUploadQuoteService uploadQuoteService;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IRetrieveQuotesService retrieveQuotesService;
 
         public QuoteController(
-            UserManager<ApplicationUser> userManager,
-            IRetrieveQuotesService retrieveQuotesService,
+            IUploadQuoteService uploadQuoteService,
             IUpdateQuoteService updateQuoteService,
-            IUploadQuoteService uploadQuoteService)
+            UserManager<ApplicationUser> userManager,
+            IRetrieveQuotesService retrieveQuotesService)
         {
             this.userManager = userManager;
-            this.retrieveQuotesService = retrieveQuotesService;
             this.updateQuoteService = updateQuoteService;
             this.uploadQuoteService = uploadQuoteService;
+            this.retrieveQuotesService = retrieveQuotesService;
         }
 
         [HttpGet]

@@ -20,6 +20,8 @@
     using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Services.Mapping.AutoMapperConfig;
 
+    using static StaticKeys.ViewDataKeys;
+
     public class BookController : BaseController
     {
         private readonly IBlobService blobService;
@@ -60,8 +62,8 @@
         [HttpGet]
         public IActionResult Upload()
         {
-            this.ViewData["Action"] = nameof(this.Upload);
-            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
+            this.ViewData[Title] = $"{nameof(this.Upload)} Book";
+            this.ViewData[ControllerAction] = nameof(this.Upload);
 
             return this.View(new UploadBookViewModel());
         }
@@ -70,8 +72,8 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
-            this.ViewData["Action"] = nameof(this.Upload);
-            this.ViewData["Title"] = $"{nameof(this.Upload)} Book";
+            this.ViewData[ControllerAction] = nameof(this.Upload);
+            this.ViewData[Title] = $"{nameof(this.Upload)} Book";
 
             if (model.BookFile == null || model.BookFile.Length == 0)
             {
@@ -106,8 +108,8 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            this.ViewData["Action"] = nameof(this.Edit);
-            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
+            this.ViewData[ControllerAction] = nameof(this.Edit);
+            this.ViewData[Title] = $"{nameof(this.Edit)} Book";
 
             try
             {
@@ -126,8 +128,8 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Edit(UploadBookViewModel model)
         {
-            this.ViewData["Action"] = nameof(this.Edit);
-            this.ViewData["Title"] = $"{nameof(this.Edit)} Book";
+            this.ViewData[ControllerAction] = nameof(this.Edit);
+            this.ViewData[Title] = $"{nameof(this.Edit)} Book";
 
             if (!this.ModelState.IsValid)
             {
@@ -200,7 +202,7 @@
         [PageValidationFilter]
         public async Task<IActionResult> All(string category, int page = 1)
         {
-            this.ViewData["Title"] = category;
+            this.ViewData[Title] = category;
 
             try
             {

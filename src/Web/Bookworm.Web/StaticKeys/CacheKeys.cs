@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Web
+﻿namespace Bookworm.Web.StaticKeys
 {
     public static class CacheKeys
     {

@@ -8,20 +8,20 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [AllowAnonymous]
     public class HomeController : BaseController
     {
-        private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IRetrieveBooksService retrieveBooksService;
+        private readonly IRetrieveQuotesService retrieveQuotesService;
 
         public HomeController(
-            IRetrieveQuotesService retrieveQuotesService,
-            IRetrieveBooksService booksService)
+            IRetrieveBooksService booksService,
+            IRetrieveQuotesService retrieveQuotesService)
         {
-            this.retrieveQuotesService = retrieveQuotesService;
             this.retrieveBooksService = booksService;
+            this.retrieveQuotesService = retrieveQuotesService;
         }
 
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var model = new IndexViewModel

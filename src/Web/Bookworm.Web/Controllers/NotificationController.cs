@@ -17,8 +17,8 @@
             INotificationService notificationService,
             UserManager<ApplicationUser> userManager)
         {
-            this.notificationService = notificationService;
             this.userManager = userManager;
+            this.notificationService = notificationService;
         }
 
         [HttpGet]

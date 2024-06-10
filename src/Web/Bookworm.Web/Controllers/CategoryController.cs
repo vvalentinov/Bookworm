@@ -10,7 +10,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Caching.Memory;
 
-    using static CacheKeys;
+    using static Bookworm.Web.StaticKeys.CacheKeys;
 
     public class CategoryController : BaseController
     {
