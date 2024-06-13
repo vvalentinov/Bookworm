@@ -140,6 +140,11 @@ The user cannot like his/her own quotes, but can like someone else's quote.
 
 ## Images
 
+#### Unit Tests
+
+![Unit Tests](./screenshots/tests.png)
+![Unit Tests Coverage](./screenshots/tests-coverage.png)
+
 #### Home
 
 ![Home Image](./screenshots/home.png)
