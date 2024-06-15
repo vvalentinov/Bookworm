@@ -44,12 +44,13 @@ To run this project, you will need to add the following secrets to your secrets.
 - Quartz.NET
 - Html Sanitizer
 - Font Awesome
+- MS SQL SERVER
 - Asp.Net Core MVC
 - Azure Blob Storage
 - Entity Framework Core
 - Mailgun Email Service
 
-## Database Structure
+## 🛢 Database Structure
 
 ![](./screenshots/databaseDiagram1.png)
 ![](./screenshots/databaseDiagram2.png)
@@ -67,6 +68,10 @@ Area for displaying account related logic. Here the user can change their userna
 **Pagination:**
 
 Bookworm supports pagination to efficiently handle large collections of books and quotes. Instead of displaying all books/quotes at once, the collection is divided into pages, allowing you to navigate with ease.
+
+**In-Memory Caching**
+
+ This application utilizes in-memory caching to enhance performance and reduce the load on the underlying data sources. This caching mechanism stores frequently accessed data in memory, which allows for faster data retrieval and improved response times for the end-user.
 
 ***Guest user:***
 - Can only browse through quotes without liking/uploading, etc.
@@ -138,7 +143,7 @@ The user can choose from three different types of quotes to upload - movie, book
 
 The user cannot like his/her own quotes, but can like someone else's quote.
 
-## Images
+## 🖼️ Images
 
 #### Unit Tests
 
