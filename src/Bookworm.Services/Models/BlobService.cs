@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Models
+﻿namespace Bookworm.Services.Models
 {
     using System;
     using System.IO;
@@ -7,7 +7,7 @@
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using Bookworm.Common.Options;
-    using Bookworm.Services.Data.Contracts;
+    using Bookworm.Services.Contracts;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Options;
 

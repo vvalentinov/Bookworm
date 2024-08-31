@@ -7,9 +7,7 @@
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels.DTOs;
-    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
@@ -22,18 +20,18 @@
     {
         private readonly IUsersService usersService;
         private readonly INotificationService notificationService;
-        private readonly IHubContext<NotificationHub> notificationHub;
+        //private readonly IHubContext<NotificationHub> notificationHub;
         private readonly IDeletableEntityRepository<Quote> quoteRepository;
 
         public UpdateQuoteService(
             IUsersService usersService,
             INotificationService notificationService,
-            IHubContext<NotificationHub> notificationHub,
+            //IHubContext<NotificationHub> notificationHub,
             IDeletableEntityRepository<Quote> quoteRepository)
         {
             this.usersService = usersService;
             this.quoteRepository = quoteRepository;
-            this.notificationHub = notificationHub;
+            //this.notificationHub = notificationHub;
             this.notificationService = notificationService;
         }
 
@@ -52,7 +50,7 @@
 
                 var notificationContent = string.Format(ApprovedQuoteNotification, quote.Content, QuoteUploadPoints);
                 await this.notificationService.AddNotificationAsync(notificationContent, quote.UserId);
-                await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", ApprovedQuoteMessage);
+                //await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", ApprovedQuoteMessage);
             }
         }
 
@@ -109,7 +107,7 @@
 
                 var notificationContent = string.Format(UnapprovedQuoteNotification, quote.Content, QuoteUploadPoints);
                 await this.notificationService.AddNotificationAsync(notificationContent, quote.UserId);
-                await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", UnapprovedQuoteMessage);
+                //await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", UnapprovedQuoteMessage);
             }
         }
 

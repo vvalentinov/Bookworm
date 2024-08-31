@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
+    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.Infrastructure.Filters;

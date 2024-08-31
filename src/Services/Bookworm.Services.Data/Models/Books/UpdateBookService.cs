@@ -6,11 +6,10 @@
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
+    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels.DTOs;
-    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
@@ -27,7 +26,7 @@
         private readonly IValidateBookService validateBookService;
         private readonly INotificationService notificationService;
         private readonly IRetrieveBooksService retrieveBooksService;
-        private readonly IHubContext<NotificationHub> notificationHub;
+        //private readonly IHubContext<NotificationHub> notificationHub;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public UpdateBookService(
@@ -38,14 +37,14 @@
             IValidateBookService validateBookService,
             INotificationService notificationService,
             IRetrieveBooksService retrieveBooksService,
-            IHubContext<NotificationHub> notificationHub,
+            //IHubContext<NotificationHub> notificationHub,
             IDeletableEntityRepository<Book> bookRepository)
         {
             this.blobService = blobService;
             this.usersService = usersService;
             this.authorsService = authorsService;
             this.bookRepository = bookRepository;
-            this.notificationHub = notificationHub;
+            //this.notificationHub = notificationHub;
             this.publishersService = publishersService;
             this.validateBookService = validateBookService;
             this.notificationService = notificationService;
@@ -64,7 +63,7 @@
 
             var notificationContent = string.Format(ApprovedBookNotification, book.Title, BookUploadPoints);
             await this.notificationService.AddNotificationAsync(notificationContent, book.UserId);
-            await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", ApprovedBookMessage);
+            //await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", ApprovedBookMessage);
         }
 
         public async Task UnapproveBookAsync(int bookId)
@@ -79,7 +78,7 @@
 
             var notificationContent = string.Format(UnapprovedBookNotification, book.Title, BookUploadPoints);
             await this.notificationService.AddNotificationAsync(notificationContent, book.UserId);
-            await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", UnapprovedBookMessage);
+            //await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", UnapprovedBookMessage);
         }
 
         public async Task DeleteBookAsync(int bookId, string userId)

@@ -7,6 +7,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
+    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Contracts.Quotes;
@@ -14,6 +15,7 @@
     using Bookworm.Services.Data.Models.Books;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Messaging;
+    using Bookworm.Services.Models;
     using Bookworm.Web.BackgroundJobs;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;

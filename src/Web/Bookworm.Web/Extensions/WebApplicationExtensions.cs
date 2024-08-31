@@ -5,7 +5,7 @@
     using Bookworm.Data;
     using Bookworm.Data.Seeding;
     using Bookworm.Services.Mapping;
-    using Bookworm.Services.Messaging.Hubs;
+    using Bookworm.Web.Hubs;
     using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;

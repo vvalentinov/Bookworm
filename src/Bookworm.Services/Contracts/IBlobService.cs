@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Data.Contracts
+﻿namespace Bookworm.Services.Contracts
 {
     using System;
     using System.IO;
@@ -8,12 +8,17 @@
 
     public interface IBlobService
     {
-        Task<string> UploadBlobAsync(IFormFile file, string pathPrefix = null);
+        Task<string> UploadBlobAsync(
+            IFormFile file,
+            string? pathPrefix = null);
 
         Task DeleteBlobAsync(string blobName);
 
         Task<Tuple<Stream, string, string>> DownloadBlobAsync(string url);
 
-        Task<string> ReplaceBlobAsync(IFormFile file, string blobName, string path);
+        Task<string> ReplaceBlobAsync(
+            IFormFile file,
+            string blobName,
+            string path);
     }
 }

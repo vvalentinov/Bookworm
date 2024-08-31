@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Messaging.Hubs
+﻿namespace Bookworm.Web.Hubs
 {
     using Microsoft.AspNetCore.SignalR;
 

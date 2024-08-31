@@ -7,6 +7,7 @@
     using Bookworm.Data;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
+    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Models;

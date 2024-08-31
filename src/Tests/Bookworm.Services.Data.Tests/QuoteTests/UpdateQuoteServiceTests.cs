@@ -11,7 +11,6 @@
     using Bookworm.Services.Data.Models;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Data.Tests.Shared;
-    using Bookworm.Services.Messaging.Hubs;
     using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.SignalR;
@@ -340,22 +339,22 @@
             Assert.Equal(QuoteInvalidTypeError, exception.Message);
         }
 
-        private static IHubContext<NotificationHub> GetNotificationHubContext()
-        {
-            var mockHubContext = new Mock<IHubContext<NotificationHub>>();
-            var mockClients = new Mock<IHubClients>();
-            var mockClientProxy = new Mock<IClientProxy>();
+        //private static IHubContext<NotificationHub> GetNotificationHubContext()
+        //{
+        //    var mockHubContext = new Mock<IHubContext<NotificationHub>>();
+        //    var mockClients = new Mock<IHubClients>();
+        //    var mockClientProxy = new Mock<IClientProxy>();
 
-            var message = "ApprovedQuoteMessage";
+        //    var message = "ApprovedQuoteMessage";
 
-            mockClients.Setup(clients => clients.User(It.IsAny<string>())).Returns(mockClientProxy.Object);
-            mockHubContext.Setup(x => x.Clients).Returns(mockClients.Object);
+        //    mockClients.Setup(clients => clients.User(It.IsAny<string>())).Returns(mockClientProxy.Object);
+        //    mockHubContext.Setup(x => x.Clients).Returns(mockClients.Object);
 
-            mockClientProxy.Setup(x => x.SendCoreAsync(It.Is<string>(s => s == "notification"), It.Is<object[]>(o => o.Length == 1 && (string)o[0] == message), default))
-                           .Returns(Task.CompletedTask);
+        //    mockClientProxy.Setup(x => x.SendCoreAsync(It.Is<string>(s => s == "notification"), It.Is<object[]>(o => o.Length == 1 && (string)o[0] == message), default))
+        //                   .Returns(Task.CompletedTask);
 
-            return mockHubContext.Object;
-        }
+        //    return mockHubContext.Object;
+        //}
 
         private EfDeletableEntityRepository<Quote> GetQuoteRepo() => new(this.dbContext);
 
@@ -377,7 +376,7 @@
             => new(
                 new Mock<UsersService>(this.GetUserManager()).Object,
                 this.GetNotificationService(),
-                GetNotificationHubContext(),
+                //GetNotificationHubContext(),
                 this.GetQuoteRepo());
     }
 }
