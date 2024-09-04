@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -24,29 +25,55 @@
             this.languagesRepository = langugesRepository;
         }
 
-        public async Task<IEnumerable<LanguageViewModel>> GetAllAsync()
-            => await this.languagesRepository
+        public async Task<OperationResult<IEnumerable<LanguageViewModel>>> GetAllAsync()
+        {
+            var data = await this.languagesRepository
                     .AllAsNoTracking()
                     .To<LanguageViewModel>()
                     .ToListAsync();
 
-        public async Task<IEnumerable<LanguageViewModel>> GetAllInBookCategoryAsync(int categoryId)
-            => await this.bookRepository
+            return OperationResult.Ok(data);
+        }
+
+        public async Task<OperationResult<IEnumerable<LanguageViewModel>>> GetAllInBookCategoryAsync(int categoryId)
+        {
+            var data = await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.CategoryId == categoryId)
-                    .Select(x => new LanguageViewModel { Id = x.LanguageId, Name = x.Language.Name })
+                    .Select(x => new LanguageViewModel
+                    {
+                        Id = x.LanguageId,
+                        Name = x.Language.Name,
+                    })
                     .Distinct()
                     .ToListAsync();
 
-        public async Task<IEnumerable<LanguageViewModel>> GetAllInUserBooksAsync(string userId)
-            => await this.bookRepository
+            return OperationResult.Ok(data);
+        }
+
+        public async Task<OperationResult<IEnumerable<LanguageViewModel>>> GetAllInUserBooksAsync(string userId)
+        {
+            var data = await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.UserId == userId)
-                    .Select(x => new LanguageViewModel { Id = x.LanguageId, Name = x.Language.Name })
+                    .Select(x => new LanguageViewModel
+                    {
+                        Id = x.LanguageId,
+                        Name = x.Language.Name,
+                    })
                     .Distinct()
                     .ToListAsync();
 
-        public async Task<bool> CheckIfIdIsValidAsync(int languageId)
-            => await this.languagesRepository.AllAsNoTracking().AnyAsync(l => l.Id == languageId);
+            return OperationResult.Ok(data);
+        }
+
+        public async Task<OperationResult<bool>> CheckIfIdIsValidAsync(int languageId)
+        {
+            var data = await this.languagesRepository
+                .AllAsNoTracking()
+                .AnyAsync(language => language.Id == languageId);
+
+            return OperationResult.Ok(data);
+        }
     }
 }

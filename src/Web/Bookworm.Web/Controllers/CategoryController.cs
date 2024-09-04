@@ -29,18 +29,24 @@
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            bool categoriesAreCached = this.memoryCache
-                .TryGetValue(Languages, out IEnumerable<CategoryViewModel> categories);
+            bool categoriesAreCached = this.memoryCache.TryGetValue(
+                Languages,
+                out IEnumerable<CategoryViewModel> categories);
 
             if (!categoriesAreCached)
             {
-                categories = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+                var result = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+
+                categories = result.Data;
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromMinutes(5))
                     .SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
-                this.memoryCache.Set(Languages, categories, cacheEntryOptions);
+                this.memoryCache.Set(
+                    Languages,
+                    categories,
+                    cacheEntryOptions);
             }
 
             return this.View(categories);

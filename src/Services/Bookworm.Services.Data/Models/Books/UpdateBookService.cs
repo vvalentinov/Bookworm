@@ -1,12 +1,11 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.DTOs;
@@ -15,7 +14,7 @@
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.NotificationConstants;
-    using static Bookworm.Common.Constants.TempDataMessageConstant;
+    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
 
     public class UpdateBookService : IUpdateBookService
     {
@@ -26,7 +25,6 @@
         private readonly IValidateBookService validateBookService;
         private readonly INotificationService notificationService;
         private readonly IRetrieveBooksService retrieveBooksService;
-        //private readonly IHubContext<NotificationHub> notificationHub;
         private readonly IDeletableEntityRepository<Book> bookRepository;
 
         public UpdateBookService(
@@ -37,148 +35,218 @@
             IValidateBookService validateBookService,
             INotificationService notificationService,
             IRetrieveBooksService retrieveBooksService,
-            //IHubContext<NotificationHub> notificationHub,
             IDeletableEntityRepository<Book> bookRepository)
         {
             this.blobService = blobService;
             this.usersService = usersService;
             this.authorsService = authorsService;
             this.bookRepository = bookRepository;
-            //this.notificationHub = notificationHub;
             this.publishersService = publishersService;
             this.validateBookService = validateBookService;
             this.notificationService = notificationService;
             this.retrieveBooksService = retrieveBooksService;
         }
 
-        public async Task ApproveBookAsync(int bookId)
+        public async Task<OperationResult> ApproveBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
+            var getBookWithIdResult = await this.retrieveBooksService
+                .GetBookWithIdAsync(bookId);
+
+            if (!getBookWithIdResult.IsSuccess)
+            {
+                return OperationResult.Fail(getBookWithIdResult.ErrorMessage);
+            }
+
+            var book = getBookWithIdResult.Data;
 
             book.IsApproved = true;
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.IncreaseUserPointsAsync(book.UserId, BookUploadPoints);
+            await this.usersService.IncreaseUserPointsAsync(
+                book.UserId,
+                BookUploadPoints);
 
-            var notificationContent = string.Format(ApprovedBookNotification, book.Title, BookUploadPoints);
-            await this.notificationService.AddNotificationAsync(notificationContent, book.UserId);
-            //await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", ApprovedBookMessage);
+            var notificationContent = string.Format(
+                ApprovedBookNotification,
+                book.Title,
+                BookUploadPoints);
+
+            await this.notificationService.AddNotificationAsync(
+                notificationContent,
+                book.UserId);
+
+            return OperationResult.Ok();
         }
 
-        public async Task UnapproveBookAsync(int bookId)
+        public async Task<OperationResult> UnapproveBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
+            var getBookWithIdResult = await this.retrieveBooksService
+                .GetBookWithIdAsync(bookId);
+
+            if (!getBookWithIdResult.IsSuccess)
+            {
+                return OperationResult.Fail(getBookWithIdResult.ErrorMessage);
+            }
+
+            var book = getBookWithIdResult.Data;
 
             book.IsApproved = false;
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(book.UserId, BookUploadPoints);
+            await this.usersService.ReduceUserPointsAsync(
+                book.UserId,
+                BookUploadPoints);
 
-            var notificationContent = string.Format(UnapprovedBookNotification, book.Title, BookUploadPoints);
-            await this.notificationService.AddNotificationAsync(notificationContent, book.UserId);
-            //await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", UnapprovedBookMessage);
+            var notificationContent = string.Format(
+                UnapprovedBookNotification,
+                book.Title,
+                BookUploadPoints);
+
+            await this.notificationService.AddNotificationAsync(
+                notificationContent,
+                book.UserId);
+
+            return OperationResult.Ok();
         }
 
-        public async Task DeleteBookAsync(int bookId, string userId)
+        public async Task<OperationResult> DeleteBookAsync(int bookId, string userId)
         {
-            var book = await this.retrieveBooksService.GetBookWithIdAsync(bookId);
+            var getBookWithIdResult = await this.retrieveBooksService
+                .GetBookWithIdAsync(bookId);
+
+            if (!getBookWithIdResult.IsSuccess)
+            {
+                return OperationResult.Fail(getBookWithIdResult.ErrorMessage);
+            }
+
+            var book = getBookWithIdResult.Data;
 
             bool isUserAdmin = await this.usersService.IsUserAdminAsync(userId);
 
-            if (book.UserId != userId && !isUserAdmin)
+            if (!isUserAdmin && book.UserId != userId)
             {
-                throw new InvalidOperationException(BookDeleteError);
+                return OperationResult.Fail(BookDeleteError);
             }
 
             book.IsApproved = false;
             this.bookRepository.Delete(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(book.UserId, BookUploadPoints);
+            await this.usersService.ReduceUserPointsAsync(
+                book.UserId,
+                BookUploadPoints);
+
+            return OperationResult.Ok(DeleteSuccess);
         }
 
-        public async Task UndeleteBookAsync(int bookId)
+        public async Task<OperationResult> UndeleteBookAsync(int bookId)
         {
-            var book = await this.retrieveBooksService.GetDeletedBookWithIdAsync(bookId);
+            var getDeletedBookResult = await this.retrieveBooksService
+                .GetDeletedBookWithIdAsync(bookId);
+
+            if (!getDeletedBookResult.IsSuccess)
+            {
+                return OperationResult.Fail(getDeletedBookResult.ErrorMessage);
+            }
+
+            var book = getDeletedBookResult.Data;
+
             this.bookRepository.Undelete(book);
             await this.bookRepository.SaveChangesAsync();
+
+            return OperationResult.Ok();
         }
 
-        public async Task EditBookAsync(BookDto editBookDto, string userId)
+        public async Task<OperationResult> EditBookAsync(
+            BookDto bookDto,
+            string userId)
         {
             var book = await this.bookRepository
                 .All()
                 .Include(x => x.Publisher)
                 .Include(b => b.AuthorsBooks)
-                .FirstOrDefaultAsync(x => x.Id == editBookDto.Id) ??
-                throw new InvalidOperationException(BookWrongIdError);
+                .FirstOrDefaultAsync(x => x.Id == bookDto.Id);
+
+            if (book == null)
+            {
+                return OperationResult.Fail(BookWrongIdError);
+            }
 
             if (book.UserId != userId)
             {
-                throw new InvalidOperationException(BookEditError);
+                return OperationResult.Fail(BookEditError);
             }
 
             await this.validateBookService.ValidateAsync(
-                editBookDto.Title,
-                editBookDto.LanguageId,
-                editBookDto.CategoryId,
+                bookDto.Title,
+                bookDto.LanguageId,
+                bookDto.CategoryId,
                 book.Id);
 
-            if (editBookDto.BookFile != null)
+            if (bookDto.BookFile != null)
             {
                 string bookBlobName = book.FileUrl[book.FileUrl.IndexOf("Books")..];
                 book.FileUrl = await this.blobService.ReplaceBlobAsync(
-                    editBookDto.BookFile,
+                    bookDto.BookFile,
                     bookBlobName,
                     BookFileUploadPath);
             }
 
-            if (editBookDto.ImageFile != null)
+            if (bookDto.ImageFile != null)
             {
                 string imageBlobName = book.ImageUrl[book.ImageUrl.IndexOf("BooksImages")..];
+
                 book.ImageUrl = await this.blobService.ReplaceBlobAsync(
-                    editBookDto.ImageFile,
+                    bookDto.ImageFile,
                     imageBlobName,
                     BookImageFileUploadPath);
             }
 
-            if (!string.IsNullOrWhiteSpace(editBookDto.Publisher))
+            if (!string.IsNullOrWhiteSpace(bookDto.Publisher))
             {
-                var publisherName = editBookDto.Publisher.Trim();
+                var publisherName = bookDto.Publisher.Trim();
+
                 if (book.Publisher.Name != publisherName)
                 {
-                    var publisher = await this.publishersService.GetPublisherWithNameAsync(publisherName);
-                    book.Publisher = publisher ?? new Publisher { Name = publisherName };
+                    var result = await this.publishersService
+                        .GetPublisherWithNameAsync(publisherName);
+
+                    book.Publisher = result.Data ?? new Publisher { Name = publisherName };
                 }
             }
 
             book.IsApproved = false;
-            book.Year = editBookDto.Year;
-            book.Title = editBookDto.Title;
-            book.PagesCount = editBookDto.PagesCount;
-            book.CategoryId = editBookDto.CategoryId;
-            book.LanguageId = editBookDto.LanguageId;
-            book.Description = editBookDto.Description;
+            book.Year = bookDto.Year;
+            book.Title = bookDto.Title;
+            book.PagesCount = bookDto.PagesCount;
+            book.CategoryId = bookDto.CategoryId;
+            book.LanguageId = bookDto.LanguageId;
+            book.Description = bookDto.Description;
 
             book.AuthorsBooks.Clear();
 
-            var authorsNames = editBookDto.Authors.Select(x => x.Name.Trim()).ToList();
+            var authorsNames = bookDto.Authors.Select(x => x.Name.Trim()).ToList();
 
             foreach (var authorName in authorsNames)
             {
-                var author = await this.authorsService.GetAuthorWithNameAsync(authorName);
+                var result = await this.authorsService
+                    .GetAuthorWithNameAsync(authorName);
 
-                book.AuthorsBooks.Add(author != null ?
-                    new AuthorBook { AuthorId = author.Id } :
+                book.AuthorsBooks.Add(result.Data != null ?
+                    new AuthorBook { AuthorId = result.Data.Id } :
                     new AuthorBook { Author = new Author { Name = authorName } });
             }
 
             this.bookRepository.Update(book);
             await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.ReduceUserPointsAsync(userId, BookUploadPoints);
+            await this.usersService.ReduceUserPointsAsync(
+                userId,
+                BookUploadPoints);
+
+            return OperationResult.Ok(EditSuccess);
         }
     }
 }

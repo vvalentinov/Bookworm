@@ -2,12 +2,15 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Web.ViewModels.Books;
 
     public interface ISearchBooksService
     {
-        Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model);
+        Task<OperationResult<BookListingViewModel>> SearchBooksAsync(SearchBookInputModel model);
 
-        Task<bool> CheckIfBookWithTitleExistsAsync(string title, int? bookId = null);
+        Task<OperationResult<bool>> CheckIfBookWithTitleExistsAsync(
+            string title,
+            int? bookId = null);
     }
 }

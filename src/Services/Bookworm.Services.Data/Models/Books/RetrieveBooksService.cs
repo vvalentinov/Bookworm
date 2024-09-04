@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data;
@@ -44,7 +45,10 @@
             this.favBooksRepository = favoriteBooksRepository;
         }
 
-        public async Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string userId, bool isAdmin)
+        public async Task<OperationResult<BookDetailsViewModel>> GetBookDetailsAsync(
+            int bookId,
+            string userId,
+            bool isAdmin)
         {
             var bookViewModel = await this.bookRepository
                 .AllAsNoTracking()
@@ -54,22 +58,40 @@
                 .Include(x => x.AuthorsBooks)
                 .ThenInclude(x => x.Author)
                 .To<BookDetailsViewModel>()
-                .FirstOrDefaultAsync(book => book.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+                .FirstOrDefaultAsync(book => book.Id == bookId);
+
+            if (bookViewModel == null)
+            {
+                return OperationResult.Fail<BookDetailsViewModel>(BookWrongIdError);
+            }
 
             bookViewModel.IsUserBook = bookViewModel.UserId == userId;
 
             if (!bookViewModel.IsApproved && !isAdmin && !bookViewModel.IsUserBook)
             {
-                throw new InvalidOperationException(BookDetailsError);
+                return OperationResult.Fail<BookDetailsViewModel>(BookDetailsError);
             }
 
             bookViewModel.Username = await this.usersService.GetUserNameByIdAsync(bookViewModel.UserId);
 
             if (bookViewModel.IsApproved)
             {
-                bookViewModel.RatingsAvg = await this.ratingsService.GetAverageRatingAsync(bookId);
-                bookViewModel.RatingsCount = await this.ratingsService.GetRatingsCountAsync(bookId);
+                var getAvgRatingResult = await this.ratingsService.GetAverageRatingAsync(bookId);
+
+                if (getAvgRatingResult.IsFailure)
+                {
+                    return OperationResult.Fail<BookDetailsViewModel>(getAvgRatingResult.ErrorMessage);
+                }
+
+                var getRatingsCountResult = await this.ratingsService.GetRatingsCountAsync(bookId);
+
+                if (getRatingsCountResult.IsFailure)
+                {
+                    return OperationResult.Fail<BookDetailsViewModel>(getRatingsCountResult.ErrorMessage);
+                }
+
+                bookViewModel.RatingsAvg = getAvgRatingResult.Data;
+                bookViewModel.RatingsCount = getRatingsCountResult.Data;
 
                 bookViewModel.Comments = await this.commentRepository
                     .AllAsNoTracking()
@@ -86,22 +108,33 @@
                         .AllAsNoTracking()
                         .AnyAsync(x => x.BookId == bookId && x.UserId == userId);
 
-                    bookViewModel.UserRating = await this.ratingsService.GetUserRatingAsync(bookId, userId);
+                    var getUserRatingResult = await this.ratingsService.GetUserRatingAsync(bookId, userId);
+
+                    if (getUserRatingResult.IsFailure)
+                    {
+                        return OperationResult.Fail<BookDetailsViewModel>(getUserRatingResult.ErrorMessage);
+                    }
+
+                    bookViewModel.UserRating = getUserRatingResult.Data;
                 }
             }
 
-            return bookViewModel;
+            return OperationResult.Ok(bookViewModel);
         }
 
-        public async Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId)
+        public async Task<OperationResult<IEnumerable<BookViewModel>>> GetRandomBooksAsync(
+            int countBooks,
+            int? categoryId)
         {
             var query = this.bookRepository.AllAsNoTracking().Where(x => x.IsApproved);
 
             if (categoryId.HasValue)
             {
-                if (!await this.categoriesService.CheckIfIdIsValidAsync((int)categoryId))
+                var result = await this.categoriesService.CheckIfIdIsValidAsync((int)categoryId);
+
+                if (!result.Data)
                 {
-                    throw new InvalidOperationException(CategoryNotFoundError);
+                    return OperationResult.Fail<IEnumerable<BookViewModel>>(CategoryNotFoundError);
                 }
 
                 query = query.Where(b => b.CategoryId == categoryId);
@@ -113,34 +146,49 @@
                 .SelectBookViewModel()
                 .ToListAsync();
 
-            return books;
+            return OperationResult.Ok(books);
         }
 
-        public async Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId)
+        public async Task<OperationResult<UploadBookViewModel>> GetEditBookAsync(
+            int bookId,
+            string userId)
         {
             var book = await this.bookRepository
                 .AllAsNoTracking()
                 .Include(b => b.Publisher)
                 .Include(b => b.AuthorsBooks)
                 .ThenInclude(b => b.Author)
-                .FirstOrDefaultAsync(b => b.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+                .FirstOrDefaultAsync(b => b.Id == bookId);
+
+            if (book == null)
+            {
+                return OperationResult.Fail<UploadBookViewModel>(BookWrongIdError);
+            }
 
             if (book.UserId != userId)
             {
-                throw new InvalidOperationException(BookEditError);
+                return OperationResult.Fail<UploadBookViewModel>(BookEditError);
             }
 
-            return MapperInstance.Map<UploadBookViewModel>(book);
+            var model = MapperInstance.Map<UploadBookViewModel>(book);
+
+            return OperationResult.Ok(model);
         }
 
-        public async Task<BookListingViewModel> GetBooksInCategoryAsync(string category, int page)
+        public async Task<OperationResult<BookListingViewModel>> GetBooksInCategoryAsync(
+            string category,
+            int page)
         {
-            var categoryId = await this.categoriesService.GetCategoryIdAsync(category);
+            var categoryIdResult = await this.categoriesService.GetCategoryIdAsync(category);
+
+            if (!categoryIdResult.IsSuccess)
+            {
+                return OperationResult.Fail<BookListingViewModel>(categoryIdResult.ErrorMessage);
+            }
 
             var query = this.bookRepository
                                 .AllAsNoTracking()
-                                .Where(x => x.CategoryId == categoryId && x.IsApproved);
+                                .Where(x => x.IsApproved && x.CategoryId == categoryIdResult.Data);
 
             var recordsCount = await query.CountAsync();
 
@@ -151,22 +199,29 @@
                                 .Take(BooksPerPage)
                                 .ToListAsync();
 
-            return new BookListingViewModel
+            var data = new BookListingViewModel
             {
                 Books = books,
                 PageNumber = page,
                 ItemsPerPage = BooksPerPage,
                 RecordsCount = recordsCount,
             };
+
+            return OperationResult.Ok(data);
         }
 
-        public async Task<BookListingViewModel> GetUserFavoriteBooksAsync(string userId, int page)
+        public async Task<OperationResult<BookListingViewModel>> GetUserFavoriteBooksAsync(
+            string userId,
+            int page)
         {
             var itemsPerPage = 8;
 
-            var approvedBooks = this.bookRepository.AllAsNoTracking().Where(b => b.IsApproved);
+            var approvedBooks = this.bookRepository
+                .AllAsNoTracking()
+                .Where(b => b.IsApproved);
 
-            var query = this.favBooksRepository.AllAsNoTracking()
+            var query = this.favBooksRepository
+                .AllAsNoTracking()
                 .Where(fb => fb.UserId == userId)
                 .Join(
                         approvedBooks,
@@ -187,18 +242,24 @@
                 .Take(itemsPerPage)
                 .ToListAsync();
 
-            return new BookListingViewModel
+            var data = new BookListingViewModel
             {
                 Books = books,
                 PageNumber = page,
                 RecordsCount = recordsCount,
                 ItemsPerPage = itemsPerPage,
             };
+
+            return OperationResult.Ok(data);
         }
 
-        public async Task<BookListingViewModel> GetUserBooksAsync(string userId, int page)
+        public async Task<OperationResult<BookListingViewModel>> GetUserBooksAsync(
+            string userId,
+            int page)
         {
-            var query = this.bookRepository.AllAsNoTracking().Where(x => x.UserId == userId);
+            var query = this.bookRepository
+                .AllAsNoTracking()
+                .Where(x => x.UserId == userId);
 
             var recordsCount = await query.CountAsync();
 
@@ -209,17 +270,20 @@
                                 .Take(BooksPerPage)
                                 .ToListAsync();
 
-            return new BookListingViewModel
+            var model = new BookListingViewModel
             {
                 Books = books,
                 PageNumber = page,
                 ItemsPerPage = BooksPerPage,
                 RecordsCount = recordsCount,
             };
+
+            return OperationResult.Ok(model);
         }
 
-        public async Task<IEnumerable<BookViewModel>> GetPopularBooksAsync()
-            => await this.bookRepository
+        public async Task<OperationResult<IEnumerable<BookViewModel>>> GetPopularBooksAsync()
+        {
+            var books = await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.IsApproved)
                     .OrderByDescending(x => x.DownloadsCount)
@@ -227,8 +291,12 @@
                     .SelectBookViewModel()
                     .ToListAsync();
 
-        public async Task<IEnumerable<BookViewModel>> GetRecentBooksAsync()
-            => await this.bookRepository
+            return OperationResult.Ok(books);
+        }
+
+        public async Task<OperationResult<IEnumerable<BookViewModel>>> GetRecentBooksAsync()
+        {
+            var books = await this.bookRepository
                     .AllAsNoTracking()
                     .Where(x => x.IsApproved)
                     .OrderByDescending(x => x.CreatedOn)
@@ -236,43 +304,78 @@
                     .SelectBookViewModel()
                     .ToListAsync();
 
-        public async Task<IEnumerable<BookDetailsViewModel>> GetUnapprovedBooksAsync()
-            => await this.bookRepository
+            return OperationResult.Ok(books);
+        }
+
+        public async Task<OperationResult<IEnumerable<BookDetailsViewModel>>> GetUnapprovedBooksAsync()
+        {
+            var books = await this.bookRepository
                     .AllAsNoTracking()
                     .Where(book => !book.IsApproved)
                     .SelectBookDetailsViewModel()
                     .ToListAsync();
 
-        public async Task<int> GetUnapprovedBooksCountAsync()
-            => await this.bookRepository
-                    .AllAsNoTracking()
-                    .Where(book => !book.IsApproved)
-                    .CountAsync();
+            return OperationResult.Ok(books);
+        }
 
-        public async Task<IEnumerable<BookDetailsViewModel>> GetApprovedBooksAsync()
-            => await this.bookRepository
+        public async Task<OperationResult<int>> GetUnapprovedBooksCountAsync()
+        {
+            var count = await this.bookRepository
+                .AllAsNoTracking()
+                .Where(book => !book.IsApproved)
+                .CountAsync();
+
+            return OperationResult.Ok(count);
+        }
+
+        public async Task<OperationResult<IEnumerable<BookDetailsViewModel>>> GetApprovedBooksAsync()
+        {
+            var books = await this.bookRepository
                     .AllAsNoTracking()
                     .Where(book => book.IsApproved)
                     .SelectBookDetailsViewModel()
                     .ToListAsync();
 
-        public async Task<IEnumerable<BookDetailsViewModel>> GetDeletedBooksAsync()
-            => await this.bookRepository
+            return OperationResult.Ok(books);
+        }
+
+        public async Task<OperationResult<IEnumerable<BookDetailsViewModel>>> GetDeletedBooksAsync()
+        {
+            var books = await this.bookRepository
                     .AllAsNoTrackingWithDeleted()
                     .Where(book => book.IsDeleted)
                     .SelectBookDetailsViewModel()
                     .ToListAsync();
 
-        public async Task<Book> GetBookWithIdAsync(int bookId)
-            => await this.bookRepository
-                    .AllAsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                    throw new InvalidOperationException(BookWrongIdError);
+            return OperationResult.Ok(books);
+        }
 
-        public async Task<Book> GetDeletedBookWithIdAsync(int bookId)
-            => await this.bookRepository
-                    .AllAsNoTrackingWithDeleted()
-                    .FirstOrDefaultAsync(x => x.Id == bookId && x.IsDeleted) ??
-                    throw new InvalidOperationException(BookWrongIdError);
+        public async Task<OperationResult<Book>> GetBookWithIdAsync(int bookId)
+        {
+            var book = await this.bookRepository
+                     .AllAsNoTracking()
+                     .FirstOrDefaultAsync(x => x.Id == bookId);
+
+            if (book == null)
+            {
+                return OperationResult.Fail<Book>(BookWrongIdError);
+            }
+
+            return OperationResult.Ok(book);
+        }
+
+        public async Task<OperationResult<Book>> GetDeletedBookWithIdAsync(int bookId)
+        {
+            var book = await this.bookRepository
+                     .AllAsNoTrackingWithDeleted()
+                     .FirstOrDefaultAsync(x => x.IsDeleted && x.Id == bookId);
+
+            if (book == null)
+            {
+                return OperationResult.Fail<Book>(BookWrongIdError);
+            }
+
+            return OperationResult.Ok(book);
+        }
     }
 }

@@ -1,12 +1,11 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
-    using System;
     using System.IO;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Microsoft.EntityFrameworkCore;
@@ -30,25 +29,41 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, ApplicationUser user)
+        public async Task<OperationResult<(Stream stream, string contentType, string downloadName)>> DownloadBookAsync(
+            int bookId,
+            ApplicationUser user)
         {
             var isUserAdmin = await this.usersService.IsUserAdminAsync(user.Id);
             var userMaxDailyDownloadsCount = this.usersService.GetUserDailyMaxDownloadsCount(user.Points);
 
-            if (user.DailyDownloadsCount == userMaxDailyDownloadsCount && !isUserAdmin)
+            if (!isUserAdmin && user.DailyDownloadsCount == userMaxDailyDownloadsCount)
             {
                 string errMsg = string.Format(UserDailyCountError, userMaxDailyDownloadsCount);
-                throw new InvalidOperationException(errMsg);
+
+                return OperationResult.Fail<(
+                    Stream stream,
+                    string contentType,
+                    string downloadName)>(errMsg);
             }
 
             var book = await this.bookRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(b => b.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+                .FirstOrDefaultAsync(b => b.Id == bookId);
+
+            if (book == null)
+            {
+                return OperationResult.Fail<(
+                    Stream stream,
+                    string contentType,
+                    string downloadName)>(BookWrongIdError);
+            }
 
             if (!book.IsApproved)
             {
-                throw new InvalidOperationException(BookNotApprovedError);
+                return OperationResult.Fail<(
+                    Stream stream,
+                    string contentType,
+                    string downloadName)>(BookNotApprovedError);
             }
 
             book.DownloadsCount++;
@@ -57,7 +72,9 @@
 
             await this.usersService.IncreaseUserDailyDownloadsCountAsync(user);
 
-            return await this.blobService.DownloadBlobAsync(book.FileUrl);
+            var data = await this.blobService.DownloadBlobAsync(book.FileUrl);
+
+            return OperationResult.Ok(data);
         }
     }
 }

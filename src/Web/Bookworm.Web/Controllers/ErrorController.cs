@@ -15,10 +15,12 @@
             NoStore = true)]
         public IActionResult HandleError()
         {
-            return this.View(new ErrorViewModel
+            var model = new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier,
-            });
+            };
+
+            return this.View(model);
         }
 
         [AllowAnonymous]

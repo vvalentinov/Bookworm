@@ -1,8 +1,8 @@
 ﻿namespace Bookworm.Services.Data.Models.Quotes
 {
-    using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
@@ -10,6 +10,7 @@
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
+    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Enums.QuoteType;
 
     public class UploadQuoteService : IUploadQuoteService
@@ -21,20 +22,26 @@
             this.quoteRepository = quoteRepository;
         }
 
-        public async Task UploadQuoteAsync(QuoteDto quoteDto, string userId)
+        public async Task<OperationResult> UploadQuoteAsync(
+            QuoteDto quoteDto,
+            string userId)
         {
             string content = quoteDto.Content.Trim();
 
-            bool quoteExist = await this.quoteRepository
+            bool quoteExists = await this.quoteRepository
                 .AllAsNoTrackingWithDeleted()
                 .AnyAsync(x => EF.Functions.Like(x.Content, $"%{content}%"));
 
-            if (quoteExist)
+            if (quoteExists)
             {
-                throw new InvalidOperationException(QuoteExistsError);
+                return OperationResult.Fail(QuoteExistsError);
             }
 
-            var quote = new Quote { Content = content, UserId = userId };
+            var quote = new Quote
+            {
+                UserId = userId,
+                Content = content,
+            };
 
             switch (quoteDto.Type)
             {
@@ -51,11 +58,13 @@
                     quote.AuthorName = quoteDto.AuthorName.Trim();
                     quote.Type = GeneralQuote;
                     break;
-                default: throw new InvalidOperationException(QuoteInvalidTypeError);
+                default: return OperationResult.Fail(QuoteInvalidTypeError);
             }
 
             await this.quoteRepository.AddAsync(quote);
             await this.quoteRepository.SaveChangesAsync();
+
+            return OperationResult.Ok(UploadSuccess);
         }
     }
 }

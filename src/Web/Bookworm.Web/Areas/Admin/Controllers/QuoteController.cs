@@ -1,80 +1,112 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
-    using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Microsoft.AspNetCore.Identity;
+    using Bookworm.Web.Extensions;
     using Microsoft.AspNetCore.Mvc;
 
-    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     public class QuoteController : BaseController
     {
-        private readonly IRetrieveQuotesService retrieveQuotesService;
         private readonly IUpdateQuoteService updateQuoteService;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IRetrieveQuotesService retrieveQuotesService;
 
         public QuoteController(
-            IRetrieveQuotesService retrieveQuotesService,
             IUpdateQuoteService updateQuoteService,
-            UserManager<ApplicationUser> userManager)
+            IRetrieveQuotesService retrieveQuotesService)
         {
-            this.retrieveQuotesService = retrieveQuotesService;
             this.updateQuoteService = updateQuoteService;
-            this.userManager = userManager;
+            this.retrieveQuotesService = retrieveQuotesService;
         }
 
         [HttpGet]
         public async Task<IActionResult> ApprovedQuotes()
-            => this.View(await this.retrieveQuotesService.GetAllApprovedAsync());
+        {
+            var result = await this.retrieveQuotesService
+                .GetAllApprovedAsync();
+
+            return this.View(result.Data);
+        }
 
         [HttpGet]
         public async Task<IActionResult> UnapprovedQuotes()
-            => this.View(await this.retrieveQuotesService.GetAllUnapprovedAsync());
+        {
+            var result = await this.retrieveQuotesService
+                .GetAllUnapprovedAsync();
+
+            return this.View(result.Data);
+        }
 
         [HttpGet]
         public async Task<IActionResult> DeletedQuotes()
-            => this.View(await this.retrieveQuotesService.GetAllDeletedAsync());
+        {
+            var result = await this.retrieveQuotesService
+                .GetAllDeletedAsync();
+
+            return this.View(result.Data);
+        }
 
         [HttpPost]
         public async Task<IActionResult> ApproveQuote(int quoteId)
         {
-            await this.updateQuoteService.ApproveQuoteAsync(quoteId);
+            var result = await this.updateQuoteService
+                .ApproveQuoteAsync(quoteId);
+
+            if (result.IsFailure)
+            {
+                this.TempData[ErrorMessage] = result.ErrorMessage;
+            }
+
             return this.RedirectToAction(nameof(this.UnapprovedQuotes));
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int quoteId)
         {
-            try
-            {
-                var userId = this.userManager.GetUserId(this.User);
-                await this.updateQuoteService.DeleteQuoteAsync(quoteId, userId, isCurrUserAdmin: true);
+            var userId = this.User.GetId();
 
-                this.TempData[SuccessMessage] = DeleteSuccess;
-                return this.RedirectToAction(nameof(this.UnapprovedQuotes));
-            }
-            catch (Exception ex)
+            var result = await this.updateQuoteService.DeleteQuoteAsync(
+                quoteId,
+                userId,
+                isCurrUserAdmin: true);
+
+            if (result.IsSuccess)
             {
-                this.TempData[ErrorMessage] = ex.Message;
+                this.TempData[SuccessMessage] = result.SuccessMessage;
                 return this.RedirectToAction(nameof(this.UnapprovedQuotes));
             }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.UnapprovedQuotes));
         }
 
         [HttpPost]
         public async Task<IActionResult> Undelete(int quoteId)
         {
-            await this.updateQuoteService.UndeleteQuoteAsync(quoteId);
+            var result = await this.updateQuoteService
+                .UndeleteQuoteAsync(quoteId);
+
+            if (result.IsFailure)
+            {
+                this.TempData[ErrorMessage] = result.ErrorMessage;
+            }
+
             return this.RedirectToAction(nameof(this.DeletedQuotes));
         }
 
         [HttpPost]
         public async Task<IActionResult> Unapprove(int quoteId)
         {
-            await this.updateQuoteService.UnapproveQuoteAsync(quoteId);
+            var result = await this.updateQuoteService
+                .UnapproveQuoteAsync(quoteId);
+
+            if (result.IsFailure)
+            {
+                this.TempData[ErrorMessage] = result.ErrorMessage;
+            }
+
             return this.RedirectToAction(nameof(this.ApprovedQuotes));
         }
     }

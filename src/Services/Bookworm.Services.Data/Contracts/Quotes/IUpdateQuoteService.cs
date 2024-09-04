@@ -2,21 +2,24 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Web.ViewModels.DTOs;
 
     public interface IUpdateQuoteService
     {
-        Task ApproveQuoteAsync(int quoteId);
+        Task<OperationResult> ApproveQuoteAsync(int quoteId);
 
-        Task DeleteQuoteAsync(
+        Task<OperationResult> DeleteQuoteAsync(
             int quoteId,
             string userId,
             bool isCurrUserAdmin = false);
 
-        Task UndeleteQuoteAsync(int quoteId);
+        Task<OperationResult> UndeleteQuoteAsync(int quoteId);
 
-        Task UnapproveQuoteAsync(int quoteId);
+        Task<OperationResult> UnapproveQuoteAsync(int quoteId);
 
-        Task EditQuoteAsync(QuoteDto quote, string userId);
+        Task<OperationResult> EditQuoteAsync(
+            QuoteDto quote,
+            string userId);
     }
 }

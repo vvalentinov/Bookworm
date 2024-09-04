@@ -1,5 +1,7 @@
 ﻿namespace Bookworm.Common
 {
+    using System.Collections.Generic;
+
     public class OperationResult
     {
         private protected OperationResult(
@@ -14,35 +16,36 @@
 
         public bool IsSuccess { get; }
 
+        public bool IsFailure => !this.IsSuccess;
+
         public string SuccessMessage { get; }
 
         public string ErrorMessage { get; }
 
-        public static OperationResult Ok() => new(true);
+        // Ok Methods
+        public static OperationResult Ok(string successMessage = null)
+            => new(true, successMessage);
 
-        public static OperationResult Ok(string successMessage) => new(true, successMessage);
+        public static OperationResult<T> Ok<T>(T data, string successMessage = null)
+           => new(true, data, successMessage);
 
-        public static OperationResult<T> Ok<T>(T data) => new(true, data);
+        public static OperationResult<IEnumerable<T>> Ok<T>(List<T> data)
+            => new(true, data);
 
-        public static OperationResult<T> Ok<T>(T data, string successMessage) => new(true, data, successMessage);
+        // Fail Methods
+        public static OperationResult Fail(string errorMessage)
+            => new(false, null, errorMessage);
 
-        public static OperationResult Fail(string errorMessage) => new(false, null, errorMessage);
-
-        public static OperationResult<T> Fail<T>(string errorMessage) => new(false, default, null, errorMessage);
+        public static OperationResult<T> Fail<T>(string errorMessage)
+            => new(false, default, null, errorMessage);
     }
 
-    public class OperationResult<T> : OperationResult
+    public class OperationResult<T>(
+        bool isSuccess,
+        T data,
+        string successMessage = null,
+        string errorMessage = null) : OperationResult(isSuccess, successMessage, errorMessage)
     {
-        public OperationResult(
-            bool isSuccess,
-            T data,
-            string successMessage = null,
-            string errorMessage = null)
-            : base(isSuccess, successMessage, errorMessage)
-        {
-            this.Data = data;
-        }
-
-        public T Data { get; }
+        public T Data { get; } = data;
     }
 }

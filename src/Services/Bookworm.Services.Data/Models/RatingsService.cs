@@ -1,9 +1,9 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -21,35 +21,91 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<double> GetAverageRatingAsync(int bookId)
+        public async Task<OperationResult<double>> GetAverageRatingAsync(int bookId)
         {
-            var book = await this.GetBookWithIdAsync(bookId);
-            return book.Ratings.Count == 0 ? 0 : book.Ratings.Average(x => x.Value);
+            var result = await this.GetBookWithIdAsync(bookId);
+
+            if (result.IsFailure)
+            {
+                return OperationResult.Fail<double>(result.ErrorMessage);
+            }
+
+            var book = result.Data;
+
+            if (book.Ratings.Count == 0)
+            {
+                return OperationResult.Ok<double>(0);
+            }
+
+            var ratingsAvg = book
+                .Ratings
+                .Average(x => x.Value);
+
+            return OperationResult.Ok(ratingsAvg);
         }
 
-        public async Task<int> GetUserRatingAsync(int bookId, string userId)
+        public async Task<OperationResult<int>> GetUserRatingAsync(
+            int bookId,
+            string userId)
         {
-            var book = await this.GetBookWithIdAsync(bookId);
-            var rating = book.Ratings.FirstOrDefault(x => x.UserId == userId);
-            return rating == null ? 0 : rating.Value;
+            var result = await this.GetBookWithIdAsync(bookId);
+
+            if (result.IsFailure)
+            {
+                return OperationResult.Fail<int>(result.ErrorMessage);
+            }
+
+            var book = result.Data;
+
+            var rating = book
+                .Ratings
+                .FirstOrDefault(x => x.UserId == userId);
+
+            return rating == null ?
+                OperationResult.Ok(0) :
+                OperationResult.Ok<int>(rating.Value);
         }
 
-        public async Task<int> GetRatingsCountAsync(int bookId)
+        public async Task<OperationResult<int>> GetRatingsCountAsync(int bookId)
         {
-            var book = await this.GetBookWithIdAsync(bookId);
-            return book.Ratings.Count;
+            var result = await this.GetBookWithIdAsync(bookId);
+
+            if (result.IsFailure)
+            {
+                return OperationResult.Fail<int>(result.ErrorMessage);
+            }
+
+            var book = result.Data;
+
+            var ratingsCount = book.Ratings.Count;
+
+            return OperationResult.Ok(ratingsCount);
         }
 
-        public async Task SetRatingAsync(int bookId, string userId, byte value)
+        public async Task<OperationResult> SetRatingAsync(
+            int bookId,
+            string userId,
+            byte value)
         {
-            var book = await this.GetBookWithIdAsync(bookId, withTracking: true);
+            var result = await this.GetBookWithIdAsync(
+                bookId,
+                withTracking: true);
+
+            if (result.IsFailure)
+            {
+                return OperationResult.Fail(result.ErrorMessage);
+            }
+
+            var book = result.Data;
 
             if (book.UserId == userId)
             {
-                throw new InvalidOperationException(RateBookError);
+                return OperationResult.Fail(RateBookError);
             }
 
-            var rating = book.Ratings.FirstOrDefault(r => r.UserId == userId);
+            var rating = book
+                .Ratings
+                .FirstOrDefault(r => r.UserId == userId);
 
             if (rating == null)
             {
@@ -67,9 +123,13 @@
             }
 
             await this.bookRepository.SaveChangesAsync();
+
+            return OperationResult.Ok();
         }
 
-        private async Task<Book> GetBookWithIdAsync(int bookId, bool withTracking = false)
+        private async Task<OperationResult<Book>> GetBookWithIdAsync(
+            int bookId,
+            bool withTracking = false)
         {
             var query = withTracking ?
                 this.bookRepository.All() :
@@ -78,10 +138,14 @@
             var book = await query
                 .Where(b => b.IsApproved)
                 .Include(x => x.Ratings)
-                .FirstOrDefaultAsync(x => x.Id == bookId) ??
-                throw new InvalidOperationException(BookWrongIdError);
+                .FirstOrDefaultAsync(x => x.Id == bookId);
 
-            return book;
+            if (book == null)
+            {
+                return OperationResult.Fail<Book>(BookWrongIdError);
+            }
+
+            return OperationResult.Ok(book);
         }
     }
 }

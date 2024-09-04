@@ -2,27 +2,36 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
 
     public interface IRetrieveQuotesService
     {
-        Task<QuoteViewModel> GetByIdAsync(int quoteId);
+        Task<OperationResult<QuoteViewModel>> GetByIdAsync(int quoteId);
 
-        Task<QuoteListingViewModel> GetAllByCriteriaAsync(string userId, GetQuotesApiDto getQuotesApiDto);
+        Task<OperationResult<QuoteListingViewModel>> GetAllByCriteriaAsync(
+            string userId,
+            GetQuotesApiDto getQuotesApiDto);
 
-        Task<QuoteListingViewModel> GetAllApprovedAsync(int? page = null, string userId = null);
+        Task<OperationResult<QuoteListingViewModel>> GetAllApprovedAsync(
+            int? page = null,
+            string userId = null);
 
-        Task<QuoteListingViewModel> GetAllUnapprovedAsync();
+        Task<OperationResult<QuoteListingViewModel>> GetAllUnapprovedAsync();
 
-        Task<QuoteListingViewModel> GetAllDeletedAsync();
+        Task<OperationResult<QuoteListingViewModel>> GetAllDeletedAsync();
 
-        Task<QuoteViewModel> GetRandomAsync();
+        Task<OperationResult<QuoteViewModel>> GetRandomAsync();
 
-        Task<int> GetUnapprovedCountAsync();
+        Task<OperationResult<int>> GetUnapprovedCountAsync();
 
-        Task<QuoteListingViewModel> GetAllUserQuotesAsync(string userId, int page);
+        Task<OperationResult<QuoteListingViewModel>> GetAllUserQuotesAsync(
+            string userId,
+            int page);
 
-        Task<UploadQuoteViewModel> GetQuoteForEditAsync(int id, string userId);
+        Task<OperationResult<UploadQuoteViewModel>> GetQuoteForEditAsync(
+            int id,
+            string userId);
     }
 }

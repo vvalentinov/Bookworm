@@ -1,10 +1,10 @@
 ﻿namespace Bookworm.Services.Data.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -22,24 +22,38 @@
             this.categoriesRepository = categoriesRepository;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync<T>()
-            => await this.categoriesRepository
+        public async Task<OperationResult<IEnumerable<T>>> GetAllAsync<T>()
+        {
+            var data = await this.categoriesRepository
                     .AllAsNoTracking()
                     .OrderBy(x => x.Name)
                     .To<T>()
                     .ToListAsync();
 
-        public async Task<int> GetCategoryIdAsync(string categoryName)
+            return OperationResult.Ok<IEnumerable<T>>(data);
+        }
+
+        public async Task<OperationResult<int>> GetCategoryIdAsync(string categoryName)
         {
             var category = await this.categoriesRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(c => c.Name == categoryName.Trim()) ??
-                throw new InvalidOperationException(CategoryNotFoundError);
+                .FirstOrDefaultAsync(c => c.Name == categoryName.Trim());
 
-            return category.Id;
+            if (category == null)
+            {
+                return OperationResult.Fail<int>(CategoryNotFoundError);
+            }
+
+            return OperationResult.Ok<int>(category.Id);
         }
 
-        public async Task<bool> CheckIfIdIsValidAsync(int categoryId)
-            => await this.categoriesRepository.AllAsNoTracking().AnyAsync(c => c.Id == categoryId);
+        public async Task<OperationResult<bool>> CheckIfIdIsValidAsync(int categoryId)
+        {
+            var isValid = await this.categoriesRepository
+                .AllAsNoTracking()
+                .AnyAsync(c => c.Id == categoryId);
+
+            return OperationResult.Ok<bool>(isValid);
+        }
     }
 }

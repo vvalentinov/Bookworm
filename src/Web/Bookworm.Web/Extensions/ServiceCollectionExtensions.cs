@@ -7,7 +7,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
-    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Services.Data.Contracts.Quotes;
@@ -15,7 +14,6 @@
     using Bookworm.Services.Data.Models.Books;
     using Bookworm.Services.Data.Models.Quotes;
     using Bookworm.Services.Messaging;
-    using Bookworm.Services.Models;
     using Bookworm.Web.BackgroundJobs;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -29,7 +27,9 @@
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection Configure(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection Configure(
+            this IServiceCollection services,
+            IConfiguration config)
         {
             services
                 .AddQuartz()
@@ -47,7 +47,9 @@
             return services;
         }
 
-        private static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
+        private static IServiceCollection AddApplicationServices(
+            this IServiceCollection services,
+            IConfiguration config)
         {
             services.AddSingleton(config);
 
@@ -90,10 +92,15 @@
             return services;
         }
 
-        private static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             var authOptions = new AuthenticationOptions();
-            configuration.GetSection(AuthenticationOptions.Authentication).Bind(authOptions);
+
+            configuration
+                .GetSection(AuthenticationOptions.Authentication)
+                .Bind(authOptions);
 
             services.AddAuthentication()
                 .AddGoogle(googleOptions =>
@@ -133,7 +140,9 @@
             return services;
         }
 
-        private static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection ConfigureOptions(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             var authConfigSection = configuration.GetSection(AuthenticationOptions.Authentication);
             var mailGunConfigSection = configuration.GetSection(MailGunEmailSenderOptions.MailGunEmailSender);
@@ -170,10 +179,15 @@
             return services;
         }
 
-        private static IServiceCollection AddApplicationDbContexts(this IServiceCollection services, IConfiguration config)
+        private static IServiceCollection AddApplicationDbContexts(
+            this IServiceCollection services,
+            IConfiguration config)
         {
             var connectionString = GetSqlServerConnection(config);
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             return services;
@@ -212,6 +226,7 @@
             return services;
         }
 
-        private static string GetSqlServerConnection(IConfiguration config) => config.GetValue<string>("SqlServerConnection");
+        private static string GetSqlServerConnection(IConfiguration config)
+            => config.GetValue<string>("SqlServerConnection");
     }
 }

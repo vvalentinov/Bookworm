@@ -26,9 +26,9 @@
         {
             var model = new IndexViewModel
             {
-                RandomQuote = await this.retrieveQuotesService.GetRandomAsync(),
-                RecentBooks = await this.retrieveBooksService.GetRecentBooksAsync(),
-                PopularBooks = await this.retrieveBooksService.GetPopularBooksAsync(),
+                RandomQuote = (await this.retrieveQuotesService.GetRandomAsync()).Data,
+                RecentBooks = (await this.retrieveBooksService.GetRecentBooksAsync()).Data,
+                PopularBooks = (await this.retrieveBooksService.GetPopularBooksAsync()).Data,
             };
 
             return this.View(model);

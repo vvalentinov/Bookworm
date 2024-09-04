@@ -34,7 +34,7 @@
 
             if (!languagesAreCached)
             {
-                languages = await this.languagesService.GetAllAsync();
+                languages = (await this.languagesService.GetAllAsync()).Data;
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromMinutes(5))

@@ -1,15 +1,13 @@
 ﻿namespace Bookworm.Web.Controllers.Api
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Web.Extensions;
     using Bookworm.Web.ViewModels.Books;
     using Bookworm.Web.ViewModels.Languages;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     public class ApiBookController : ApiBaseController
@@ -17,17 +15,14 @@
         private readonly ILanguagesService languagesService;
         private readonly ICategoriesService categoriesService;
         private readonly ISearchBooksService searchBooksService;
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly IFavoriteBookService favoriteBookService;
 
         public ApiBookController(
             ILanguagesService languagesService,
             ICategoriesService categoriesService,
             ISearchBooksService searchBooksService,
-            UserManager<ApplicationUser> userManager,
             IFavoriteBookService favoriteBookService)
         {
-            this.userManager = userManager;
             this.languagesService = languagesService;
             this.categoriesService = categoriesService;
             this.searchBooksService = searchBooksService;
@@ -37,63 +32,71 @@
         [HttpPost(nameof(SearchBooks))]
         public async Task<ActionResult<BookListingViewModel>> SearchBooks(SearchBookInputModel model)
         {
-            try
+            if (model.IsForUserBooks)
             {
-                if (model.IsForUserBooks)
-                {
-                    model.UserId = this.userManager.GetUserId(this.User);
-                }
-                else
-                {
-                    model.CategoryId = await this.categoriesService.GetCategoryIdAsync(model.Category);
-                }
-
-                model.Input ??= string.Empty;
-
-                var books = await this.searchBooksService.SearchBooksAsync(model);
-
-                return this.Ok(books);
+                model.UserId = this.User.GetId();
             }
-            catch (Exception ex)
+            else
             {
-                return this.BadRequest(ex.Message);
+                var getCategoryIdResult = await this.categoriesService
+                    .GetCategoryIdAsync(model.Category);
+
+                if (getCategoryIdResult.IsFailure)
+                {
+                    return this.BadRequest(getCategoryIdResult.ErrorMessage);
+                }
+
+                model.CategoryId = getCategoryIdResult.Data;
             }
+
+            model.Input ??= string.Empty;
+
+            var result = await this.searchBooksService.SearchBooksAsync(model);
+
+            return this.Ok(result.Data);
         }
 
         [HttpGet(nameof(GetLanguagesInBookCategory))]
         public async Task<ActionResult<IEnumerable<LanguageViewModel>>> GetLanguagesInBookCategory(string category)
         {
-            try
+            var getCategoryIdResult = await this.categoriesService
+                .GetCategoryIdAsync(category);
+
+            if (getCategoryIdResult.IsFailure)
             {
-                int categoryId = await this.categoriesService.GetCategoryIdAsync(category);
-                return this.Ok(await this.languagesService.GetAllInBookCategoryAsync(categoryId));
+                return this.BadRequest(getCategoryIdResult.ErrorMessage);
             }
-            catch (Exception ex)
-            {
-                return this.BadRequest(ex.Message);
-            }
+
+            var getLanguagesResult = await this.languagesService
+                .GetAllInBookCategoryAsync(getCategoryIdResult.Data);
+
+            return this.Ok(getLanguagesResult.Data);
         }
 
         [HttpGet(nameof(GetLanguagesInUserBooks))]
         public async Task<ActionResult<IEnumerable<LanguageViewModel>>> GetLanguagesInUserBooks()
         {
-            var userId = this.userManager.GetUserId(this.User);
-            return this.Ok(await this.languagesService.GetAllInUserBooksAsync(userId));
+            var userId = this.User.GetId();
+
+            var result = await this.languagesService.GetAllInUserBooksAsync(userId);
+
+            return this.Ok(result.Data);
         }
 
         [HttpPost(nameof(AddToFavorites))]
         public async Task<IActionResult> AddToFavorites(int id)
         {
-            try
+            var userId = this.User.GetId();
+
+            var result = await this.favoriteBookService
+                .AddBookToFavoritesAsync(id, userId);
+
+            if (result.IsSuccess)
             {
-                var userId = this.userManager.GetUserId(this.User);
-                await this.favoriteBookService.AddBookToFavoritesAsync(id, userId);
-                return new JsonResult("Successfully added to favorites list!");
+                return new JsonResult(result.SuccessMessage);
             }
-            catch (Exception ex)
-            {
-                return this.BadRequest(new { error = ex.Message });
-            }
+
+            return this.BadRequest(new { error = result.ErrorMessage });
         }
     }
 }

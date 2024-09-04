@@ -23,8 +23,14 @@
 
         public async Task<IActionResult> Index()
         {
-            this.ViewData[BooksCount] = await this.booksService.GetUnapprovedBooksCountAsync();
-            this.ViewData[QuotesCount] = await this.retrieveQuotesService.GetUnapprovedCountAsync();
+            var getUnapprovedBooksCountResult = await this.booksService
+                .GetUnapprovedBooksCountAsync();
+
+            var getUnapprovedQuotesCountResult = await this.retrieveQuotesService
+                .GetUnapprovedCountAsync();
+
+            this.ViewData[BooksCount] = getUnapprovedBooksCountResult.Data;
+            this.ViewData[QuotesCount] = getUnapprovedQuotesCountResult.Data;
 
             return this.View();
         }

@@ -2,10 +2,11 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Models;
 
     public interface IPublishersService
     {
-        Task<Publisher> GetPublisherWithNameAsync(string name);
+        Task<OperationResult<Publisher>> GetPublisherWithNameAsync(string name);
     }
 }

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -21,22 +22,31 @@
             this.commentRepository = commentRepository;
         }
 
-        public async Task<int> VoteAsync(int commentId, string userId, bool isUpVote)
+        public async Task<OperationResult<int>> VoteAsync(
+            int commentId,
+            string userId,
+            bool isUpVote)
         {
             var comment = await this.commentRepository
                 .All()
                 .Include(x => x.Votes)
-                .FirstOrDefaultAsync(c => c.Id == commentId) ??
-                throw new InvalidOperationException(CommentWrongIdError);
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return OperationResult.Fail<int>(CommentWrongIdError);
+            }
 
             if (comment.UserId == userId)
             {
-                throw new InvalidOperationException(CommentVoteError);
+                return OperationResult.Fail<int>(CommentVoteError);
             }
 
             var newVoteValue = isUpVote ? UpVote : DownVote;
 
-            var vote = comment.Votes.FirstOrDefault(v => v.UserId == userId);
+            var vote = comment
+                .Votes
+                .FirstOrDefault(v => v.UserId == userId);
 
             if (vote == null)
             {
@@ -52,8 +62,15 @@
                 vote.Value = newVoteValue;
             }
 
-            int upVotesCount = comment.Votes.Where(v => v.Value == UpVote).Count();
-            int downVotesCount = comment.Votes.Where(v => v.Value == DownVote).Count();
+            int upVotesCount = comment
+                .Votes
+                .Where(v => v.Value == UpVote)
+                .Count();
+
+            int downVotesCount = comment
+                .Votes
+                .Where(v => v.Value == DownVote)
+                .Count();
 
             int netWorth = upVotesCount - downVotesCount;
 
@@ -61,7 +78,7 @@
             this.commentRepository.Update(comment);
             await this.commentRepository.SaveChangesAsync();
 
-            return netWorth;
+            return OperationResult.Ok(netWorth);
         }
     }
 }

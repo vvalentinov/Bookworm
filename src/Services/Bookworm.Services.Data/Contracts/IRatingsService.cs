@@ -2,14 +2,21 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
+
     public interface IRatingsService
     {
-        Task SetRatingAsync(int bookId, string userId, byte value);
+        Task<OperationResult> SetRatingAsync(
+            int bookId,
+            string userId,
+            byte value);
 
-        Task<double> GetAverageRatingAsync(int bookId);
+        Task<OperationResult<double>> GetAverageRatingAsync(int bookId);
 
-        Task<int> GetUserRatingAsync(int bookId, string userId);
+        Task<OperationResult<int>> GetUserRatingAsync(
+            int bookId,
+            string userId);
 
-        Task<int> GetRatingsCountAsync(int bookId);
+        Task<OperationResult<int>> GetRatingsCountAsync(int bookId);
     }
 }

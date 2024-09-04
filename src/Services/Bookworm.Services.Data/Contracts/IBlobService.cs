@@ -1,6 +1,5 @@
-﻿namespace Bookworm.Services.Contracts
+﻿namespace Bookworm.Services.Data.Contracts
 {
-    using System;
     using System.IO;
     using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@
 
         Task DeleteBlobAsync(string blobName);
 
-        Task<Tuple<Stream, string, string>> DownloadBlobAsync(string url);
+        Task<(Stream stream, string contentType, string downloadName)> DownloadBlobAsync(string url);
 
         Task<string> ReplaceBlobAsync(
             IFormFile file,

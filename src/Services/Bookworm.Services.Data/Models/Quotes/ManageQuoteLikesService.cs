@@ -1,8 +1,8 @@
 ﻿namespace Bookworm.Services.Data.Models.Quotes
 {
-    using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
@@ -19,25 +19,31 @@
             IRepository<QuoteLike> quoteLikesRepository,
             IDeletableEntityRepository<Quote> quoteRepository)
         {
-            this.quoteLikesRepository = quoteLikesRepository;
             this.quoteRepository = quoteRepository;
+            this.quoteLikesRepository = quoteLikesRepository;
         }
 
-        public async Task<int> LikeAsync(int quoteId, string userId)
+        public async Task<OperationResult<int>> LikeAsync(
+            int quoteId,
+            string userId)
         {
-            var quote = await this.quoteRepository.All()
-                .FirstOrDefaultAsync(x => x.Id == quoteId) ??
-                throw new InvalidOperationException(QuoteWrongIdError);
+            var quote = await this.quoteRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == quoteId);
+
+            if (quote == null)
+            {
+                return OperationResult.Fail<int>(QuoteWrongIdError);
+            }
 
             if (quote.UserId == userId)
             {
-                throw new InvalidOperationException("User cannot like or unlike his or her quotes!");
+                return OperationResult.Fail<int>("User cannot like or unlike his or her quotes!");
             }
 
             var quoteLike = await this.quoteLikesRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(ql
-                    => ql.QuoteId == quoteId && ql.UserId == userId);
+                .FirstOrDefaultAsync(ql => ql.QuoteId == quoteId && ql.UserId == userId);
 
             if (quoteLike == null)
             {
@@ -45,26 +51,39 @@
                 this.quoteRepository.Update(quote);
                 await this.quoteRepository.SaveChangesAsync();
 
-                quoteLike = new QuoteLike { QuoteId = quoteId, UserId = userId };
+                quoteLike = new QuoteLike
+                {
+                    QuoteId = quoteId,
+                    UserId = userId,
+                };
+
                 await this.quoteLikesRepository.AddAsync(quoteLike);
                 await this.quoteLikesRepository.SaveChangesAsync();
             }
 
-            return quote.Likes;
+            return OperationResult.Ok(quote.Likes);
         }
 
-        public async Task<int> UnlikeAsync(int quoteId, string userId)
+        public async Task<OperationResult<int>> UnlikeAsync(
+            int quoteId,
+            string userId)
         {
-            var quote = await this.quoteRepository.All()
-                .FirstOrDefaultAsync(x => x.Id == quoteId) ??
-                throw new InvalidOperationException(QuoteWrongIdError);
+            var quote = await this.quoteRepository
+                .All()
+                .FirstOrDefaultAsync(x => x.Id == quoteId);
+
+            if (quote == null)
+            {
+                return OperationResult.Fail<int>(QuoteWrongIdError);
+            }
 
             if (quote.UserId == userId)
             {
-                throw new InvalidOperationException("User cannot like or unlike his or her quotes!");
+                return OperationResult.Fail<int>("User cannot like or unlike his or her quotes!");
             }
 
-            var quoteLike = await this.quoteLikesRepository.All()
+            var quoteLike = await this.quoteLikesRepository
+                .All()
                 .FirstOrDefaultAsync(ql => ql.QuoteId == quoteId && ql.UserId == userId);
 
             if (quoteLike != null)
@@ -77,7 +96,7 @@
                 await this.quoteLikesRepository.SaveChangesAsync();
             }
 
-            return quote.Likes;
+            return OperationResult.Ok(quote.Likes);
         }
     }
 }

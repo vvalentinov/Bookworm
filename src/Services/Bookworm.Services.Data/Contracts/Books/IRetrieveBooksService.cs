@@ -3,37 +3,51 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Books;
 
     public interface IRetrieveBooksService
     {
-        Task<int> GetUnapprovedBooksCountAsync();
+        Task<OperationResult<int>> GetUnapprovedBooksCountAsync();
 
-        Task<Book> GetBookWithIdAsync(int bookId);
+        Task<OperationResult<Book>> GetBookWithIdAsync(int bookId);
 
-        Task<Book> GetDeletedBookWithIdAsync(int bookId);
+        Task<OperationResult<Book>> GetDeletedBookWithIdAsync(int bookId);
 
-        Task<IEnumerable<BookViewModel>> GetRecentBooksAsync();
+        Task<OperationResult<IEnumerable<BookViewModel>>> GetRecentBooksAsync();
 
-        Task<IEnumerable<BookViewModel>> GetPopularBooksAsync();
+        Task<OperationResult<IEnumerable<BookViewModel>>> GetPopularBooksAsync();
 
-        Task<IEnumerable<BookDetailsViewModel>> GetDeletedBooksAsync();
+        Task<OperationResult<IEnumerable<BookDetailsViewModel>>> GetDeletedBooksAsync();
 
-        Task<IEnumerable<BookDetailsViewModel>> GetApprovedBooksAsync();
+        Task<OperationResult<IEnumerable<BookDetailsViewModel>>> GetApprovedBooksAsync();
 
-        Task<IEnumerable<BookDetailsViewModel>> GetUnapprovedBooksAsync();
+        Task<OperationResult<IEnumerable<BookDetailsViewModel>>> GetUnapprovedBooksAsync();
 
-        Task<UploadBookViewModel> GetEditBookAsync(int bookId, string userId);
+        Task<OperationResult<UploadBookViewModel>> GetEditBookAsync(
+            int bookId,
+            string userId);
 
-        Task<BookListingViewModel> GetUserBooksAsync(string userId, int page);
+        Task<OperationResult<BookListingViewModel>> GetUserBooksAsync(
+            string userId,
+            int page);
 
-        Task<BookListingViewModel> GetUserFavoriteBooksAsync(string userId, int page);
+        Task<OperationResult<BookListingViewModel>> GetUserFavoriteBooksAsync(
+            string userId,
+            int page);
 
-        Task<BookListingViewModel> GetBooksInCategoryAsync(string category, int page);
+        Task<OperationResult<BookListingViewModel>> GetBooksInCategoryAsync(
+            string category,
+            int page);
 
-        Task<IEnumerable<BookViewModel>> GetRandomBooksAsync(int countBooks, int? categoryId);
+        Task<OperationResult<IEnumerable<BookViewModel>>> GetRandomBooksAsync(
+            int countBooks,
+            int? categoryId);
 
-        Task<BookDetailsViewModel> GetBookDetailsAsync(int bookId, string currentUserId, bool isAdmin);
+        Task<OperationResult<BookDetailsViewModel>> GetBookDetailsAsync(
+            int bookId,
+            string userId,
+            bool isAdmin);
     }
 }

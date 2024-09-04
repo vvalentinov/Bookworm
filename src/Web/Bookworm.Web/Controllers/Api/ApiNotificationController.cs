@@ -1,60 +1,56 @@
 ﻿namespace Bookworm.Web.Controllers.Api
 {
-    using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Microsoft.AspNetCore.Identity;
+    using Bookworm.Web.Extensions;
     using Microsoft.AspNetCore.Mvc;
 
     public class ApiNotificationController : ApiBaseController
     {
-        private readonly INotificationService notificationService;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly INotificationService service;
 
-        public ApiNotificationController(
-            INotificationService notificationService,
-            UserManager<ApplicationUser> userManager)
+        public ApiNotificationController(INotificationService service)
         {
-            this.userManager = userManager;
-            this.notificationService = notificationService;
+            this.service = service;
         }
 
         [HttpGet(nameof(GetUserNotificationsCount))]
         public async Task<int> GetUserNotificationsCount()
         {
-            var userId = this.userManager.GetUserId(this.User);
-            return await this.notificationService.GetUserNotificationsCountAsync(userId);
+            var userId = this.User.GetId();
+
+            var result = await this.service
+                .GetUserNotificationsCountAsync(userId);
+
+            return result.Data;
         }
 
         [HttpPut(nameof(MarkUserNotificationsAsRead))]
         public async Task<IActionResult> MarkUserNotificationsAsRead()
         {
-            try
-            {
-                var userId = this.userManager.GetUserId(this.User);
-                await this.notificationService.MarkUnreadUserNotificationsAsReadAsync(userId);
-                return this.Ok("Successfully marked notifications as read!");
-            }
-            catch (Exception ex)
-            {
-                return this.BadRequest(ex.Message);
-            }
+            var userId = this.User.GetId();
+
+            var result = await this.service
+                .MarkUnreadUserNotificationsAsReadAsync(userId);
+
+            return this.Ok(result.SuccessMessage);
         }
 
         [HttpDelete(nameof(DeleteNotification))]
         public async Task<ActionResult<int>> DeleteNotification(int id)
         {
-            try
+            var userId = this.User.GetId();
+
+            var result = await this.service
+                .DeleteUserNotificationAsync(userId, id);
+
+            if (result.IsSuccess)
             {
-                var userId = this.userManager.GetUserId(this.User);
-                return await this.notificationService.DeleteUserNotificationAsync(userId, id);
+                return this.Ok(result.Data);
             }
-            catch (Exception ex)
-            {
-                return this.BadRequest(new { error = ex.Message });
-            }
+
+            return this.BadRequest(new { error = result.ErrorMessage });
         }
     }
 }

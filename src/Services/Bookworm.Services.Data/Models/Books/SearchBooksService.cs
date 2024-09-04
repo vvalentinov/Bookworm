@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
@@ -20,19 +21,25 @@
             this.bookRepository = bookRepository;
         }
 
-        public async Task<bool> CheckIfBookWithTitleExistsAsync(string title, int? bookId = null)
+        public async Task<OperationResult<bool>> CheckIfBookWithTitleExistsAsync(
+            string title,
+            int? bookId = null)
         {
-            var query = this.bookRepository.AllAsNoTrackingWithDeleted().Where(b => b.Title == title);
+            var query = this.bookRepository
+                .AllAsNoTrackingWithDeleted()
+                .Where(b => b.Title == title);
 
             if (bookId.HasValue)
             {
                 query = query.Where(b => b.Id != bookId.Value);
             }
 
-            return await query.AnyAsync();
+            var bookExists = await query.AnyAsync();
+
+            return OperationResult.Ok(bookExists);
         }
 
-        public async Task<BookListingViewModel> SearchBooksAsync(SearchBookInputModel model)
+        public async Task<OperationResult<BookListingViewModel>> SearchBooksAsync(SearchBookInputModel model)
         {
             var query = (IQueryable<Book>)this.bookRepository
                 .AllAsNoTracking()
@@ -58,13 +65,15 @@
                         .Take(BooksPerPage)
                         .ToListAsync();
 
-            return new BookListingViewModel
+            var bookListingModel = new BookListingViewModel
             {
                 Books = books,
                 PageNumber = model.Page,
                 RecordsCount = recordsCount,
                 ItemsPerPage = BooksPerPage,
             };
+
+            return OperationResult.Ok(bookListingModel);
         }
     }
 }

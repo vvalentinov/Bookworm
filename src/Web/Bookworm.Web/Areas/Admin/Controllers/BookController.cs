@@ -1,105 +1,126 @@
 ﻿namespace Bookworm.Web.Areas.Admin.Controllers
 {
-    using System;
     using System.Threading.Tasks;
 
-    using Bookworm.Common.Constants;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Web.Extensions;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     using static Bookworm.Common.Constants.GlobalConstants;
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
 
     [Authorize(Roles = AdministratorRoleName)]
     public class BookController : BaseController
     {
         private readonly IUpdateBookService updateBookService;
-        private readonly UserManager<ApplicationUser> userManager;
         private readonly IRetrieveBooksService retrieveBooksService;
         private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
 
         public BookController(
-            IRetrieveBooksService retrieveBooksService,
             IUpdateBookService updateBookService,
-            IDeletableEntityRepository<Book> bookRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository,
-            UserManager<ApplicationUser> userManager)
+            IRetrieveBooksService retrieveBooksService,
+            IDeletableEntityRepository<Book> bookRepository)
         {
-            this.retrieveBooksService = retrieveBooksService;
-            this.updateBookService = updateBookService;
             this.bookRepository = bookRepository;
-            this.userRepository = userRepository;
-            this.userManager = userManager;
+            this.updateBookService = updateBookService;
+            this.retrieveBooksService = retrieveBooksService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int bookId)
         {
-            try
+            var userId = this.User.GetId();
+
+            var result = await this.updateBookService
+                .DeleteBookAsync(bookId, userId);
+
+            if (result.IsSuccess)
             {
-                ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-                await this.updateBookService.DeleteBookAsync(bookId, user.Id);
-                this.TempData[TempDataMessageConstant.SuccessMessage] = "Successfully deleted book!";
+                this.TempData[SuccessMessage] = result.SuccessMessage;
             }
-            catch (Exception)
+            else
             {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = "Something went wrong!";
+                this.TempData[ErrorMessage] = result.ErrorMessage;
             }
 
-            return this.RedirectToAction("Index", "Home", new { area = " " });
+            return this.RedirectToAction(
+                "Index",
+                "Home",
+                new { area = " " });
         }
 
         [HttpGet]
         public async Task<IActionResult> UnapprovedBooks()
         {
-            var books = await this.retrieveBooksService.GetUnapprovedBooksAsync();
-            return this.View(books);
+            var result = await this.retrieveBooksService
+                .GetUnapprovedBooksAsync();
+
+            return this.View(result.Data);
         }
 
         [HttpGet]
         public async Task<IActionResult> DeletedBooks()
         {
-            var books = await this.retrieveBooksService.GetDeletedBooksAsync();
-            return this.View(books);
+            var result = await this.retrieveBooksService
+                .GetDeletedBooksAsync();
+
+            return this.View(result.Data);
         }
 
         [HttpGet]
         public async Task<IActionResult> ApprovedBooks()
         {
-            var approvedBooks = await this.retrieveBooksService.GetApprovedBooksAsync();
-            return this.View(approvedBooks);
+            var result = await this.retrieveBooksService
+                .GetApprovedBooksAsync();
+
+            return this.View(result.Data);
         }
 
         [HttpPost]
         public async Task<IActionResult> ApproveBook(int bookId)
         {
-            try
+            // TODO: send notification await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", ApprovedBookMessage);
+            var result = await this.updateBookService
+                .ApproveBookAsync(bookId);
+
+            if (result.IsSuccess)
             {
-                await this.updateBookService.ApproveBookAsync(bookId);
                 return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
             }
-            catch (Exception ex)
-            {
-                this.TempData[TempDataMessageConstant.ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
         }
 
         [HttpPost]
         public async Task<IActionResult> UnapproveBook(int bookId)
         {
-            await this.updateBookService.UnapproveBookAsync(bookId);
+            // await this.notificationHub.Clients.User(book.UserId).SendAsync("notify", UnapprovedBookMessage);
+            var result = await this.updateBookService
+                .UnapproveBookAsync(bookId);
+
+            if (result.IsFailure)
+            {
+                this.TempData[ErrorMessage] = result.ErrorMessage;
+            }
+
             return this.RedirectToAction(nameof(this.ApprovedBooks), "Book");
         }
 
         [HttpPost]
         public async Task<IActionResult> UndeleteBook(int bookId)
         {
-            await this.updateBookService.UndeleteBookAsync(bookId);
+            var result = await this.updateBookService
+                .UndeleteBookAsync(bookId);
+
+            if (result.IsFailure)
+            {
+                this.TempData[ErrorMessage] = result.ErrorMessage;
+            }
+
             return this.RedirectToAction(nameof(this.UnapprovedBooks), "Book");
         }
     }

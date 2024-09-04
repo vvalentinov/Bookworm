@@ -2,9 +2,11 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
+
     public interface IValidateBookService
     {
-        Task ValidateAsync(
+        Task<OperationResult> ValidateAsync(
             string title,
             int languageId,
             int categoryId,

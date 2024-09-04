@@ -2,10 +2,16 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
+
     public interface IManageQuoteLikesService
     {
-        Task<int> LikeAsync(int quoteId, string userId);
+        Task<OperationResult<int>> LikeAsync(
+            int quoteId,
+            string userId);
 
-        Task<int> UnlikeAsync(int quoteId, string userId);
+        Task<OperationResult<int>> UnlikeAsync(
+            int quoteId,
+            string userId);
     }
 }

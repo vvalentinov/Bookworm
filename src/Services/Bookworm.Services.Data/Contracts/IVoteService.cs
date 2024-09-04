@@ -2,9 +2,11 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
+
     public interface IVoteService
     {
-        Task<int> VoteAsync(
+        Task<OperationResult<int>> VoteAsync(
             int commentId,
             string userId,
             bool isUpVote);

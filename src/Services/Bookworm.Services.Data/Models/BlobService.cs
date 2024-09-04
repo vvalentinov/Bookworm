@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Services.Models
+﻿namespace Bookworm.Services.Data.Models
 {
     using System;
     using System.IO;
@@ -7,7 +7,7 @@
     using Azure.Storage.Blobs;
     using Azure.Storage.Blobs.Models;
     using Bookworm.Common.Options;
-    using Bookworm.Services.Contracts;
+    using Bookworm.Services.Data.Contracts;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Options;
 
@@ -20,7 +20,7 @@
             this.azureBlobStorageOptions = options.Value;
         }
 
-        public async Task<Tuple<Stream, string, string>> DownloadBlobAsync(string fileUrl)
+        public async Task<(Stream stream, string contentType, string downloadName)> DownloadBlobAsync(string fileUrl)
         {
             var uri = new Uri(fileUrl);
 
@@ -36,7 +36,7 @@
 
             var blobStream = await blobClient.OpenReadAsync();
 
-            return Tuple.Create(blobStream, contentType, blobClient.Name);
+            return (blobStream, contentType, blobClient.Name);
         }
 
         public async Task<string> UploadBlobAsync(IFormFile file, string path)
@@ -104,7 +104,7 @@
         private static string GenerateUniqueName(IFormFile file, string path)
             => $"{path}{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
-        private BlobServiceClient GetBlobServiceClient() => new (this.azureBlobStorageOptions.StorageConnection);
+        private BlobServiceClient GetBlobServiceClient() => new(this.azureBlobStorageOptions.StorageConnection);
 
         private string GetContainerName() => this.azureBlobStorageOptions.ContainerName;
     }

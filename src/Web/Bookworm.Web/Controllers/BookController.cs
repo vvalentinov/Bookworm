@@ -1,25 +1,19 @@
 ﻿namespace Bookworm.Web.Controllers
 {
-    using System;
-    using System.IO;
     using System.Threading.Tasks;
 
     using Bookworm.Data.Models;
-    using Bookworm.Services.Contracts;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
+    using Bookworm.Web.Extensions;
     using Bookworm.Web.Infrastructure.Filters;
     using Bookworm.Web.ViewModels.Books;
-    using Bookworm.Web.ViewModels.DTOs;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
-    using static Bookworm.Common.Constants.GlobalConstants;
-    using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
     using static Bookworm.Common.Constants.TempDataMessageConstant;
-    using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     using static StaticKeys.ViewDataKeys;
 
@@ -73,17 +67,21 @@
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Upload(UploadBookViewModel model)
         {
-            this.ViewData[ControllerAction] = nameof(this.Upload);
             this.ViewData[Title] = $"{nameof(this.Upload)} Book";
+            this.ViewData[ControllerAction] = nameof(this.Upload);
 
             if (model.BookFile == null || model.BookFile.Length == 0)
             {
-                this.ModelState.AddModelError(nameof(model.BookFile), BookFileRequiredError);
+                this.ModelState.AddModelError(
+                    nameof(model.BookFile),
+                    BookFileRequiredError);
             }
 
             if (model.ImageFile == null || model.ImageFile.Length == 0)
             {
-                this.ModelState.AddModelError(nameof(model.ImageFile), BookImageFileRequiredError);
+                this.ModelState.AddModelError(
+                    nameof(model.ImageFile),
+                    BookImageFileRequiredError);
             }
 
             if (!this.ModelState.IsValid)
@@ -91,19 +89,22 @@
                 return this.View(model);
             }
 
-            try
+            var userId = this.User.GetId();
+
+            var bookDto = model.MapToBookDto();
+
+            var result = await this.uploadBookService.UploadBookAsync(
+                bookDto,
+                userId);
+
+            if (result.IsSuccess)
             {
-                var userId = this.userManager.GetUserId(this.User);
-                var uploadBookDto = MapperInstance.Map<BookDto>(model);
-                await this.uploadBookService.UploadBookAsync(uploadBookDto, userId);
-                this.TempData[SuccessMessage] = UploadSuccess;
+                this.TempData[SuccessMessage] = result.SuccessMessage;
                 return this.RedirectToAction("Index", "Home");
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.Upload));
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.Upload));
         }
 
         [HttpGet]
@@ -112,17 +113,19 @@
             this.ViewData[ControllerAction] = nameof(this.Edit);
             this.ViewData[Title] = $"{nameof(this.Edit)} Book";
 
-            try
+            var userId = this.User.GetId();
+
+            var result = await this.retrieveBooksService.GetEditBookAsync(
+                bookId: id,
+                userId);
+
+            if (result.IsSuccess)
             {
-                var userId = this.userManager.GetUserId(this.User);
-                var model = await this.retrieveBooksService.GetEditBookAsync(id, userId);
-                return this.View(nameof(this.Upload), model);
+                return this.View(nameof(this.Upload), result.Data);
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction("Index", "Home");
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -137,37 +140,44 @@
                 return this.View(nameof(this.Upload), model);
             }
 
-            try
+            var userId = this.User.GetId();
+
+            var bookDto = model.MapToBookDto();
+
+            var result = await this.updateBookService.EditBookAsync(
+                bookDto,
+                userId);
+
+            if (result.IsSuccess)
             {
-                var userId = this.userManager.GetUserId(this.User);
-                var editBookDto = MapperInstance.Map<BookDto>(model);
-                await this.updateBookService.EditBookAsync(editBookDto, userId);
-                this.TempData[SuccessMessage] = EditSuccess;
+                this.TempData[SuccessMessage] = result.SuccessMessage;
                 return this.RedirectToAction(nameof(this.UserBooks), "Book");
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.UserBooks), "Book");
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.UserBooks), "Book");
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int bookId)
         {
-            string userId = this.userManager.GetUserId(this.User);
+            string userId = this.User.GetId();
 
-            try
+            var result = await this.updateBookService.DeleteBookAsync(
+                bookId,
+                userId);
+
+            if (result.IsSuccess)
             {
-                await this.updateBookService.DeleteBookAsync(bookId, userId);
-                this.TempData[SuccessMessage] = DeleteSuccess;
+                this.TempData[SuccessMessage] = result.SuccessMessage;
                 return this.RedirectToAction("Index", "Home");
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.Details), "Book", new { id = bookId });
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(
+                nameof(this.Details),
+                "Book",
+                new { id = bookId });
         }
 
         [HttpGet]
@@ -183,19 +193,17 @@
                 return this.View(nameof(this.Random), model);
             }
 
-            try
-            {
-                var books = await this.retrieveBooksService.GetRandomBooksAsync(
+            var result = await this.retrieveBooksService.GetRandomBooksAsync(
                     model.CountBooks,
                     model.CategoryId);
 
-                return this.View("GeneratedBooks", books);
-            }
-            catch (Exception ex)
+            if (result.IsSuccess)
             {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.Random));
+                return this.View("GeneratedBooks", result.Data);
             }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.Random));
         }
 
         [HttpGet]
@@ -205,88 +213,96 @@
         {
             this.ViewData[Title] = category;
 
-            try
+            var result = await this.retrieveBooksService
+                .GetBooksInCategoryAsync(category, page);
+
+            if (result.IsSuccess)
             {
-                var model = await this.retrieveBooksService.GetBooksInCategoryAsync(category, page);
-                return this.View(model);
+                return this.View(result.Data);
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.All), "Category");
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.All), "Category");
         }
 
         [HttpGet]
         [PageValidationFilter]
         public async Task<IActionResult> Favorites(int page = 1)
         {
-            var userId = this.userManager.GetUserId(this.User);
-            var model = await this.retrieveBooksService.GetUserFavoriteBooksAsync(userId, page);
-            return this.View(model);
+            var userId = this.User.GetId();
+
+            var result = await this.retrieveBooksService
+                .GetUserFavoriteBooksAsync(userId, page);
+
+            return this.View(result.Data);
         }
 
         [HttpGet]
         public async Task<IActionResult> DeleteFromFavorites(int id)
         {
-            try
+            var userId = this.User.GetId();
+
+            var result = await this.favoriteBookService
+                .DeleteBookFromFavoritesAsync(bookId: id, userId);
+
+            if (result.IsSuccess)
             {
-                var userId = this.userManager.GetUserId(this.User);
-                await this.favoriteBookService.DeleteBookFromFavoritesAsync(id, userId);
                 return this.RedirectToAction(nameof(this.Favorites));
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.Favorites));
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.Favorites));
         }
 
         [HttpGet]
         [PageValidationFilter]
         public async Task<IActionResult> UserBooks(int page = 1)
         {
-            var userId = this.userManager.GetUserId(this.User);
-            var books = await this.retrieveBooksService.GetUserBooksAsync(userId, page);
-            return this.View(books);
+            var userId = this.User.GetId();
+
+            var result = await this.retrieveBooksService
+                .GetUserBooksAsync(userId, page);
+
+            return this.View(result.Data);
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            try
+            var userId = this.User.GetId();
+            var isAdmin = this.User.IsAdmin();
+
+            var result = await this.retrieveBooksService.GetBookDetailsAsync(
+                bookId: id,
+                userId,
+                isAdmin);
+
+            if (result.IsSuccess)
             {
-                var user = await this.userManager.GetUserAsync(this.User);
-                var isAdmin = user != null && await this.userManager.IsInRoleAsync(user, AdministratorRoleName);
-                var model = await this.retrieveBooksService.GetBookDetailsAsync(id, user?.Id, isAdmin);
-                return this.View(model);
+                return this.View(result.Data);
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction("Index", "Home");
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public async Task<IActionResult> Download(int id)
         {
-            try
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            var result = await this.downloadBookService
+                .DownloadBookAsync(id, user);
+
+            if (result.IsSuccess)
             {
-                var user = await this.userManager.GetUserAsync(this.User);
-
-                (Stream stream,
-                 string contentType,
-                 string downloadName) = await this.downloadBookService.DownloadBookAsync(id, user);
-
+                var (stream, contentType, downloadName) = result.Data;
                 return this.File(stream, contentType, downloadName);
             }
-            catch (Exception ex)
-            {
-                this.TempData[ErrorMessage] = ex.Message;
-                return this.RedirectToAction(nameof(this.Details), new { id });
-            }
+
+            this.TempData[ErrorMessage] = result.ErrorMessage;
+            return this.RedirectToAction(nameof(this.Details), new { id });
         }
     }
 }

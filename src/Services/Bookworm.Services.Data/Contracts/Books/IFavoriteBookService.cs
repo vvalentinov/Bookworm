@@ -2,10 +2,12 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
+
     public interface IFavoriteBookService
     {
-        Task AddBookToFavoritesAsync(int bookId, string userId);
+        Task<OperationResult> AddBookToFavoritesAsync(int bookId, string userId);
 
-        Task DeleteBookFromFavoritesAsync(int bookId, string userId);
+        Task<OperationResult> DeleteBookFromFavoritesAsync(int bookId, string userId);
     }
 }

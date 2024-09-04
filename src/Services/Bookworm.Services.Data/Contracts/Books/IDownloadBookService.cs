@@ -1,13 +1,15 @@
 ﻿namespace Bookworm.Services.Data.Contracts.Books
 {
-    using System;
     using System.IO;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Models;
 
     public interface IDownloadBookService
     {
-        Task<Tuple<Stream, string, string>> DownloadBookAsync(int bookId, ApplicationUser user);
+        Task<OperationResult<(Stream stream, string contentType, string downloadName)>> DownloadBookAsync(
+            int bookId,
+            ApplicationUser user);
     }
 }

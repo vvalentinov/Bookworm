@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -22,31 +23,49 @@
             this.notificationRepo = notificationRepo;
         }
 
-        public async Task AddNotificationAsync(string content, string userId)
+        public async Task<OperationResult> AddNotificationAsync(
+            string content,
+            string userId)
         {
-            var notification = new Notification { UserId = userId, Content = content };
+            var notification = new Notification
+            {
+                UserId = userId,
+                Content = content,
+            };
+
             await this.notificationRepo.AddAsync(notification);
             await this.notificationRepo.SaveChangesAsync();
+
+            return OperationResult.Ok();
         }
 
-        public async Task<int> DeleteUserNotificationAsync(string userId, int notificationId)
+        public async Task<OperationResult<int>> DeleteUserNotificationAsync(
+            string userId,
+            int notificationId)
         {
-            var notification = await this.notificationRepo.All()
-                .FirstOrDefaultAsync(n => n.Id == notificationId) ??
-                throw new InvalidOperationException(WrongNotificationIdError);
+            var notification = await this.notificationRepo
+                .All()
+                .FirstOrDefaultAsync(n => n.Id == notificationId);
+
+            if (notification == null)
+            {
+                return OperationResult.Fail<int>(WrongNotificationIdError);
+            }
 
             if (notification.UserId != userId)
             {
-                throw new InvalidOperationException(DeleteNotificationError);
+                return OperationResult.Fail<int>(DeleteNotificationError);
             }
 
             this.notificationRepo.Delete(notification);
             await this.notificationRepo.SaveChangesAsync();
 
-            return await this.GetUserNotificationsCountAsync(userId);
+            var result = await this.GetUserNotificationsCountAsync(userId);
+
+            return OperationResult.Ok(result.Data);
         }
 
-        public async Task<NotificationListViewModel> GetUserNotificationsAsync(string userId)
+        public async Task<OperationResult<NotificationListViewModel>> GetUserNotificationsAsync(string userId)
         {
             var notifications = await this.notificationRepo
                 .AllAsNoTracking()
@@ -55,17 +74,29 @@
                 .To<NotificationViewModel>()
                 .ToListAsync();
 
-            return new NotificationListViewModel { Notifications = notifications };
+            var model = new NotificationListViewModel
+            {
+                Notifications = notifications,
+            };
+
+            return OperationResult.Ok(model);
         }
 
-        public async Task<int> GetUserNotificationsCountAsync(string userId)
-            => await this.notificationRepo.AllAsNoTracking().CountAsync(n => n.UserId == userId && !n.IsRead);
+        public async Task<OperationResult<int>> GetUserNotificationsCountAsync(string userId)
+        {
+            var count = await this.notificationRepo
+                         .AllAsNoTracking()
+                         .CountAsync(n => !n.IsRead && n.UserId == userId);
 
-        public async Task MarkOldNotificationsAsDeletedAsync()
+            return OperationResult.Ok(count);
+        }
+
+        public async Task<OperationResult> MarkOldNotificationsAsDeletedAsync()
         {
             var cutoffTime = DateTime.UtcNow.AddDays(-3);
 
-            var notifications = await this.notificationRepo.All()
+            var notifications = await this.notificationRepo
+                .All()
                 .Where(n => !n.IsDeleted && n.CreatedOn <= cutoffTime)
                 .ToListAsync();
 
@@ -75,12 +106,16 @@
             }
 
             await this.notificationRepo.SaveChangesAsync();
+
+            return OperationResult.Ok();
         }
 
-        public async Task MarkUnreadUserNotificationsAsReadAsync(string userId)
+        public async Task<OperationResult> MarkUnreadUserNotificationsAsReadAsync(string userId)
         {
-            var userNotifications = await this.notificationRepo.All()
-                .Where(n => n.UserId == userId && !n.IsRead).ToListAsync();
+            var userNotifications = await this.notificationRepo
+                .All()
+                .Where(n => !n.IsRead && n.UserId == userId)
+                .ToListAsync();
 
             foreach (var notification in userNotifications)
             {
@@ -92,6 +127,8 @@
             {
                 await this.notificationRepo.SaveChangesAsync();
             }
+
+            return OperationResult.Ok("Successfully marked notifications as read!");
         }
     }
 }

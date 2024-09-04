@@ -1,8 +1,8 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
-    using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
 
@@ -26,26 +26,37 @@
             this.searchBooksService = searchBooksService;
         }
 
-        public async Task ValidateAsync(
+        public async Task<OperationResult> ValidateAsync(
             string title,
             int languageId,
             int categoryId,
             int? bookId = null)
         {
-            if (await this.searchBooksService.CheckIfBookWithTitleExistsAsync(title, bookId))
+            var checkIfBookWithTitleExistsResult = await this.searchBooksService
+                .CheckIfBookWithTitleExistsAsync(title, bookId);
+
+            if (!checkIfBookWithTitleExistsResult.Data)
             {
-                throw new InvalidOperationException(BookWithTitleExistsError);
+                return OperationResult.Fail(BookWithTitleExistsError);
             }
 
-            if (!await this.categoriesService.CheckIfIdIsValidAsync(categoryId))
+            var checkIfCategoryIdIsValidResult = await this.categoriesService
+                .CheckIfIdIsValidAsync(categoryId);
+
+            if (!checkIfCategoryIdIsValidResult.Data)
             {
-                throw new InvalidOperationException(CategoryNotFoundError);
+                return OperationResult.Fail(CategoryNotFoundError);
             }
 
-            if (!await this.languagesService.CheckIfIdIsValidAsync(languageId))
+            var checkIfLanguageIdIsValidResult = await this.languagesService
+                .CheckIfIdIsValidAsync(languageId);
+
+            if (!checkIfLanguageIdIsValidResult.Data)
             {
-                throw new InvalidOperationException(LanguageNotFoundError);
+                return OperationResult.Fail(LanguageNotFoundError);
             }
+
+            return OperationResult.Ok();
         }
     }
 }

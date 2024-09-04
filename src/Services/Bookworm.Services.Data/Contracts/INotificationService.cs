@@ -2,20 +2,25 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Web.ViewModels.Notification;
 
     public interface INotificationService
     {
-        Task AddNotificationAsync(string content, string userId);
+        Task<OperationResult> AddNotificationAsync(
+            string content,
+            string userId);
 
-        Task<NotificationListViewModel> GetUserNotificationsAsync(string userId);
+        Task<OperationResult<NotificationListViewModel>> GetUserNotificationsAsync(string userId);
 
-        Task MarkOldNotificationsAsDeletedAsync();
+        Task<OperationResult> MarkOldNotificationsAsDeletedAsync();
 
-        Task<int> GetUserNotificationsCountAsync(string userId);
+        Task<OperationResult<int>> GetUserNotificationsCountAsync(string userId);
 
-        Task<int> DeleteUserNotificationAsync(string userId, int notificationId);
+        Task<OperationResult<int>> DeleteUserNotificationAsync(
+            string userId,
+            int notificationId);
 
-        Task MarkUnreadUserNotificationsAsReadAsync(string userId);
+        Task<OperationResult> MarkUnreadUserNotificationsAsReadAsync(string userId);
     }
 }

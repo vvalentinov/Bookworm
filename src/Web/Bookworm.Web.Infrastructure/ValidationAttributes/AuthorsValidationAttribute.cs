@@ -9,9 +9,13 @@
 
     public class AuthorsValidationAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(
+            object value,
+            ValidationContext validationContext)
         {
-            if (value is not ICollection authors || authors.Count < 1 || authors.Count > 5)
+            if (value is not ICollection authors ||
+                authors.Count < 1 ||
+                authors.Count > 5)
             {
                 return new ValidationResult(BookAuthorsCountError);
             }
@@ -20,7 +24,10 @@
 
             foreach (var authorName in authors)
             {
-                if (authorName.GetType().GetProperty("Name")?.GetValue(authorName) is not string name)
+                if (authorName
+                    .GetType()
+                    .GetProperty("Name")?
+                    .GetValue(authorName) is not string name)
                 {
                     return new ValidationResult("Author name is invalid!");
                 }

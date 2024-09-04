@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -16,7 +17,13 @@
             this.publisherRepository = publisherRepository;
         }
 
-        public async Task<Publisher> GetPublisherWithNameAsync(string name)
-            => await this.publisherRepository.AllAsNoTracking().FirstOrDefaultAsync(p => p.Name == name);
+        public async Task<OperationResult<Publisher>> GetPublisherWithNameAsync(string name)
+        {
+            var publisher = await this.publisherRepository
+                .AllAsNoTracking()
+                .FirstOrDefaultAsync(p => p.Name == name);
+
+            return OperationResult.Ok(publisher);
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
-    using System;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Books;
@@ -24,38 +24,73 @@
             this.favBookRepo = favBookRepo;
         }
 
-        public async Task AddBookToFavoritesAsync(int bookId, string userId)
+        public async Task<OperationResult> AddBookToFavoritesAsync(
+            int bookId,
+            string userId)
         {
-            await this.CheckBookIdAsync(bookId);
+            var checkBookIdResult = await this.CheckBookIdAsync(bookId);
 
-            if (await this.favBookRepo.AllAsNoTracking().AnyAsync(x => x.BookId == bookId && x.UserId == userId))
+            if (!checkBookIdResult.IsSuccess)
             {
-                throw new InvalidOperationException(FavoriteBookIsAlreadyPresentError);
+                return OperationResult.Fail(checkBookIdResult.ErrorMessage);
             }
 
-            await this.favBookRepo.AddAsync(new FavoriteBook { BookId = bookId, UserId = userId });
+            var bookIsFavorite = await this.favBookRepo
+                .AllAsNoTracking()
+                .AnyAsync(x => x.BookId == bookId && x.UserId == userId);
+
+            if (bookIsFavorite)
+            {
+                return OperationResult.Fail(FavoriteBookIsAlreadyPresentError);
+            }
+
+            var favoriteBook = new FavoriteBook
+            {
+                BookId = bookId,
+                UserId = userId,
+            };
+
+            await this.favBookRepo.AddAsync(favoriteBook);
             await this.favBookRepo.SaveChangesAsync();
+
+            return OperationResult.Ok("Successfully added to favorites list!");
         }
 
-        public async Task DeleteBookFromFavoritesAsync(int bookId, string userId)
+        public async Task<OperationResult> DeleteBookFromFavoritesAsync(
+            int bookId,
+            string userId)
         {
-            await this.CheckBookIdAsync(bookId);
+            var checkBookIdResult = await this.CheckBookIdAsync(bookId);
 
-            var favBook = await this.favBookRepo
+            if (!checkBookIdResult.IsSuccess)
+            {
+                return OperationResult.Fail(checkBookIdResult.ErrorMessage);
+            }
+
+            var book = await this.favBookRepo
                 .All()
-                .FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId) ??
-                throw new InvalidOperationException(FavoriteBookIsNotPresentError);
+                .FirstOrDefaultAsync(x => x.BookId == bookId && x.UserId == userId);
 
-            this.favBookRepo.Delete(favBook);
+            if (book == null)
+            {
+                return OperationResult.Fail(FavoriteBookIsNotPresentError);
+            }
+
+            this.favBookRepo.Delete(book);
             await this.favBookRepo.SaveChangesAsync();
+
+            return OperationResult.Ok();
         }
 
-        private async Task CheckBookIdAsync(int id)
+        private async Task<OperationResult> CheckBookIdAsync(int id)
         {
-            if (!await this.bookRepo.AllAsNoTracking().AnyAsync(b => b.Id == id && b.IsApproved))
-            {
-                throw new InvalidOperationException(BookWrongIdError);
-            }
+            var bookExists = await this.bookRepo
+                .AllAsNoTracking()
+                .AnyAsync(b => b.IsApproved && b.Id == id);
+
+            return bookExists ?
+                OperationResult.Ok() :
+                OperationResult.Fail(BookWrongIdError);
         }
     }
 }

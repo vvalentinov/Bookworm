@@ -5,9 +5,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
 
-    using AutoMapper;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.Infrastructure.ValidationAttributes;
     using Bookworm.Web.ViewModels.Authors;
     using Bookworm.Web.ViewModels.DTOs;
@@ -17,10 +15,7 @@
     using static Bookworm.Common.Constants.DataConstants.PublisherDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
-    public class UploadBookViewModel :
-        IMapFrom<Book>,
-        IMapTo<BookDto>,
-        IHaveCustomMappings
+    public class UploadBookViewModel
     {
         public int Id { get; set; }
 
@@ -73,15 +68,47 @@
         [AuthorsValidation]
         public IList<UploadAuthorViewModel> Authors { get; set; }
 
-        public void CreateMappings(IProfileExpression configuration)
+        public static UploadBookViewModel MapFromBook(Book model)
         {
-            Func<Book, IEnumerable<UploadAuthorViewModel>> map = (book)
-                => book.AuthorsBooks.Select(ab => new UploadAuthorViewModel { Name = ab.Author.Name });
+            var authors = model.AuthorsBooks
+                .Select(ab => new UploadAuthorViewModel
+                {
+                    Name = ab.Author.Name,
+                })
+                .ToList();
 
-            configuration
-                .CreateMap<Book, UploadBookViewModel>()
-                .ForMember(x => x.Authors, opt => opt.MapFrom(book => map(book)))
-                .ForMember(x => x.Publisher, opt => opt.MapFrom(book => book.Publisher.Name));
+            return new UploadBookViewModel
+            {
+                Id = model.Id,
+                Year = model.Year,
+                Title = model.Title,
+                BookFile = model.BookFile,
+                CategoryId = model.CategoryId,
+                Description = model.Description,
+                ImageFile = model.ImageFile,
+                LanguageId = model.LanguageId,
+                PagesCount = model.PagesCount,
+                Publisher = model.Publisher.Name,
+                Authors = authors,
+            };
+        }
+
+        public BookDto MapToBookDto()
+        {
+            return new BookDto
+            {
+                Id = this.Id,
+                Authors = this.Authors,
+                BookFile = this.BookFile,
+                CategoryId = this.CategoryId,
+                Description = this.Description,
+                ImageFile = this.ImageFile,
+                LanguageId = this.LanguageId,
+                PagesCount = this.PagesCount,
+                Publisher = this.Publisher,
+                Title = this.Title,
+                Year = this.Year,
+            };
         }
     }
 }

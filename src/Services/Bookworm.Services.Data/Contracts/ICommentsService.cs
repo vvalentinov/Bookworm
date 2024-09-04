@@ -2,27 +2,28 @@
 {
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
     using Bookworm.Web.ViewModels.Comments;
 
     public interface ICommentsService
     {
-        Task CreateAsync(
+        Task<OperationResult> CreateAsync(
             string userId,
             string content,
             int bookId);
 
-        Task DeleteAsync(
+        Task<OperationResult> DeleteAsync(
             int commentId,
             string userId,
             bool isAdmin);
 
-        Task EditAsync(
+        Task<OperationResult> EditAsync(
             int commentId,
             string content,
             string userId,
             bool isAdmin);
 
-        Task<SortedCommentsResponseModel> GetSortedCommentsAsync(
+        Task<OperationResult<SortedCommentsResponseModel>> GetSortedCommentsAsync(
             int bookId,
             string userId,
             string criteria,

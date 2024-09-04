@@ -3,12 +3,14 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Common;
+
     public interface ICategoriesService
     {
-        Task<IEnumerable<T>> GetAllAsync<T>();
+        Task<OperationResult<IEnumerable<T>>> GetAllAsync<T>();
 
-        Task<int> GetCategoryIdAsync(string categoryName);
+        Task<OperationResult<int>> GetCategoryIdAsync(string categoryName);
 
-        Task<bool> CheckIfIdIsValidAsync(int categoryId);
+        Task<OperationResult<bool>> CheckIfIdIsValidAsync(int categoryId);
     }
 }
