@@ -35,7 +35,7 @@
 
             if (!categoriesAreCached)
             {
-                var result = await this.categoriesService.GetAllAsync<CategoryViewModel>();
+                var result = await this.categoriesService.GetAllAsync();
 
                 categories = result.Data;
 

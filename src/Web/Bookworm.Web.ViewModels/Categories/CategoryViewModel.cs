@@ -1,9 +1,6 @@
 ﻿namespace Bookworm.Web.ViewModels.Categories
 {
-    using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
-
-    public class CategoryViewModel : IMapFrom<Category>
+    public class CategoryViewModel
     {
         public int Id { get; set; }
 

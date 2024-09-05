@@ -8,7 +8,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Languages;
     using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +28,7 @@
         {
             var data = await this.languagesRepository
                     .AllAsNoTracking()
-                    .To<LanguageViewModel>()
+                    .ToLanguageViewModel()
                     .ToListAsync();
 
             return OperationResult.Ok(data);

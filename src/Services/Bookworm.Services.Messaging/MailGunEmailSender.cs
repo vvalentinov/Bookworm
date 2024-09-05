@@ -24,15 +24,8 @@
             string htmlContent,
             IEnumerable<EmailAttachment> attachments = null)
         {
-            if (string.IsNullOrWhiteSpace(subject))
-            {
-                throw new ArgumentException("Subject should be provided.");
-            }
-
-            if (string.IsNullOrWhiteSpace(htmlContent))
-            {
-                throw new ArgumentException("Html content should be provided.");
-            }
+            ArgumentException.ThrowIfNullOrWhiteSpace(subject);
+            ArgumentException.ThrowIfNullOrWhiteSpace(htmlContent);
 
             var restClientOptions = new RestClientOptions
             {

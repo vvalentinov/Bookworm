@@ -1,11 +1,14 @@
 ﻿namespace Bookworm.Services.Data.Contracts
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using Bookworm.Web.ViewModels.Settings;
 
     public interface ISettingsService
     {
         int GetCount();
 
-        IEnumerable<T> GetAll<T>();
+        Task<IEnumerable<SettingViewModel>> GetAllAsync();
     }
 }

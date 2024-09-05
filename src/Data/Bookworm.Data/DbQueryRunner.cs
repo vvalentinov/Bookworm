@@ -11,15 +11,18 @@
     {
         public DbQueryRunner(ApplicationDbContext context)
         {
-            this.Context = context ?? throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(context);
+            this.Context = context;
         }
 
         public ApplicationDbContext Context { get; set; }
 
-        public Task RunQueryAsync(string query, params object[] parameters)
-        {
-            return this.Context.Database.ExecuteSqlRawAsync(query, parameters);
-        }
+        public Task RunQueryAsync(
+            string query,
+            params object[] parameters)
+            => this.Context
+                .Database
+                .ExecuteSqlRawAsync(query, parameters);
 
         public void Dispose()
         {

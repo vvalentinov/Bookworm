@@ -1,10 +1,6 @@
 ﻿namespace Bookworm.Web.ViewModels.Settings
 {
-    using AutoMapper;
-    using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
-
-    public class SettingViewModel : IMapFrom<Setting>, IHaveCustomMappings
+    public class SettingViewModel
     {
         public int Id { get; set; }
 
@@ -13,12 +9,5 @@
         public string Value { get; set; }
 
         public string NameAndValue { get; set; }
-
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Setting, SettingViewModel>().ForMember(
-                m => m.NameAndValue,
-                opt => opt.MapFrom(x => x.Name + " = " + x.Value));
-        }
     }
 }

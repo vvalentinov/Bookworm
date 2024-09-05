@@ -23,9 +23,9 @@
             this.settingsService = settingsService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var settings = this.settingsService.GetAll<SettingViewModel>();
+            var settings = await this.settingsService.GetAllAsync();
             var model = new SettingsListViewModel { Settings = settings };
             return this.View(model);
         }

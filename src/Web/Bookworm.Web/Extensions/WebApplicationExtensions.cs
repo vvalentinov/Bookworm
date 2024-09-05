@@ -1,12 +1,8 @@
 ﻿namespace Bookworm.Web.Extensions
 {
-    using System.Reflection;
-
     using Bookworm.Data;
     using Bookworm.Data.Seeding;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.Hubs;
-    using Bookworm.Web.ViewModels;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -16,7 +12,6 @@
         public static WebApplication Configure(this WebApplication app)
         {
             app
-                .RegisterMappings()
                 .SeedDatabase()
                 .ConfigurePipeline()
                 .MapRoutes()
@@ -57,12 +52,6 @@
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            return app;
-        }
-
-        private static WebApplication RegisterMappings(this WebApplication app)
-        {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
             return app;
         }
 

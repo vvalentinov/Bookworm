@@ -8,7 +8,7 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Categories;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
@@ -22,15 +22,15 @@
             this.categoriesRepository = categoriesRepository;
         }
 
-        public async Task<OperationResult<IEnumerable<T>>> GetAllAsync<T>()
+        public async Task<OperationResult<IEnumerable<CategoryViewModel>>> GetAllAsync()
         {
             var data = await this.categoriesRepository
                     .AllAsNoTracking()
                     .OrderBy(x => x.Name)
-                    .To<T>()
+                    .ToCategoryViewModel()
                     .ToListAsync();
 
-            return OperationResult.Ok<IEnumerable<T>>(data);
+            return OperationResult.Ok(data);
         }
 
         public async Task<OperationResult<int>> GetCategoryIdAsync(string categoryName)
@@ -44,7 +44,7 @@
                 return OperationResult.Fail<int>(CategoryNotFoundError);
             }
 
-            return OperationResult.Ok<int>(category.Id);
+            return OperationResult.Ok(category.Id);
         }
 
         public async Task<OperationResult<bool>> CheckIfIdIsValidAsync(int categoryId)
@@ -53,7 +53,7 @@
                 .AllAsNoTracking()
                 .AnyAsync(c => c.Id == categoryId);
 
-            return OperationResult.Ok<bool>(isValid);
+            return OperationResult.Ok(isValid);
         }
     }
 }

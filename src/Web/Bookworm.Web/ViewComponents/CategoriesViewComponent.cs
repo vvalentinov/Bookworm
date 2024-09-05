@@ -3,7 +3,6 @@
     using System.Threading.Tasks;
 
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Mvc;
 
     public class CategoriesViewComponent : ViewComponent
@@ -18,7 +17,7 @@
         public async Task<IViewComponentResult> InvokeAsync(int? selectedCategoryId)
         {
             this.ViewData["SelectedCategoryId"] = selectedCategoryId;
-            return this.View(await this.categoriesService.GetAllAsync<CategoryViewModel>());
+            return this.View(await this.categoriesService.GetAllAsync());
         }
     }
 }

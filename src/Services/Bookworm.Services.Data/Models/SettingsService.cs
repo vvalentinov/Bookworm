@@ -2,11 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
+    using Bookworm.Web.ViewModels.Settings;
+    using Microsoft.EntityFrameworkCore;
 
     public class SettingsService : ISettingsService
     {
@@ -22,9 +24,12 @@
             return this.settingsRepository.AllAsNoTracking().Count();
         }
 
-        public IEnumerable<T> GetAll<T>()
+        public async Task<IEnumerable<SettingViewModel>> GetAllAsync()
         {
-            return this.settingsRepository.All().To<T>().ToList();
+            return await this.settingsRepository
+                .All()
+                .ToSettingViewModel()
+                .ToListAsync();
         }
     }
 }

@@ -4,10 +4,11 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common;
+    using Bookworm.Web.ViewModels.Categories;
 
     public interface ICategoriesService
     {
-        Task<OperationResult<IEnumerable<T>>> GetAllAsync<T>();
+        Task<OperationResult<IEnumerable<CategoryViewModel>>> GetAllAsync();
 
         Task<OperationResult<int>> GetCategoryIdAsync(string categoryName);
 

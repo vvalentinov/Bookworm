@@ -10,7 +10,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.EntityFrameworkCore;
@@ -41,7 +40,7 @@
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved)
                 .OrderByDescending(x => x.CreatedOn)
-                .To<QuoteViewModel>();
+                .ToQuoteViewModel();
 
             if (page.HasValue)
             {
@@ -75,7 +74,7 @@
                             .AllAsNoTracking()
                             .Where(x => !x.IsApproved)
                             .OrderByDescending(x => x.CreatedOn)
-                            .To<QuoteViewModel>()
+                            .ToQuoteViewModel()
                             .ToListAsync();
 
             var model = new QuoteListingViewModel
@@ -102,7 +101,7 @@
                 .AllAsNoTrackingWithDeleted()
                 .Where(x => x.IsDeleted)
                 .OrderBy(x => x.CreatedOn)
-                .To<QuoteViewModel>()
+                .ToQuoteViewModel()
                 .ToListAsync();
 
             var model = new QuoteListingViewModel
@@ -142,7 +141,7 @@
                 .AllAsNoTracking()
                 .Where(x => x.IsApproved)
                 .OrderBy(x => Guid.NewGuid())
-                .To<QuoteViewModel>()
+                .ToQuoteViewModel()
                 .FirstOrDefaultAsync();
 
             return OperationResult.Ok(model);
@@ -158,7 +157,7 @@
                 .OrderByDescending(x => x.CreatedOn)
                 .Skip((page - 1) * QuotesPerPage)
                 .Take(QuotesPerPage)
-                .To<QuoteViewModel>()
+                .ToQuoteViewModel()
                 .ToListAsync();
 
             var recordsCount = await this.quoteRepository
@@ -194,7 +193,7 @@
                 return OperationResult.Fail<UploadQuoteViewModel>(QuoteEditError);
             }
 
-            var model = AutoMapperConfig.MapperInstance.Map<UploadQuoteViewModel>(quote);
+            var model = UploadQuoteViewModel.MapFromQuote(quote);
 
             return OperationResult.Ok(model);
         }
@@ -214,7 +213,7 @@
 
             var quotesQuery = this.quoteRepository
                 .AllAsNoTracking()
-                .To<QuoteViewModel>();
+                .ToQuoteViewModel();
 
             quotesQuery = getQuotesApiDto.IsForUserQuotes ?
                 quotesQuery.Where(q => q.UserId == userId) :

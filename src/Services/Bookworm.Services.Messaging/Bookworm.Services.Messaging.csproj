@@ -13,6 +13,10 @@
 		<AdditionalFiles Include="..\..\stylecop.json" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="RestSharp" Version="112.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">

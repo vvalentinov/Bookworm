@@ -3,10 +3,8 @@
     using System.Threading.Tasks;
 
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.Extensions;
     using Bookworm.Web.Infrastructure.Filters;
-    using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -38,7 +36,7 @@
         {
             string userId = this.User.GetId();
 
-            var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
+            var quoteDto = model.MapToQuoteDto();
 
             var result = await this.uploadQuoteService.UploadQuoteAsync(
                 quoteDto,
@@ -80,7 +78,7 @@
         {
             var userId = this.User.GetId();
 
-            var quoteDto = AutoMapperConfig.MapperInstance.Map<QuoteDto>(model);
+            var quoteDto = model.MapToQuoteDto();
 
             var result = await this.updateQuoteService.EditQuoteAsync(
                 quoteDto,

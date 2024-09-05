@@ -8,7 +8,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Notification;
     using Microsoft.EntityFrameworkCore;
 
@@ -71,7 +70,7 @@
                 .AllAsNoTracking()
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(n => n.CreatedOn)
-                .To<NotificationViewModel>()
+                .ToNotificationViewModel()
                 .ToListAsync();
 
             var model = new NotificationListViewModel

@@ -77,18 +77,7 @@
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 
-            builder.Entity<AuthorBook>().HasKey(x => new { x.AuthorId, x.BookId });
-            builder.Entity<FavoriteBook>().HasKey(x => new { x.BookId, x.UserId });
-            builder.Entity<QuoteLike>().HasKey(x => new { x.QuoteId, x.UserId });
-
-            // Apply query filters
-            builder.Entity<QuoteLike>().HasQueryFilter(x => x.Quote.IsDeleted == false);
-            builder.Entity<Vote>().HasQueryFilter(x => x.User.IsDeleted == false);
-            builder.Entity<Rating>().HasQueryFilter(x => x.Book.IsDeleted == false);
-            builder.Entity<AuthorBook>().HasQueryFilter(x => x.Book.IsDeleted == false);
-            builder.Entity<FavoriteBook>().HasQueryFilter(x => x.Book.IsDeleted == false);
-
-            this.ConfigureUserIdentityRelations(builder);
+            this.ApplyConfigurations(builder);
 
             EntityIndexesConfiguration.Configure(builder);
 
@@ -97,15 +86,19 @@
             // Set global query filter for not deleted entities only
             var deletableEntityTypes = entityTypes
                 .Where(et => et.ClrType != null && typeof(IDeletableEntity).IsAssignableFrom(et.ClrType));
+
             foreach (var deletableEntityType in deletableEntityTypes)
             {
                 var method = SetIsDeletedQueryFilterMethod.MakeGenericMethod(deletableEntityType.ClrType);
-                method.Invoke(null, new object[] { builder });
+                method.Invoke(null, [builder]);
             }
 
             // Disable cascade delete
             var foreignKeys = entityTypes
-                .SelectMany(e => e.GetForeignKeys().Where(f => f.DeleteBehavior == DeleteBehavior.Cascade));
+                .SelectMany(e => e
+                    .GetForeignKeys()
+                    .Where(f => f.DeleteBehavior == DeleteBehavior.Cascade));
+
             foreach (var foreignKey in foreignKeys)
             {
                 foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
@@ -114,12 +107,9 @@
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)
             where T : class, IDeletableEntity
-        {
-            builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
-        }
+                => builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
 
-        // Applies configurations
-        private void ConfigureUserIdentityRelations(ModelBuilder builder)
+        private void ApplyConfigurations(ModelBuilder builder)
              => builder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
         private void ApplyAuditInfoRules()
@@ -133,6 +123,7 @@
             foreach (var entry in changedEntries)
             {
                 var entity = (IAuditInfo)entry.Entity;
+
                 if (entry.State == EntityState.Added && entity.CreatedOn == default)
                 {
                     entity.CreatedOn = DateTime.UtcNow;

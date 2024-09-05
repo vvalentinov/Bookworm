@@ -11,14 +11,12 @@
     using Bookworm.Services.Data;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Books;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.BookErrorMessagesConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.CategoryErrorMessagesConstants;
-    using static Bookworm.Services.Mapping.AutoMapperConfig;
 
     public class RetrieveBooksService : IRetrieveBooksService
     {
@@ -57,7 +55,7 @@
                 .Include(x => x.Category)
                 .Include(x => x.AuthorsBooks)
                 .ThenInclude(x => x.Author)
-                .To<BookDetailsViewModel>()
+                .ToBookDetailsViewModel()
                 .FirstOrDefaultAsync(book => book.Id == bookId);
 
             if (bookViewModel == null)
@@ -126,11 +124,14 @@
             int countBooks,
             int? categoryId)
         {
-            var query = this.bookRepository.AllAsNoTracking().Where(x => x.IsApproved);
+            var query = this.bookRepository
+                .AllAsNoTracking()
+                .Where(x => x.IsApproved);
 
             if (categoryId.HasValue)
             {
-                var result = await this.categoriesService.CheckIfIdIsValidAsync((int)categoryId);
+                var result = await this.categoriesService
+                    .CheckIfIdIsValidAsync((int)categoryId);
 
                 if (!result.Data)
                 {
@@ -170,7 +171,7 @@
                 return OperationResult.Fail<UploadBookViewModel>(BookEditError);
             }
 
-            var model = MapperInstance.Map<UploadBookViewModel>(book);
+            var model = UploadBookViewModel.MapFromBook(book);
 
             return OperationResult.Ok(model);
         }

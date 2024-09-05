@@ -7,7 +7,10 @@
 
     using Microsoft.AspNetCore.Identity;
 
-    public class ApplicationUser : IdentityUser, IAuditInfo, IDeletableEntity
+    public class ApplicationUser :
+        IdentityUser,
+        IAuditInfo,
+        IDeletableEntity
     {
         public ApplicationUser()
         {

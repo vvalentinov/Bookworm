@@ -4,10 +4,9 @@
     using System.Collections.Generic;
 
     using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
     using Ganss.Xss;
 
-    public class CommentViewModel : IMapFrom<Comment>
+    public class CommentViewModel
     {
         public int Id { get; set; }
 

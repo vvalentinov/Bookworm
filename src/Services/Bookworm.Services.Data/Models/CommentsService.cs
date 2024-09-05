@@ -9,7 +9,6 @@
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.EntityFrameworkCore;
 
@@ -158,7 +157,9 @@
                     break;
             }
 
-            var comments = await query.To<CommentViewModel>().ToListAsync();
+            var comments = await query
+                .ToCommentViewModel()
+                .ToListAsync();
 
             if (userId != null)
             {
@@ -185,6 +186,6 @@
         private async Task<bool> CheckIfBookIdIsValidAsync(int bookId)
             => await this.bookRepository
                 .AllAsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == bookId && x.IsApproved) != null;
+                .FirstOrDefaultAsync(x => x.IsApproved && x.Id == bookId) != null;
     }
 }

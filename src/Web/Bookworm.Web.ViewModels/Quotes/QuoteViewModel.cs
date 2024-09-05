@@ -3,10 +3,8 @@
     using System;
 
     using Bookworm.Common.Enums;
-    using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
 
-    public class QuoteViewModel : IMapFrom<Quote>
+    public class QuoteViewModel
     {
         public int Id { get; set; }
 

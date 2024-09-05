@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
 
     using Bookworm.Data;
@@ -11,9 +10,6 @@
     using Bookworm.Data.Models;
     using Bookworm.Data.Repositories;
     using Bookworm.Services.Data.Models;
-    using Bookworm.Services.Mapping;
-    using Bookworm.Web.ViewModels;
-    using Bookworm.Web.ViewModels.Settings;
     using Microsoft.EntityFrameworkCore;
     using Moq;
     using Xunit;
@@ -51,8 +47,6 @@
         [Fact]
         public async Task GetAllShouldWorkCorrectly()
         {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
-
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             using var dbContext = new ApplicationDbContext(options);
@@ -64,7 +58,7 @@
             using var repository = new EfDeletableEntityRepository<Setting>(dbContext);
             var service = new SettingsService(repository);
 
-            var settings = service.GetAll<SettingViewModel>();
+            var settings = await service.GetAllAsync();
 
             Assert.Equal(3, settings.Count());
         }

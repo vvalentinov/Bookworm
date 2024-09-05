@@ -2,24 +2,21 @@
 {
     using System.Threading.Tasks;
 
-    using Bookworm.Data;
-    using Microsoft.EntityFrameworkCore;
+    using Bookworm.Data.Common;
     using Quartz;
 
     [DisallowConcurrentExecution]
     public class ResetDailyDownloadsCountJob : IJob
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly IDbQueryRunner queryRunner;
 
-        public ResetDailyDownloadsCountJob(ApplicationDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
+        public ResetDailyDownloadsCountJob(IDbQueryRunner queryRunner)
+            => this.queryRunner = queryRunner;
 
         public async Task Execute(IJobExecutionContext context)
         {
             var dbCommand = "UPDATE AspNetUsers SET DailyDownloadsCount = 0";
-            await this.dbContext.Database.ExecuteSqlRawAsync(dbCommand);
+            await this.queryRunner.RunQueryAsync(dbCommand);
         }
     }
 }

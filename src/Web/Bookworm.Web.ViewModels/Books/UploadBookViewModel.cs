@@ -68,9 +68,9 @@
         [AuthorsValidation]
         public IList<UploadAuthorViewModel> Authors { get; set; }
 
-        public static UploadBookViewModel MapFromBook(Book model)
+        public static UploadBookViewModel MapFromBook(Book book)
         {
-            var authors = model.AuthorsBooks
+            var authors = book.AuthorsBooks
                 .Select(ab => new UploadAuthorViewModel
                 {
                     Name = ab.Author.Name,
@@ -79,16 +79,16 @@
 
             return new UploadBookViewModel
             {
-                Id = model.Id,
-                Year = model.Year,
-                Title = model.Title,
-                BookFile = model.BookFile,
-                CategoryId = model.CategoryId,
-                Description = model.Description,
-                ImageFile = model.ImageFile,
-                LanguageId = model.LanguageId,
-                PagesCount = model.PagesCount,
-                Publisher = model.Publisher.Name,
+                Id = book.Id,
+                Year = book.Year,
+                Title = book.Title,
+                BookFile = book.BookFile,
+                CategoryId = book.CategoryId,
+                Description = book.Description,
+                ImageFile = book.ImageFile,
+                LanguageId = book.LanguageId,
+                PagesCount = book.PagesCount,
+                Publisher = book.Publisher.Name,
                 Authors = authors,
             };
         }

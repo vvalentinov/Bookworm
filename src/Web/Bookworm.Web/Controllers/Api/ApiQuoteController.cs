@@ -3,9 +3,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Services.Data.Contracts.Quotes;
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.Extensions;
-    using Bookworm.Web.ViewModels.DTOs;
     using Bookworm.Web.ViewModels.Quotes;
     using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +25,7 @@
         {
             string userId = this.User.GetId();
 
-            var quotesApiDto = AutoMapperConfig.MapperInstance.Map<GetQuotesApiDto>(model);
+            var quotesApiDto = model.MapToGetQuotesApiDto();
 
             var result = await this.retrieveQuotesService
                 .GetAllByCriteriaAsync(userId, quotesApiDto);

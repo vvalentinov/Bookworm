@@ -4,15 +4,12 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Seeding.Seeders;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
     public class ApplicationDbContextSeeder : ISeeder
     {
-        public ApplicationDbContextSeeder()
-        {
-        }
-
         public async Task SeedAsync(
             ApplicationDbContext dbContext,
             IServiceProvider serviceProvider)
@@ -35,7 +32,6 @@
             foreach (var seeder in seeders)
             {
                 await seeder.SeedAsync(dbContext, serviceProvider);
-                await dbContext.SaveChangesAsync();
                 logger.LogInformation($"Seeder {seeder.GetType().Name} done.");
             }
         }

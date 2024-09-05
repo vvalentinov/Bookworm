@@ -1,9 +1,8 @@
 ﻿namespace Bookworm.Web.ViewModels.Quotes
 {
-    using Bookworm.Services.Mapping;
     using Bookworm.Web.ViewModels.DTOs;
 
-    public class GetQuotesApiRequestModel : IMapTo<GetQuotesApiDto>
+    public class GetQuotesApiRequestModel
     {
         public string Type { get; set; }
 
@@ -16,5 +15,18 @@
         public string SortCriteria { get; set; }
 
         public bool IsForUserQuotes { get; set; } = false;
+
+        public GetQuotesApiDto MapToGetQuotesApiDto()
+        {
+            return new GetQuotesApiDto
+            {
+                Content = this.Content,
+                Type = this.Type,
+                Page = this.Page,
+                QuoteStatus = this.QuoteStatus,
+                SortCriteria = this.SortCriteria,
+                IsForUserQuotes = this.IsForUserQuotes,
+            };
+        }
     }
 }

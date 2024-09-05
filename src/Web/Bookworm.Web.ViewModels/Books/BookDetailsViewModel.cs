@@ -1,9 +1,7 @@
 ﻿namespace Bookworm.Web.ViewModels.Books
 {
     using System.Collections.Generic;
-    using System.Linq;
 
-    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.Comments;
     using Ganss.Xss;
 
@@ -48,31 +46,5 @@
         public IEnumerable<string> Authors { get; set; }
 
         public IEnumerable<CommentViewModel> Comments { get; set; }
-
-        //public static BookDetailsViewModel MapFromBook(Book book)
-        //{
-        //    var authors = book
-        //        .AuthorsBooks
-        //        .Select(x => x.Author.Name)
-        //        .ToList();
-
-        //    return new BookDetailsViewModel
-        //    {
-        //        Authors = authors,
-        //        CategoryName = book.Category.Name,
-        //        Comments = book.Comments.Select(x => new CommentViewModel { }),
-
-        //    };
-        //};
-
-        //public void CreateMappings(IProfileExpression configuration)
-        //{
-        //    configuration
-        //        .CreateMap<Book, BookDetailsViewModel>()
-        //        .ForMember(dest => dest.Language, opt => opt.MapFrom(b => b.Language.Name))
-        //        .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(b => b.Category.Name))
-        //        .ForMember(dest => dest.PublisherName, opt => opt.MapFrom(b => b.Publisher.Name))
-        //        .ForMember(dest => dest.Authors, opt => opt.MapFrom(b => b.AuthorsBooks.Select(x => x.Author.Name)));
-        //}
     }
 }

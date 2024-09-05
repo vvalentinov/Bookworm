@@ -1,4 +1,4 @@
-﻿namespace Bookworm.Data.Seeding
+﻿namespace Bookworm.Data.Seeding.Seeders
 {
     using System;
     using System.Collections.Generic;

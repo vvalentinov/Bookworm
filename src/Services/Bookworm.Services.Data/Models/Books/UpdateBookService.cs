@@ -26,6 +26,8 @@
         private readonly INotificationService notificationService;
         private readonly IRetrieveBooksService retrieveBooksService;
         private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IDeletableEntityRepository<Notification> notificationRepository;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
 
         public UpdateBookService(
             IBlobService blobService,
@@ -35,12 +37,16 @@
             IValidateBookService validateBookService,
             INotificationService notificationService,
             IRetrieveBooksService retrieveBooksService,
-            IDeletableEntityRepository<Book> bookRepository)
+            IDeletableEntityRepository<Book> bookRepository,
+            IDeletableEntityRepository<Notification> notificationRepository,
+            IDeletableEntityRepository<ApplicationUser> userRepository)
         {
             this.blobService = blobService;
             this.usersService = usersService;
             this.authorsService = authorsService;
             this.bookRepository = bookRepository;
+            this.notificationRepository = notificationRepository;
+            this.userRepository = userRepository;
             this.publishersService = publishersService;
             this.validateBookService = validateBookService;
             this.notificationService = notificationService;
@@ -52,7 +58,7 @@
             var getBookWithIdResult = await this.retrieveBooksService
                 .GetBookWithIdAsync(bookId);
 
-            if (!getBookWithIdResult.IsSuccess)
+            if (getBookWithIdResult.IsFailure)
             {
                 return OperationResult.Fail(getBookWithIdResult.ErrorMessage);
             }
@@ -61,20 +67,37 @@
 
             book.IsApproved = true;
             this.bookRepository.Update(book);
-            await this.bookRepository.SaveChangesAsync();
+            //await this.bookRepository.SaveChangesAsync();
 
-            await this.usersService.IncreaseUserPointsAsync(
-                book.UserId,
-                BookUploadPoints);
+            var user = await this.userRepository
+                .All()
+                .FirstAsync(x => x.Id == book.UserId);
+
+            user.Points += BookUploadPoints;
+            this.userRepository.Update(user);
+
+            //await this.usersService.IncreaseUserPointsAsync(
+            //    book.UserId,
+            //    BookUploadPoints);
 
             var notificationContent = string.Format(
                 ApprovedBookNotification,
                 book.Title,
                 BookUploadPoints);
 
-            await this.notificationService.AddNotificationAsync(
-                notificationContent,
-                book.UserId);
+            var notification = new Notification
+            {
+                UserId = book.UserId,
+                Content = notificationContent,
+            };
+
+            await this.notificationRepository.AddAsync(notification);
+
+            //await this.notificationService.AddNotificationAsync(
+            //    notificationContent,
+            //    book.UserId);
+
+            await this.bookRepository.SaveChangesAsync();
 
             return OperationResult.Ok();
         }
@@ -84,7 +107,7 @@
             var getBookWithIdResult = await this.retrieveBooksService
                 .GetBookWithIdAsync(bookId);
 
-            if (!getBookWithIdResult.IsSuccess)
+            if (getBookWithIdResult.IsFailure)
             {
                 return OperationResult.Fail(getBookWithIdResult.ErrorMessage);
             }
@@ -116,7 +139,7 @@
             var getBookWithIdResult = await this.retrieveBooksService
                 .GetBookWithIdAsync(bookId);
 
-            if (!getBookWithIdResult.IsSuccess)
+            if (getBookWithIdResult.IsFailure)
             {
                 return OperationResult.Fail(getBookWithIdResult.ErrorMessage);
             }

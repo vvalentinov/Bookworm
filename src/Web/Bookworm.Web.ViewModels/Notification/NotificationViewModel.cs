@@ -1,9 +1,6 @@
 ﻿namespace Bookworm.Web.ViewModels.Notification
 {
-    using Bookworm.Data.Models;
-    using Bookworm.Services.Mapping;
-
-    public class NotificationViewModel : IMapFrom<Notification>
+    public class NotificationViewModel
     {
         public int Id { get; set; }
 
