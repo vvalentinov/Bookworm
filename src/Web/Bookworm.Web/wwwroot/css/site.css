@@ -75,6 +75,7 @@ main {
     display: none;
     border-radius: 50%;
     border: solid 2px black;
+    z-index: 1000;
 }
 
     .topArrow:hover {

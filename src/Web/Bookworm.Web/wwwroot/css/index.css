@@ -1,71 +1,93 @@
 ﻿@import url('book/bookListing.css');
 
 .welcomeSection {
-    margin-top: 1rem;
+    margin-top: 20px;
     border: solid 3px var(--clr-secondary);
     background-color: var(--clr-primary);
-    padding: 2rem;
     border-radius: 15px;
+    height: calc(100vh - 140px);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
 }
 
-    .welcomeSection h1 {
+.welcomeSectionHeader {
+    min-height: 30%;
+}
+
+    .welcomeSectionHeader h1 {
         text-align: center;
         color: white;
     }
 
-    .welcomeSection p:nth-child(2) {
-        color: white;
-        text-align: center;
-        font-size: 1.5rem;
-    }
+.welcomeSection p:nth-child(2) {
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+}
 
-    .welcomeSection .cardContainer {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-    }
-
-        .welcomeSection .cardContainer .card {
-            width: 50%;
-            border: solid 3px var(--clr-secondary);
-        }
-
-            .welcomeSection .cardContainer .card .card-header {
-                border-bottom: solid 3px var(--clr-secondary);
-                font-size: 1.3rem;
-            }
-
-.homeBtnsSection {
+.welcomeSection .cardContainer {
     display: flex;
     justify-content: center;
-    gap: 3rem;
-    margin-top: 2rem;
+    padding: 1rem 0;
+    min-height: 50%;
 }
 
-    .homeBtnsSection div {
-        flex-basis: 50%;
-        background-color: var(--clr-secondary);
-        border-radius: 15px;
+    .welcomeSection .cardContainer .card {
+        width: 70%;
+        border: solid 3px var(--clr-secondary);
     }
 
-        .homeBtnsSection div:hover {
+        .welcomeSection .cardContainer .card .card-header {
+            border-bottom: solid 3px var(--clr-secondary);
+            font-size: 1.3rem;
+        }
+
+        .welcomeSection .cardContainer .card .card-body {
+            align-content: center;
+        }
+
+.homeBtnsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 20%;
+    padding: 1rem;
+}
+
+    .homeBtnsContainer div {
+        flex-basis: 50%;
+        border-radius: 15px;
+        background-color: var(--clr-secondary);
+        display: flex;
+        border: none;
+    }
+
+        .homeBtnsContainer div:hover {
             color: white;
         }
 
-        .homeBtnsSection div a {
+        .homeBtnsContainer div a {
             width: 100%;
             font-size: 2rem;
+            align-content: center;
+            border: none;
         }
 
+            .homeBtnsContainer div a:active {
+                border: none;
+            }
+
 @media only screen and (max-width: 770px) {
-    .homeBtnsSection {
+    .homeBtnsContainer {
         flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 1rem;
     }
 
-        .homeBtnsSection div {
+        .homeBtnsContainer div {
             width: 100%;
         }
 }
