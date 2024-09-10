@@ -162,10 +162,12 @@
         public async Task<IActionResult> Delete(int bookId)
         {
             string userId = this.User.GetId();
+            bool isUserAdmin = this.User.IsAdmin();
 
             var result = await this.updateBookService.DeleteBookAsync(
                 bookId,
-                userId);
+                userId,
+                isUserAdmin);
 
             if (result.IsSuccess)
             {
@@ -292,8 +294,10 @@
         {
             var user = await this.userManager.GetUserAsync(this.User);
 
-            var result = await this.downloadBookService
-                .DownloadBookAsync(id, user);
+            var result = await this.downloadBookService.DownloadBookAsync(
+                bookId: id,
+                isUserAdmin: this.User.IsAdmin(),
+                user.Id);
 
             if (result.IsSuccess)
             {

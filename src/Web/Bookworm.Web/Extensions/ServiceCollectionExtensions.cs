@@ -58,6 +58,7 @@
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IMailGunEmailSender, MailGunEmailSender>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));

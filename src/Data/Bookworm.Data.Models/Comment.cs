@@ -11,11 +11,6 @@
 
     public class Comment : BaseDeletableModel<int>
     {
-        public Comment()
-        {
-            this.Votes = new HashSet<Vote>();
-        }
-
         [Required]
         [MaxLength(CommentContentMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string Content { get; set; }
@@ -36,5 +31,6 @@
         public ApplicationUser User { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
+            = new HashSet<Vote>();
     }
 }

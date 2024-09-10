@@ -4,12 +4,12 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common;
-    using Bookworm.Data.Models;
 
     public interface IDownloadBookService
     {
         Task<OperationResult<(Stream stream, string contentType, string downloadName)>> DownloadBookAsync(
-            int bookId,
-            ApplicationUser user);
+           int bookId,
+           bool isUserAdmin,
+           string userId);
     }
 }

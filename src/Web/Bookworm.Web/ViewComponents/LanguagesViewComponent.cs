@@ -40,7 +40,10 @@
                     .SetSlidingExpiration(TimeSpan.FromMinutes(5))
                     .SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
-                this.memoryCache.Set(Languages, languages, cacheEntryOptions);
+                this.memoryCache.Set(
+                    Languages,
+                    languages,
+                    cacheEntryOptions);
             }
 
             return this.View(languages);

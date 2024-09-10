@@ -14,6 +14,7 @@
             this.ViewData["Action"] = action;
             this.ViewData["Controller"] = controller;
             this.ViewData["IsForBooksInCategory"] = isForBooksInCategory;
+
             return this.View(model);
         }
     }

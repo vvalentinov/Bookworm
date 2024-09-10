@@ -1,8 +1,8 @@
 ﻿namespace Bookworm.Web.Extensions
 {
+    using Bookworm.Common.Hubs;
     using Bookworm.Data;
     using Bookworm.Data.Seeding;
-    using Bookworm.Web.Hubs;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -28,7 +28,9 @@
             }
             else
             {
-                app.UseExceptionHandler("/Error/HandleError").UseHsts();
+                app
+                    .UseExceptionHandler("/Error/HandleError")
+                    .UseHsts();
             }
 
             app

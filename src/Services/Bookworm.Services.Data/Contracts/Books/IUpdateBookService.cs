@@ -9,7 +9,8 @@
     {
         Task<OperationResult> DeleteBookAsync(
             int bookId,
-            string userId);
+            string userId,
+            bool isUserAdmin = false);
 
         Task<OperationResult> ApproveBookAsync(int bookId);
 

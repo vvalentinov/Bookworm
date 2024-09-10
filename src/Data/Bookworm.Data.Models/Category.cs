@@ -7,14 +7,10 @@
 
     public class Category : BaseModel<int>
     {
-        public Category()
-        {
-            this.Books = new HashSet<Book>();
-        }
-
         [Required]
         public string Name { get; set; }
 
         public ICollection<Book> Books { get; set; }
+             = new HashSet<Book>();
     }
 }

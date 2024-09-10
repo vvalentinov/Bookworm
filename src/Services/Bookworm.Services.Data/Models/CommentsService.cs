@@ -18,18 +18,18 @@
 
     public class CommentsService : ICommentsService
     {
-        private readonly IRepository<Vote> voteRepository;
-        private readonly IDeletableEntityRepository<Comment> commentRepository;
-        private readonly IDeletableEntityRepository<Book> bookRepository;
+        private readonly IRepository<Vote> voteRepo;
+        private readonly IDeletableEntityRepository<Book> bookRepo;
+        private readonly IDeletableEntityRepository<Comment> commentRepo;
 
         public CommentsService(
             IRepository<Vote> voteRepository,
             IDeletableEntityRepository<Comment> commentRepository,
             IDeletableEntityRepository<Book> bookRepository)
         {
-            this.bookRepository = bookRepository;
-            this.voteRepository = voteRepository;
-            this.commentRepository = commentRepository;
+            this.bookRepo = bookRepository;
+            this.voteRepo = voteRepository;
+            this.commentRepo = commentRepository;
         }
 
         public async Task<OperationResult> CreateAsync(
@@ -54,8 +54,8 @@
                 Content = content,
             };
 
-            await this.commentRepository.AddAsync(comment);
-            await this.commentRepository.SaveChangesAsync();
+            await this.commentRepo.AddAsync(comment);
+            await this.commentRepo.SaveChangesAsync();
 
             return OperationResult.Ok();
         }
@@ -71,7 +71,7 @@
                 return OperationResult.Fail(CommentContentEmptyError);
             }
 
-            var comment = await this.commentRepository
+            var comment = await this.commentRepo
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == commentId);
 
@@ -86,8 +86,9 @@
             }
 
             comment.Content = content;
-            this.commentRepository.Update(comment);
-            await this.commentRepository.SaveChangesAsync();
+
+            this.commentRepo.Update(comment);
+            await this.commentRepo.SaveChangesAsync();
 
             return OperationResult.Ok();
         }
@@ -97,7 +98,7 @@
             string userId,
             bool isAdmin)
         {
-            var comment = await this.commentRepository
+            var comment = await this.commentRepo
                 .All()
                 .Include(x => x.Votes)
                 .FirstOrDefaultAsync(x => x.Id == commentId);
@@ -112,9 +113,10 @@
                 return OperationResult.Fail(CommentDeleteError);
             }
 
-            this.voteRepository.RemoveRange([.. comment.Votes]);
-            this.commentRepository.Delete(comment);
-            await this.commentRepository.SaveChangesAsync();
+            this.voteRepo.RemoveRange([.. comment.Votes]);
+
+            this.commentRepo.Delete(comment);
+            await this.commentRepo.SaveChangesAsync();
 
             return OperationResult.Ok("Successfully deleted comment!");
         }
@@ -139,7 +141,7 @@
                 return OperationResult.Fail<SortedCommentsResponseModel>(CommentInvalidSortCriteria);
             }
 
-            var query = this.commentRepository
+            var query = this.commentRepo
                 .AllAsNoTracking()
                 .Include(c => c.Votes)
                 .Where(x => x.BookId == bookId);
@@ -158,20 +160,8 @@
             }
 
             var comments = await query
-                .ToCommentViewModel()
+                .ToCommentViewModel(userId)
                 .ToListAsync();
-
-            if (userId != null)
-            {
-                bool Predicate(Vote v, int id) => v.UserId == userId && v.CommentId == id;
-
-                foreach (var comment in comments)
-                {
-                    comment.IsCommentOwner = comment.UserId == userId;
-                    var userVote = comment.Votes.FirstOrDefault(v => Predicate(v, comment.Id));
-                    comment.UserVoteValue = userVote == null ? 0 : (int)userVote.Value;
-                }
-            }
 
             var model = new SortedCommentsResponseModel
             {
@@ -184,7 +174,7 @@
         }
 
         private async Task<bool> CheckIfBookIdIsValidAsync(int bookId)
-            => await this.bookRepository
+            => await this.bookRepo
                 .AllAsNoTracking()
                 .FirstOrDefaultAsync(x => x.IsApproved && x.Id == bookId) != null;
     }

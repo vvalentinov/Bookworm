@@ -77,7 +77,7 @@
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 
-            this.ApplyConfigurations(builder);
+            builder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
             EntityIndexesConfiguration.Configure(builder);
 
@@ -108,9 +108,6 @@
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)
             where T : class, IDeletableEntity
                 => builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
-
-        private void ApplyConfigurations(ModelBuilder builder)
-             => builder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
         private void ApplyAuditInfoRules()
         {

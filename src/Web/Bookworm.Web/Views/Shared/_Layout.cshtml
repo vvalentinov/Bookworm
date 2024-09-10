@@ -83,8 +83,13 @@
 
     <main role="main">
         <partial name="PartialViews/_CookieConsentPartial" />
+
         @this.RenderBody()
-        <button class="topArrow"><i class="fa fa-arrow-up"></i></button>
+
+        <button class="topArrow">
+            <i class="fa fa-arrow-up"></i>
+        </button>
+
         <div class="toast-container top-0 end-0 p-3"></div>
     </main>
 
@@ -101,7 +106,7 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" type="module" asp-append-version="true"></script>
     @if (this.User.Identity.IsAuthenticated)
     {
         <script src="~/js/signalr.min.js"></script>

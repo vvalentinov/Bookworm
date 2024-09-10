@@ -32,26 +32,26 @@
             int categoryId,
             int? bookId = null)
         {
-            var checkIfBookWithTitleExistsResult = await this.searchBooksService
-                .CheckIfBookWithTitleExistsAsync(title, bookId);
+            var bookWithTitleExists = (await this.searchBooksService
+                .CheckIfBookWithTitleExistsAsync(title, bookId)).Data;
 
-            if (!checkIfBookWithTitleExistsResult.Data)
+            if (!bookWithTitleExists)
             {
                 return OperationResult.Fail(BookWithTitleExistsError);
             }
 
-            var checkIfCategoryIdIsValidResult = await this.categoriesService
-                .CheckIfIdIsValidAsync(categoryId);
+            var categoryIdIsValid = (await this.categoriesService
+                .CheckIfIdIsValidAsync(categoryId)).Data;
 
-            if (!checkIfCategoryIdIsValidResult.Data)
+            if (!categoryIdIsValid)
             {
                 return OperationResult.Fail(CategoryNotFoundError);
             }
 
-            var checkIfLanguageIdIsValidResult = await this.languagesService
-                .CheckIfIdIsValidAsync(languageId);
+            var languageIdIsValid = (await this.languagesService
+                .CheckIfIdIsValidAsync(languageId)).Data;
 
-            if (!checkIfLanguageIdIsValidResult.Data)
+            if (!languageIdIsValid)
             {
                 return OperationResult.Fail(LanguageNotFoundError);
             }

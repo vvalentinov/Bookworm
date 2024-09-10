@@ -42,6 +42,11 @@
 
         public override void Delete(TEntity entity)
         {
+            if (entity is IApprovableEntity approvableEntity)
+            {
+                approvableEntity.IsApproved = false;
+            }
+
             entity.IsDeleted = true;
             entity.DeletedOn = DateTime.UtcNow;
             this.Update(entity);

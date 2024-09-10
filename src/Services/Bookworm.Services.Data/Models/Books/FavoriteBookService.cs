@@ -30,7 +30,7 @@
         {
             var checkBookIdResult = await this.CheckBookIdAsync(bookId);
 
-            if (!checkBookIdResult.IsSuccess)
+            if (checkBookIdResult.IsFailure)
             {
                 return OperationResult.Fail(checkBookIdResult.ErrorMessage);
             }
@@ -62,7 +62,7 @@
         {
             var checkBookIdResult = await this.CheckBookIdAsync(bookId);
 
-            if (!checkBookIdResult.IsSuccess)
+            if (checkBookIdResult.IsFailure)
             {
                 return OperationResult.Fail(checkBookIdResult.ErrorMessage);
             }
@@ -79,7 +79,7 @@
             this.favBookRepo.Delete(book);
             await this.favBookRepo.SaveChangesAsync();
 
-            return OperationResult.Ok();
+            return OperationResult.Ok("Successfully deleted from favorites list!");
         }
 
         private async Task<OperationResult> CheckBookIdAsync(int id)

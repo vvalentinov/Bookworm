@@ -4,7 +4,6 @@
     using System.ComponentModel.DataAnnotations;
 
     using Bookworm.Common.Enums;
-    using Bookworm.Data.Models;
     using Bookworm.Web.ViewModels.DTOs;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
@@ -30,19 +29,6 @@
         public string BookTitle { get; set; }
 
         public QuoteType Type { get; set; }
-
-        public static UploadQuoteViewModel MapFromQuote(Quote quote)
-        {
-            return new UploadQuoteViewModel
-            {
-                Id = quote.Id,
-                AuthorName = quote.AuthorName,
-                BookTitle = quote.BookTitle,
-                Content = quote.Content,
-                MovieTitle = quote.MovieTitle,
-                Type = quote.Type,
-            };
-        }
 
         public QuoteDto MapToQuoteDto()
         {

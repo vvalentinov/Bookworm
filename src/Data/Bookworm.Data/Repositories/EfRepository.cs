@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Bookworm.Data.Common.Models;
     using Bookworm.Data.Common.Repositories;
 
     using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,24 @@
 
         public virtual void RemoveRange(List<TEntity> entities)
             => this.DbSet.RemoveRange(entities);
+
+        public virtual void Approve(TEntity entity)
+        {
+            if (entity is IApprovableEntity approvableEntity)
+            {
+                approvableEntity.IsApproved = true;
+                this.Update(entity);
+            }
+        }
+
+        public virtual void Unapprove(TEntity entity)
+        {
+            if (entity is IApprovableEntity approvableEntity)
+            {
+                approvableEntity.IsApproved = false;
+                this.Update(entity);
+            }
+        }
 
         public virtual void Update(TEntity entity)
         {

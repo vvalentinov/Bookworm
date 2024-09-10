@@ -34,8 +34,10 @@
         {
             var userId = this.User.GetId();
 
-            var result = await this.updateBookService
-                .DeleteBookAsync(bookId, userId);
+            var result = await this.updateBookService.DeleteBookAsync(
+                bookId,
+                userId,
+                isUserAdmin: true);
 
             if (result.IsSuccess)
             {

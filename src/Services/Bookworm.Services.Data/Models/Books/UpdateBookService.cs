@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common;
+    using Bookworm.Data;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -18,38 +19,36 @@
 
     public class UpdateBookService : IUpdateBookService
     {
+        private readonly IUnitOfWork unitOfWork;
+
+        private readonly IDeletableEntityRepository<Book> bookRepo;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepo;
+        private readonly IDeletableEntityRepository<Notification> notificationRepo;
+
         private readonly IBlobService blobService;
-        private readonly IUsersService usersService;
         private readonly IAuthorsService authorsService;
         private readonly IPublishersService publishersService;
         private readonly IValidateBookService validateBookService;
-        private readonly INotificationService notificationService;
         private readonly IRetrieveBooksService retrieveBooksService;
-        private readonly IDeletableEntityRepository<Book> bookRepository;
-        private readonly IDeletableEntityRepository<Notification> notificationRepository;
-        private readonly IDeletableEntityRepository<ApplicationUser> userRepository;
 
         public UpdateBookService(
+            IUnitOfWork unitOfWork,
             IBlobService blobService,
-            IUsersService usersService,
             IAuthorsService authorsService,
             IPublishersService publishersService,
             IValidateBookService validateBookService,
-            INotificationService notificationService,
-            IRetrieveBooksService retrieveBooksService,
-            IDeletableEntityRepository<Book> bookRepository,
-            IDeletableEntityRepository<Notification> notificationRepository,
-            IDeletableEntityRepository<ApplicationUser> userRepository)
+            IRetrieveBooksService retrieveBooksService)
         {
+            this.unitOfWork = unitOfWork;
+
+            this.bookRepo = this.unitOfWork.GetDeletableEntityRepository<Book>();
+            this.userRepo = this.unitOfWork.GetDeletableEntityRepository<ApplicationUser>();
+            this.notificationRepo = this.unitOfWork.GetDeletableEntityRepository<Notification>();
+
             this.blobService = blobService;
-            this.usersService = usersService;
             this.authorsService = authorsService;
-            this.bookRepository = bookRepository;
-            this.notificationRepository = notificationRepository;
-            this.userRepository = userRepository;
             this.publishersService = publishersService;
             this.validateBookService = validateBookService;
-            this.notificationService = notificationService;
             this.retrieveBooksService = retrieveBooksService;
         }
 
@@ -65,20 +64,14 @@
 
             var book = getBookWithIdResult.Data;
 
-            book.IsApproved = true;
-            this.bookRepository.Update(book);
-            //await this.bookRepository.SaveChangesAsync();
+            this.bookRepo.Approve(book);
 
-            var user = await this.userRepository
+            var user = await this.userRepo
                 .All()
                 .FirstAsync(x => x.Id == book.UserId);
 
             user.Points += BookUploadPoints;
-            this.userRepository.Update(user);
-
-            //await this.usersService.IncreaseUserPointsAsync(
-            //    book.UserId,
-            //    BookUploadPoints);
+            this.userRepo.Update(user);
 
             var notificationContent = string.Format(
                 ApprovedBookNotification,
@@ -91,13 +84,9 @@
                 Content = notificationContent,
             };
 
-            await this.notificationRepository.AddAsync(notification);
+            await this.notificationRepo.AddAsync(notification);
 
-            //await this.notificationService.AddNotificationAsync(
-            //    notificationContent,
-            //    book.UserId);
-
-            await this.bookRepository.SaveChangesAsync();
+            await this.unitOfWork.SaveChangesAsync();
 
             return OperationResult.Ok();
         }
@@ -114,27 +103,32 @@
 
             var book = getBookWithIdResult.Data;
 
-            book.IsApproved = false;
-            this.bookRepository.Update(book);
-            await this.bookRepository.SaveChangesAsync();
+            this.bookRepo.Unapprove(book);
 
-            await this.usersService.ReduceUserPointsAsync(
-                book.UserId,
-                BookUploadPoints);
+            await this.ReduceUserPointsAsync(book.UserId);
 
             var notificationContent = string.Format(
                 UnapprovedBookNotification,
                 book.Title,
                 BookUploadPoints);
 
-            await this.notificationService.AddNotificationAsync(
-                notificationContent,
-                book.UserId);
+            var notification = new Notification
+            {
+                UserId = book.UserId,
+                Content = notificationContent,
+            };
+
+            await this.notificationRepo.AddAsync(notification);
+
+            await this.unitOfWork.SaveChangesAsync();
 
             return OperationResult.Ok();
         }
 
-        public async Task<OperationResult> DeleteBookAsync(int bookId, string userId)
+        public async Task<OperationResult> DeleteBookAsync(
+            int bookId,
+            string userId,
+            bool isUserAdmin = false)
         {
             var getBookWithIdResult = await this.retrieveBooksService
                 .GetBookWithIdAsync(bookId);
@@ -146,20 +140,16 @@
 
             var book = getBookWithIdResult.Data;
 
-            bool isUserAdmin = await this.usersService.IsUserAdminAsync(userId);
-
             if (!isUserAdmin && book.UserId != userId)
             {
                 return OperationResult.Fail(BookDeleteError);
             }
 
-            book.IsApproved = false;
-            this.bookRepository.Delete(book);
-            await this.bookRepository.SaveChangesAsync();
+            this.bookRepo.Delete(book);
 
-            await this.usersService.ReduceUserPointsAsync(
-                book.UserId,
-                BookUploadPoints);
+            await this.ReduceUserPointsAsync(book.UserId);
+
+            await this.unitOfWork.SaveChangesAsync();
 
             return OperationResult.Ok(DeleteSuccess);
         }
@@ -169,15 +159,15 @@
             var getDeletedBookResult = await this.retrieveBooksService
                 .GetDeletedBookWithIdAsync(bookId);
 
-            if (!getDeletedBookResult.IsSuccess)
+            if (getDeletedBookResult.IsFailure)
             {
                 return OperationResult.Fail(getDeletedBookResult.ErrorMessage);
             }
 
             var book = getDeletedBookResult.Data;
 
-            this.bookRepository.Undelete(book);
-            await this.bookRepository.SaveChangesAsync();
+            this.bookRepo.Undelete(book);
+            await this.bookRepo.SaveChangesAsync();
 
             return OperationResult.Ok();
         }
@@ -186,7 +176,7 @@
             BookDto bookDto,
             string userId)
         {
-            var book = await this.bookRepository
+            var book = await this.bookRepo
                 .All()
                 .Include(x => x.Publisher)
                 .Include(b => b.AuthorsBooks)
@@ -211,6 +201,7 @@
             if (bookDto.BookFile != null)
             {
                 string bookBlobName = book.FileUrl[book.FileUrl.IndexOf("Books")..];
+
                 book.FileUrl = await this.blobService.ReplaceBlobAsync(
                     bookDto.BookFile,
                     bookBlobName,
@@ -262,14 +253,23 @@
                     new AuthorBook { Author = new Author { Name = authorName } });
             }
 
-            this.bookRepository.Update(book);
-            await this.bookRepository.SaveChangesAsync();
+            this.bookRepo.Update(book);
 
-            await this.usersService.ReduceUserPointsAsync(
-                userId,
-                BookUploadPoints);
+            await this.ReduceUserPointsAsync(userId);
+
+            await this.unitOfWork.SaveChangesAsync();
 
             return OperationResult.Ok(EditSuccess);
+        }
+
+        private async Task ReduceUserPointsAsync(string userId)
+        {
+            var user = await this.userRepo
+                .All()
+                .FirstAsync(x => x.Id == userId);
+
+            user.Points -= BookUploadPoints;
+            this.userRepo.Update(user);
         }
     }
 }

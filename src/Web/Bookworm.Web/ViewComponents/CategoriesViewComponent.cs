@@ -17,7 +17,10 @@
         public async Task<IViewComponentResult> InvokeAsync(int? selectedCategoryId)
         {
             this.ViewData["SelectedCategoryId"] = selectedCategoryId;
-            return this.View(await this.categoriesService.GetAllAsync());
+
+            var categories = (await this.categoriesService.GetAllAsync()).Data;
+
+            return this.View(categories);
         }
     }
 }

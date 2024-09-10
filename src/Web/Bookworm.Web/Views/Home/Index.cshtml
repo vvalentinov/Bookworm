@@ -2,9 +2,24 @@
 
 @{
     this.ViewData["Title"] = "Home Page";
-    var titleCardModel = new TitleCardPartialViewModel { Title = $"Welcome to {GlobalConstants.SystemName}!", IconClass = "fa fa-book" };
-    var recentBooksTitleCardModel = new TitleCardPartialViewModel { Title = "Recent Books", IconClass = "fa fa-book" };
-    var popularBooksTitleCardModel = new TitleCardPartialViewModel { Title = "Popular Books", IconClass = "fa fa-book" };
+
+    var titleCardModel = new TitleCardPartialViewModel
+            {
+                Title = $"Welcome to {GlobalConstants.SystemName}!",
+                IconClass = "fa fa-book"
+            };
+
+    var recentBooksTitleCardModel = new TitleCardPartialViewModel
+            {
+                Title = "Recent Books",
+                IconClass = "fa fa-book"
+            };
+
+    var popularBooksTitleCardModel = new TitleCardPartialViewModel
+            {
+                Title = "Popular Books",
+                IconClass = "fa fa-book"
+            };
 }
 
 @section Styles {
@@ -12,13 +27,17 @@
 }
 
 <section class="welcomeSection">
-    <h1>Welcome to @GlobalConstants.SystemName!</h1>
-    <p>
-        📚 Share your favorite reads with the Bookworm community!
-        Easily upload and share books, from classics to contemporary bestsellers, and connect with fellow book lovers.
-    </p>
+
+    <div class="welcomeSectionHeader">
+        <h1>Welcome to @GlobalConstants.SystemName!</h1>
+        <p>
+            📚 Share your favorite reads with the Bookworm community!
+            Easily upload and share books, from classics to contemporary bestsellers, and connect with fellow book lovers.
+        </p>
+    </div>
+
     <div class="cardContainer">
-        <div class="card">
+        <div class="card animate__animated animate__zoomIn animate__faster">
             <div class="card-header">
                 Quote
             </div>
@@ -47,20 +66,21 @@
             </div>
         </div>
     </div>
+
     @if (this.User.Identity.IsAuthenticated)
     {
-        <section class="homeBtnsSection">
-            <div>
+        <div class="homeBtnsContainer">
+            <div class="animate__animated animate__zoomIn animate__faster">
                 <a asp-controller="Book" asp-action="Upload" class="btn">
                     Upload Book<i class="fa fa-book ms-2"></i>
                 </a>
             </div>
-            <div>
+            <div class="animate__animated animate__zoomIn animate__faster">
                 <a asp-controller="Quote" asp-action="Upload" class="btn">
                     Upload Quote<i class="fa fa-square-pen ms-2"></i>
                 </a>
             </div>
-        </section>
+        </div>
     }
 </section>
 

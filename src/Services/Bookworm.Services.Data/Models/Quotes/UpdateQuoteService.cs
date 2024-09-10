@@ -3,42 +3,48 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common;
+    using Bookworm.Common.Hubs;
+    using Bookworm.Data;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
-    using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Quotes;
     using Bookworm.Web.ViewModels.DTOs;
+    using Microsoft.AspNetCore.SignalR;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.QuoteDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants.QuoteErrorMessagesConstants;
     using static Bookworm.Common.Constants.NotificationConstants;
     using static Bookworm.Common.Constants.SuccessMessagesConstants.CrudSuccessMessagesConstants;
+    using static Bookworm.Common.Constants.TempDataMessageConstant;
     using static Bookworm.Common.Enums.QuoteType;
 
     public class UpdateQuoteService : IUpdateQuoteService
     {
-        private readonly IUsersService usersService;
-        private readonly INotificationService notificationService;
+        private readonly IUnitOfWork unitOfWork;
 
-        // private readonly IHubContext<NotificationHub> notificationHub;
-        private readonly IDeletableEntityRepository<Quote> quoteRepository;
+        private readonly IHubContext<NotificationHub> notificationHub;
+
+        private readonly IDeletableEntityRepository<Quote> quoteRepo;
+        private readonly IDeletableEntityRepository<ApplicationUser> userRepo;
+        private readonly IDeletableEntityRepository<Notification> notificationRepo;
 
         public UpdateQuoteService(
-            IUsersService usersService,
-            INotificationService notificationService,
-            IDeletableEntityRepository<Quote> quoteRepository)
+            IUnitOfWork unitOfWork,
+            IHubContext<NotificationHub> notificationHub)
         {
-            this.usersService = usersService;
-            this.quoteRepository = quoteRepository;
+            this.unitOfWork = unitOfWork;
 
-            // this.notificationHub = notificationHub;
-            this.notificationService = notificationService;
+            this.notificationHub = notificationHub;
+
+            this.quoteRepo = this.unitOfWork.GetDeletableEntityRepository<Quote>();
+            this.userRepo = this.unitOfWork.GetDeletableEntityRepository<ApplicationUser>();
+            this.notificationRepo = this.unitOfWork.GetDeletableEntityRepository<Notification>();
         }
 
         public async Task<OperationResult> ApproveQuoteAsync(int quoteId)
         {
-            var quote = await this.quoteRepository
+            var quote = await this.quoteRepo
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == quoteId);
 
@@ -49,24 +55,35 @@
 
             if (!quote.IsApproved)
             {
-                quote.IsApproved = true;
-                this.quoteRepository.Update(quote);
-                await this.quoteRepository.SaveChangesAsync();
+                this.quoteRepo.Approve(quote);
 
-                await this.usersService.IncreaseUserPointsAsync(
-                    quote.UserId,
-                    QuoteUploadPoints);
+                var user = await this.userRepo
+                    .All()
+                    .FirstAsync(x => x.Id == quote.UserId);
+
+                user.Points += QuoteUploadPoints;
+
+                this.userRepo.Update(user);
 
                 var notificationContent = string.Format(
                     ApprovedQuoteNotification,
                     quote.Content,
                     QuoteUploadPoints);
 
-                await this.notificationService.AddNotificationAsync(
-                    notificationContent,
-                    quote.UserId);
+                var notification = new Notification
+                {
+                    UserId = quote.UserId,
+                    Content = notificationContent,
+                };
 
-                // await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", ApprovedQuoteMessage);
+                await this.notificationRepo.AddAsync(notification);
+
+                await this.unitOfWork.SaveChangesAsync();
+
+                await this.notificationHub
+                    .Clients
+                    .User(quote.UserId)
+                    .SendAsync("notify", ApprovedQuoteMessage);
             }
 
             return OperationResult.Ok();
@@ -77,7 +94,7 @@
             string userId,
             bool isCurrUserAdmin = false)
         {
-            var quote = await this.quoteRepository
+            var quote = await this.quoteRepo
                 .All()
                 .FirstOrDefaultAsync(q => q.Id == quoteId);
 
@@ -93,20 +110,24 @@
 
             if (quote.IsApproved)
             {
-                await this.usersService.ReduceUserPointsAsync(
-                    quote.UserId,
-                    QuoteUploadPoints);
+                var user = await this.userRepo
+                    .All()
+                    .FirstAsync(x => x.Id == quote.UserId);
+
+                user.Points -= QuoteUploadPoints;
+                this.userRepo.Update(user);
             }
 
-            this.quoteRepository.Delete(quote);
-            await this.quoteRepository.SaveChangesAsync();
+            this.quoteRepo.Delete(quote);
+
+            await this.unitOfWork.SaveChangesAsync();
 
             return OperationResult.Ok(DeleteSuccess);
         }
 
         public async Task<OperationResult> UndeleteQuoteAsync(int quoteId)
         {
-            var quote = await this.quoteRepository
+            var quote = await this.quoteRepo
                 .AllWithDeleted()
                 .FirstOrDefaultAsync(x => x.Id == quoteId);
 
@@ -117,8 +138,8 @@
 
             if (quote.IsDeleted)
             {
-                this.quoteRepository.Undelete(quote);
-                await this.quoteRepository.SaveChangesAsync();
+                this.quoteRepo.Undelete(quote);
+                await this.quoteRepo.SaveChangesAsync();
             }
 
             return OperationResult.Ok();
@@ -126,7 +147,7 @@
 
         public async Task<OperationResult> UnapproveQuoteAsync(int quoteId)
         {
-            var quote = await this.quoteRepository
+            var quote = await this.quoteRepo
                 .All()
                 .FirstOrDefaultAsync(x => x.Id == quoteId);
 
@@ -137,23 +158,34 @@
 
             if (quote.IsApproved)
             {
-                quote.IsApproved = false;
-                await this.quoteRepository.SaveChangesAsync();
+                this.quoteRepo.Unapprove(quote);
 
-                await this.usersService.ReduceUserPointsAsync(
-                    quote.UserId,
-                    QuoteUploadPoints);
+                var user = await this.userRepo
+                    .All()
+                    .FirstAsync(x => x.Id == quote.UserId);
+
+                user.Points -= QuoteUploadPoints;
+                this.userRepo.Update(user);
 
                 var notificationContent = string.Format(
                     UnapprovedQuoteNotification,
                     quote.Content,
                     QuoteUploadPoints);
 
-                await this.notificationService.AddNotificationAsync(
-                    notificationContent,
-                    quote.UserId);
+                var notification = new Notification
+                {
+                    UserId = quote.UserId,
+                    Content = notificationContent,
+                };
 
-                // await this.notificationHub.Clients.User(quote.UserId).SendAsync("notify", UnapprovedQuoteMessage);
+                await this.notificationRepo.AddAsync(notification);
+
+                await this.unitOfWork.SaveChangesAsync();
+
+                await this.notificationHub
+                    .Clients
+                    .User(quote.UserId)
+                    .SendAsync("notify", UnapprovedQuoteMessage);
             }
 
             return OperationResult.Ok();
@@ -163,7 +195,7 @@
             QuoteDto quoteDto,
             string userId)
         {
-            var quote = await this.quoteRepository
+            var quote = await this.quoteRepo
                 .All()
                 .FirstOrDefaultAsync(q => q.Id == quoteDto.Id);
 
@@ -202,13 +234,17 @@
             {
                 quote.IsApproved = false;
 
-                await this.usersService.ReduceUserPointsAsync(
-                    userId,
-                    QuoteUploadPoints);
+                var user = await this.userRepo
+                    .All()
+                    .FirstAsync(x => x.Id == userId);
+
+                user.Points -= QuoteUploadPoints;
+                this.userRepo.Update(user);
             }
 
-            this.quoteRepository.Update(quote);
-            await this.quoteRepository.SaveChangesAsync();
+            this.quoteRepo.Update(quote);
+
+            await this.unitOfWork.SaveChangesAsync();
 
             return OperationResult.Ok(EditSuccess);
         }

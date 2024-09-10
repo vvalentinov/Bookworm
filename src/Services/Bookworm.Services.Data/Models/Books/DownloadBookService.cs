@@ -1,9 +1,11 @@
 ﻿namespace Bookworm.Services.Data.Models.Books
 {
+    using System;
     using System.IO;
     using System.Threading.Tasks;
 
     using Bookworm.Common;
+    using Bookworm.Data;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data.Contracts;
@@ -15,39 +17,54 @@
 
     public class DownloadBookService : IDownloadBookService
     {
+        private readonly IUnitOfWork unitOfWork;
+
         private readonly IBlobService blobService;
         private readonly IUsersService usersService;
-        private readonly IDeletableEntityRepository<Book> bookRepository;
+
+        private readonly IRepository<Book> bookRepo;
+        private readonly IRepository<ApplicationUser> userRepo;
 
         public DownloadBookService(
+            IUnitOfWork unitOfWork,
             IBlobService blobService,
-            IUsersService usersService,
-            IDeletableEntityRepository<Book> bookRepository)
+            IUsersService usersService)
         {
+            this.unitOfWork = unitOfWork;
+
             this.blobService = blobService;
             this.usersService = usersService;
-            this.bookRepository = bookRepository;
+
+            this.bookRepo = this.unitOfWork.GetRepository<Book>();
+            this.userRepo = this.unitOfWork.GetRepository<ApplicationUser>();
         }
 
         public async Task<OperationResult<(Stream stream, string contentType, string downloadName)>> DownloadBookAsync(
-            int bookId,
-            ApplicationUser user)
+             int bookId,
+             bool isUserAdmin,
+             string userId)
         {
-            var isUserAdmin = await this.usersService.IsUserAdminAsync(user.Id);
-            var userMaxDailyDownloadsCount = this.usersService.GetUserDailyMaxDownloadsCount(user.Points);
+            var user = await this.userRepo
+                .All()
+                .FirstAsync(x => x.Id == userId);
+
+            var userMaxDailyDownloadsCount = this.usersService
+                .GetUserDailyMaxDownloadsCount(user.Points);
 
             if (!isUserAdmin && user.DailyDownloadsCount == userMaxDailyDownloadsCount)
             {
-                string errMsg = string.Format(UserDailyCountError, userMaxDailyDownloadsCount);
+                string errorMessage = string.Format(
+                    UserDailyCountError,
+                    userMaxDailyDownloadsCount);
 
                 return OperationResult.Fail<(
                     Stream stream,
                     string contentType,
-                    string downloadName)>(errMsg);
+                    string downloadName)>(errorMessage);
             }
 
-            var book = await this.bookRepository
-                .AllAsNoTracking()
+            var book = await this.bookRepo
+                .All()
                 .FirstOrDefaultAsync(b => b.Id == bookId);
 
             if (book == null)
@@ -66,15 +83,36 @@
                     string downloadName)>(BookNotApprovedError);
             }
 
-            book.DownloadsCount++;
-            this.bookRepository.Update(book);
-            await this.bookRepository.SaveChangesAsync();
-
-            await this.usersService.IncreaseUserDailyDownloadsCountAsync(user);
-
             var data = await this.blobService.DownloadBlobAsync(book.FileUrl);
 
-            return OperationResult.Ok(data);
+            using var transaction = await this.unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                book.DownloadsCount++;
+                this.bookRepo.Update(book);
+
+                if (user.DailyDownloadsCount < userMaxDailyDownloadsCount)
+                {
+                    user.DailyDownloadsCount++;
+                    this.userRepo.Update(user);
+                }
+
+                await this.unitOfWork.SaveChangesAsync();
+
+                await this.unitOfWork.CommitTransactionAsync();
+
+                return OperationResult.Ok(data);
+            }
+            catch (Exception)
+            {
+                await this.unitOfWork.RollbackTransactionAsync();
+
+                return OperationResult.Fail<(
+                    Stream stream,
+                    string contentType,
+                    string downloadName)>("Problem when updating entities in database!");
+            }
         }
     }
 }

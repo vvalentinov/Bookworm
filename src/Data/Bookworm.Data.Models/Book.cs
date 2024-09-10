@@ -10,27 +10,16 @@
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
     using static Bookworm.Common.Constants.ErrorMessagesConstants;
 
-    public class Book : BaseDeletableModel<int>
+    public class Book :
+        BaseDeletableModel<int>,
+        IApprovableEntity
     {
-        public Book()
-        {
-            this.Ratings = new HashSet<Rating>();
-            this.Comments = new HashSet<Comment>();
-            this.AuthorsBooks = new HashSet<AuthorBook>();
-        }
-
         [Required]
-        [StringLength(
-            BookTitleMaxLength,
-            MinimumLength = BookTitleMinLength,
-            ErrorMessage = FieldStringLengthError)]
+        [MaxLength(BookTitleMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string Title { get; set; }
 
         [Required]
-        [StringLength(
-            BookDescriptionMaxLength,
-            MinimumLength = BookDescriptionMinLength,
-            ErrorMessage = FieldStringLengthError)]
+        [MaxLength(BookDescriptionMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string Description { get; set; }
 
         [Required]
@@ -81,9 +70,12 @@
         public ApplicationUser User { get; set; }
 
         public ICollection<Rating> Ratings { get; set; }
+            = new HashSet<Rating>();
 
         public ICollection<Comment> Comments { get; set; }
+            = new HashSet<Comment>();
 
         public ICollection<AuthorBook> AuthorsBooks { get; set; }
+             = new HashSet<AuthorBook>();
     }
 }

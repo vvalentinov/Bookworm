@@ -16,6 +16,7 @@
         }
 
         public async Task Execute(IJobExecutionContext context)
-            => await this.notificationService.MarkOldNotificationsAsDeletedAsync();
+            => await this.notificationService
+                .MarkOldNotificationsAsDeletedAsync();
     }
 }

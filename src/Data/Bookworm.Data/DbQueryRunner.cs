@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using Bookworm.Data.Common;
-
     using Microsoft.EntityFrameworkCore;
 
     public class DbQueryRunner : IDbQueryRunner
@@ -17,10 +16,10 @@
 
         public ApplicationDbContext Context { get; set; }
 
-        public Task RunQueryAsync(
+        public async Task RunQueryAsync(
             string query,
             params object[] parameters)
-            => this.Context
+            => await this.Context
                 .Database
                 .ExecuteSqlRawAsync(query, parameters);
 

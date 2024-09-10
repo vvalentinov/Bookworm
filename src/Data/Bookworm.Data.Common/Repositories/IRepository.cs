@@ -20,6 +20,10 @@
 
         void Delete(TEntity entity);
 
+        void Approve(TEntity entity);
+
+        void Unapprove(TEntity entity);
+
         Task<int> SaveChangesAsync();
     }
 }

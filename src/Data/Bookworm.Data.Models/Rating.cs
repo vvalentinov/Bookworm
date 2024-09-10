@@ -5,12 +5,9 @@
 
     using Bookworm.Data.Common.Models;
 
-    using static Bookworm.Common.Constants.DataConstants.RatingDataConstants;
-    using static Bookworm.Common.Constants.ErrorMessagesConstants;
-
     public class Rating : BaseModel<int>
     {
-        [Range(RatingValueMin, RatingValueMax, ErrorMessage = FieldRangeError)]
+        [Required]
         public byte Value { get; set; }
 
         [Required]

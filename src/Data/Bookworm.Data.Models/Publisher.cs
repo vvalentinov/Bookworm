@@ -10,18 +10,11 @@
 
     public class Publisher : BaseModel<int>
     {
-        public Publisher()
-        {
-            this.Books = new HashSet<Book>();
-        }
-
         [Required]
-        [StringLength(
-            PublisherNameMaxLength,
-            MinimumLength = PublisherNameMinLength,
-            ErrorMessage = FieldStringLengthError)]
+        [MaxLength(PublisherNameMaxLength, ErrorMessage = FieldMaxLengthError)]
         public string Name { get; set; }
 
         public ICollection<Book> Books { get; set; }
+            = new HashSet<Book>();
     }
 }

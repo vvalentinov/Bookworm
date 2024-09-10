@@ -19,6 +19,7 @@
         private readonly IAuthorsService authorsService;
         private readonly IPublishersService publishersService;
         private readonly IValidateBookService validateBookService;
+
         private readonly IDeletableEntityRepository<Book> booksRepository;
 
         public UploadBookService(
@@ -28,14 +29,17 @@
             IValidateBookService validateBookService,
             IDeletableEntityRepository<Book> booksRepository)
         {
+            this.booksRepository = booksRepository;
+
             this.blobService = blobService;
             this.authorsService = authorsService;
-            this.booksRepository = booksRepository;
             this.publishersService = publishersService;
             this.validateBookService = validateBookService;
         }
 
-        public async Task<OperationResult> UploadBookAsync(BookDto bookDto, string userId)
+        public async Task<OperationResult> UploadBookAsync(
+            BookDto bookDto,
+            string userId)
         {
             var bookTitle = bookDto.Title.Trim();
 
