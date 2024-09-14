@@ -12,9 +12,13 @@
 
 	<ItemGroup>
 	  <Compile Remove="wwwroot\admin-lte\**" />
+	  <Compile Remove="wwwroot\lib\**" />
 	  <Content Remove="wwwroot\admin-lte\**" />
+	  <Content Remove="wwwroot\lib\**" />
 	  <EmbeddedResource Remove="wwwroot\admin-lte\**" />
+	  <EmbeddedResource Remove="wwwroot\lib\**" />
 	  <None Remove="wwwroot\admin-lte\**" />
+	  <None Remove="wwwroot\lib\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -27,6 +31,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.12.0" />
+		<PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
@@ -62,7 +67,6 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\images\categories\" />
-	  <Folder Include="wwwroot\lib\admin-lte\dist\css\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -2,15 +2,24 @@
 
 @{
     string title = this.ViewData["Title"].ToString();
+
     string action = this.ViewData["Action"].ToString();
-    var titleCardModel = new TitleCardPartialViewModel { Title = title, IconClass = "fa-book" };
+
+    bool isEdit = action == "Edit";
+
+    var titleCardModel = new TitleCardPartialViewModel
+            {
+                Title = title,
+                IconClass = "fa-book"
+            };
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/book/bookUpload.css" asp-append-version="true" />
 }
 
-<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
+<partial name="PartialViews/_TitleCardPartial"
+         model=titleCardModel />
 
 <section class="uploadBookSection">
     <form id="uploadBookForm"
@@ -19,7 +28,7 @@
           method="post"
           enctype="multipart/form-data">
 
-        @if (action == "Edit")
+        @if (isEdit)
         {
             <input type="hidden" asp-for="@Model.Id" value="@Model.Id">
         }
@@ -122,14 +131,17 @@
         <div class="text-center my-4">
             <button type="submit" class="btn fs-5">
                 @title
-                <i class="fa-solid @(action == "Edit" ? "fa-pen-to-square" : "fa-upload") ms-2"></i>
+                <i class="fa-solid @(isEdit ? "fa-pen-to-square" : "fa-upload") ms-2"></i>
             </button>
         </div>
+
     </form>
 </section>
 
 @section Scripts {
     <script src="~/js/book/authors.js"></script>
-    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
+            referrerpolicy="origin">
+    </script>
     <script src="~/js/tinyMce.js"></script>
 }

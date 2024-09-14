@@ -2,17 +2,27 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 
 @{
-    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, Count = Model.RecordsCount };
+    var titleCardModel = new TitleCardPartialViewModel
+    {
+        Title = ViewData["Title"] as string,
+        Count = Model.RecordsCount,
+    };
+
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+
     var isUserAuthenticated = this.User.Identity.IsAuthenticated;
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+    <link
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet"
+    />
     <link rel="stylesheet" href="~/css/book/bookAll.css" asp-append-version="true" />
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
+
 <input id="category" type="hidden" value="@this.ViewData["Title"]" />
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
@@ -41,6 +51,6 @@
     @if (isUserAuthenticated)
     {
         <script type="module" src="~/js/book/books.js"></script>
-        <script src="~/lib/select2/js/select2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     }
 }

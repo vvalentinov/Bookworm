@@ -9,5 +9,5 @@ tinymce.init({
     selector: "textarea.bookDescription",
     placeholder: 'Type book description here...',
     plugins: "code wordcount lists preview searchreplace",
-    content_style: 'body { font-size: 14pt;}',
+    content_style: 'body { font-size: 14pt;}'
 });

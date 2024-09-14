@@ -2,7 +2,12 @@
 
 @{
     this.ViewData["Title"] = "Categories";
-    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, IconClass = "fa-solid fa-layer-group" };
+
+    var titleCardModel = new TitleCardPartialViewModel
+    {
+        Title = ViewData["Title"] as string,
+        IconClass = "fa-solid fa-layer-group",
+    };
 }
 
 @section Styles {
