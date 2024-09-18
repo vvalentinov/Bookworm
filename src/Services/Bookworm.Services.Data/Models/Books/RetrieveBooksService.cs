@@ -6,12 +6,14 @@
     using System.Threading.Tasks;
 
     using Bookworm.Common;
+    using Bookworm.Data;
     using Bookworm.Data.Common.Repositories;
     using Bookworm.Data.Models;
     using Bookworm.Services.Data;
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Services.Data.Contracts.Books;
     using Bookworm.Web.ViewModels.Books;
+    using Bookworm.Web.ViewModels.Comments;
     using Microsoft.EntityFrameworkCore;
 
     using static Bookworm.Common.Constants.DataConstants.BookDataConstants;
@@ -20,26 +22,27 @@
 
     public class RetrieveBooksService : IRetrieveBooksService
     {
-        private readonly IRatingsService ratingsService;
+        private readonly IUnitOfWork unitOfWork;
+
         private readonly ICategoriesService categoriesService;
 
         private readonly IRepository<Comment> commentRepo;
         private readonly IRepository<FavoriteBook> favBookRepo;
+        private readonly IRepository<AuthorBook> authorBookRepo;
         private readonly IDeletableEntityRepository<Book> bookRepo;
 
         public RetrieveBooksService(
-            IRatingsService ratingsService,
-            ICategoriesService categoriesService,
-            IRepository<Comment> commentRepo,
-            IDeletableEntityRepository<Book> bookRepo,
-            IRepository<FavoriteBook> favBookRepo)
+            IUnitOfWork unitOfWork,
+            ICategoriesService categoriesService)
         {
-            this.ratingsService = ratingsService;
+            this.unitOfWork = unitOfWork;
+
             this.categoriesService = categoriesService;
 
-            this.bookRepo = bookRepo;
-            this.commentRepo = commentRepo;
-            this.favBookRepo = favBookRepo;
+            this.favBookRepo = this.unitOfWork.GetRepository<FavoriteBook>();
+            this.authorBookRepo = this.unitOfWork.GetRepository<AuthorBook>();
+            this.bookRepo = this.unitOfWork.GetDeletableEntityRepository<Book>();
+            this.commentRepo = this.unitOfWork.GetDeletableEntityRepository<Comment>();
         }
 
         public async Task<OperationResult<BookDetailsViewModel>> GetBookDetailsAsync(
@@ -49,12 +52,27 @@
         {
             var bookViewModel = await this.bookRepo
                 .AllAsNoTracking()
-                .Include(x => x.Publisher)
                 .Include(x => x.Language)
                 .Include(x => x.Category)
-                .Include(x => x.AuthorsBooks)
-                .ThenInclude(x => x.Author)
-                .ToBookDetailsViewModel(userId)
+                .Include(x => x.Publisher)
+                .Select(book => new BookDetailsViewModel
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Description = book.Description,
+                    Year = book.Year,
+                    PagesCount = book.PagesCount,
+                    DownloadsCount = book.DownloadsCount,
+                    ImageUrl = book.ImageUrl,
+                    FileUrl = book.FileUrl,
+                    CategoryName = book.Category.Name,
+                    Language = book.Language.Name,
+                    UserId = book.UserId,
+                    PublisherName = book.Publisher.Name,
+                    IsApproved = book.IsApproved,
+                    Username = book.User.UserName,
+                    IsUserBook = book.UserId == userId,
+                })
                 .FirstOrDefaultAsync(book => book.Id == bookId);
 
             if (bookViewModel == null)
@@ -62,36 +80,53 @@
                 return OperationResult.Fail<BookDetailsViewModel>(BookWrongIdError);
             }
 
-            if (!isAdmin && !bookViewModel.IsApproved && !bookViewModel.IsUserBook)
+            if (!isAdmin &&
+                !bookViewModel.IsApproved &&
+                !bookViewModel.IsUserBook)
             {
                 return OperationResult.Fail<BookDetailsViewModel>(BookDetailsError);
             }
 
+            var authors = await this.authorBookRepo
+                .AllAsNoTracking()
+                .Include(x => x.Author)
+                .Where(x => x.BookId == bookId)
+                .Select(x => x.Author.Name)
+                .ToListAsync();
+
+            bookViewModel.Authors = authors;
+
             if (bookViewModel.IsApproved)
             {
-                var getAvgRatingResult = await this.ratingsService.GetAverageRatingAsync(bookId);
+                var bookRatings = await this.bookRepo
+                    .AllAsNoTracking()
+                    .Where(x => x.Id == bookId)
+                    .Include(x => x.Ratings)
+                    .Select(x => x.Ratings)
+                    .FirstAsync();
 
-                if (getAvgRatingResult.IsFailure)
-                {
-                    return OperationResult.Fail<BookDetailsViewModel>(getAvgRatingResult.ErrorMessage);
-                }
-
-                var getRatingsCountResult = await this.ratingsService.GetRatingsCountAsync(bookId);
-
-                if (getRatingsCountResult.IsFailure)
-                {
-                    return OperationResult.Fail<BookDetailsViewModel>(getRatingsCountResult.ErrorMessage);
-                }
-
-                bookViewModel.RatingsAvg = getAvgRatingResult.Data;
-                bookViewModel.RatingsCount = getRatingsCountResult.Data;
+                bookViewModel.RatingsCount = bookRatings.Count;
+                bookViewModel.RatingsAvg = bookRatings.Count > 0 ? bookRatings.Average(x => x.Value) : 0;
 
                 bookViewModel.Comments = await this.commentRepo
                     .AllAsNoTracking()
                     .Include(c => c.User)
                     .Include(c => c.Votes)
                     .Where(c => c.BookId == bookId)
-                    .SelectComments(userId)
+                    .Select(c => new CommentViewModel
+                    {
+                        Id = c.Id,
+                        UserId = c.UserId,
+                        Content = c.Content,
+                        NetWorth = c.NetWorth,
+                        CreatedOn = c.CreatedOn,
+                        UserUserName = c.User.UserName,
+                        IsCommentOwner = c.UserId == userId,
+                        UserVoteValue = c.Votes
+                            .Where(v => v.CommentId == c.Id && v.UserId == userId)
+                            .Select(v => (int)v.Value)
+                            .FirstOrDefault(),
+                    })
                     .OrderByDescending(c => c.CreatedOn)
                     .ToListAsync();
 
@@ -101,14 +136,8 @@
                         .AllAsNoTracking()
                         .AnyAsync(x => x.BookId == bookId && x.UserId == userId);
 
-                    var getUserRatingResult = await this.ratingsService.GetUserRatingAsync(bookId, userId);
-
-                    if (getUserRatingResult.IsFailure)
-                    {
-                        return OperationResult.Fail<BookDetailsViewModel>(getUserRatingResult.ErrorMessage);
-                    }
-
-                    bookViewModel.UserRating = getUserRatingResult.Data;
+                    var userRating = bookRatings.FirstOrDefault(x => x.UserId == userId);
+                    bookViewModel.UserRating = userRating == null ? 0 : userRating.Value;
                 }
             }
 
@@ -218,7 +247,12 @@
                 .AllAsNoTracking()
                 .Include(x => x.Book)
                 .Where(x => x.UserId == userId)
-                .SelectBookViewModel();
+                .Select(x => new BookViewModel
+                {
+                    Id = x.Book.Id,
+                    Title = x.Book.Title,
+                    ImageUrl = x.Book.ImageUrl,
+                });
 
             var recordsCount = await query.CountAsync();
 

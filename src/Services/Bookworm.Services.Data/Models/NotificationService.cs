@@ -70,7 +70,11 @@
                 .AllAsNoTracking()
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(n => n.CreatedOn)
-                .ToNotificationViewModel()
+                .Select(notification => new NotificationViewModel
+                {
+                    Id = notification.Id,
+                    Content = notification.Content,
+                })
                 .ToListAsync();
 
             var model = new NotificationListViewModel

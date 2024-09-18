@@ -28,7 +28,11 @@
         {
             var data = await this.languagesRepository
                     .AllAsNoTracking()
-                    .ToLanguageViewModel()
+                    .Select(language => new LanguageViewModel
+                    {
+                        Id = language.Id,
+                        Name = language.Name,
+                    })
                     .ToListAsync();
 
             return OperationResult.Ok(data);

@@ -28,7 +28,13 @@
         {
             return await this.settingsRepository
                 .All()
-                .ToSettingViewModel()
+                .Select(setting => new SettingViewModel
+                {
+                    Id = setting.Id,
+                    Name = setting.Name,
+                    Value = setting.Value,
+                    NameAndValue = $"{setting.Name} = {setting.Value}",
+                })
                 .ToListAsync();
         }
     }

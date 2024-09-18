@@ -160,7 +160,21 @@
             }
 
             var comments = await query
-                .ToCommentViewModel(userId)
+                .Select(comment => new CommentViewModel
+                {
+                    Id = comment.Id,
+                    Content = comment.Content,
+                    CreatedOn = comment.CreatedOn,
+                    NetWorth = comment.NetWorth,
+                    UserId = comment.UserId,
+                    UserUserName = comment.User.UserName,
+                    Votes = comment.Votes,
+                    IsCommentOwner = userId != null && comment.UserId == userId,
+                    UserVoteValue = userId == null ? 0 : comment.Votes
+                                              .Where(v => v.UserId == userId && v.CommentId == comment.Id)
+                                              .Select(v => (int?)v.Value)
+                                              .FirstOrDefault() ?? 0,
+                })
                 .ToListAsync();
 
             var model = new SortedCommentsResponseModel

@@ -27,7 +27,11 @@
             var data = await this.categoriesRepository
                     .AllAsNoTracking()
                     .OrderBy(x => x.Name)
-                    .ToCategoryViewModel()
+                    .Select(category => new CategoryViewModel
+                    {
+                        Id = category.Id,
+                        Name = category.Name,
+                    })
                     .ToListAsync();
 
             return OperationResult.Ok(data);
