@@ -108,11 +108,15 @@
                 bookViewModel.RatingsCount = bookRatings.Count;
                 bookViewModel.RatingsAvg = bookRatings.Count > 0 ? bookRatings.Average(x => x.Value) : 0;
 
-                bookViewModel.Comments = await this.commentRepo
+                var query = this.commentRepo
                     .AllAsNoTracking()
+                    .Where(c => c.BookId == bookId);
+
+                var commentsCount = await query.CountAsync();
+
+                var comments = await query
                     .Include(c => c.User)
                     .Include(c => c.Votes)
-                    .Where(c => c.BookId == bookId)
                     .Select(c => new CommentViewModel
                     {
                         Id = c.Id,
@@ -128,7 +132,18 @@
                             .FirstOrDefault(),
                     })
                     .OrderByDescending(c => c.CreatedOn)
+                    .Take(5)
                     .ToListAsync();
+
+                var commentListingModel = new CommentsListingViewModel
+                {
+                    Comments = comments,
+                    ItemsPerPage = 5,
+                    PageNumber = 1,
+                    RecordsCount = commentsCount,
+                };
+
+                bookViewModel.CommentsListing = commentListingModel;
 
                 if (userId != null)
                 {

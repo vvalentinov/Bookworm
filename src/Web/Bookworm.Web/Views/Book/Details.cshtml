@@ -4,6 +4,7 @@
 @{
     this.ViewData["Title"] = Model.Title;
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+    var commentsCount = Model.CommentsListing.Comments.Count();
 }
 
 @section Styles {
@@ -12,6 +13,7 @@
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
+@* Book Image + Info *@
 <section class="bookDetailsInfoSection">
     <div>
         <img class="img-fluid" src=@Model.ImageUrl alt=@Model.Title />
@@ -35,14 +37,9 @@
         <li class="list-group-item">Pages: @Model.PagesCount</li>
         <li class="list-group-item">Language: @Model.Language</li>
         <li class="list-group-item">Downloads: @Model.DownloadsCount</li>
-        @if (Model.Comments?.Count() > 0)
-        {
-            <li class="list-group-item">Comments: @Model.Comments.Count()</li>
-        }
-        else
-        {
-            <li class="list-group-item">Comments: 0</li>
-        }
+        <li class="list-group-item">
+            <a href="#comments-section">Comments: @(Model.CommentsListing.RecordsCount > 0 ? Model.CommentsListing.RecordsCount : 0)</a>
+        </li>
         <li class="list-group-item">
             Average Rating:
             <span class="bookAvgRating">@Model.RatingsAvg.ToString("f1")</span>
@@ -58,6 +55,7 @@
     </ul>
 </section>
 
+@* Book Buttons For Download, Delete, Rate and Edit *@
 @if (this.User.Identity.IsAuthenticated)
 {
     <section class="bookDetailsActionsSection">
@@ -100,6 +98,7 @@
     </section>
 }
 
+@* Book Description *@
 <section class="bookDetailsDescSection">
     <div class="card">
         <div class="card-header">
@@ -114,6 +113,8 @@
 @if (Model.IsApproved)
 {
     <section class="bookDetailsCommentsSection">
+
+        @* Post Comment Form *@
         <div class="formContainer">
             <form method="post" asp-controller="Comment" asp-action="Post">
                 <input type="hidden" asp-for="PostComment.BookId" value="@Model.Id" />
@@ -128,75 +129,12 @@
                 </div>
             </form>
         </div>
-        @if (Model.Comments?.Count() > 0)
+
+        @if (commentsCount > 0)
         {
-            <section class="commentsSection">
-                <h2 class="text-white">Comments: @Model.Comments.Count()</h2>
-                @if (Model.Comments.Count() > 1 && this.User.Identity.IsAuthenticated)
-                {
-                    <partial name="PartialViews/_CommentsButtonsPartial" model="@Model.Id" />
-                }
-                <div class="commentsContainer">
-                    @foreach (CommentViewModel comment in Model.Comments)
-                    {
-                        <article class="card">
-                            <div class="card-header">
-                                <span>Posted by - @comment.UserUserName</span>
-                                @if (this.User.Identity.IsAuthenticated)
-                                {
-                                    <div class="commentActionsContainer">
-                                        <div class="arrowsContainer">
-                                            @if (!comment.IsCommentOwner)
-                                            {
-                                                <i onclick=onUpArrowClick(this)
-                                                   data-model-id=@comment.Id
-                                                   class="fas fa-circle-up hover @(comment.UserVoteValue == 1 ? "greenUpArrow" : "")">
-                                                </i>
-
-                                                <span>@comment.NetWorth</span>
-
-                                                <i onclick=onDownArrowClick(this)
-                                                   data-model-id=@comment.Id
-                                                   class="fas fa-circle-down hover @(comment.UserVoteValue == -1 ? "redDownArrow" : "")">
-                                                </i>
-                                            }
-                                            else
-                                            {
-                                                <i class="fas fa-circle-up"></i>
-                                                <span>@comment.NetWorth</span>
-                                                <i class="fas fa-circle-down"></i>
-                                            }
-                                        </div>
-                                        @if (comment.IsCommentOwner || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
-                                        {
-                                            <div class="btnsContainer">
-                                                <button class="btn btn-lg btn-danger modalBtn"
-                                                        data-model-id=@comment.Id
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal"
-                                                        onclick="onDeleteCommentBtnClick(this)">
-                                                    <i class="fa fa-trash-can"></i>
-                                                </button>
-                                                <button class="btn btn-lg btn-warning modalBtn"
-                                                        onclick="onEditCommentBtnClick(this)"
-                                                        data-model-id=@comment.Id
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editModal">
-                                                    <i class="fa fa-square-pen"></i>
-                                                </button>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                            <div class="card-body">
-                                @Html.Raw(comment.SanitizedContent)
-                            </div>
-                        </article>
-                    }
-                </div>
-            </section>
+            <partial name="PartialViews/_BookCommentsSectionPartial" model="@Model" />
         }
+
     </section>
 }
 
@@ -208,7 +146,7 @@
 @section Scripts {
     <script src="~/js/book/vote.js"></script>
     <script src="~/js/book/rating.js"></script>
-    <script src="~/js/book/comments.js"></script>
+    <script src="~/js/comments/comments.js">    </script>
     <script type="module" src="~/js/book/addToFavorites.js"></script>
     <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
             referrerpolicy="origin">

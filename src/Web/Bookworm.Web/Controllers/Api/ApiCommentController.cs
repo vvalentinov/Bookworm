@@ -9,11 +9,11 @@
 
     public class ApiCommentController : ApiBaseController
     {
-        private readonly ICommentsService commentsService;
+        private readonly ICommentsService service;
 
-        public ApiCommentController(ICommentsService commentsService)
+        public ApiCommentController(ICommentsService service)
         {
-            this.commentsService = commentsService;
+            this.service = service;
         }
 
         [HttpGet(nameof(this.GetSortedComments))]
@@ -24,7 +24,7 @@
             var userId = this.User.GetId();
             var isAdmin = this.User.IsAdmin();
 
-            var result = await this.commentsService.GetSortedCommentsAsync(
+            var result = await this.service.GetSortedCommentsAsync(
                 bookId,
                 userId,
                 criteria,

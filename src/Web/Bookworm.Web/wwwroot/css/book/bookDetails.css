@@ -12,16 +12,17 @@
 
         .bookDetailsInfoSection div img {
             border-radius: 15px;
-            border: solid 2.5px black;
+            border: solid 1px black;
             height: 25rem;
             width: 100%;
+            box-shadow: 5px 5px 2px 1px #1abc9c;
         }
 
     .bookDetailsInfoSection ul {
         flex-basis: 65%;
         border-radius: 15px;
-        border: solid 2.5px black;
         font-size: 1.2rem;
+        box-shadow: 5px 5px 2px 1px #1abc9c;
     }
 
         .bookDetailsInfoSection ul a {

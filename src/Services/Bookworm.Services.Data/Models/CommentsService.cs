@@ -132,9 +132,7 @@
                 return OperationResult.Fail<SortedCommentsResponseModel>(BookWrongIdError);
             }
 
-            var isCriteriaValid = Enum.TryParse(
-                criteria,
-                out SortCommentsCriteria parsedCriteria);
+            var isCriteriaValid = Enum.TryParse(criteria, out SortCommentsCriteria parsedCriteria);
 
             if (!isCriteriaValid)
             {
@@ -145,6 +143,8 @@
                 .AllAsNoTracking()
                 .Include(c => c.Votes)
                 .Where(x => x.BookId == bookId);
+
+            var recordsCount = await query.CountAsync();
 
             switch (parsedCriteria)
             {
@@ -160,6 +160,7 @@
             }
 
             var comments = await query
+                .Take(5)
                 .Select(comment => new CommentViewModel
                 {
                     Id = comment.Id,
@@ -182,6 +183,9 @@
                 Comments = comments,
                 IsUserAdmin = isAdmin,
                 IsUserSignedIn = userId != null,
+                RecordsCount = recordsCount,
+                ItemsPerPage = 5,
+                PageNumber = 1,
             };
 
             return OperationResult.Ok(model);

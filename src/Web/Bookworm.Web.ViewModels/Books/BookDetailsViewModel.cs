@@ -9,7 +9,8 @@
     {
         public string Description { get; set; }
 
-        public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
+        public string SanitizedDescription
+            => new HtmlSanitizer().Sanitize(this.Description);
 
         public string PublisherName { get; set; }
 
@@ -45,6 +46,7 @@
 
         public IEnumerable<string> Authors { get; set; }
 
-        public IEnumerable<CommentViewModel> Comments { get; set; }
+        // public IEnumerable<CommentViewModel> Comments { get; set; }
+        public CommentsListingViewModel CommentsListing { get; set; }
     }
 }

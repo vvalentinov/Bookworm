@@ -86,10 +86,49 @@
 
 <section class="my-5">
     <partial name="PartialViews/_TitleCardPartial" model=recentBooksTitleCardModel />
-    <partial name="PartialViews/_BookListingPartial" model="@Model.RecentBooks" />
+
+    @{
+        <section class="booksSection">
+            @foreach (var book in Model.RecentBooks)
+            {
+                <div>
+                    <a asp-controller="Book"
+                       asp-action="Details"
+                       asp-route-id="@book.Id">
+
+                        <img title="@book.Title"
+                             src="@book.ImageUrl"
+                             alt="@book.Title"
+                             height="300"
+                             class="imageZoom">
+
+                    </a>
+                </div>
+            }
+        </section>
+    }
 </section>
 
 <section class="my-5">
     <partial name="PartialViews/_TitleCardPartial" model=popularBooksTitleCardModel />
-    <partial name="PartialViews/_BookListingPartial" model="@Model.PopularBooks" />
+
+    @{
+        <section class="booksSection">
+            @foreach (var book in Model.PopularBooks)
+            {
+                <div>
+                    <a asp-controller="Book"
+                       asp-action="Details"
+                       asp-route-id="@book.Id">
+
+                        <img title="@book.Title"
+                             src="@book.ImageUrl"
+                             alt="@book.Title"
+                             height="300"
+                             class="imageZoom">
+                    </a>
+                </div>
+            }
+        </section>
+    }
 </section>
