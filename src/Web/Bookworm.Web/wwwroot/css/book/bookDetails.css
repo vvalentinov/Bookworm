@@ -135,7 +135,8 @@
                 background-color: var(--clr-secondary);
                 color: black;
                 font-size: 1.3rem;
-                border: solid 2px black !important;
+                border: none !important;
+                /*border: solid 2px black !important;*/
             }
 
             .commentsSection .sortCommentsBtnsContainer .btn-group .btn-check:hover + .btn {
@@ -206,6 +207,12 @@
                 .commentsSection .card .card-header .arrowsContainer .hover:hover {
                     cursor: pointer;
                 }
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--clr-secondary);
+    --bs-tooltip-color: var(--clr-white);
+}
+
 /*Rating*/
 .ratingStar {
     color: #34AC9E;

@@ -4,6 +4,7 @@
 
     using Bookworm.Services.Data.Contracts;
     using Bookworm.Web.Extensions;
+    using Bookworm.Web.Infrastructure.Filters;
     using Bookworm.Web.ViewModels.Comments;
     using Microsoft.AspNetCore.Mvc;
 
@@ -19,16 +20,23 @@
         [HttpGet(nameof(this.GetSortedComments))]
         public async Task<ActionResult<SortedCommentsResponseModel>> GetSortedComments(
             string criteria,
-            int bookId)
+            int bookId,
+            int page = 1)
         {
+            if (page <= 0)
+            {
+                page = 1;
+            }
+
             var userId = this.User.GetId();
             var isAdmin = this.User.IsAdmin();
 
             var result = await this.service.GetSortedCommentsAsync(
                 bookId,
                 userId,
+                isAdmin,
                 criteria,
-                isAdmin);
+                page);
 
             if (result.IsSuccess)
             {

@@ -144,9 +144,13 @@
 <partial name="PartialViews/Modals/_RateBookModalPartial" />
 
 @section Scripts {
+    <script>
+        const lastLi = document.querySelector('#pagination li:last-child');
+        if (lastLi) { new bootstrap.Tooltip(lastLi); }
+    </script>
     <script src="~/js/book/vote.js"></script>
     <script src="~/js/book/rating.js"></script>
-    <script src="~/js/comments/comments.js">    </script>
+    <script type="module" src="~/js/comments/comments.js">    </script>
     <script type="module" src="~/js/book/addToFavorites.js"></script>
     <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
             referrerpolicy="origin">

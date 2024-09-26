@@ -1,3 +1,6 @@
+import { updateComments } from './updateComments.js';
+import { commentsPagination } from './commentsPagination.js';
+
 function onDeleteCommentBtnClick(e) {
     const modelId = e.getAttribute('data-model-id');
     const commentIdInput = document.querySelector("input[name='deleteCommentId']");
@@ -13,110 +16,214 @@ function onEditCommentBtnClick(e) {
     commentIdInput.value = modelId;
 };
 
-function getSortedComments(criteria, bookId) {
-    fetch(`/ApiComment/GetSortedComments?criteria=${criteria}&bookId=${bookId}`)
+function getSortedComments(criteria, bookId, page) {
+    fetch(`/ApiComment/GetSortedComments?criteria=${criteria}&bookId=${bookId}&page=${page}`)
         .then(res => res.json())
-        .then(res => updateComments(res))
+        .then(res => updateComments(res.comments, res.isUserSignedIn, res.isUserAdmin))
         .catch(err => console.log(err));
 }
 
-function updateComments(model) {
-    const comments = model.comments;
+commentsPagination();
 
-    const commentsContainerEl = document.querySelector('.commentsContainer');
-    commentsContainerEl.innerHTML = '';
+//const spans = document.querySelectorAll('.page-link');
+//const paginationNav = document.getElementById('pagination');
+//const bookId = paginationNav.getAttribute('bookId');
 
-    for (var i = 0; i < comments.length; i++) {
-        const currComment = comments[i];
+//spans.forEach(span => {
 
-        const articleEl = document.createElement('article');
-        articleEl.className = 'card';
+//    span.addEventListener('click', () => {
 
-        const divCardHeaderEl = document.createElement('div');
-        divCardHeaderEl.className = 'card-header';
+//        const parent = span.parentElement;
+//        var sortCriteria = document.querySelector('input[name="btnradio"]:checked').id;
+//        const isFirstLiEl = parent.previousElementSibling == null;
+//        const isLastLiEl = parent.nextElementSibling == null;
+//        const isNeitherFirstOrLastLi = !isFirstLiEl && !isLastLiEl;
+//        const lastLi = document.querySelector('#pagination li:last-child');
+//        const firstLi = document.querySelector('#pagination li:first-child');
+//        let page = Number(span.getAttribute('asp-route-page'));
+//        if (page == 0) {
+//            const activeSpan = document.querySelector('#pagination li.active span');
+//            if (isFirstLiEl) {
+//                page = Number(activeSpan.getAttribute('asp-route-page')) - 1;
+//            }
+//            if (isLastLiEl) {
+//                page = Number(activeSpan.getAttribute('asp-route-page')) + 1;
+//            }
+//        }
 
-        const authorSpanEl = document.createElement('span');
-        authorSpanEl.textContent = `Posted by - ${currComment.userUserName}`;
+//        fetch(`/ApiComment/GetSortedComments?criteria=${sortCriteria}&bookId=${bookId}&page=${page}`)
+//            .then(res => res.json())
+//            .then(res => {
 
-        divCardHeaderEl.appendChild(authorSpanEl);
+//                updateComments(res.comments, res.isUserSignedIn, res.isUserAdmin);
 
-        if (model.isUserSignedIn) {
-            const divCommentActionsContainerEl = document.createElement('div');
-            divCommentActionsContainerEl.className = 'commentActionsContainer';
+//                const hasNextPage = res.hasNextPage;
+//                const hasPreviousPage = res.hasPreviousPage;
 
-            const divArrowsContainerEl = document.createElement('div');
-            divArrowsContainerEl.className = 'arrowsContainer';
+//                const commentsSection = document.querySelector('#comments-section');
+//                commentsSection.scrollIntoView({ behavior: 'smooth' });
 
-            if (!currComment.isCommentOwner) {
-                const onUpArrowIconEl = document.createElement('i');
-                onUpArrowIconEl.onclick = () => onUpArrowClick(onUpArrowIconEl);
-                onUpArrowIconEl.setAttribute('data-model-id', currComment.id);
-                onUpArrowIconEl.className = `fas fa-circle-up hover ${currComment.userVoteValue == 1 ? "greenUpArrow" : ""}`;
+//                if (isNeitherFirstOrLastLi) {
+//                    const activeLi = document.querySelector('#pagination li.active');
+//                    activeLi.classList.remove('active');
+//                    parent.classList.add('active');
 
-                const commentNetWorthSpanEl = document.createElement('span');
-                commentNetWorthSpanEl.textContent = `${currComment.netWorth}`;
+//                    if (!hasPreviousPage) {
+//                        if (!firstLi.classList.contains('disabled')) {
+//                            firstLi.classList.add('disabled');
+//                        }
 
-                const onDownArrowIconEl = document.createElement('i');
-                onDownArrowIconEl.onclick = () => onDownArrowClick(onDownArrowIconEl);
-                onDownArrowIconEl.setAttribute('data-model-id', currComment.id);
-                onDownArrowIconEl.className = `fas fa-circle-down hover ${currComment.userVoteValue == -1 ? "redDownArrow" : ""}`;
+//                        // remove tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getInstance(firstLi);
+//                        if (tooltipInstance) { tooltipInstance.disable(); }
+//                    }
 
-                divArrowsContainerEl.appendChild(onUpArrowIconEl);
-                divArrowsContainerEl.appendChild(commentNetWorthSpanEl);
-                divArrowsContainerEl.appendChild(onDownArrowIconEl);
-            } else {
-                const onUpArrowIconEl = document.createElement('i');
-                onUpArrowIconEl.className = 'fas fa-circle-up';
+//                    if (hasPreviousPage) {
 
-                const commentNetWorthSpanEl = document.createElement('span');
-                commentNetWorthSpanEl.textContent = `${currComment.netWorth}`;
+//                        if (firstLi.classList.contains('disabled')) {
+//                            firstLi.classList.remove('disabled');
+//                        }
 
-                const onDownArrowIconEl = document.createElement('i');
-                onDownArrowIconEl.className = 'fas fa-circle-down';
+//                        // add tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getOrCreateInstance(firstLi);
+//                        if (!tooltipInstance._isEnabled) { tooltipInstance.enable(); }
+//                    }
 
-                divArrowsContainerEl.appendChild(onUpArrowIconEl);
-                divArrowsContainerEl.appendChild(commentNetWorthSpanEl);
-                divArrowsContainerEl.appendChild(onDownArrowIconEl);
-            }
+//                    if (!hasNextPage) {
 
-            divCommentActionsContainerEl.appendChild(divArrowsContainerEl);
+//                        if (!lastLi.classList.contains('disabled')) {
+//                            lastLi.classList.add('disabled');
+//                        }
 
-            if (currComment.isCommentOwner || model.isUserAdmin) {
-                const btnsContainer = document.createElement('div');
-                btnsContainer.className = 'btnsContainer';
+//                        // remove tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getInstance(lastLi);
+//                        if (tooltipInstance) { tooltipInstance.disable(); }
+//                    }
 
-                const deleteCommentBtn = document.createElement('button');
-                deleteCommentBtn.className = 'btn btn-lg btn-danger modalBtn';
-                deleteCommentBtn.setAttribute("onclick", "onDeleteCommentBtnClick(this)");
-                deleteCommentBtn.setAttribute('data-model-id', currComment.id);
-                deleteCommentBtn.setAttribute('data-bs-toggle', 'modal');
-                deleteCommentBtn.setAttribute('data-bs-target', '#deleteModal');
-                deleteCommentBtn.innerHTML = '<i class="fa fa-trash-can"></i>';
+//                    if (hasNextPage) {
 
-                const editCommentBtn = document.createElement('button');
-                editCommentBtn.className = 'btn btn-lg btn-warning modalBtn';
-                editCommentBtn.setAttribute("onclick", "onEditCommentBtnClick(this)");
-                editCommentBtn.setAttribute('data-model-id', currComment.id);
-                editCommentBtn.setAttribute('data-bs-toggle', 'modal');
-                editCommentBtn.setAttribute('data-bs-target', '#editModal');
-                editCommentBtn.innerHTML = '<i class="fa fa-square-pen"></i>';
+//                        if (lastLi.classList.contains('disabled')) {
+//                            lastLi.classList.remove('disabled');
+//                        }
 
-                btnsContainer.appendChild(deleteCommentBtn);
-                btnsContainer.appendChild(editCommentBtn);
+//                        // add tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getOrCreateInstance(lastLi);
+//                        if (!tooltipInstance._isEnabled) { tooltipInstance.enable(); }
+//                    }
+//                }
 
-                divCommentActionsContainerEl.appendChild(btnsContainer);
-            }
+//                if (isFirstLiEl) {
 
-            divCardHeaderEl.appendChild(divCommentActionsContainerEl);
-        }
+//                    if (hasNextPage && lastLi.classList.contains('disabled')) {
+//                        lastLi.classList.remove('disabled');
 
-        const divCardBodyEl = document.createElement('div');
-        divCardBodyEl.className = 'card-body';
-        divCardBodyEl.innerHTML = `${currComment.sanitizedContent}`;
+//                        //add tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getOrCreateInstance(lastLi);
+//                        if (!tooltipInstance._isEnabled) { tooltipInstance.enable(); }
+//                    }
 
-        articleEl.appendChild(divCardHeaderEl);
-        articleEl.appendChild(divCardBodyEl);
+//                    if (!hasPreviousPage) {
 
-        commentsContainerEl.appendChild(articleEl);
-    }
-}
+//                        if (!firstLi.classList.contains('disabled')) {
+//                            firstLi.classList.add('disabled');
+
+//                            // remove tooltip
+//                            const tooltipInstance = bootstrap.Tooltip.getInstance(firstLi);
+//                            if (tooltipInstance) { tooltipInstance.disable(); }
+//                        }
+
+//                        if (firstLi.nextElementSibling.classList.contains('active')) {
+//                            const spans = document.querySelectorAll('#pagination li:not(:first-child):not(:last-child) span');
+//                            spans.forEach(span => {
+//                                span.textContent = Number(span.textContent) - 1;
+//                                let currentRoutePage = Number(span.getAttribute('asp-route-page'));
+//                                span.setAttribute('asp-route-page', currentRoutePage - 1);
+//                            });
+//                        } else {
+//                            const activeLi = document.querySelector('#pagination li.active');
+//                            const previousLi = activeLi.previousElementSibling;
+//                            activeLi.classList.remove('active');
+//                            previousLi.classList.add('active');
+//                        }
+//                    }
+
+//                    if (hasPreviousPage) {
+
+//                        //add tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getOrCreateInstance(firstLi);
+//                        if (!tooltipInstance._isEnabled) { tooltipInstance.enable(); }
+
+//                        if (!firstLi.nextElementSibling.classList.contains('active')) {
+//                            const activeLi = document.querySelector('#pagination li.active');
+//                            activeLi.classList.remove('active');
+//                            activeLi.previousElementSibling.classList.add('active');
+//                        } else {
+//                            const spans = document.querySelectorAll('#pagination li:not(:first-child):not(:last-child) span');
+//                            spans.forEach(span => {
+//                                span.textContent = Number(span.textContent) - 1;
+//                                let currentRoutePage = Number(span.getAttribute('asp-route-page'));
+//                                span.setAttribute('asp-route-page', currentRoutePage - 1);
+//                            });
+//                        }
+//                    }
+//                }
+
+//                if (isLastLiEl) {
+
+//                    if (hasPreviousPage && firstLi.classList.contains('disabled')) {
+//                        firstLi.classList.remove('disabled');
+
+//                        //add tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getOrCreateInstance(firstLi);
+//                        if (!tooltipInstance._isEnabled) { tooltipInstance.enable(); }
+//                    }
+
+//                    if (!hasNextPage) {
+
+//                        if (!lastLi.classList.contains('disabled')) {
+//                            lastLi.classList.add('disabled');
+
+//                            // remove tooltip
+//                            const tooltipInstance = bootstrap.Tooltip.getInstance(lastLi);
+//                            if (tooltipInstance) { tooltipInstance.disable(); }
+//                        }
+
+//                        if (lastLi.previousElementSibling.classList.contains('active')) {
+//                            const spans = document.querySelectorAll('#pagination li:not(:first-child):not(:last-child) span');
+//                            spans.forEach(span => {
+//                                span.textContent = Number(span.textContent) + 1;
+//                                let currentRoutePage = Number(span.getAttribute('asp-route-page'));
+//                                span.setAttribute('asp-route-page', currentRoutePage + 1);
+//                            });
+//                        } else {
+//                            const activeLi = document.querySelector('#pagination li.active');
+//                            const nextLi = activeLi.nextElementSibling;
+//                            activeLi.classList.remove('active');
+//                            nextLi.classList.add('active');
+//                        }
+//                    }
+
+//                    if (hasNextPage) {
+
+//                        //add tooltip
+//                        const tooltipInstance = bootstrap.Tooltip.getOrCreateInstance(lastLi);
+//                        if (!tooltipInstance._isEnabled) { tooltipInstance.enable(); }
+
+//                        if (!lastLi.previousElementSibling.classList.contains('active')) {
+//                            const activeLi = document.querySelector('#pagination li.active');
+//                            activeLi.classList.remove('active');
+//                            activeLi.nextElementSibling.classList.add('active');
+//                        } else {
+//                            const spans = document.querySelectorAll('#pagination li:not(:first-child):not(:last-child) span');
+//                            spans.forEach(span => {
+//                                span.textContent = Number(span.textContent) + 1;
+//                                let currentRoutePage = Number(span.getAttribute('asp-route-page'));
+//                                span.setAttribute('asp-route-page', currentRoutePage + 1);
+//                            });
+//                        }
+//                    }
+//                }
+
+//            }).catch(err => console.log(err));
+//    });
+//});

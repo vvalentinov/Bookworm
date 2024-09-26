@@ -26,7 +26,8 @@
         Task<OperationResult<SortedCommentsResponseModel>> GetSortedCommentsAsync(
             int bookId,
             string userId,
-            string criteria,
-            bool isAdmin);
+            bool isAdmin,
+            string criteria = "CreatedOnDesc",
+            int page = 1);
     }
 }

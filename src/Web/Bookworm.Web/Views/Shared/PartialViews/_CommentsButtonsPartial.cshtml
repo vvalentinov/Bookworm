@@ -4,29 +4,40 @@
     <div class="btn-group"
          role="group"
          aria-label="Basic radio toggle button group">
-        <input type="radio"
-               class="btn-check"
-               name="btnradio"
-               id="sortCommentsByDateAsc"
-               autocomplete="off"
-               onclick="getSortedComments('CreatedOnAsc', @Model)">
-        <label class="btn border border-2" for="sortCommentsByDateAsc">Sort by date asc</label>
 
         <input type="radio"
                class="btn-check"
                name="btnradio"
-               id="sortCommentsByDateDesc"
+               id=@SortCommentsCriteria.CreatedOnAsc
+               autocomplete="off"
+               onclick="getSortedComments('CreatedOnAsc', @Model)">
+
+        <label class="btn border border-2" for=@SortCommentsCriteria.CreatedOnAsc>
+            Sort by date asc
+        </label>
+
+        <input type="radio"
+               class="btn-check"
+               name="btnradio"
+               id=@SortCommentsCriteria.CreatedOnDesc
                autocomplete="off"
                onclick="getSortedComments('CreatedOnDesc', @Model)"
                checked>
-        <label class="btn border border-2" for="sortCommentsByDateDesc">Sort by date desc</label>
+
+        <label class="btn border border-2" for=@SortCommentsCriteria.CreatedOnDesc>
+            Sort by date desc
+        </label>
 
         <input type="radio"
                class="btn-check"
                name="btnradio"
-               id="sortCommentsByNetWorthDesc"
+               id=@SortCommentsCriteria.NetWorthDesc
                autocomplete="off"
                onclick="getSortedComments('NetWorthDesc', @Model)">
-        <label class="btn border border-2" for="sortCommentsByNetWorthDesc">Sort by net worth desc</label>
+
+        <label class="btn border border-2" for=@SortCommentsCriteria.NetWorthDesc>
+            Sort by net worth desc
+        </label>
+
     </div>
 </div>

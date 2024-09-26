@@ -41,7 +41,7 @@
                                     <i class="fas fa-circle-down"></i>
                                 }
                             </div>
-                            @if (comment.IsCommentOwner || this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                            @if (comment.IsCommentOwner || this.User.IsInRole(AdministratorRoleName))
                             {
                                 <div class="btnsContainer">
                                     <button class="btn btn-lg btn-danger modalBtn"
@@ -72,11 +72,15 @@
 
     @if (Model.CommentsListing.PagesCount > 1)
     {
-        <div>
-            <nav id="pagination" aria-label="...">
+        <div class="mt-5">
+            <nav id="pagination" bookId="@Model.Id" aria-label="...">
                 <ul class="pagination pagination-lg justify-content-center">
-                    <li class="page-item @(Model.CommentsListing.HasPreviousPage ? "" : "disabled")">
-                        <span class="page-link" asp-route-page="@Model.CommentsListing.PreviousPageNumber">
+                    <li class="page-item @(Model.CommentsListing.HasPreviousPage ? "" : "disabled")"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Previous Page"
+                        data-bs-custom-class="custom-tooltip">
+                        <span class="page-link">
                             <i class="fa fa-angles-left"></i>
                         </span>
                     </li>
@@ -90,10 +94,7 @@
                         }
                     }
                     <li class="page-item active" aria-current="page">
-                        <span class="page-link">
-                            @Model.CommentsListing.PageNumber
-                            <span class="sr-only">(current)</span>
-                        </span>
+                        <span class="page-link" asp-route-page="@Model.CommentsListing.PageNumber">@Model.CommentsListing.PageNumber</span>
                     </li>
                     @for (int i = Model.CommentsListing.PageNumber + 1; i <= Model.CommentsListing.PageNumber + 4; i++)
                     {
@@ -104,8 +105,12 @@
                             </li>
                         }
                     }
-                    <li class="page-item @(Model.CommentsListing.HasNextPage ? "" : "disabled")">
-                        <span class="page-link" asp-route-page="@Model.CommentsListing.NextPageNumber">
+                    <li class="page-item @(Model.CommentsListing.HasNextPage ? "" : "disabled")"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Next Page"
+                        data-bs-custom-class="custom-tooltip">
+                        <span class="page-link">
                             <i class="fa fa-angles-right"></i>
                         </span>
                     </li>

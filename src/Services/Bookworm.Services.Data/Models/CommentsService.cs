@@ -124,15 +124,18 @@
         public async Task<OperationResult<SortedCommentsResponseModel>> GetSortedCommentsAsync(
             int bookId,
             string userId,
-            string criteria,
-            bool isAdmin)
+            bool isAdmin,
+            string criteria = "CreatedOnDesc",
+            int page = 1)
         {
             if (!await this.CheckIfBookIdIsValidAsync(bookId))
             {
                 return OperationResult.Fail<SortedCommentsResponseModel>(BookWrongIdError);
             }
 
-            var isCriteriaValid = Enum.TryParse(criteria, out SortCommentsCriteria parsedCriteria);
+            var isCriteriaValid = Enum.TryParse(
+                criteria,
+                out SortCommentsCriteria parsedCriteria);
 
             if (!isCriteriaValid)
             {
@@ -160,6 +163,7 @@
             }
 
             var comments = await query
+                .Skip((page - 1) * 5)
                 .Take(5)
                 .Select(comment => new CommentViewModel
                 {
@@ -172,9 +176,9 @@
                     Votes = comment.Votes,
                     IsCommentOwner = userId != null && comment.UserId == userId,
                     UserVoteValue = userId == null ? 0 : comment.Votes
-                                              .Where(v => v.UserId == userId && v.CommentId == comment.Id)
-                                              .Select(v => (int?)v.Value)
-                                              .FirstOrDefault() ?? 0,
+                        .Where(v => v.UserId == userId && v.CommentId == comment.Id)
+                        .Select(v => (int?)v.Value)
+                        .FirstOrDefault() ?? 0,
                 })
                 .ToListAsync();
 
@@ -185,7 +189,7 @@
                 IsUserSignedIn = userId != null,
                 RecordsCount = recordsCount,
                 ItemsPerPage = 5,
-                PageNumber = 1,
+                PageNumber = page,
             };
 
             return OperationResult.Ok(model);

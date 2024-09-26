@@ -288,10 +288,6 @@ main {
 }
 
 /*Pagination Styles*/
-.pagination .page-item {
-    /*border: solid 1px black;*/
-}
-
 .pagination > li > span:hover {
     cursor: pointer;
 }
@@ -309,14 +305,15 @@ main {
     .pagination > li > span:focus,
     .pagination > li > span:hover {
         color: var(--clr-black);
-        background-color: var(--clr-secondary);
+        background-color: #c7fcec;
         border: solid 1px black;
     }
 
 .pagination > .active > span,
 .pagination > .active > span:focus {
-    background-color: lightcoral !important;
+    background-color: #c7fcec !important;
     border: solid 1px black;
+    color: var(--clr-black);
 }
 
 /*Table Styles*/
@@ -399,7 +396,7 @@ a[class="privacy-link"] {
 
 .title-card {
     background-color: var(--clr-secondary);
-    color: var(--clr-black);
+    color: var(--clr-white);
     text-align: center;
 }
 
