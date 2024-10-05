@@ -42,7 +42,7 @@
         {
             var data = await this.bookRepository
                     .AllAsNoTracking()
-                    .Where(x => x.CategoryId == categoryId)
+                    .Where(x => x.IsApproved && x.CategoryId == categoryId)
                     .Select(x => new LanguageViewModel
                     {
                         Id = x.LanguageId,

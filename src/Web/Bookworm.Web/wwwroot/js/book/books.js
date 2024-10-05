@@ -15,6 +15,19 @@ $(function () {
     $('.languagesSelect').select2({
         placeholder: "Filter by language...",
         width: "100%",
+        selectionCssClass: 'selectionContainer',
+        dropdownCssClass: 'select2DropdownMenu',
+    });
+
+    let preventOpen = false;
+
+    $('.languagesSelect').on('select2:unselecting', () => preventOpen = true);
+
+    $('.languagesSelect').on('select2:opening', function (e) {
+        if (preventOpen) {
+            e.preventDefault();
+            preventOpen = false;
+        }
     });
 
     $('.languagesSelect').on('select2:select', () => fetchForBooks());
