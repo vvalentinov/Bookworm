@@ -3,22 +3,17 @@
 
 @{
     var titleCardModel = new TitleCardPartialViewModel
-    {
-        Title = ViewData["Title"] as string,
-        Count = Model.RecordsCount,
-    };
-
-    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+            {
+                Title = ViewData["Title"] as string,
+                Count = Model.RecordsCount,
+            };
 
     var isUserAuthenticated = this.User.Identity.IsAuthenticated;
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 @section Styles {
-    <link
-        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-        rel="stylesheet"
-    />
-    <link rel="stylesheet" href="~/css/book/bookAll.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
@@ -50,7 +45,7 @@
 @section Scripts {
     @if (isUserAuthenticated)
     {
-        <script type="module" src="~/js/book/books.js"></script>
+        <script type="module" src="~/js/book/books.js" asp-append-version="true"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     }
 }

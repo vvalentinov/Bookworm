@@ -4,33 +4,33 @@
     this.ViewData["Title"] = "Categories";
 
     var titleCardModel = new TitleCardPartialViewModel
-    {
-        Title = ViewData["Title"] as string,
-        IconClass = "fa-solid fa-layer-group",
-    };
-}
-
-@section Styles {
-    <link rel="stylesheet" href="~/css/book/categories.css" asp-append-version="true" />
+            {
+                Title = ViewData["Title"] as string,
+                IconClass = "fa-solid fa-layer-group",
+            };
 }
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
-<section class="categoriesSection">
-    @foreach (var category in Model)
-    {
-        <a asp-controller="Book"
-           asp-action="All"
-           asp-route-category="@category.Name">
-            <div class="imageContainer">
-                <img class="rounded-4"
-                     src="~/images/categories/@(category.Name).jpg"
-                     alt=@category.Name
-                     height="300">
-                <div class="overlay">
-                    <div class="text text-center">@category.Name</div>
+<section class="categoriesSection py-5 px-1 my-3 rounded-4">
+
+    <div class="d-flex flex-wrap gap-4 justify-content-center">
+        @foreach (var category in Model)
+        {
+            <a style="flex-basis: 30%;" asp-controller="Book"
+               asp-action="All"
+               asp-route-category="@category.Name">
+                <div class="imageContainer">
+                    <img class="rounded-4 w-100"
+                         src="~/images/categories/@(category.Name).jpg"
+                         alt=@category.Name
+                         height="300">
+                    <div class="overlay">
+                        <div class="text text-center">@category.Name</div>
+                    </div>
                 </div>
-            </div>
-        </a>
-    }
+            </a>
+        }
+    </div>
+   
 </section>

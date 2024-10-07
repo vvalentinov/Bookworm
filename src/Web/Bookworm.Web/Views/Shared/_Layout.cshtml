@@ -100,15 +100,17 @@
 
     <main role="main">
 
-        <partial name="PartialViews/_CookieConsentPartial" />
+        <div class="container-fluid p-0">
+            <partial name="PartialViews/_CookieConsentPartial" />
 
-        @this.RenderBody()
+            @this.RenderBody()
 
-        <button class="topArrow">
-            <i class="fa fa-arrow-up"></i>
-        </button>
+            <button class="topArrow">
+                <i class="fa fa-arrow-up"></i>
+            </button>
 
-        <div class="toast-container top-0 end-0 p-3"></div>
+            <div class="toast-container top-0 end-0 p-3"></div>
+        </div>
 
     </main>
 

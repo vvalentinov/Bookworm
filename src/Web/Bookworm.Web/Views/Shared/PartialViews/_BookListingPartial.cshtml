@@ -1,20 +1,20 @@
-﻿<section class="booksSection">
+﻿<section class="booksListingSection my-3 rounded-4 p-4">
 
-    @foreach (var book in Model)
-    {
-        <div>
-            <a asp-controller="Book"
+    <div class="d-flex flex-wrap justify-content-center gap-4">
+        @foreach (var book in Model)
+        {
+            <a style="flex-basis: 23%;" asp-controller="Book"
                asp-action="Details"
                asp-route-id="@book.Id">
 
                 <img title="@book.Title"
                      src="@book.ImageUrl"
                      alt="@book.Title"
-                     height="300"
-                     class="imageZoom">
+                     height="350"
+                     class="imageZoom w-100">
 
             </a>
-        </div>
-    }
+        }
+    </div>
 
 </section>

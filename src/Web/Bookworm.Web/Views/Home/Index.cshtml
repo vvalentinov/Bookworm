@@ -22,26 +22,22 @@
             };
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
-}
+<section class="welcomeSection p-3 rounded-3">
 
-<section class="welcomeSection">
-
-    <div class="welcomeSectionHeader">
-        <h1>Welcome to @GlobalConstants.SystemName!</h1>
-        <p>
+    <div style="min-height: 30%;" class="d-flex flex-column justify-content-center align-items-center">
+        <h1 class="text-center text-white">Welcome to @GlobalConstants.SystemName!</h1>
+        <p class="text-center text-white fs-4 w-75 text-center">
             📚 Share your favorite reads with the Bookworm community!
             Easily upload and share books, from classics to contemporary bestsellers, and connect with fellow book lovers.
         </p>
     </div>
 
-    <div class="cardContainer">
-        <div class="card animate__animated animate__zoomIn animate__faster">
+    <div style="min-height: 50%;" class="d-flex justify-content-center py-5">
+        <div class="card w-75 animate__animated animate__zoomIn animate__faster">
             <div class="card-header">
                 Quote
             </div>
-            <div class="card-body">
+            <div class="card-body align-content-center">
                 <blockquote class="blockquote">
                     <p class="text-center">@Model.RandomQuote.Content</p>
                     @if (Model.RandomQuote.AuthorName != null)
@@ -69,66 +65,70 @@
 
     @if (this.User.Identity.IsAuthenticated)
     {
-        <div class="homeBtnsContainer">
-            <div class="animate__animated animate__zoomIn animate__faster">
-                <a asp-controller="Book" asp-action="Upload" class="btn">
-                    Upload Book<i class="fa fa-book ms-2"></i>
-                </a>
-            </div>
-            <div class="animate__animated animate__zoomIn animate__faster">
-                <a asp-controller="Quote" asp-action="Upload" class="btn">
-                    Upload Quote<i class="fa fa-square-pen ms-2"></i>
-                </a>
-            </div>
+        <div class="d-flex justify-content-center gap-3 py-3">
+            <a style="background-color: var(--clr-secondary); min-height: 20%;"
+               asp-controller="Book"
+               asp-action="Upload"
+               class="w-50 fs-3 btn animate__animated animate__zoomIn animate__faster">
+                Upload Book<i class="fa fa-book ms-2"></i>
+            </a>
+            <a style="background-color: var(--clr-secondary); min-height: 20%;"
+               asp-controller="Quote"
+               asp-action="Upload"
+               class="w-50 fs-3 btn animate__animated animate__zoomIn animate__faster">
+                Upload Quote<i class="fa fa-square-pen ms-2"></i>
+            </a>
         </div>
     }
+
 </section>
 
-<section class="my-5">
+<section class="booksSection my-5 px-3 pb-5 rounded-4">
+
     <partial name="PartialViews/_TitleCardPartial" model=recentBooksTitleCardModel />
 
     @{
-        <section class="booksSection">
+        <div class="d-flex flex-wrap justify-content-center gap-4 mt-4">
             @foreach (var book in Model.RecentBooks)
             {
-                <div>
-                    <a asp-controller="Book"
-                       asp-action="Details"
-                       asp-route-id="@book.Id">
+                <a style="flex-basis: 23%;" asp-controller="Book"
+                   asp-action="Details"
+                   asp-route-id="@book.Id">
 
-                        <img title="@book.Title"
-                             src="@book.ImageUrl"
-                             alt="@book.Title"
-                             height="300"
-                             class="imageZoom">
+                    <img title="@book.Title"
+                         src="@book.ImageUrl"
+                         alt="@book.Title"
+                         height="350"
+                         class="imageZoom w-100 rounded-4">
 
-                    </a>
-                </div>
+                </a>
             }
-        </section>
+        </div>
     }
+
 </section>
 
-<section class="my-5">
+<section class="booksSection my-5 px-3 pb-5 rounded-4">
+
     <partial name="PartialViews/_TitleCardPartial" model=popularBooksTitleCardModel />
 
     @{
-        <section class="booksSection">
+        <div class="d-flex flex-wrap justify-content-center gap-4 mt-4">
             @foreach (var book in Model.PopularBooks)
             {
-                <div>
-                    <a asp-controller="Book"
-                       asp-action="Details"
-                       asp-route-id="@book.Id">
+                <a style="flex-basis: 23%;" asp-controller="Book"
+                   asp-action="Details"
+                   asp-route-id="@book.Id">
 
-                        <img title="@book.Title"
-                             src="@book.ImageUrl"
-                             alt="@book.Title"
-                             height="300"
-                             class="imageZoom">
-                    </a>
-                </div>
+                    <img title="@book.Title"
+                         src="@book.ImageUrl"
+                         alt="@book.Title"
+                         height="350"
+                         class="imageZoom w-100 rounded-4">
+
+                </a>
             }
-        </section>
+        </div>
     }
+
 </section>
