@@ -3,15 +3,14 @@
 
 @{
     this.ViewData["Title"] = "Favorite Books";
-    var titleCardModel = new TitleCardPartialViewModel { Title = ViewData["Title"] as string, IconClass = "fa-book" };
+
+    var titleCardModel = new TitleCardPartialViewModel
+            {
+                Title = ViewData["Title"] as string,
+                IconClass = "fa-book"
+            };
+
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
-}
-
-@section Styles {
-    <link rel="stylesheet" href="~/css/book/bookFavorites.css" />
-
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-          rel="stylesheet" />
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
@@ -20,26 +19,38 @@
 
 @if (Model.Books.Any())
 {
-    <section class="booksSection">
+    <section class="favoriteBooksSection d-flex flex-wrap justify-content-center gap-3 my-4">
         @foreach (var book in Model.Books)
         {
-            <div class="card">
-                <img title="@book.Title" src="@book.ImageUrl" alt="Book" height="300">
-                <div class="card-body">
+            <div style="flex-basis: 23%" class="card rounded-4">
+
+                <img title="@book.Title"
+                     src="@book.ImageUrl"
+                     alt="Book"
+                     height="300"
+                class="rounded-top-4">
+
+                <div class="card-body rounded-bottom-4 d-flex justify-content-center gap-3">
+
                     <a asp-area=""
                        asp-controller="Book"
                        asp-action="Details"
                        asp-route-id="@book.Id"
-                       class="btn viewFavoriteBookBtn text-white">
+                       class="btn text-white w-50 fs-5">
                         Details
                     </a>
+
                     <a asp-area=""
                        asp-controller="Book"
                        asp-action="DeleteFromFavorites"
                        asp-route-id="@book.Id"
-                       class="btn removeFromListBtn text-white">
+                       data-bs-toggle="tooltip"
+                       data-bs-custom-class="favoriteBooks-tooltip"
+                       data-bs-title="This will remove the book from your favorites list!"
+                       class="btn text-white w-50 fs-5">
                         Remove
                     </a>
+
                 </div>
             </div>
         }
@@ -51,3 +62,9 @@
     <vc:pagination controller="Book" action="Favorites" model="@Model"></vc:pagination>
 }
 
+@section Scripts {
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    </script>
+}

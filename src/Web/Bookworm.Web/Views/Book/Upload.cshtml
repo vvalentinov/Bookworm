@@ -14,19 +14,16 @@
             };
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/book/bookUpload.css" asp-append-version="true" />
-}
+<partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
-<partial name="PartialViews/_TitleCardPartial"
-         model=titleCardModel />
+<section class="uploadBookSection d-flex justify-content-center py-3">
 
-<section class="uploadBookSection">
     <form id="uploadBookForm"
           asp-controller="Book"
           asp-action="@action"
           method="post"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data"
+          class="w-75 p-3 rounded-4">
 
         @if (isEdit)
         {
@@ -36,14 +33,14 @@
         <div asp-validation-summary="All" class="text-danger"></div>
 
         <div>
-            <label asp-for="Title"></label>
+            <label asp-for="Title" class="text-white fs-4"></label>
             <input asp-for="Title" type="text" class="form-control fs-5">
             <span asp-validation-for="Title" class="small text-danger"></span>
         </div>
 
-        <div class="selectContainer">
-            <div class="mt-4">
-                <label asp-for="LanguageId"></label>
+        <div class="d-flex mt-4 gap-3">
+            <div class="w-50">
+                <label asp-for="LanguageId" class="text-white fs-4"></label>
                 <select asp-for="LanguageId"
                         size="8"
                         aria-label="size 5 select example"
@@ -52,8 +49,8 @@
                 </select>
                 <span asp-validation-for="LanguageId" class="small text-danger"></span>
             </div>
-            <div class="mt-4">
-                <label asp-for="CategoryId"></label>
+            <div class="w-50">
+                <label asp-for="CategoryId" class="text-white fs-4"></label>
                 <select asp-for="CategoryId"
                         size="8"
                         aria-label="size 5 select example"
@@ -65,37 +62,37 @@
         </div>
 
         <div class="mt-4">
-            <label asp-for="PagesCount"></label>
+            <label asp-for="PagesCount" class="text-white fs-4"></label>
             <input asp-for="PagesCount" type="number" class="form-control fs-5">
             <span asp-validation-for="PagesCount" class="small text-danger"></span>
         </div>
 
         <div class="mt-4">
-            <label asp-for="Year"></label>
+            <label asp-for="Year" class="text-white fs-4"></label>
             <input asp-for="Year" type="number" class="form-control fs-5">
             <span asp-validation-for="Year" class="small text-danger"></span>
         </div>
 
         <div class="mt-4">
-            <label asp-for="Publisher"></label>
+            <label asp-for="Publisher" class="text-white fs-4"></label>
             <input asp-for="Publisher" type="text" class="form-control fs-5">
             <span asp-validation-for="Publisher" class="small text-danger"></span>
         </div>
 
         <div class="mt-4">
-            <label asp-for="BookFile" class="form-label"></label>
+            <label asp-for="BookFile" class="form-label text-white fs-4"></label>
             <input asp-for="BookFile" type="file" class="form-control fs-5">
             <span asp-validation-for="BookFile" class="small text-danger"></span>
         </div>
 
         <div class="mt-4">
-            <label asp-for="ImageFile" class="form-label"></label>
+            <label asp-for="ImageFile" class="form-label text-white fs-4"></label>
             <input asp-for="ImageFile" type="file" class="form-control fs-5">
             <span asp-validation-for="ImageFile" class="small text-danger"></span>
         </div>
 
         <div class="mt-4" id="authorsContainer" data-index="0">
-            <button type="button" id="addAuthorBtn" class="btn">
+            <button type="button" id="addAuthorBtn" class="btn w-100 fs-4">
                 Author<i class="fa-solid fa-square-plus ms-2 fa-xl"></i>
             </button>
             @if (Model.Authors?.Count > 0)
@@ -123,13 +120,13 @@
         </div>
 
         <div class="mt-4">
-            <label asp-for="Description"></label>
+            <label asp-for="Description" class="text-white fs-4"></label>
             <textarea class="bookDescription" asp-for="Description"></textarea>
             <span asp-validation-for="Description" class="small text-danger"></span>
         </div>
 
         <div class="text-center my-4">
-            <button type="submit" class="btn fs-5">
+            <button type="submit" class="btn fs-4 px-5">
                 @title
                 <i class="fa-solid @(isEdit ? "fa-pen-to-square" : "fa-upload") ms-2"></i>
             </button>
@@ -140,8 +137,8 @@
 
 @section Scripts {
     <script src="~/js/book/authors.js"></script>
-    <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
+   @*  <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
             referrerpolicy="origin">
-    </script>
-    <script src="~/js/tinyMce.js"></script>
+    </script> *@
+    @* <script src="~/js/tinyMce.js"></script> *@
 }

@@ -27,6 +27,12 @@ main {
     margin: 0 2rem;
 }
 
+.favoriteBooks-tooltip {
+    --bs-tooltip-bg: var(--clr-secondary);
+    --bs-tooltip-color: var(--clr-black);
+    --bs-tooltip-opacity: 1;
+}
+
 /*Home*/
 .welcomeSection {
     height: calc(100vh - 140px);
@@ -167,6 +173,137 @@ main {
             background-color: #c7fcec !important;
         }
 
+/*Upload Book Page*/
+.uploadBookSection form {
+    background-color: var(--clr-primary);
+    border: solid 2px var(--clr-secondary);
+}
+
+    .uploadBookSection form button[type="submit"] {
+        background-color: var(--clr-secondary);
+    }
+
+        .uploadBookSection form button[type="submit"]:hover {
+            color: white;
+        }
+
+/*Book Details Page*/
+.bookDetailsInfoSection {
+    min-height: calc(100vh - 100px);
+}
+
+    .bookDetailsInfoSection div img {
+        border: solid 1px black;
+        height: 25rem;
+        box-shadow: 5px 5px 2px 1px var(--clr-secondary);
+    }
+
+    .bookDetailsInfoSection ul {
+        border-radius: 15px;
+        font-size: 1.2rem;
+        box-shadow: 5px 5px 2px 1px var(--clr-secondary);
+    }
+
+        .bookDetailsInfoSection ul a {
+            font-style: italic;
+        }
+
+.list-group .list-group-item {
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
+    word-wrap: break-word;
+}
+
+    .list-group .list-group-item:hover {
+        background-color: var(--clr-secondary);
+    }
+
+    .list-group .list-group-item a {
+        color: var(--clr-white);
+    }
+
+.bookDetailsActionsSection a,
+.bookDetailsActionsSection button {
+    flex-basis: 33.3%;
+}
+
+.bookDetailsDescSection .card {
+    border: solid 2px var(--clr-secondary);
+}
+
+.bookDetailsDescSection .card-header {
+    border-bottom: solid 1px var(--clr-secondary);
+}
+
+.bookDetailsDescSection .card-body {
+    background-color: var(--clr-primary);
+}
+
+.bookDetailsCommentsSection .formContainer {
+    border: solid 2px var(--clr-secondary);
+    background-color: var(--clr-primary);
+}
+
+.sortCommentsBtnsContainer .btn-group .btn-check:checked + .btn {
+    border: none !important;
+}
+
+.commentsSection .card {
+    border: solid 2px var(--clr-secondary);
+}
+
+.commentsSection .card-header {
+    border-bottom: solid 2px var(--clr-secondary);
+}
+
+/*Random Book Page*/
+.randomBooksSection form {
+    border: solid 2px var(--clr-secondary);
+    background-color: var(--clr-primary);
+}
+
+.randomBooksSection .btn-group .btn {
+    background-color: var(--clr-secondary);
+}
+
+    .randomBooksSection .btn-group .btn:hover {
+        background-color: #c7fcec !important;
+        color: var(--clr-black) !important;
+    }
+
+.randomBooksSection .btn-group .btn-check:checked + .btn {
+    background-color: #C7FCEC !important;
+    border: none !important;
+}
+
+.randomBooksSection button[type="submit"] {
+    background-color: var(--clr-secondary);
+}
+
+    .randomBooksSection button[type="submit"]:hover {
+        color: white;
+    }
+
+/*Favorite Books Page*/
+.favoriteBooksSection .card {
+    border: solid 2px var(--clr-secondary);
+}
+
+    .favoriteBooksSection .card .card-body {
+        background-color: var(--clr-primary);
+    }
+
+        .favoriteBooksSection .card .card-body a:hover {
+            color: var(--clr-black) !important;
+        }
+
+        .favoriteBooksSection .card .card-body a:first-child {
+            background-color: var(--clr-secondary);
+        }
+
+        .favoriteBooksSection .card .card-body a:nth-child(2) {
+            background-color: red;
+        }
 
 .searchInputGroup input,
 .searchInputGroup input:focus {
@@ -587,6 +724,18 @@ input[type="radio"] {
     }
 
 /*Media Queries*/
+@media only screen and (max-width: 576px) {
+    .randomBooksSection form .btn-group label {
+        font-size: 15px !important;
+    }
+
+    .sortCommentsBtnsContainer .btn-group label,
+    .commentActionsContainer .arrowsContainer,
+    .pagination .page-link {
+        font-size: 10px !important;
+    }
+}
+
 @media only screen and (max-width: 768px) {
     .welcomeSection {
         height: auto !important;
@@ -633,9 +782,9 @@ input[type="radio"] {
         flex-direction: column;
     }
 
-        .booksListingSection a {
-            width: 100% !important;
-        }
+    .booksListingSection a {
+        width: 100% !important;
+    }
 
     .categoriesSection div:first-child {
         flex-direction: column;
@@ -644,4 +793,34 @@ input[type="radio"] {
         .categoriesSection div:first-child a {
             width: 100% !important;
         }
+
+    .randomBooksSection form {
+        width: 100% !important;
+    }
+
+    .uploadBookSection form {
+        width: 100% !important;
+    }
+
+    .bookDetailsInfoSection {
+        flex-direction: column;
+        padding: 0 !important;
+    }
+
+        .bookDetailsInfoSection div:first-child,
+        .bookDetailsInfoSection ul {
+            width: 100% !important;
+        }
+
+    .bookDetailsActionsSection {
+        flex-direction: column;
+    }
+
+    .sortCommentsBtnsContainer .btn-group {
+        width: 100% !important;
+    }
+
+    .commentsContainer .card {
+        width: 100% !important;
+    }
 }

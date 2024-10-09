@@ -1,9 +1,7 @@
 ﻿@model int
 
-<div class="sortCommentsBtnsContainer">
-    <div class="btn-group"
-         role="group"
-         aria-label="Basic radio toggle button group">
+<div class="sortCommentsBtnsContainer mb-3 d-flex justify-content-center">
+    <div class="btn-group w-75" role="group" aria-label="Basic radio toggle button group">
 
         <input type="radio"
                class="btn-check"
@@ -12,7 +10,7 @@
                autocomplete="off"
                onclick="getSortedComments('CreatedOnAsc', @Model)">
 
-        <label class="btn border border-2" for=@SortCommentsCriteria.CreatedOnAsc>
+        <label class="btn fs-5" for=@SortCommentsCriteria.CreatedOnAsc>
             Sort by date asc
         </label>
 
@@ -24,7 +22,7 @@
                onclick="getSortedComments('CreatedOnDesc', @Model)"
                checked>
 
-        <label class="btn border border-2" for=@SortCommentsCriteria.CreatedOnDesc>
+        <label class="btn fs-5" for=@SortCommentsCriteria.CreatedOnDesc>
             Sort by date desc
         </label>
 
@@ -35,7 +33,7 @@
                autocomplete="off"
                onclick="getSortedComments('NetWorthDesc', @Model)">
 
-        <label class="btn border border-2" for=@SortCommentsCriteria.NetWorthDesc>
+        <label class="btn fs-5" for=@SortCommentsCriteria.NetWorthDesc>
             Sort by net worth desc
         </label>
 

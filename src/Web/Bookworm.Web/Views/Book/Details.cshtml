@@ -4,21 +4,16 @@
 @{
     this.ViewData["Title"] = Model.Title;
     string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
-    var commentsCount = Model.CommentsListing.Comments.Count();
-}
-
-@section Styles {
-    <link rel="stylesheet" href="~/css/book/bookDetails.css" asp-append-version="true" />
 }
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 @* Book Image + Info *@
-<section class="bookDetailsInfoSection">
-    <div>
-        <img class="img-fluid" src=@Model.ImageUrl alt=@Model.Title />
+<section class="bookDetailsInfoSection d-flex justify-content-center align-items-center gap-5 px-5">
+    <div class="w-25">
+        <img class="img-fluid w-100 rounded-4" src=@Model.ImageUrl alt=@Model.Title />
     </div>
-    <ul class="list-group">
+    <ul class="list-group w-75 fs-5">
         <li class="list-group-item">
             @Model.Title
         </li>
@@ -38,7 +33,9 @@
         <li class="list-group-item">Language: @Model.Language</li>
         <li class="list-group-item">Downloads: @Model.DownloadsCount</li>
         <li class="list-group-item">
-            <a href="#comments-section">Comments: @(Model.CommentsListing.RecordsCount > 0 ? Model.CommentsListing.RecordsCount : 0)</a>
+            <a href="#comments-section">
+                Comments: @(Model.CommentsListing.RecordsCount > 0 ? Model.CommentsListing.RecordsCount : 0)
+            </a>
         </li>
         <li class="list-group-item">
             Average Rating:
@@ -58,8 +55,8 @@
 @* Book Buttons For Download, Delete, Rate and Edit *@
 @if (this.User.Identity.IsAuthenticated)
 {
-    <section class="bookDetailsActionsSection">
-        <a class="btn btn-lg button"
+    <section class="bookDetailsActionsSection d-flex justify-content-evenly gap-4 my-4">
+        <a class="btn btn-lg button rounded-4"
            asp-controller="Book"
            asp-action="Download"
            asp-route-id="@Model.Id">
@@ -67,7 +64,7 @@
         </a>
         @if (!Model.IsUserBook && Model.IsApproved)
         {
-            <button class="btn btn-lg button"
+            <button class="btn btn-lg button rounded-4"
                     data-bs-toggle="modal"
                     data-bs-target="#ratingModal">
                 Rate Book<i class="fas fa-star icon ms-2"></i>
@@ -75,20 +72,20 @@
 
             <button asp-bookId="@Model.Id"
                     id="addToFavoritesBtn"
-                    class="btn btn-lg button">
+                    class="btn btn-lg button rounded-4">
                 Add to Favourites<i class="fas fa-heart icon ms-2"></i>
             </button>
         }
         else if (Model.IsUserBook)
         {
-            <a class="btn btn-lg button"
+            <a class="btn btn-lg button rounded-4"
                asp-controller="Book"
                asp-action="Edit"
                asp-route-id="@Model.Id">
                 Edit
                 <i class="fas fa-user-pen icon ms-2"></i>
             </a>
-            <a class="btn btn-lg button"
+            <a class="btn btn-lg button rounded-4"
                data-bs-toggle="modal"
                data-bs-target="#deleteBookModal">
                 Delete
@@ -99,12 +96,12 @@
 }
 
 @* Book Description *@
-<section class="bookDetailsDescSection">
-    <div class="card">
-        <div class="card-header">
+<section class="bookDetailsDescSection mb-4">
+    <div class="card rounded-4 w-100">
+        <div class="card-header rounded-top-4 fs-5">
             Description
         </div>
-        <div class="card-body">
+        <div class="card-body text-white rounded-bottom-4 fs-5">
             <p class="card-text">@Html.Raw(Model.SanitizedDescription)</p>
         </div>
     </div>
@@ -115,7 +112,7 @@
     <section class="bookDetailsCommentsSection">
 
         @* Post Comment Form *@
-        <div class="formContainer">
+        <div class="formContainer mb-4 p-4 rounded-4">
             <form method="post" asp-controller="Comment" asp-action="Post">
                 <input type="hidden" asp-for="PostComment.BookId" value="@Model.Id" />
                 <div class="form-group">
@@ -123,14 +120,14 @@
                     <span asp-validation-for="PostComment.Content" class="text-danger"></span>
                 </div>
                 <div class="text-center mt-4">
-                    <button type="submit" class="button btn btn-lg">
+                    <button type="submit" class="button btn btn-lg fs-4">
                         Post Comment<i class="fa-solid fa-comment ms-2"></i>
                     </button>
                 </div>
             </form>
         </div>
 
-        @if (commentsCount > 0)
+        @if (Model.CommentsListing.Comments.Count() > 0)
         {
             <partial name="PartialViews/_BookCommentsSectionPartial" model="@Model" />
         }
@@ -152,8 +149,8 @@
     <script src="~/js/book/rating.js"></script>
     <script type="module" src="~/js/comments/comments.js">    </script>
     <script type="module" src="~/js/book/addToFavorites.js"></script>
-    <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
+    @* <script src="https://cdn.tiny.cloud/1/2inr0ldypeixlug7qi77045mkn5r03rnlkhn1cybt8lacrhq/tinymce/7/tinymce.min.js"
             referrerpolicy="origin">
     </script>
-    <script src="~/js/tinyMce.js"></script>
+    <script src="~/js/tinyMce.js"></script> *@
 }

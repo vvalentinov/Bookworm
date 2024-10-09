@@ -2,82 +2,81 @@
 
 @{
     this.ViewData["Title"] = "Random Book Generator";
-    var titleCardModel = new TitleCardPartialViewModel { Title = "Random Book Generator", IconClass = "fa-cog" };
-}
-
-@section Styles {
-    <link rel="stylesheet" href="~/css/book/bookRandom.css" asp-append-version="true" />
+    var titleCardModel = new TitleCardPartialViewModel
+            {
+                Title = "Random Book Generator",
+                IconClass = "fa-cog"
+            };
 }
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
-<section class="randomBooksSection">
+<section class="randomBooksSection d-flex justify-content-center py-3">
+
     <form method="post"
           asp-controller="Book"
           asp-action="Random"
-          class="randomBooksForm">
+          class="w-50 p-3 rounded-4">
 
         <div asp-validation-summary="All" class="text-danger"></div>
 
-        <h3 class="text-center">Select Category</h3>
+        <h3 class="text-center text-white">Select Category</h3>
         <div class="form-group">
             <select asp-for="CategoryId"
                     size="8"
                     aria-label="size 5 select example"
-                    class="form-select form-control">
+                    class="form-select form-control fs-4">
                 @await Component.InvokeAsync("Categories")
             </select>
         </div>
 
-        <h3 class="text-center mt-4">Select number of books*</h3>
-        <div class="radioButtonsContainer">
-            <div class="btn-group"
-                 role="group"
-                 aria-label="Basic radio toggle button group">
+        <h3 class="text-center text-white mt-4">Select number of books*</h3>
+        <div class="btn-group w-100 justify-content-center" role="group" aria-label="Basic radio toggle button group">
 
-                <input asp-for="@Model.CountBooks"
-                       type="radio"
-                       class="btn-check"
-                       name="CountBooks"
-                       id="btnradio1"
-                       autocomplete="off"
-                       value="5">
-                <label class="btn" for="btnradio1">Five</label>
+            <input asp-for="@Model.CountBooks"
+                   type="radio"
+                   class="btn-check"
+                   name="CountBooks"
+                   id="btnradio1"
+                   autocomplete="off"
+                   value="5">
+            <label class="btn fs-4" for="btnradio1">Five</label>
 
-                <input asp-for="@Model.CountBooks"
-                       type="radio"
-                       class="btn-check"
-                       name="CountBooks"
-                       id="btnradio2"
-                       autocomplete="off"
-                       value="10">
-                <label class="btn" for="btnradio2">Ten</label>
+            <input asp-for="@Model.CountBooks"
+                   type="radio"
+                   class="btn-check"
+                   name="CountBooks"
+                   id="btnradio2"
+                   autocomplete="off"
+                   value="10">
+            <label class="btn fs-4" for="btnradio2">Ten</label>
 
-                <input asp-for="@Model.CountBooks"
-                       type="radio"
-                       class="btn-check"
-                       name="CountBooks"
-                       id="btnradio3"
-                       autocomplete="off"
-                       value="15">
-                <label class="btn" for="btnradio3">Fifteen</label>
+            <input asp-for="@Model.CountBooks"
+                   type="radio"
+                   class="btn-check"
+                   name="CountBooks"
+                   id="btnradio3"
+                   autocomplete="off"
+                   value="15">
+            <label class="btn fs-4" for="btnradio3">Fifteen</label>
 
-                <input asp-for="@Model.CountBooks"
-                       type="radio"
-                       class="btn-check"
-                       name="CountBooks"
-                       id="btnradio4"
-                       autocomplete="off"
-                       value="20">
-                <label class="btn" for="btnradio4">Twenty</label>
-            </div>
+            <input asp-for="@Model.CountBooks"
+                   type="radio"
+                   class="btn-check"
+                   name="CountBooks"
+                   id="btnradio4"
+                   autocomplete="off"
+                   value="20">
+            <label class="btn fs-4" for="btnradio4">Twenty</label>
+
         </div>
 
-        <div class="text-center">
-            <button type="submit" class="btn">
+        <div class="text-center mt-4">
+            <button type="submit" class="btn fs-3 px-5">
                 Generate<i class="fa fa-gear ms-2"></i>
             </button>
         </div>
+
     </form>
 </section>
 

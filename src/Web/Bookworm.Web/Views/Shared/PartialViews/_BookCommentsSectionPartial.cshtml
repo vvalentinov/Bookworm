@@ -1,25 +1,21 @@
 ﻿@model BookDetailsViewModel
 
-@{
-    var commentsCount = Model.CommentsListing.Comments.Count();
-}
-
 <section id="comments-section" class="commentsSection">
-    <h2 class="text-white">Comments: @Model.CommentsListing.RecordsCount</h2>
-    @if (commentsCount > 1 && this.User.Identity.IsAuthenticated)
+    <h2 class="text-white text-center">Comments: @Model.CommentsListing.RecordsCount</h2>
+    @if (Model.CommentsListing.Comments.Count() > 1 && this.User.Identity.IsAuthenticated)
     {
         <partial name="PartialViews/_CommentsButtonsPartial" model="@Model.Id" />
     }
-    <div class="commentsContainer">
+    <div class="commentsContainer d-flex flex-column justify-content-center align-content-center align-items-center gap-4">
         @foreach (CommentViewModel comment in Model.CommentsListing.Comments)
         {
-            <article class="card">
-                <div class="card-header">
+            <article class="card w-75">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Posted by - @comment.UserUserName</span>
                     @if (this.User.Identity.IsAuthenticated)
                     {
-                        <div class="commentActionsContainer">
-                            <div class="arrowsContainer">
+                        <div class="commentActionsContainer d-flex align-items-center gap-3">
+                            <div class="arrowsContainer fs-3">
                                 @if (!comment.IsCommentOwner)
                                 {
                                     <i onclick=onUpArrowClick(this)
@@ -44,26 +40,26 @@
                             @if (comment.IsCommentOwner || this.User.IsInRole(AdministratorRoleName))
                             {
                                 <div class="btnsContainer">
-                                    <button class="btn btn-lg btn-danger modalBtn"
+                                    <button class="btn btn-danger modalBtn"
                                             data-model-id=@comment.Id
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                             onclick="onDeleteCommentBtnClick(this)">
-                                        <i class="fa fa-trash-can"></i>
+                                        <i class="fa fa-trash-can fs-3"></i>
                                     </button>
-                                    <button class="btn btn-lg btn-warning modalBtn"
+                                    <button class="btn btn-warning modalBtn"
                                             onclick="onEditCommentBtnClick(this)"
                                             data-model-id=@comment.Id
                                             data-bs-toggle="modal"
                                             data-bs-target="#editModal">
-                                        <i class="fa fa-square-pen"></i>
+                                        <i class="fa fa-square-pen fs-3"></i>
                                     </button>
                                 </div>
                             }
                         </div>
                     }
                 </div>
-                <div class="card-body">
+                <div class="card-body fs-5">
                     @Html.Raw(comment.SanitizedContent)
                 </div>
             </article>
@@ -72,8 +68,8 @@
 
     @if (Model.CommentsListing.PagesCount > 1)
     {
-        <div class="mt-5">
-            <nav id="pagination" bookId="@Model.Id" aria-label="...">
+       
+            <nav class="my-4" id="pagination" bookId="@Model.Id" aria-label="...">
                 <ul class="pagination pagination-lg justify-content-center">
                     <li class="page-item @(Model.CommentsListing.HasPreviousPage ? "" : "disabled")"
                         data-bs-toggle="tooltip"
@@ -116,6 +112,6 @@
                     </li>
                 </ul>
             </nav>
-        </div>
+    
     }
 </section>
