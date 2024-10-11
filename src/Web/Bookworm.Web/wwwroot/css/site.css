@@ -5,6 +5,7 @@
     --clr-black: #000000;
     --clr-primary: #34495E;
     --clr-secondary: #1abc9c;
+    --clr-tertiary: #c7fcec;
     --clr-custom-divider: #2c3e50;
     --nav-minHeight: 100px;
     --footer-minHeight: 100px;
@@ -23,14 +24,111 @@ body {
     background-color: #275e71;
 }
 
-main {
-    margin: 0 2rem;
+.card {
+    border: solid 2px var(--clr-secondary);
+}
+
+    .card .card-body {
+        background-color: var(--clr-primary);
+        color: var(--clr-white);
+    }
+
+    .card .card-header {
+        background-color: var(--clr-primary);
+        color: var(--clr-white);
+        border-bottom: solid 1px var(--clr-secondary);
+    }
+
+.button {
+    background-color: var(--clr-secondary);
+    color: var(--clr-white);
+    border: none !important;
+}
+
+    .button:hover {
+        color: black;
+        background-color: var(--clr-secondary);
+        border: none !important;
+    }
+
+    .button:active {
+        color: black !important;
+        background-color: var(--clr-secondary) !important;
+        border: none !important;
+    }
+
+form {
+    border: solid 2px var(--clr-secondary);
+    background-color: var(--clr-primary);
+}
+
+    form button[type=submit] {
+        background-color: var(--clr-secondary) !important;
+        color: var(--clr-black) !important;
+    }
+
+        form button[type=submit]:hover {
+            color: var(--clr-white) !important;
+        }
+
+    form .form-control:focus,
+    form .form-select:focus {
+        box-shadow: 0 0 0 0.2rem var(--clr-secondary);
+    }
+
+.btn-group .btn {
+    background-color: var(--clr-secondary);
+}
+
+    .btn-group .btn:hover {
+        background-color: var(--clr-tertiary) !important;
+        color: var(--clr-black) !important;
+    }
+
+.btn-group .btn-check:checked + .btn {
+    background-color: var(--clr-tertiary) !important;
+    border: none !important;
+}
+
+.btn-group label {
+    background-color: var(--clr-secondary);
+    color: var(--clr-white);
+    border: none !important;
+}
+
+.btn-group .btn-check:hover + .btn {
+    background-color: var(--clr-tertiary);
+    color: var(--clr-black);
+    border: none !important;
+}
+
+.btn-group .btn-check:checked + .btn {
+    background-color: var(--clr-tertiary);
+    color: var(--clr-black);
+    border: none !important;
 }
 
 .favoriteBooks-tooltip {
     --bs-tooltip-bg: var(--clr-secondary);
-    --bs-tooltip-color: var(--clr-black);
+    --bs-tooltip-color: var(--clr-white);
     --bs-tooltip-opacity: 1;
+}
+
+/*Account Layout*/
+.accountLayoutNavbar {
+    background-color: #95DF82;
+    width: 100% !important;
+    min-height: 60px;
+}
+
+    .accountLayoutNavbar .nav-link:hover,
+    .accountLayoutNavbar i:hover {
+        color: var(--clr-white);
+        transition: 0.3s !important;
+    }
+
+.accountLayoutSection {
+    min-height: calc(100vh - (var(--nav-minHeight) + var(--footer-minHeight) + 68px));
 }
 
 /*Home*/
@@ -67,11 +165,6 @@ main {
     }
 
 /*Categories Page*/
-.categoriesSection {
-    background-color: var(--clr-primary);
-    border: solid 3px var(--clr-secondary);
-}
-
 .overlay {
     position: absolute;
     top: 0;
@@ -106,6 +199,17 @@ main {
 }
 
 /*Select2*/
+.select2-selection {
+    margin: 0 3rem !important;
+    margin-top: 1rem !important;
+    border: solid 2px var(--clr-secondary) !important;
+}
+
+.select2-dropdown {
+    margin: 0 3rem !important;
+    width: 600px !important;
+}
+
 .selectionContainer {
     background-color: var(--clr-primary) !important;
     margin-top: 1rem;
@@ -170,21 +274,7 @@ main {
 
         .select2DropdownMenu .select2-results__options .select2-results__option--selected:hover {
             color: black !important;
-            background-color: #c7fcec !important;
-        }
-
-/*Upload Book Page*/
-.uploadBookSection form {
-    background-color: var(--clr-primary);
-    border: solid 2px var(--clr-secondary);
-}
-
-    .uploadBookSection form button[type="submit"] {
-        background-color: var(--clr-secondary);
-    }
-
-        .uploadBookSection form button[type="submit"]:hover {
-            color: white;
+            background-color: var(--clr-tertiary) !important;
         }
 
 /*Book Details Page*/
@@ -227,87 +317,27 @@ main {
     flex-basis: 33.3%;
 }
 
-.bookDetailsDescSection .card {
-    border: solid 2px var(--clr-secondary);
-}
-
-.bookDetailsDescSection .card-header {
-    border-bottom: solid 1px var(--clr-secondary);
-}
-
-.bookDetailsDescSection .card-body {
-    background-color: var(--clr-primary);
-}
-
 .bookDetailsCommentsSection .formContainer {
     border: solid 2px var(--clr-secondary);
     background-color: var(--clr-primary);
 }
 
-.sortCommentsBtnsContainer .btn-group .btn-check:checked + .btn {
-    border: none !important;
-}
-
-.commentsSection .card {
-    border: solid 2px var(--clr-secondary);
-}
-
-.commentsSection .card-header {
-    border-bottom: solid 2px var(--clr-secondary);
-}
-
-/*Random Book Page*/
-.randomBooksSection form {
-    border: solid 2px var(--clr-secondary);
-    background-color: var(--clr-primary);
-}
-
-.randomBooksSection .btn-group .btn {
-    background-color: var(--clr-secondary);
-}
-
-    .randomBooksSection .btn-group .btn:hover {
-        background-color: #c7fcec !important;
-        color: var(--clr-black) !important;
-    }
-
-.randomBooksSection .btn-group .btn-check:checked + .btn {
-    background-color: #C7FCEC !important;
-    border: none !important;
-}
-
-.randomBooksSection button[type="submit"] {
-    background-color: var(--clr-secondary);
-}
-
-    .randomBooksSection button[type="submit"]:hover {
-        color: white;
-    }
-
 /*Favorite Books Page*/
-.favoriteBooksSection .card {
-    border: solid 2px var(--clr-secondary);
+.favoriteBooksSection .card .card-body a:hover {
+    color: var(--clr-black) !important;
 }
 
-    .favoriteBooksSection .card .card-body {
-        background-color: var(--clr-primary);
-    }
+.favoriteBooksSection .card .card-body a:first-child {
+    background-color: var(--clr-secondary);
+}
 
-        .favoriteBooksSection .card .card-body a:hover {
-            color: var(--clr-black) !important;
-        }
-
-        .favoriteBooksSection .card .card-body a:first-child {
-            background-color: var(--clr-secondary);
-        }
-
-        .favoriteBooksSection .card .card-body a:nth-child(2) {
-            background-color: red;
-        }
+.favoriteBooksSection .card .card-body a:nth-child(2) {
+    background-color: red;
+}
 
 .searchInputGroup input,
 .searchInputGroup input:focus {
-    border: solid 3px black;
+    border: none !important;
     background-color: var(--clr-primary);
     color: var(--clr-white);
 }
@@ -316,26 +346,17 @@ main {
         color: white;
     }
 
-.searchInputGroup input,
-.searchInputGroup button {
-    font-size: 1.5rem;
+.searchInputGroup button,
+.searchInputGroup button:active {
+    width: 10%;
+    background-color: var(--clr-secondary);
+    color: var(--clr-white);
+    border: none !important;
 }
 
-    .searchInputGroup button,
-    .searchInputGroup button:active {
-        width: 10%;
-        background-color: var(--clr-primary);
-        color: var(--clr-secondary);
-        border-start-end-radius: 10px;
-        border-end-end-radius: 10px;
-        border-top: solid 3px black;
-        border-right: solid 3px black;
-        border-bottom: solid 3px black;
+    .searchInputGroup button:hover {
+        color: var(--clr-black);
     }
-
-        .searchInputGroup button:hover {
-            color: var(--clr-white);
-        }
 
 /*Top Arrow Button*/
 .topArrow {
@@ -365,15 +386,14 @@ main {
 .mainLayoutNavbar {
     background-color: var(--clr-primary);
     min-height: var(--nav-minHeight);
-    font-size: 1.5rem;
     border-bottom: solid 2px var(--clr-secondary);
 }
 
     .mainLayoutNavbar .notificationBtn,
     .mainLayoutNavbar .notificationBtn:active {
-        font-size: 1.5rem;
         background-color: var(--clr-secondary) !important;
         color: var(--clr-white);
+        border: none !important;
     }
 
         .mainLayoutNavbar .notificationBtn:hover {
@@ -473,59 +493,13 @@ main {
     font-size: 1.3rem;
 }
 
-#quoteImg {
-    cursor: pointer;
-    height: 50%;
-}
-
-.fa-bars {
-    color: var(--clr-white);
-}
-
 .likeQuote {
     cursor: pointer;
 }
 
-.button {
-    background-color: var(--clr-secondary);
-    color: var(--clr-white);
-    border: none !important;
-}
 
-    .button:hover {
-        color: black;
-        background-color: var(--clr-secondary);
-        border: none !important;
-    }
 
-    .button:active {
-        color: black !important;
-        background-color: var(--clr-secondary) !important;
-        border: none !important;
-    }
-
-.btn-group label {
-    background-color: var(--clr-primary);
-    color: var(--clr-white);
-}
-
-.btn-group .btn-check:hover + .btn {
-    background-color: var(--clr-secondary);
-    color: var(--clr-white);
-}
-
-.btn-group .btn-check:checked + .btn {
-    background-color: var(--clr-secondary);
-    color: var(--clr-black);
-}
-
-.logout-btn {
-    background-color: var(--clr-secondary);
-    color: var(--clr-white);
-    border-radius: 10px;
-}
-
-.bookworm-footer {
+.bookwormFooter {
     background-color: var(--clr-primary);
     margin-top: auto;
     flex-shrink: 0;
@@ -582,13 +556,13 @@ main {
     .pagination > li > span:focus,
     .pagination > li > span:hover {
         color: var(--clr-black);
-        background-color: #c7fcec;
+        background-color: var(--clr-tertiary);
         border: solid 1px black;
     }
 
 .pagination > .active > span,
 .pagination > .active > span:focus {
-    background-color: #c7fcec !important;
+    background-color: var(--clr-tertiary) !important;
     border: solid 1px black;
     color: var(--clr-black);
 }
@@ -614,7 +588,6 @@ main {
         width: 100%;
         max-width: 7rem;
         height: 0.25rem;
-        /*background-color: var(--clr-custom-divider);*/
         background-color: var(--clr-secondary);
         border-radius: 1rem;
         border-color: var(--clr-custom-divider);
@@ -660,69 +633,6 @@ a[class="privacy-link"] {
         color: var(--clr-secondary);
     }
 
-.form-control:focus,
-.form-select:focus {
-    box-shadow: 0 0 0 0.2rem var(--clr-secondary);
-}
-
-.title-card-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.title-card {
-    background-color: var(--clr-secondary);
-    color: var(--clr-white);
-    text-align: center;
-}
-
-    .title-card .blockquote .blockquote-footer {
-        color: var(--clr-white);
-    }
-
-.card .card-header {
-    background-color: var(--clr-primary);
-    color: var(--clr-white);
-}
-
-/*Radio Buttons and Checkboxes Styles*/
-input[type="checkbox"] {
-    width: 1.5rem;
-    height: 1.5rem;
-}
-
-    input[type="checkbox"]:checked {
-        accent-color: var(--clr-secondary);
-    }
-
-input[type="radio"] {
-    appearance: none;
-    margin: 0.5rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    background: var(--clr-primary);
-    box-shadow: inset 0 0 0 .4em var(--clr-white), 0 0 0 .3em;
-    border-radius: 50%;
-    transition: .2s;
-    cursor: pointer;
-    vertical-align: middle;
-}
-
-    input[type="radio"]:hover, input[type="radio"]:checked {
-        background: var(--clr-primary);
-        box-shadow: inset 0 0 0 .6em var(--clr-white), 0 0 0 .3em;
-    }
-
-    input[type="radio"]:checked {
-        background: var(--clr-secondary);
-        box-shadow: inset 0 0 0 .4em var(--clr-white), 0 0 0 .3em #56be8e;
-    }
-
-    input[type="radio"]:focus {
-        outline: 0;
-    }
-
 /*Media Queries*/
 @media only screen and (max-width: 576px) {
     .randomBooksSection form .btn-group label {
@@ -733,6 +643,10 @@ input[type="radio"] {
     .commentActionsContainer .arrowsContainer,
     .pagination .page-link {
         font-size: 10px !important;
+    }
+
+    .select2-dropdown {
+        width: 300px !important;
     }
 }
 
@@ -823,4 +737,34 @@ input[type="radio"] {
     .commentsContainer .card {
         width: 100% !important;
     }
+
+    .btn-group {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+        .btn-group label {
+            border-radius: initial !important;
+        }
+
+    .searchInputGroup button {
+        width: 30%;
+    }
+
+    .quotesSection {
+        flex-direction: column;
+    }
+
+    .editQuoteSection form {
+        width: 100% !important;
+    }
+
+    .quoteContainer {
+        flex-direction: column;
+    }
+
+        .quoteContainer img,
+        .quoteContainer form {
+            width: 100% !important;
+        }
 }

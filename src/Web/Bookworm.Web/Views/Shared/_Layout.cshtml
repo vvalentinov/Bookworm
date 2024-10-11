@@ -29,7 +29,7 @@
 <body>
 
     <header>
-        <nav class="navbar navbar-expand-lg fixed-top mainLayoutNavbar">
+        <nav class="navbar navbar-expand-lg fixed-top mainLayoutNavbar fs-4">
             <div class="container-fluid">
                 <button class="navbar-toggler"
                         type="button"
@@ -38,7 +38,7 @@
                         aria-controls="navbarToggler"
                         aria-expanded="false"
                         aria-label="Toggle navigation">
-                    <i class="fa-solid fa-bars"></i>
+                    <i class="fa-solid fa-bars text-white"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggler">
                     <ul class="navbar-nav me-auto">
@@ -81,8 +81,7 @@
                         @if (this.User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item mx-2">
-                                <a asp-area="" asp-controller="Notification" asp-action="Index"
-                                   type="button" class="btn position-relative notificationBtn">
+                                <a asp-area="" asp-controller="Notification" asp-action="Index" type="button" class="btn position-relative notificationBtn rounded-4 fs-4">
                                     Notifications
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
                                 </a>
@@ -114,7 +113,7 @@
 
     </main>
 
-    <footer class="bookworm-footer">
+    <footer class="bookwormFooter">
         <span>
             &copy; @DateTime.Now.Year - @GlobalConstants.SystemName -
             <a class="privacy-link" asp-area="" asp-controller="Home" asp-action="Privacy">

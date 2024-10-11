@@ -9,7 +9,7 @@
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
 @* Book Image + Info *@
-<section class="bookDetailsInfoSection d-flex justify-content-center align-items-center gap-5 px-5">
+<section class="bookDetailsInfoSection d-flex justify-content-center align-items-center gap-5 mx-5">
     <div class="w-25">
         <img class="img-fluid w-100 rounded-4" src=@Model.ImageUrl alt=@Model.Title />
     </div>
@@ -55,7 +55,7 @@
 @* Book Buttons For Download, Delete, Rate and Edit *@
 @if (this.User.Identity.IsAuthenticated)
 {
-    <section class="bookDetailsActionsSection d-flex justify-content-evenly gap-4 my-4">
+    <section class="bookDetailsActionsSection d-flex justify-content-evenly gap-4 my-4 mx-5">
         <a class="btn btn-lg button rounded-4"
            asp-controller="Book"
            asp-action="Download"
@@ -96,7 +96,7 @@
 }
 
 @* Book Description *@
-<section class="bookDetailsDescSection mb-4">
+<section class="bookDetailsDescSection mb-4 mx-5">
     <div class="card rounded-4 w-100">
         <div class="card-header rounded-top-4 fs-5">
             Description
@@ -109,11 +109,11 @@
 
 @if (Model.IsApproved)
 {
-    <section class="bookDetailsCommentsSection">
+    <section class="bookDetailsCommentsSection mx-5">
 
         @* Post Comment Form *@
         <div class="formContainer mb-4 p-4 rounded-4">
-            <form method="post" asp-controller="Comment" asp-action="Post">
+            <form style="border: none;" method="post" asp-controller="Comment" asp-action="Post">
                 <input type="hidden" asp-for="PostComment.BookId" value="@Model.Id" />
                 <div class="form-group">
                     <textarea asp-for="PostComment.Content" class="form-control bookComment" rows="15"></textarea>

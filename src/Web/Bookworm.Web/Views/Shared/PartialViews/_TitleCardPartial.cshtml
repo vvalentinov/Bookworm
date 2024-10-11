@@ -1,8 +1,8 @@
 ﻿@model TitleCardPartialViewModel
 
-<div class="title-card-container">
-    <div class="card title-card">
-        <div class="card-body">
+<div class="d-flex justify-content-center mt-3">
+    <div class="card titleCard text-white text-center">
+        <div style="background-color:var(--clr-secondary);" class="card-body">
             @if (Model.Count != null)
             {
                 <h3>@Model.Title (@Model.Count)</h3>

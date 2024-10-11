@@ -1,19 +1,4 @@
-﻿const modals = document.querySelectorAll('.modal');
-
-modals.forEach(modal => {
-    modal.addEventListener('hidden.bs.modal', () => {
-        const formId = modal.querySelector('form').id;
-        $(`#${formId}`).validate().resetForm();
-        $(`#${formId} input:not([name="__RequestVerificationToken"]):not([type="hidden"]), #${formId} textarea`).val("");
-    });
-    modal.addEventListener('show.bs.modal', () => {
-        const formId = modal.querySelector('form').id;
-        $(`#${formId}`).validate().resetForm();
-        $(`#${formId} input:not([name="__RequestVerificationToken"]):not([type="hidden"]), #${formId} textarea`).val("");
-    });
-});
-
-$("#movieQuoteForm").validate({
+﻿$("#movieQuoteForm").validate({
     rules: {
         MovieTitle: {
             required: true,

@@ -3,13 +3,16 @@
 
 @{
     this.ViewData["Title"] = "All Quotes";
-    var titleCardModel = new TitleCardPartialViewModel { Title = "All Quotes", Count = Model.RecordsCount };
-    var isUserAuthenticated = this.User.Identity.IsAuthenticated;
-    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
-}
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/quote/quoteAll.css"/>
+    var titleCardModel = new TitleCardPartialViewModel
+            {
+                Title = "All Quotes",
+                Count = Model.RecordsCount
+            };
+
+    var isUserAuthenticated = this.User.Identity.IsAuthenticated;
+
+    string requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
@@ -21,31 +24,32 @@
 
 <input id="RequestVerificationToken" type="hidden" value="@requestToken" />
 
-<div class="quotesContainer">
+<section class="quotesSection d-flex flex-wrap justify-content-center gap-5 my-3 mx-5">
     @foreach (var quote in Model.Quotes)
     {
-        <div class="card">
-            <div class="card-header">
-                Quote
-                <span>
+        <article style="height: 15rem; flex-basis: 30%;" class="card">
+            <div class="card-header d-flex align-items-center justify-content-between fs-4">
+                <span>Quote</span>
+                <div>
                     @if (isUserAuthenticated)
                     {
                         <i onclick="likeQuote(this, @quote.Id, @quote.IsUserQuoteCreator.ToString().ToLower())"
                            class="fa-thumbs-up
                            @(quote.IsLikedByUser ? "fa-solid" : "fa-regular")
-                           @(quote.IsUserQuoteCreator == false && isUserAuthenticated ? "likeQuote" : "")"></i>
+                           @(quote.IsUserQuoteCreator == false && isUserAuthenticated ? "likeQuote" : "")">
+                        </i>
                     }
                     else
                     {
                         <i class="fa-regular fa-thumbs-up"></i>
                     }
                     <span class="quoteLikesCount">(@quote.Likes)</span>
-                </span>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body align-content-center">
                 <blockquote class="blockquote ">
-                    <p>@quote.Content</p>
-                    <footer class="blockquote-footer text-end">
+                    <p class="text-center">@quote.Content</p>
+                    <footer class="blockquote-footer text-end text-white">
                         @if (quote.AuthorName != null)
                         {
                             @quote.AuthorName
@@ -61,9 +65,9 @@
                     </footer>
                 </blockquote>
             </div>
-        </div>
+        </article>
     }
-</div>
+</section>
 
 @if (Model.PagesCount > 1)
 {

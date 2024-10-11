@@ -22,7 +22,7 @@
             };
 }
 
-<section class="welcomeSection p-3 rounded-3">
+<section class="welcomeSection p-3 rounded-3 mx-5 rounded-4">
 
     <div style="min-height: 30%;" class="d-flex flex-column justify-content-center align-items-center">
         <h1 class="text-center text-white">Welcome to @GlobalConstants.SystemName!</h1>
@@ -34,10 +34,10 @@
 
     <div style="min-height: 50%;" class="d-flex justify-content-center py-5">
         <div class="card w-75 animate__animated animate__zoomIn animate__faster">
-            <div class="card-header">
+            <div class="card-header fs-4">
                 Quote
             </div>
-            <div class="card-body align-content-center">
+            <div style="background-color: initial; color: black;" class="card-body align-content-center">
                 <blockquote class="blockquote">
                     <p class="text-center">@Model.RandomQuote.Content</p>
                     @if (Model.RandomQuote.AuthorName != null)
@@ -69,13 +69,13 @@
             <a style="background-color: var(--clr-secondary); min-height: 20%;"
                asp-controller="Book"
                asp-action="Upload"
-               class="w-50 fs-3 btn animate__animated animate__zoomIn animate__faster">
+               class="w-50 rounded-4 fs-3 btn animate__animated animate__zoomIn animate__faster">
                 Upload Book<i class="fa fa-book ms-2"></i>
             </a>
             <a style="background-color: var(--clr-secondary); min-height: 20%;"
                asp-controller="Quote"
                asp-action="Upload"
-               class="w-50 fs-3 btn animate__animated animate__zoomIn animate__faster">
+               class="w-50 rounded-4 fs-3 btn animate__animated animate__zoomIn animate__faster">
                 Upload Quote<i class="fa fa-square-pen ms-2"></i>
             </a>
         </div>
@@ -83,7 +83,7 @@
 
 </section>
 
-<section class="booksSection my-5 px-3 pb-5 rounded-4">
+<section class="booksSection m-5 px-3 pb-5 rounded-4">
 
     <partial name="PartialViews/_TitleCardPartial" model=recentBooksTitleCardModel />
 
@@ -108,7 +108,7 @@
 
 </section>
 
-<section class="booksSection my-5 px-3 pb-5 rounded-4">
+<section class="booksSection m-5 px-3 pb-5 rounded-4">
 
     <partial name="PartialViews/_TitleCardPartial" model=popularBooksTitleCardModel />
 

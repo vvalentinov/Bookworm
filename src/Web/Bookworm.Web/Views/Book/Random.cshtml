@@ -2,6 +2,7 @@
 
 @{
     this.ViewData["Title"] = "Random Book Generator";
+
     var titleCardModel = new TitleCardPartialViewModel
             {
                 Title = "Random Book Generator",
@@ -11,7 +12,7 @@
 
 <partial name="PartialViews/_TitleCardPartial" model=titleCardModel />
 
-<section class="randomBooksSection d-flex justify-content-center py-3">
+<section class="randomBooksSection d-flex justify-content-center py-3 mx-5">
 
     <form method="post"
           asp-controller="Book"

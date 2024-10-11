@@ -4,18 +4,16 @@
 
 @if (isForUserQuotes)
 {
-    <input type="hidden"
-           id="isForUserQuotes"
-           value=@isForUserQuotes.ToString().ToLower() />
-    <div class="btn-group d-flex justify-content-center my-5 mb-3"
-         role="group"
-         aria-label="Basic radio toggle button group">
+    <input type="hidden" id="isForUserQuotes" value=@isForUserQuotes.ToString().ToLower() />
+
+    <div class="btn-group d-flex justify-content-center my-3 mx-5" role="group" aria-label="Basic radio toggle button group">
+
         <input type="radio"
                class="btn-check"
                name="quoteStatusRadio"
                id="approvedQuotesRadio"
                autocomplete="off">
-        <label class="btn border-dark border-2 fs-5"
+        <label class="btn fs-4 rounded-start-4"
                for="approvedQuotesRadio">
             Show only approved quotes
         </label>
@@ -25,23 +23,22 @@
                name="quoteStatusRadio"
                id="unapprovedQuotesRadio"
                autocomplete="off">
-        <label class="btn border-dark border-2 fs-5"
+        <label class="btn fs-4 rounded-end-4"
                for="unapprovedQuotesRadio">
             Show only unapproved quotes
         </label>
+
     </div>
 }
 
-<div class="btn-group my-3 mb-3 d-flex justify-content-center"
-     role="group"
-     aria-label="Basic radio toggle button group">
+<div class="btn-group my-3 mx-5 d-flex justify-content-center" role="group" aria-label="Basic radio toggle button group">
 
     <input type="radio"
            class="btn-check"
            name="btnradio"
            id="movie-quotes"
            autocomplete="off">
-    <label class="btn border-2 border-dark fs-5"
+    <label class="btn border-2 border-dark fs-4 rounded-start-4"
            for="movie-quotes">
         Show only movie quotes
     </label>
@@ -51,7 +48,7 @@
            name="btnradio"
            id="book-quotes"
            autocomplete="off">
-    <label class="btn border-dark border-2 fs-5"
+    <label class="btn border-dark border-2 fs-4"
            for="book-quotes">
         Show only book quotes
     </label>
@@ -61,7 +58,7 @@
            name="btnradio"
            id="general-quotes"
            autocomplete="off">
-    <label class="btn border-dark border-2 fs-5"
+    <label class="btn border-dark border-2 fs-4"
            for="general-quotes">
         Show only general quotes
     </label>
@@ -71,33 +68,33 @@
            name="btnradio"
            id="liked-quotes"
            autocomplete="off">
-    <label class="btn border-dark border-2 fs-5"
+    <label class="btn border-dark border-2 fs-4 rounded-end-4"
            for="liked-quotes">
         Show only liked quotes
     </label>
 </div>
 
-<div class="btn-group my-3 mb-3 d-flex justify-content-center"
+<div class="btn-group my-3 mx-5 d-flex justify-content-center"
      role="group"
      aria-label="Basic radio toggle button group">
     <input type="radio" class="btn-check" name="sortBtnRadio" id="newest-to-oldest" autocomplete="off" checked>
-    <label class="btn border-dark border-2 fs-5" for="newest-to-oldest">Sort newest to oldest</label>
+    <label class="btn border-dark border-2 fs-4 rounded-start-4" for="newest-to-oldest">Sort newest to oldest</label>
 
     <input type="radio" class="btn-check" name="sortBtnRadio" id="oldest-to-newest" autocomplete="off">
-    <label class="btn border-2 border-dark fs-5" for="oldest-to-newest">Sort oldest to newest</label>
+    <label class="btn border-2 border-dark fs-4" for="oldest-to-newest">Sort oldest to newest</label>
 
     <input type="radio" class="btn-check" name="sortBtnRadio" id="likes-count-desc" autocomplete="off">
-    <label class="btn border-dark border-2 fs-5" for="likes-count-desc">Sort Likes Count Desc</label>
+    <label class="btn border-dark border-2 fs-4 rounded-end-4" for="likes-count-desc">Sort Likes Count Desc</label>
 </div>
 
 <div class="input-group mb-3 searchInputGroup">
     <input type="text"
-           class="form-control"
+           class="form-control fs-4 rounded-start-4 ms-5"
            id="searchQuotesInput"
            placeholder="Search quotes..."
            aria-label="Recipient's username"
            aria-describedby="button-addon2">
-    <button type="button" id="searchQuotesBtn">
-        <i class="fa-solid fa-magnifying-glass fa-xl"></i>
+    <button type="button" class="rounded-end-4 me-5">
+        <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
     </button>
 </div>
