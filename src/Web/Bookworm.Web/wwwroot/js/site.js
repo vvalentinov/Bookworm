@@ -35,3 +35,15 @@ window.addEventListener("scroll", () => {
         animateCSS(toTop, 'zoomOut', 'faster');
     }
 });
+
+(function () {
+    var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+
+    if (button) {
+        button.addEventListener("click", () => {
+            document.cookie = button.dataset.cookieString;
+            const alert = bootstrap.Alert.getOrCreateInstance('#cookieConsent');
+            alert.close()
+        }, false);
+    }
+})();

@@ -24,6 +24,21 @@ body {
     background-color: #275e71;
 }
 
+#cookieConsent {
+    background-color: var(--clr-secondary);
+    margin-top: 20px;
+}
+
+    #cookieConsent .btn-close {
+        top: 10px !important;
+        border: none !important;
+    }
+
+    #cookieConsent button[data-cookie-string] {
+        background-color: var(--clr-primary);
+        color: var(--clr-white);
+    }
+
 .card {
     border: solid 2px var(--clr-secondary);
 }
